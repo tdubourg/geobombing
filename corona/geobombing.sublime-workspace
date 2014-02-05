@@ -1,0 +1,430 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"curre",
+				"currentRailsIndex"
+			],
+			[
+				"Big",
+				"BigCubeOnRails"
+			],
+			[
+				"Vector",
+				"Vector3	x, y, z"
+			],
+			[
+				"pick",
+				"pickedUpObject"
+			],
+			[
+				"OnC",
+				"OnControllerColliderHit"
+			],
+			[
+				"inpt",
+				"inputMoveDirection"
+			],
+			[
+				"colli",
+				"collision"
+			],
+			[
+				"Controller",
+				"ControllerColliderHit"
+			],
+			[
+				"ju",
+				"jumping"
+			],
+			[
+				"inp",
+				"inputMoveDirection"
+			],
+			[
+				"input",
+				"inputRun"
+			],
+			[
+				"Tran",
+				"Transform"
+			],
+			[
+				"po",
+				"position"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "geobombing.sublime-project",
+			"settings":
+			{
+				"buffer_size": 45,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 58.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"tabs",
+				"Indentation: Convert to Tabs"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 384.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Standard Assets/Reveal.cs",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Scripts/Trigger.cs",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/LvLCompletTry.unity",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Standard Assets/Character Controllers/Sources/Scripts/CharacterMotor.js",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Scripts/Scenario.cs",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/medium_cube_on_rails.js",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/big_cube_on_rails.js",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/cube_on_rails.js",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Materials/dirty-metal.mat",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Scripts/JS/small_cube_on_rails.js",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/small_cube_on_rails.js",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Scripts/CarryProperties.cs",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Materials/dirty.mat",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Standard Assets/Character Controllers.meta",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Standard Assets/Character Controllers/Sources/Scripts/EventManager.cs",
+		"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Standard Assets/Character Controllers/Sources/Scripts/Hatch.cs",
+		"/C/Users/Troll/AppData/Local/Temp/.myshellrc.txt"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"*.cs"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			".Find(",
+			"1.710354",
+			"BigCubeOnRails",
+			"currentDestination",
+			"BigCubeOnRails",
+			"MediumCubeOnRails",
+			"Checkpoint",
+			"checkpoint",
+			"Checkpoint",
+			"checkpoints",
+			"rails",
+			"currentRail",
+			"currentRails",
+			"rails",
+			"yield return new WaitForSeconds(disabledAfterSeconds);",
+			"===",
+			"currentRails",
+			"CubeOnRails",
+			"<<<<",
+			"=====",
+			"upForce",
+			"===",
+			"cosVectors",
+			"CharacterContr",
+			"CharacterContorller",
+			"groundNormal",
+			"collision",
+			"controller.move",
+			"controller",
+			"CollisionFlags",
+			"jumping = false",
+			"grounded =",
+			"grounded",
+			"jumping",
+			"Jumping",
+			"jumping",
+			"ControllerColliderHit",
+			"collider",
+			"z",
+			"y",
+			"tr.pos",
+			"sneak",
+			"\"Jump\"",
+			"\"Jump",
+			"button",
+			"10",
+			"collision",
+			"gravity",
+			"true",
+			"   ",
+			"Action",
+			"EventManager"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"\\t"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "geobombing.sublime-project",
+					"settings":
+					{
+						"buffer_size": 45,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								34,
+								34
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"geom",
+				"geobombing.sublime-project"
+			],
+			[
+				"small",
+				"game/Assets/Scripts/JS/small_cube_on_rails.js"
+			],
+			[
+				"reveal",
+				"game/Assets/Standard Assets/Reveal.cs"
+			],
+			[
+				"smallcube",
+				"game/Assets/small_cube_on_rails.js"
+			],
+			[
+				"smallcub",
+				"game/Assets/small_cube_on_rails.js"
+			],
+			[
+				"carry",
+				"game/Assets/Scripts/CarryProperties.cs"
+			],
+			[
+				"medi",
+				"game/Assets/medium_cube_on_rails.js"
+			],
+			[
+				"trigger",
+				"game/Assets/Scripts/Trigger.cs"
+			],
+			[
+				"bigcub",
+				"game/Assets/big_cube_on_rails.js"
+			],
+			[
+				"lvl",
+				"game/Assets/LvLCompletTry.unity"
+			],
+			[
+				"motor",
+				"game/Assets/Standard Assets/Character Controllers/Sources/Scripts/CharacterMotor.js"
+			],
+			[
+				"bigcube",
+				"game/Assets/big_cube_on_rails.js"
+			],
+			[
+				"dirty-metal",
+				"game/Assets/Materials/dirty-metal.mat"
+			],
+			[
+				".mat",
+				"game/Assets/Materials/dirty.mat"
+			],
+			[
+				"placs",
+				"Assets/Scripts/Player.cs"
+			],
+			[
+				"charamotor",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/CharacterMotor.js"
+			],
+			[
+				"pla",
+				"Assets/Scripts/Player.cs"
+			],
+			[
+				"picku",
+				"Assets/Scripts/Pickup.cs"
+			],
+			[
+				"test",
+				"Assets/Test scene.unity"
+			],
+			[
+				"tagmana",
+				"ProjectSettings/TagManager.asset"
+			],
+			[
+				"charactercontroller",
+				"Assets/Standard Assets/Character Controllers.meta"
+			],
+			[
+				"fps",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/FPSInputController.js"
+			],
+			[
+				"caharam",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/CharacterMotor.js"
+			],
+			[
+				"",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/PressionGround.js"
+			],
+			[
+				"charmo",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/CharacterMotor.js"
+			],
+			[
+				"event",
+				"/C/Users/Troll/Dropbox/code/double-waze/game/Assets/Standard Assets/Character Controllers/Sources/Scripts/EventManager.cs"
+			],
+			[
+				"pressiogr",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/PressionGround.js"
+			],
+			[
+				"hatchjs",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/Hatch.js"
+			],
+			[
+				"hatc",
+				"Assets/Standard Assets/Character Controllers/Sources/Scripts/Hatch.cs"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/C/Users/Troll/Dropbox/code/geobombing/corona/geobombing.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}
