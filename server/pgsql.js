@@ -1,0 +1,10 @@
+function sqlRequest()
+{
+	return new ["", 
+			"", 
+			"", 
+			"", 
+			"", 
+			"", 
+			""];
+}
