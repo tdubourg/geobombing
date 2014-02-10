@@ -3,8 +3,8 @@
 //* Server that deals with the data from the client
 
 // Note: Network protocol is defined here https://docs.google.com/document/d/1ruhZYn532nGK_tueSa5HPL_cqe6Hj630zpdrcCcXIH4/edit#
-var net = require("net");
-var netw = require('./network')
+var net = require("net"); // library call?
+var netw = require('./network') // import class-file network.js
 var sd = require('./shared_data')
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR
 var DBG = true
