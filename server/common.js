@@ -1,25 +1,32 @@
+// library call
+var clMap = require("./classes/clMap").clMap; 
+var clNode = require("./classes/clNode").clNode;
+var clWay = require("./classes/clWay").clWay; 
+
 // -- Creating
+exports.CreateNode = CreateNode
 function CreateNode(id, lat, lon)
 {
-	var node = clNode();
-	node.nodeId = id;
-	node.nodeLatitude = lat;
-	node.nodeLongitude = lon;
+	var node = new clNode();
+	node.id = id;
+	node.la = lat;
+	node.lo = lon;
 	return node;
 }
 
-function CreateEmptyWay(id, name)
+exports.CreateEmptyWay = CreateEmptyWay
+function CreateEmptyWay(name)
 {
-	var way = clWay();
-	way.wayId = id;
+	var way = new clWay();
 	way.wayName = name;
-	way.wayListNodeId = new Array();
+	way.wLstNdId = new Array();
 	return way;
 }
 
+exports.CreateEmptyMap = CreateEmptyMap
 function CreateEmptyMap(id, name)
 {
-	var map = clMap();
+	var map = new clMap();
 	map.mapId = id;
 	map.mapName = name;
 	map.mapListNode = new Array();
@@ -28,20 +35,55 @@ function CreateEmptyMap(id, name)
 }
 
 // -- Adding --
+exports.AddNodeToMap = AddNodeToMap
 function AddNodeToMap(map, node)
 {
 	if (map == null || node == null || map.mapListNode == null) return false;
 	else map.mapListNode[map.mapListNode.length] = node;
 }
 
+exports.AddNodeIdToWay = AddNodeIdToWay
 function AddNodeIdToWay(way, nodeId)
 {
-		if (way == null || nodeId == 0 || way.wayListNodeId == null) return false;
-	else way.wayListNodeId[way.wayListNodeId.length] = nodeId;
+	if (way == null || nodeId == 0 || way.wLstNdId == null) return false;
+	else way.wLstNdId[way.wLstNdId.length] = nodeId;
 }
 
+exports.AddWayToMap = AddWayToMap
 function AddWayToMap(map, way)
 {
-		if (map == null || way == null || map.mapListWay == null) return false;
+	if (map == null || way == null || map.mapListWay == null) return false;
 	else map.mapListWay[map.mapListWay.length] = way;
+}
+
+exports.CreateFakeMap = CreateFakeMap
+function CreateFakeMap() // todo replace by SQL result map
+{
+	var mapObj = CreateEmptyMap(123, "maptest");
+	var node1 = CreateNode(1, 10, 10);
+	var node2 = CreateNode(2, 10, 50);
+	var node3 = CreateNode(3, 20, 50);
+	var node4 = CreateNode(4, 100, 50);
+	var node5 = CreateNode(5, 100, 100);
+	AddNodeToMap(mapObj, node1);
+	AddNodeToMap(mapObj, node2);
+	AddNodeToMap(mapObj, node3);
+	AddNodeToMap(mapObj, node4);
+	AddNodeToMap(mapObj, node5);
+	var way1 = CreateEmptyWay("Rue du short");
+	AddNodeIdToWay(way1, 1);
+	AddNodeIdToWay(way1, 2);
+	AddNodeIdToWay(way1, 3);
+	var way2 = CreateEmptyWay("Rue du slip");
+	AddNodeIdToWay(way2, 1);
+	AddNodeIdToWay(way2, 3);
+	AddNodeIdToWay(way2, 5);
+	var way3 = CreateEmptyWay("Rue du bonnet");
+	AddNodeIdToWay(way3, 1);
+	AddNodeIdToWay(way3, 5);
+	AddNodeIdToWay(way3, 4);
+	AddWayToMap(mapObj, way1);
+	AddWayToMap(mapObj, way2);
+	AddWayToMap(mapObj, way3);
+	return mapObj;
 }
