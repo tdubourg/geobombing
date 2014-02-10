@@ -3,8 +3,9 @@
 // Utils for network
 var FRAME_SEPARATOR = "\n"
 
-var decode_frame = function (frame_string) {
-	return {type: "dummy", data: "frame_string"} //TODO implement that
+var decode_frame = function (frame_string) 
+{
+	return {type: "map", data: "frame_string"} //TODO implement that
 }
 
 // provides "attributes" and "methods" for the "class" shared_data.js

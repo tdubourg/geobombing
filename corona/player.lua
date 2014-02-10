@@ -55,21 +55,22 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
 	height = PLAYER_SPRITE_RAW_HEIGHT, numFrames = 7})--, sheetContentWidth=PLAYER_SPRITESHEET_WIDTH, sheetContentHeight=PLAYER_SPRITESHEET_HEIGHT})
 
 newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
+
  newPlayer.drawable.x = display.contentWidth/2
  newPlayer.drawable.y = display.contentHeight/2
 -- newPlayer.x = display.contentCenterX
 -- newPlayer.y = display.contentCenterY
 
--- newPlayer.objectType = objectType
--- newPlayer.drawable.objectType = objectType
--- newPlayer.drawable.playerObject = newPlayer
--- newPlayer.drawable.width, newPlayer.drawable.height = spriteWidth, spriteHeight
--- newPlayer.drawable.xScale = spriteWidth / PLAYER_SPRITE_RAW_WIDTH
---     newPlayer.drawable.yScale = spriteHeight / PLAYER_SPRITE_RAW_HEIGHT--signof(gravityScale) * spriteHeight / PLAYER_SPRITE_RAW_HEIGHT
---     addBodyWithCutCornersRectangle(newPlayer.drawable, 30)
+newPlayer.objectType = objectType
+newPlayer.drawable.objectType = objectType
+newPlayer.drawable.playerObject = newPlayer
+newPlayer.drawable.width, newPlayer.drawable.height = spriteWidth, spriteHeight
+newPlayer.drawable.xScale = spriteWidth / PLAYER_SPRITE_RAW_WIDTH
+    newPlayer.drawable.yScale = spriteHeight / PLAYER_SPRITE_RAW_HEIGHT--signof(gravityScale) * spriteHeight / PLAYER_SPRITE_RAW_HEIGHT
+    addBodyWithCutCornersRectangle(newPlayer.drawable, 30)
 
---     newPlayer.drawable:play()
---     newPlayer.drawable.gravityScale = gravityScale
+    newPlayer.drawable:play()
+    newPlayer.drawable.gravityScale = gravityScale
 
     cameraGroup:insert(newPlayer.drawable)
     return newPlayer

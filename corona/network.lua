@@ -1,7 +1,16 @@
 socket = require "socket"
+json = require("json")
+require "print_r"
+
 require "utils"
 function test_network()
-	local client = socket.connect("127.0.0.1", 3000)
+	local ip = "127.0.0.1"
+	local port = 3000
+	local client = connect_to_server(ip, port)
+	if (not client) then
+		print ("Unable to connect to server...", ip, port)
+		return false
+	end
 	client:send("Bonjour!\n")
 	local response_packet = ""
 
@@ -10,6 +19,15 @@ function test_network()
 
 	print ("Serveur answered:", response_packet)
 -- load scenetemplate.lua
+end
+
+function connect_to_server( ip, port )
+	local client = socket.connect(ip, port)
+	if (client == nil) then
+		return false
+	else
+		return client
+	end
 end
 
 function receive_until(client, end_separator )
@@ -23,4 +41,24 @@ function receive_until(client, end_separator )
 		start, _end = str:find(end_separator)
 	end
 	return str
+end
+
+function receiveMap()
+	--jsonMap = receive_until('\n')
+	jsonMap = [[{
+    "menu": {
+        "id": "file",
+        "value": "File",
+        "popup": {
+            "menuitem": [
+                { "value": "New", "onclick": "CreateNewDoc()" },
+                { "value": "Open", "onclick": "OpenDoc()" },
+                { "value": "Close", "onclick": "CloseDoc()" }
+            ]
+        }
+    }
+}]]
+	luaMap = json.decode(jsonMap)
+	print "DUMP"
+	print_r(luaMap)
 end
