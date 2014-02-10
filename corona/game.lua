@@ -38,7 +38,7 @@ function scene:createScene( event )
 
 	--	CREATE display objects and add them to 'group' here.
 	--	Example use-case: Restore 'group' from previously saved state.
-<<<<<<< HEAD
+
 -- -- create object
 --local myObject = display.newRect( 0, 0, 100, 100 )
 --myObject:setFillColor( 255 )
@@ -56,8 +56,6 @@ function scene:createScene( event )
 -- return true
 -- end
 
-=======
->>>>>>> 5210689728d63e01f0eafe9a55b9bcdc143ce093
 
 -- get the screen size
 _W = display.contentWidth
@@ -82,10 +80,6 @@ luaMap = receiveMap(client)
   local n6 = Node:new(150,150, 6)
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 5210689728d63e01f0eafe9a55b9bcdc143ce093
   n1:linkTo(n2)
   n2:linkTo(n3)
   n3:linkTo(n4)
