@@ -20,8 +20,10 @@ function initCamera()
   lookAt(Vector2D:new(0,0))
 end
 
-function lookAt(v2Pos)
-  cameraPos = Vector2D:Add(v2Pos, centerOffset)
+function lookAt(v2WorldPos)
+  print "LOOK AT"
+  print_r (v2WorldPos)
+  cameraPos = Vector2D:Add(v2WorldPos, centerOffset)
   print_r(cameraPos)
   cameraGroup.x = cameraPos.x
   cameraGroup.y = cameraPos.y
@@ -29,11 +31,11 @@ end
 
 
 function screenToWorld(v2Pos)
-  return Vector2D:Sub(v2Pos, centerOffset)
+  return Vector2D:Sub(v2Pos, cameraPos)
 end
 
 function worldToScreen(v2Pos)
-  return Vector2D:Add(v2Pos, centerOffset)
+  return Vector2D:Add(v2Pos, cameraPos)
 end
 
 -- function Camera:new()  -- The constructor

@@ -29,13 +29,22 @@ settings = {
             --]]
 		}
 	},
-	
-	--[[
+
+    android =
+    {
+        usesPermissions =
+        {
+            -- Permission to retrieve current location from the GPS.
+            "android.permission.ACCESS_FINE_LOCATION",
+
+            -- Permission to retrieve current location from WiFi or cellular service.
+            "android.permission.ACCESS_COARSE_LOCATION",
+        },
+    },	
 	-- Android permissions
 
 	androidPermissions = {
   		"android.permission.INTERNET",
-  	},
 
-	]]--
+  	},
 }
