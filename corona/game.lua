@@ -8,6 +8,7 @@ local storyboard = require( "storyboard" )
 local player = require( "player" )
 local scene = storyboard.newScene()
 require "node"
+require "network"
 
 ----------------------------------------------------------------------------------
 -- 
@@ -49,14 +50,19 @@ function scene:createScene( event )
 
 
 
---get the screen size
+-- get the screen size
 _W = display.contentWidth
 _H = display.contentHeight
-initCamera()
+initCamera(_W, _H)
+--lookAt(Vector2D:new(100,100))
 
 
---map init
-  local n1 = Node:new(20, 20, 1)
+-- connect to server
+--test_network()
+receiveMap()
+
+-- map init
+  local n1 = Node:new(0, 0, 1)
   local n2 = Node:new(20, 200, 2)
   local n3 = Node:new(100,100, 3)
   local n4 = Node:new(100,20, 4)
@@ -184,6 +190,13 @@ Runtime:addEventListener("tap",moveObject)
 	
 end
 
+
+local function myTapListener( event )
+
+    --code executed when the button is tapped
+    print( "object tapped = "..tostring(event.target) )  --'event.target' is the tapped object
+    return true
+end
 
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
