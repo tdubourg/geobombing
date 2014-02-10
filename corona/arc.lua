@@ -8,7 +8,7 @@ function Arc:new(end1, end2)  -- The constructor
   --TODO : display group
 
   object.drawable = display.newLine(end1.pos.x, end1.pos.y, end2.pos.x, end2.pos.y )
-  object.drawable.strokeWidth = 8
+  object.drawable.strokeWidth = 4
   object.drawable:setStrokeColor( 255, 0, 0 )
 
   cameraGroup:insert(object.drawable)
