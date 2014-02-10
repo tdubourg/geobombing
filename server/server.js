@@ -1,8 +1,7 @@
 "use strict"
-
 //* Server that deals with the data from the client
 
-// Note: Network protocol is defined here https://docs.google.com/document/d/1ruhZYn532nGK_tueSa5HPL_cqe6Hj630zpdrcCcXIH4/edit#
+// Include module and global var
 var net = require("net"); // library call
 var utils = require('./common');
 var netw = require('./network'); // import class-file network.js
@@ -13,48 +12,28 @@ var m = sd.MAP; // handy shortcut, for even shorter use
 var db = sd.pgsql;
 var decode = netw.decode_frame;
 
+
+// executed function according to client result
 var sendmap_action = function (frame_data, stream) 
 {
 	console.log("sendmap_action");
 	// todo delete test
-	var mapObj = utils.CreateEmptyMap(123, "maptest");
-	var node1 = utils.CreateNode(1, 10, 10);
-	var node2 = utils.CreateNode(2, 10, 50);
-	var node3 = utils.CreateNode(3, 20, 50);
-	var node4 = utils.CreateNode(4, 100, 50);
-	var node5 = utils.CreateNode(5, 100, 100);
-	utils.AddNodeToMap(mapObj, node1);
-	utils.AddNodeToMap(mapObj, node2);
-	utils.AddNodeToMap(mapObj, node3);
-	utils.AddNodeToMap(mapObj, node4);
-	utils.AddNodeToMap(mapObj, node5);
-	var way1 = utils.CreateEmptyWay(10, "Rue du short");
-	utils.AddNodeIdToWay(way1, node1);
-	utils.AddNodeIdToWay(way1, node2);
-	utils.AddNodeIdToWay(way1, node3);
-	var way2 = utils.CreateEmptyWay(20, "Rue du slip");
-	utils.AddNodeIdToWay(way2, node1);
-	utils.AddNodeIdToWay(way2, node3);
-	utils.AddNodeIdToWay(way2, node5);
-	var way3 = utils.CreateEmptyWay(30, "Rue du bonnet");
-	utils.AddNodeIdToWay(way3, node1);
-	utils.AddNodeIdToWay(way3, node5);
-	utils.AddNodeIdToWay(way3, node4);
-	utils.AddWayToMap(mapObj, way1);
-	utils.AddWayToMap(mapObj, way2);
-	utils.AddWayToMap(mapObj, way3);
+	var mapObj = utils.CreateFakeMap();
 	var data = JSON.stringify(mapObj); // parsage JSON
 	// end todo delete
 
 	console.log("Sending Map: ", data)
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent")})
+	stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent:\n" + data)})
 }
+
+var sendInit_location = function (frame_data, stream) {}
+
 
 var frame_actions = 
 {
-	"map": sendmap_action
+	"map": sendmap_action,
+	"loc": sendInit_location
 }
-
 var frame_action = function (frame_data, stream) 
 {
 	if (!(frame_data.type in frame_actions)) 
@@ -65,6 +44,9 @@ var frame_action = function (frame_data, stream)
 	return frame_actions[frame_data.type](frame_data, stream)
 }
 
+
+// --- server running ---
+exports.start = start
 function start (port) 
 {
 	var server = net.createServer(function(stream) 
@@ -104,5 +86,3 @@ function start (port)
 
 	server.listen(port);
 }
-
-exports.start = start
