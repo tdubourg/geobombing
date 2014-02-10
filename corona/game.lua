@@ -7,6 +7,7 @@
 local storyboard = require( "storyboard" )
 local player = require( "player" )
 local scene = storyboard.newScene()
+require "node"
 
 ----------------------------------------------------------------------------------
 -- 
@@ -51,6 +52,27 @@ function scene:createScene( event )
 --get the screen size
 _W = display.contentWidth
 _H = display.contentHeight
+initCamera()
+
+
+--map init
+  local n1 = Node:new(20, 20, 1)
+  local n2 = Node:new(20, 200, 2)
+  local n3 = Node:new(100,100, 3)
+  local n4 = Node:new(100,20, 4)
+  local n5 = Node:new(150,250, 5)
+  local n6 = Node:new(150,150, 6)
+
+
+  cameraGroup:translate( 40, 0 )
+
+  n1:linkTo(n2)
+  n2:linkTo(n3)
+  n3:linkTo(n4)
+  n4:linkTo(n1)
+  n5:linkTo(n2)
+  n6:linkTo(n2)
+  n6:linkTo(n3)
 
 --structure
 local circle = display.newCircle(0,0,5)
