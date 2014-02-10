@@ -9,7 +9,7 @@ function Node:new(lat, lon, uid)  -- The constructor
   local object = {lat=lat, lon=lon, uid=uid}
   object.pos = Vector2D:new(gpsToLinear(lat,lon))    -- linearized position, used for game logic
   object.arcs = {}                                   -- K: destination node, V: corresponding arc
-  object.drawable = display.newCircle( object.pos.x, object.pos.y, 16 )
+  object.drawable = display.newCircle( object.pos.x, object.pos.y, 10 )
 
   cameraGroup:insert(object.drawable)
 
