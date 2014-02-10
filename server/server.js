@@ -4,12 +4,10 @@
 // Include module and global var
 var net = require("net"); // library call
 var utils = require('./common');
+var db = require('./pgsql');
 var netw = require('./network'); // import class-file network.js
-var sd = require('./shared_data');
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
 var DBG = true;
-var m = sd.MAP; // handy shortcut, for even shorter use
-var db = sd.pgsql;
 var decode = netw.decode_frame;
 
 
@@ -17,12 +15,8 @@ var decode = netw.decode_frame;
 var sendmap_action = function (frame_data, stream) 
 {
 	console.log("sendmap_action");
-	// todo delete test
-	var mapObj = utils.CreateFakeMap();
-	var data = JSON.stringify(mapObj); // parsage JSON
-	// end todo delete
-
-	console.log("Sending Map: ", data)
+	var map = db.fullMapAccordingToLocalisation(0, 0); // lat, lon
+	var data = JSON.stringify(map); // parsage JSON
 	stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent:\n" + data)})
 }
 
