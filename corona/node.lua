@@ -22,6 +22,10 @@ function Node:new(lat, lon, uid)  -- The constructor
   return object
 end
 
+function flushMap()
+  --TODO!
+end
+
 
 -- creates an Arc if necessary and link everything
 function Node:linkTo(node)

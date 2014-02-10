@@ -9,6 +9,7 @@ local player = require( "player" )
 local scene = storyboard.newScene()
 require "node"
 require "network"
+require "consts"
 
 ----------------------------------------------------------------------------------
 -- 
@@ -22,6 +23,9 @@ require "network"
 ---------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
+
+local nodesByUID = {}
+
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
@@ -49,21 +53,19 @@ function scene:createScene( event )
 -- end
 
 
-
 -- get the screen size
 _W = display.contentWidth
 _H = display.contentHeight
 initCamera(_W, _H)
 --lookAt(Vector2D:new(100,100))
 
---connect network
-test_network();
-
 -- connect to server
---test_network()
-receiveMap()
+local client = connect_to_server("127.0.0.1", 3000)
+print "connected"
+luaMap = receiveMap(client)
 
 -- map init
+--[[
   local n1 = Node:new(0, 0, 1)
   local n2 = Node:new(20, 200, 2)
   local n3 = Node:new(100,100, 3)
@@ -72,8 +74,6 @@ receiveMap()
   local n6 = Node:new(150,150, 6)
 
 
-  cameraGroup:translate( 40, 0 )
-
   n1:linkTo(n2)
   n2:linkTo(n3)
   n3:linkTo(n4)
@@ -81,6 +81,18 @@ receiveMap()
   n5:linkTo(n2)
   n6:linkTo(n2)
   n6:linkTo(n3)
+    ]]
+
+flushMap()
+
+local mapName = luaMap[JSON_MAP_NAME]
+local nodes = luaMap[JSON_NODE_LIST]
+local ways = luaMap[JSON_WAY_LIST]
+
+for i,v in ipairs(nodes) do
+  Node:new(v[JSON_NODE_LAT],v[JSON_NODE_LON],v[JSON_NODE_UID])
+end
+
 
 --structure
 local circle = display.newCircle(0,0,5)
