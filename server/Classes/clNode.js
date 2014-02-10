@@ -2,9 +2,9 @@
 var clNode = function() 
 {
     //Attributs    
-    this.nodeId = 0;
-    this.nodeLatitude = 0;
-	this.nodeLongitude = 0;
+    this.id = 0; // node Id
+    this.la = 0; // latitude
+	this.lo = 0; // longitude
 };
 
 exports.clNode = clNode;
