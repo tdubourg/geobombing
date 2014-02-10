@@ -1,4 +1,7 @@
 socket = require "socket"
+json = require("json")
+require "print_r"
+
 require "utils"
 function test_network()
 	local client = socket.connect("127.0.0.1", 3000)
@@ -23,4 +26,24 @@ function receive_until(client, end_separator )
 		start, _end = str:find(end_separator)
 	end
 	return str
+end
+
+function receiveMap()
+	--jsonMap = receive_until('\n')
+	jsonMap = [[{
+    "menu": {
+        "id": "file",
+        "value": "File",
+        "popup": {
+            "menuitem": [
+                { "value": "New", "onclick": "CreateNewDoc()" },
+                { "value": "Open", "onclick": "OpenDoc()" },
+                { "value": "Close", "onclick": "CloseDoc()" }
+            ]
+        }
+    }
+}]]
+	luaMap = json.decode(jsonMap)
+	print "DUMP"
+	print_r(luaMap)
 end
