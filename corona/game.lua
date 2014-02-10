@@ -82,15 +82,17 @@ circle.y = _H/4
 
 -- create your object
 
-local player = player.new( "Me",  1, 0, 0, 0)
+local player = player.new( "Me",  0.1, 0, 0, 0)
 
 --make 'myObject' listen for touch events
-local myObject = display.newImageRect("images/bomberman.jpg", 25, 25);
+--local myObject = display.newImageRect("images/bomberman.jpg", 25, 25);
 --local myObject = display.newRect(0,0,50,50)
 
-myObject.x = _W/2
-myObject.y = _H/2
-myObject:addEventListener( "touch", myObject )
+--myObject.x = _W/2
+--myObject.y = _H/2
+player.drawable.x =_W/2
+player.drawable.y =_H/2
+player.drawable:addEventListener( "touch", player.drawable )
 
   -- function square
   local square = math.sqrt;
@@ -100,9 +102,9 @@ local getDistance = function(a, b)
 local x, y = a.x-b.x, a.y-b.y;
 return square(x*x+y*y);
 end;
- --player:printPlayerSpeed()
+player:printPlayerSpeed()
   --set the speed
-  local speed = 0.1
+  --local speed = 0.1
 
 --get way to destination
 
@@ -119,13 +121,15 @@ local function moveObject(e)
  --    else
   	--local dist = getDistance(myObject,circle)
   	--trans = transition.to(myObject,{time=dist/speed,x=circle.x,y=circle.y})
-  	local dist = getDistance(myObject,e)
+  	local dist = getDistance(player.drawable,e)
     --speed=dist/time
-    trans = transition.to(myObject,{time=dist/speed,x=e.x,y=e.y})  -- move to touch position
-    -- player:setPlayerX(e.x)
-    -- player:setPlayerY(e.y)
-    -- player:printPlayerNbDeath()
-    -- player:printPlayerY()
+    trans = transition.to(player.drawable,{time=dist/player.speed,x=e.x,y=e.y})  -- move to touch position
+    --player.x =e.x
+    --player.y =e.y
+    
+    player:printPlayerNbDeath()
+    player:printPlayerX()
+    player:printPlayerY()
 -- end
 end
 Runtime:addEventListener("tap",moveObject)
