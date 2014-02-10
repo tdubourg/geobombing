@@ -8,6 +8,9 @@ local storyboard = require( "storyboard" )
 local player = require( "player" )
 local scene = storyboard.newScene()
 require "node"
+require "network"
+require "camera"
+require "vector2D"
 
 ----------------------------------------------------------------------------------
 -- 
@@ -31,15 +34,23 @@ function scene:createScene( event )
 	--	CREATE display objects and add them to 'group' here.
 	--	Example use-case: Restore 'group' from previously saved state.
 
---get the screen size
+-- get the screen size
 _W = display.contentWidth
 _H = display.contentHeight
+
 delay=1
 initCamera()
 
 
---map init
-  local n1 = Node:new(20, 20, 1)
+--connect network
+test_network();
+
+-- connect to server
+--test_network()
+receiveMap()
+
+-- map init
+  local n1 = Node:new(0, 0, 1)
   local n2 = Node:new(20, 200, 2)
   local n3 = Node:new(100,100, 3)
   local n4 = Node:new(100,20, 4)
@@ -47,7 +58,6 @@ initCamera()
   local n6 = Node:new(150,150, 6)
 
 
-  cameraGroup:translate( 40, 0 )
 
   n1:linkTo(n2)
   n2:linkTo(n3)
@@ -66,7 +76,7 @@ print( circle.x)
 print( circle.y)
 -- create your object
 
-local player = player.new( "Me",  0.1)
+local player = player.new( "Me",  0.5)
  -- player.tx = 0
  -- player.ty = 0
 --player.drawable:addEventListener( "touch", player.drawable )
@@ -79,9 +89,7 @@ local getDistance = function(a, b)
 local x, y = a.x-b.x, a.y-b.y;
 return square(x*x+y*y);
 end;
-	oo = display.newImageRect( "images/bomberman.jpg",25,25)
-    	oo.x = _W/2
-		oo.y = _H/2
+	
 --get way to destination
 
 ---------------
@@ -91,9 +99,12 @@ local function moveObject(e)
 		transition.cancel(trans)
 	end
 	
+	local screenPos = Vector2D:new(e.x, e.y)
+	local  worldPos = screenToWorld(screenPos)
+	-- lookAt(worldPos)
   	local dist = getDistance(player.drawable,e)
     --speed=dist/time
-    trans = transition.to(player.drawable,{time=dist/player.speed,x=e.x,y=e.y})  -- move to touch position
+    trans = transition.to(player.drawable,{time=dist/player.speed,x=worldPos.x,y=worldPos.y})  -- move to touch position
     
 
 end
@@ -109,6 +120,13 @@ player:printPlayerY()
 	
 end
 
+
+local function myTapListener( event )
+
+    --code executed when the button is tapped
+    print( "object tapped = "..tostring(event.target) )  --'event.target' is the tapped object
+    return true
+end
 
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
