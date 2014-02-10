@@ -4,7 +4,7 @@
 --
 --
 -------------------------------------------------
-
+require "camera"
 local player = {}
 local player_mt = { __index = player }	-- metatable
 
@@ -20,24 +20,22 @@ local player_mt = { __index = player }	-- metatable
 -- PUBLIC FUNCTIONS
 -------------------------------------------------
 
-function player.new( pName, pSpeed, pNbDeath, pX, pY )	-- constructor
+function player.new( pName, pSpeed, pNbDeath, pX, pY, drawable )	-- constructor
 	local newPlayer = {
 	name = pName or "Unnamed",
 	speed = pSpeed or 0.2,
 	nbDeath = pNDeath or 0,
 	x = pX or 0,
-	y= pY or 0
+	y= pY or 0,
+	drawable = display.newImageRect("images/bomberman.jpg", 25, 25)
+	
 }
+cameraGroup:insert(newPlayer.drawable)
 return setmetatable( newPlayer, player_mt )
 end
 
 -------------------------------------------------
 
-function player:setPlayerSpeed(newSpeed)
-	self.speed = newSpeed
-end
-
--------------------------------------------------
 
 
 
@@ -64,32 +62,22 @@ end
 
 -------------------------------------------------
 
-function player:setPlayerX(newX)
-	self.x = newX
-end
-
--------------------------------------------------
 
 
 
 
 function player:printPlayerX()
-	print( self.name .. " is at x = " .. self.x .. " ." )
+	print( self.name .. " is at x = " .. self.drawable.x .. " ." )
 end
 
  -------------------------------------------------
 
- function player:setPlayerY(newY)
- 	self.y = newY
- end
- 
--------------------------------------------------
 
 
 
 
 function player:printPlayerY()
-	print( self.name .. " is at y = " .. self.y .. " ." )
+	print( self.name .. " is at y = " .. self.drawable.y .. " ." )
 end
 
 -------------------------------------------------
