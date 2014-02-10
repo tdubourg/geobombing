@@ -1,8 +1,10 @@
 "use strict"
+//  CONSTANTS
+var pgsql = require('./pgsql'); // posgreSQL module
 
-var pgsql = null // TODO require('./pgsql'), create a file pgsql.js
+var MAP = 
+{ 
 
-var MAP = { // shortens the code, and avoids spelldraws, in short, THIS IS [SPARTA?] CONSTANTS!
 }
 
 // provides "attributes" and "methods" for the "class" shared_data.js

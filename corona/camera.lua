@@ -29,11 +29,11 @@ end
 
 
 function screenToWorld(v2Pos)
-  return Vector2D:Add(v2Pos, centerOffset)
+  return Vector2D:Sub(v2Pos, centerOffset)
 end
 
 function worldToScreen(v2Pos)
-  return Vector2D:Sub(v2Pos, centerOffset)
+  return Vector2D:Add(v2Pos, centerOffset)
 end
 
 -- function Camera:new()  -- The constructor
