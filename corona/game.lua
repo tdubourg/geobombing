@@ -82,7 +82,7 @@ circle.y = _H/4
 
 -- create your object
 
-local player = player.new( "Me",  0.1, 0, 0, 0)
+local player = player.new( "Me",  1, 0, 0, 0)
 
 --make 'myObject' listen for touch events
 local myObject = display.newImageRect("images/bomberman.jpg", 25, 25);
@@ -100,9 +100,9 @@ local getDistance = function(a, b)
 local x, y = a.x-b.x, a.y-b.y;
 return square(x*x+y*y);
 end;
-
+ --player:printPlayerSpeed()
   --set the speed
-  --local speed = 0.1
+  local speed = 0.1
 
 --get way to destination
 
@@ -121,7 +121,7 @@ local function moveObject(e)
   	--trans = transition.to(myObject,{time=dist/speed,x=circle.x,y=circle.y})
   	local dist = getDistance(myObject,e)
     --speed=dist/time
-    trans = transition.to(myObject,{time=dist/player.speed,x=e.x,y=e.y})  -- move to touch position
+    trans = transition.to(myObject,{time=dist/speed,x=e.x,y=e.y})  -- move to touch position
     -- player:setPlayerX(e.x)
     -- player:setPlayerY(e.y)
     -- player:printPlayerNbDeath()
