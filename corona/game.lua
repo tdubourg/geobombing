@@ -8,6 +8,7 @@ local storyboard = require( "storyboard" )
 local player = require( "player" )
 local scene = storyboard.newScene()
 require "node"
+require "network"
 
 ----------------------------------------------------------------------------------
 -- 
@@ -54,6 +55,8 @@ _W = display.contentWidth
 _H = display.contentHeight
 initCamera()
 
+--connect network
+test_network();
 
 --map init
   local n1 = Node:new(20, 20, 1)

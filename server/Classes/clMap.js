@@ -1,5 +1,5 @@
 ﻿//classe Map
-function clMap() 
+var clMap = function() 
 {
     //Attributs    
     this.mapName = "";
@@ -7,3 +7,5 @@ function clMap()
     this.mapListNode = null; // Array of Node (all the point)
 	this.mapListWay = null; // Array of Ways (all the segment of the same street name)
 };
+
+exports.clMap = clMap
