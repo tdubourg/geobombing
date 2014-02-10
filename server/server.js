@@ -13,7 +13,9 @@ var db = sd.pgsql
 var decode = netw.decode_frame
 
 var dummy_action = function (frame_data, stream) {
-	stream.write("Hello", function () {
+	var rep = "Hello\n"
+	console.log("Answering: ", rep)
+	stream.write(rep, function () {
 		console.log("Data sent")
 	})
 }
