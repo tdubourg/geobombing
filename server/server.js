@@ -3,31 +3,12 @@
 
 // Include module and global var
 var net = require("net"); // library call
-var utils = require('./common');
-var db = require('./pgsql');
 var netw = require('./network'); // import class-file network.js
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
-var DBG = true;
 var decode = netw.decode_frame;
+var frame_actions = require('./frame_action').frame_actions;
 
-
-// executed function according to client result
-var sendmap_action = function (frame_data, stream) 
-{
-	console.log("sendmap_action");
-	var map = db.fullMapAccordingToLocalisation(0, 0); // lat, lon
-	var data = JSON.stringify(map); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent:\n" + data)})
-}
-
-var sendInit_location = function (frame_data, stream) {}
-
-
-var frame_actions = 
-{
-	"map": sendmap_action,
-	"loc": sendInit_location
-}
+// tree which choose which action to perform
 var frame_action = function (frame_data, stream) 
 {
 	if (!(frame_data.type in frame_actions)) 
