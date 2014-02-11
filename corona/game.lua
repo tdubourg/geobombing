@@ -133,7 +133,10 @@ local function moveObject(e)
 	if(trans)then
 		transition.cancel(trans)
 	end
-	
+	-- local nodes= {}
+	-- nodes[1] = n1
+	-- nodes[2] = n2
+	-- player:goTo(nodes)
 	local screenPos = Vector2D:new(e.x, e.y)
 	local  worldPos = screenToWorld(screenPos)
   --lookAt(worldPos)
