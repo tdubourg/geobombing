@@ -68,28 +68,35 @@ physics.start( )
 -- connect to server
 local client = connect_to_server("127.0.0.1", 3000)
 print "connected"
+
+flushMap()
 luaMap = receiveMap(client)
-
 if luaMap then
+  local mapName = luaMap[JSON_MAP_NAME]
+  local nodes = luaMap[JSON_NODE_LIST]
+  local ways = luaMap[JSON_WAY_LIST]
 
-	flushMap()
-
-	local mapName = luaMap[JSON_MAP_NAME]
-	local nodes = luaMap[JSON_NODE_LIST]
-	local ways = luaMap[JSON_WAY_LIST]
-
-	for i,v in ipairs(nodes) do
-		Node:new(v[JSON_NODE_LAT],v[JSON_NODE_LON],v[JSON_NODE_UID])
-	end
+  -- load nodes
+  for i,node in ipairs(nodes) do
+    local lat = node[JSON_NODE_LAT]
+    local lon = node[JSON_NODE_LON]
+    local uid = node[JSON_NODE_UID]
+    nodesByUID[uid] = Node:new(lat, lon, uid)
+  end
 
 
-  --structure
-  local circle = display.newCircle(0,0,5)
-  circle.name = "circle"
-  circle.x = _W/2
-  circle.y = _H/2
-  print( circle.x)
-  print( circle.y)
+  -- load arcs
+  for i,way in ipairs(ways) do
+    local nodeList = way[JSON_WAY_NODE_LIST]
+    local previousNode = nil
+    for j,nodeID in ipairs(nodeList) do
+      local node = nodesByUID[nodeID]
+      if (previousNode) then
+        previousNode:linkTo(node)
+      end
+      previousNode = node
+    end
+  end
 
 
 else

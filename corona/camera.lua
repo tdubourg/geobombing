@@ -21,10 +21,7 @@ function initCamera()
 end
 
 function lookAt(v2WorldPos)
-  print "LOOK AT"
-  print_r (v2WorldPos)
   cameraPos = Vector2D:Sub(centerOffset, v2WorldPos)
-  print_r(cameraPos)
   cameraGroup.x = cameraPos.x
   cameraGroup.y = cameraPos.y
 end
