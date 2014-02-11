@@ -125,7 +125,8 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
-	
+	storyboard.returnTo = "menu"
+
 	-----------------------------------------------------------------------------
 
 	--	INSERT code here (e.g. start timers, load audio, start listeners, etc.)
@@ -138,7 +139,7 @@ end
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-	
+
 	-----------------------------------------------------------------------------
 	
 	--	INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
