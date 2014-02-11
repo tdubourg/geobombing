@@ -70,8 +70,30 @@ local client = connect_to_server("127.0.0.1", 3000)
 print "connected"
 luaMap = receiveMap(client)
 
--- map init
---[[
+if luaMap then
+
+  flushMap()
+
+  local mapName = luaMap[JSON_MAP_NAME]
+  local nodes = luaMap[JSON_NODE_LIST]
+  local ways = luaMap[JSON_WAY_LIST]
+
+  for i,v in ipairs(nodes) do
+    Node:new(v[JSON_NODE_LAT],v[JSON_NODE_LON],v[JSON_NODE_UID])
+  end
+
+
+  --structure
+  local circle = display.newCircle(0,0,5)
+  circle.name = "circle"
+  circle.x = _W/2
+  circle.y = _H/2
+  print( circle.x)
+  print( circle.y)
+
+
+else
+  --dummy map
   local n1 = Node:new(0, 0, 1)
   local n2 = Node:new(20, 200, 2)
   local n3 = Node:new(100,100, 3)
@@ -87,27 +109,7 @@ luaMap = receiveMap(client)
   n5:linkTo(n2)
   n6:linkTo(n2)
   n6:linkTo(n3)
-    ]]
-
-flushMap()
-
-local mapName = luaMap[JSON_MAP_NAME]
-local nodes = luaMap[JSON_NODE_LIST]
-local ways = luaMap[JSON_WAY_LIST]
-
-for i,v in ipairs(nodes) do
-  Node:new(v[JSON_NODE_LAT],v[JSON_NODE_LON],v[JSON_NODE_UID])
-end
-
-
---structure
-local circle = display.newCircle(0,0,5)
-circle.name = "circle"
-circle.x = _W/2
-circle.y = _H/2
-print( circle.x)
-print( circle.y)
--- create your object
+  end
 
 local player = player.new( "Me",  0.5)
  -- player.tx = 0
