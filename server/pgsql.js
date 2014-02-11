@@ -8,23 +8,23 @@ var lastNodeId = 1;
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 {
-	var query = "	\
-		SELECT ST_asText(ST_GeometryN(r.geom,1))	\
-		from roads as r,				\
-			ST_MakeBox2D (				\
-				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\
-			) as box					\
-		WHERE ST_Intersects(r.geom, box) and exists (	\
-		  select r						\
-		  from (						\
-		    select pp.geom as p			\
-		    from ST_DumpPoints(r.geom) as pp	\
-		  ) as foo						\
-		  where ST_Contains (			\
-		    box, p						\
-		  )								\
-		)								\
-		;								\
+	var query = "	\n\
+		SELECT ST_asText(ST_GeometryN(r.geom,1))	\n\
+		from roads as r,				\n\
+			ST_MakeBox2D (				\n\
+				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\n\
+			) as box					\n\
+		WHERE ST_Intersects(r.geom, box) and exists (	\n\
+		  select r						\n\
+		  from (						\n\
+		    select pp.geom as p			\n\
+		    from ST_DumpPoints(r.geom) as pp	\n\
+		  ) as foo						\n\
+		  where ST_Contains (			\n\
+		    box, p						\n\
+		  )								\n\
+		)								\n\
+		;								\n\
 	"
 	qh.text_query ( query, function(err, rez) {
 		
@@ -54,7 +54,9 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 
 function fullMapAccordingToLocation(latitude, longitude, callback)
 {
-	var s = 0.0001
+	//var s = 0.0001
+	var s = 0.003
+	
 	// TODO use latitude, longitude
 	getMapFromPGSQL(41.9205551, 8.7361006, s, s, function(err,listString)
 	//getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) 
