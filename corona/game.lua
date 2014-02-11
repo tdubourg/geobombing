@@ -9,8 +9,10 @@ local player = require( "player" )
 local scene = storyboard.newScene()
 require "node"
 require "network"
+require "consts"
 require "camera"
 require "vector2D"
+
 
 ----------------------------------------------------------------------------------
 -- 
@@ -25,6 +27,9 @@ require "vector2D"
 -- BEGINNING OF YOUR IMPLEMENTATION
 ---------------------------------------------------------------------------------
 
+local nodesByUID = {}
+
+
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 	local group = self.view
@@ -34,6 +39,24 @@ function scene:createScene( event )
 	--	CREATE display objects and add them to 'group' here.
 	--	Example use-case: Restore 'group' from previously saved state.
 
+-- -- create object
+--local myObject = display.newRect( 0, 0, 100, 100 )
+--myObject:setFillColor( 255 )
+
+-- -- touch listener function
+-- function myObject:touch( event )
+-- if event.phase == "began" then
+-- self.markX = self.x -- store x location of object
+-- self.markY = self.y -- store y location of object
+-- elseif event.phase == "moved" then
+-- local x = (event.x - event.xStart) + self.markX
+-- local y = (event.y - event.yStart) + self.markY
+-- self.x, self.y = x, y -- move object based on calculations above
+-- end
+-- return true
+-- end
+
+
 -- get the screen size
 _W = display.contentWidth
 _H = display.contentHeight
@@ -42,21 +65,19 @@ delay=1
 initCamera()
 
 
---connect network
-test_network();
-
 -- connect to server
---test_network()
-receiveMap()
+local client = connect_to_server("127.0.0.1", 3000)
+print "connected"
+luaMap = receiveMap(client)
 
 -- map init
+--[[
   local n1 = Node:new(0, 0, 1)
   local n2 = Node:new(20, 200, 2)
   local n3 = Node:new(100,100, 3)
   local n4 = Node:new(100,20, 4)
   local n5 = Node:new(150,250, 5)
   local n6 = Node:new(150,150, 6)
-
 
 
   n1:linkTo(n2)
@@ -66,6 +87,18 @@ receiveMap()
   n5:linkTo(n2)
   n6:linkTo(n2)
   n6:linkTo(n3)
+    ]]
+
+flushMap()
+
+local mapName = luaMap[JSON_MAP_NAME]
+local nodes = luaMap[JSON_NODE_LIST]
+local ways = luaMap[JSON_WAY_LIST]
+
+for i,v in ipairs(nodes) do
+  Node:new(v[JSON_NODE_LAT],v[JSON_NODE_LON],v[JSON_NODE_UID])
+end
+
 
 --structure
 local circle = display.newCircle(0,0,5)
@@ -104,7 +137,7 @@ local function moveObject(e)
 	-- player:goTo(nodes)
 	local screenPos = Vector2D:new(e.x, e.y)
 	local  worldPos = screenToWorld(screenPos)
-	-- lookAt(worldPos)
+  --lookAt(worldPos)
   	local dist = getDistance(player.drawable,e)
     --speed=dist/time
     trans = transition.to(player.drawable,{time=dist/player.speed,x=worldPos.x,y=worldPos.y})  -- move to touch position
