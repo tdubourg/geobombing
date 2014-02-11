@@ -72,30 +72,30 @@ print "connected"
 flushMap()
 luaMap = receiveMap(client)
 if luaMap then
-  local mapName = luaMap[JSON_MAP_NAME]
-  local nodes = luaMap[JSON_NODE_LIST]
-  local ways = luaMap[JSON_WAY_LIST]
+	local mapName = luaMap[JSON_MAP_NAME]
+	local nodes = luaMap[JSON_NODE_LIST]
+	local ways = luaMap[JSON_WAY_LIST]
 
   -- load nodes
   for i,node in ipairs(nodes) do
-    local lat = node[JSON_NODE_LAT]
-    local lon = node[JSON_NODE_LON]
-    local uid = node[JSON_NODE_UID]
-    nodesByUID[uid] = Node:new(lat, lon, uid)
+  	local lat = node[JSON_NODE_LAT]
+  	local lon = node[JSON_NODE_LON]
+  	local uid = node[JSON_NODE_UID]
+  	nodesByUID[uid] = Node:new(lat, lon, uid)
   end
 
 
   -- load arcs
   for i,way in ipairs(ways) do
-    local nodeList = way[JSON_WAY_NODE_LIST]
-    local previousNode = nil
-    for j,nodeID in ipairs(nodeList) do
-      local node = nodesByUID[nodeID]
-      if (previousNode) then
-        previousNode:linkTo(node)
-      end
-      previousNode = node
-    end
+  	local nodeList = way[JSON_WAY_NODE_LIST]
+  	local previousNode = nil
+  	for j,nodeID in ipairs(nodeList) do
+  		local node = nodesByUID[nodeID]
+  		if (previousNode) then
+  			previousNode:linkTo(node)
+  		end
+  		previousNode = node
+  	end
   end
 
 
@@ -119,52 +119,54 @@ else
 end
 
 local player = player.new( "Me",  2)
- -- player.tx = 0
- -- player.ty = 0
---player.drawable:addEventListener( "touch", player.drawable )
 
--- function square
-local square = math.sqrt;
--- function to get the euclidian distance 
---btw actual position and desired position
-local getDistance = function(a, b)
-local x, y = a.x-b.x, a.y-b.y;
-return square(x*x+y*y);
-end;
-
---get way to destination
-
----------------
 local trans
 local function moveObject(e)
 	if(trans)then
 		transition.cancel(trans)
 	end
 
-	player:saveNewDestination(e)
-	-- -- local nodes= {}
-	-- -- nodes[1] = n1
-	-- -- nodes[2] = n2
-	-- -- player:goTo(nodes)
-	-- local screenPos = Vector2D:new(e.x, e.y)
-	-- local  worldPos = screenToWorld(screenPos)
- --  --lookAt(worldPos)
- --  	local dist = getDistance(player.drawable,e)
- --    --speed=dist/time
- --    trans = transition.to(player.drawable,{time=dist/player.speed,x=worldPos.x,y=worldPos.y})  -- move to touch position
+	--find nearest node
+
+	---------------
+	--get way to destination
+
+	---------------
+	--dummy map
+  local n1 = Node:new(0, 0, 1)
+  local n2 = Node:new(20, 200, 2)
+  local n3 = Node:new(100,100, 3)
+  local n4 = Node:new(100,20, 4)
+  local n5 = Node:new(150,250, 5)
+  local n6 = Node:new(150,150, 6)
+
+
+  n1:linkTo(n2)
+  n2:linkTo(n3)
+  n3:linkTo(n4)
+  n4:linkTo(n1)
+  n5:linkTo(n2)
+  n6:linkTo(n2)
+  n6:linkTo(n3)
+
+	local nodes= {}
+	nodes[1] = n1
+	nodes[2] = n2
+ -- print( nodes[1].pos.x .. ", " .. nodes[1].pos.y .. " ." )
+ --    print( nodes[2].pos.x .. ", " .. nodes[2].pos.y .. " ." )
+	player:saveNewNodes(nodes)
+
+	--player:saveNewDestination(e)
+
+
 end
 Runtime:addEventListener("tap",moveObject)
 
 local myListener = function( event )
 player:refresh()
---lookAt()
+lookAt(player.pos)
 end
 Runtime:addEventListener( "enterFrame", myListener )
-
-
-player:printPlayerX()
-player:printPlayerY()
-
 
 	-----------------------------------------------------------------------------
 	
