@@ -1,9 +1,9 @@
 "use strict"
 
-//var pg = require('pg');
-var conString = "postgres://insertDatabaseHere"; // todo modify
+var pg = require('pg');
+var conString = "postgres://postgres:quepasa@localhost/postgres" // todo modify
 
-var client = null;//new pg.Client(conString)
+var client = new pg.Client(conString)
 
 client.connect()
 
