@@ -62,13 +62,7 @@ function fullMapAccordingToLocalisation(latitude, longitude)
     	}
     	utils.AddWayToMap(map, way);
     }
-
-
-
-	
-	var mapObj = utils.CreateFakeMap(); // todo delete
-
-	return mapObj; // replace by map
+	return map;
 }
 
 exports.fullMapAccordingToLocalisation = fullMapAccordingToLocalisation

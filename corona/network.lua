@@ -6,6 +6,7 @@ require "utils"
 
 local client = nil
 local FRAME_SEPARATOR = "\n"
+local NETWORK_DUMP = true
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -34,7 +35,7 @@ function connect_to_server( ip, port )
 	end
 end
 
-function receive_until(end_separator )
+function receive_until(end_separator)
 	local str = ""
 	local start, _end = str:find(end_separator)
 	-- print (start, _end)
@@ -44,6 +45,10 @@ function receive_until(end_separator )
 		str = str .. chunk
 		start, _end = str:find(end_separator)
 	end
+	if NETWORK_DUMP then
+			print "NETWORK DUMP - IN"
+			print(str)
+	end
 	return str
 end
 
@@ -51,26 +56,57 @@ function sendPosition()
 	if client ~= nil then
 		location.enable_location()
 		packet = {latitude=currentLatitude, longitude=currentLongitude}
-		sendData(json.encode(packet))
+	 sendSerialized(json.encode(packet), FRAMETYPE_GPS)
 		location.disable_location()
 	end
 end
 
-function receiveMap()
-	if client ~= nil then
-		jsonMap = receive_until(FRAME_SEPARATOR)
-		print ("JSON MAP RECEIVED :"..jsonMap)
-		luaMap = json.decode(jsonMap)
-		print "DESERIALIZED MAP"
-		print_r(luaMap)
-		return luaMap
+-- function receiveMap()
+-- 	if client ~= nil then
+-- 		jsonMap = receive_until(FRAME_SEPARATOR)
+-- 		print ("JSON MAP RECEIVED :"..jsonMap)
+-- 		luaMap = json.decode(jsonMap)
+-- 		print "DESERIALIZED MAP"
+-- 		print_r(luaMap)
+-- 		return luaMap
+-- 	end
+-- 	return nil
+-- end
+
+function sendSerialized(obj, frameType)
+	if client then
+		local packet = {};
+		packet[JSON_FRAME_DATA] = obj
+		packet[JSON_FRAME_TYPE] = frameType
+		sendString(json.encode(packet))
 	end
-	return nil
 end
 
-function sendData(data)
+
+--TODO: add listeners regarding frameTypes
+function receiveSerialized()
+	if client then
+		frameString = receive_until(FRAME_SEPARATOR)
+		local json = json.decode(frameString)
+		return json[JSON_FRAME_DATA]
+	end
+end
+
+
+function sendString(data)
 	if client ~= nil then
 		client:send(data..FRAME_SEPARATOR)
+		if NETWORK_DUMP then
+			print "NETWORK DUMP - OUT"
+			print(data)
+		end
 	end
 end
 
+return
+{
+	connect_to_server = connect_to_server,
+	receiveSerialized = receiveSerialized,
+	sendSerialized = sendSerialized,
+	sendPosition = sendPosition
+}
