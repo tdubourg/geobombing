@@ -2,8 +2,6 @@ require "vector2D"
 require "arc"
 require "camera"
 
-local nodesByUID = {}
-
 Node = {}                   -- Create a table to hold the class methods
 function Node:new(lat, lon, uid)  -- The constructor
   local object = {lat=lat, lon=lon, uid=uid}
@@ -13,26 +11,30 @@ function Node:new(lat, lon, uid)  -- The constructor
 
   cameraGroup:insert(object.drawable)
 
-  if nodesByUID[uid] ~= nil then
-  	print ("WARNING: node uid: ".. uid .." is not unique!")
-  end
-  nodesByUID[uid] = object;
+  -- if nodesByUID[uid] ~= nil then
+  -- 	print ("WARNING: node uid: ".. uid .." is not unique!")
+  -- end
+  -- nodesByUID[uid] = object;
 
   setmetatable(object, { __index = Node })  -- Inheritance
   return object
 end
 
 function flushMap()
-  --TODO!
+  -- TODO!
+  -- destroy corona display objects (nodes, arcs)
+  -- empty nodesByUID
+
 end
 
 
 -- creates an Arc if necessary and link everything
-function Node:linkTo(node)
-	if self.arcs[node] == nil then
-		local newArc = Arc:new(self, node)
-		self.arcs[node] = newArc
-		node.arcs[self] = newArc
+function Node:linkTo(node1)
+  print_r(node1)
+	if self.arcs[node1] == nil then
+		local newArc = Arc:new(self, node1)
+		self.arcs[node1] = newArc
+		node1.arcs[self] = newArc
 	end
 end
 

@@ -68,18 +68,35 @@ initCamera()
 -- connect to server
 local client = connect_to_server("127.0.0.1", 3000)
 print "connected"
+
+flushMap()
 luaMap = receiveMap(client)
-
 if luaMap then
-
-  flushMap()
-
   local mapName = luaMap[JSON_MAP_NAME]
   local nodes = luaMap[JSON_NODE_LIST]
   local ways = luaMap[JSON_WAY_LIST]
 
-  for i,v in ipairs(nodes) do
-    Node:new(v[JSON_NODE_LAT],v[JSON_NODE_LON],v[JSON_NODE_UID])
+  -- load nodes
+  for i,node in ipairs(nodes) do
+    local lat = node[JSON_NODE_LAT]
+    local lon = node[JSON_NODE_LON]
+    local uid = node[JSON_NODE_UID]
+    nodesByUID[uid] = Node:new(lat, lon, uid)
+  end
+
+  -- load arcs
+  for i,way in ipairs(ways) do
+    local nodeList = way[JSON_WAY_NODE_LIST]
+    local previousNode = nil
+    for j,nodeID in ipairs(nodeList) do
+      local node = nodesByUID[nodeID]
+      if (previousNode) then
+          print_r (previousNode)
+          print_r (node)
+        previousNode:linkTo(node)
+      end
+      previousNode = node
+    end
   end
 
 
