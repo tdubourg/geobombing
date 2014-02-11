@@ -2,38 +2,41 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap; 
 var utils = require("./common"); 
-var qh = require('./query_helper'); // for generic query
+var conDB = false
+var qh = conDB? require('./query_helper'):null; // for generic query
 var lastMapId = 1;
 var lastNodeId = 1;
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 {
 	// todo replace by select_query();
-	qh.text_query("	\ 
-		SELECT ST_asText(box), r.*		\
-		from roads as r,				\
-			ST_MakeBox2D (				\
-				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\
-			) as box					\
-		--WHERE ST_Crosses(r.geom, box) and exists (	\
-		WHERE ST_Intersects(r.geom, box) and exists (	\
-		  select r						\
-		  from (						\
-		    select pp.geom as p			\
-		    from ST_DumpPoints(r.geom) as pp	\
-		  ) as foo						\
-		  where ST_Contains (			\
-		    box, p						\
-		  )								\
-		)								\
-		;								\
-	", callback); // pass in parameter the function which will send the map
-	
-	/*return [[
+	if (!conDB) {
+		callback([[
 	["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
 	["8.7369374", "41.9186287"]],
-			[["8.7347978", "41.919762"], ["8.7353263", "41.9198519"]]];
-			*/
+			[["8.7347978", "41.919762"], ["8.7353263", "41.9198519"]]]);
+		return;
+	}
+	qh.text_query("SELECT ST_asText(box), r.*		
+		from roads as r,				
+			ST_MakeBox2D (				
+				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	
+			) as box					
+		--WHERE ST_Crosses(r.geom, box) and exists (	
+		WHERE ST_Intersects(r.geom, box) and exists (	
+		  select r						
+		  from (						
+		    select pp.geom as p			
+		    from ST_DumpPoints(r.geom) as pp	
+		  ) as foo						
+		  where ST_Contains (			
+		    box, p						
+		  )								
+		)								
+		;								
+	", callback); // pass in parameter the function which will send the map
+	
+
 }
 
 function fullMapAccordingToLocation(latitude, longitude, callback)
