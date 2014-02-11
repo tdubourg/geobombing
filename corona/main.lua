@@ -8,11 +8,10 @@ local storyboard = require "storyboard"
 loc = require "location"
 print( loc )
 -- load scenetemplate.lua
-storyboard.gotoScene( "game" )
+storyboard.gotoScene( "menu" )
 net = require "network"
 
 loc.enable_location()
-test_network()
 -- Add any objects that should appear on all scenes below (e.g. tab bar, hud, etc.):
 
 -- Add a score label
