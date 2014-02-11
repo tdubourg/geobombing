@@ -1,7 +1,7 @@
 -- JSON labels
   -- protocol
-    JSON_FRAME_TYPE = "frameType"
-    JSON_FRAME_DATA = "frameData"
+    JSON_FRAME_TYPE = "type"
+    JSON_FRAME_DATA = "data"
 
   -- map data
     JSON_MAP_NAME = "mapName"
