@@ -100,15 +100,6 @@ if luaMap then
   end
 
 
-  --structure
-  local circle = display.newCircle(0,0,5)
-  circle.name = "circle"
-  circle.x = _W/2
-  circle.y = _H/2
-  print( circle.x)
-  print( circle.y)
-
-
 else
   --dummy map
   local n1 = Node:new(0, 0, 1)
