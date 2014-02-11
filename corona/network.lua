@@ -1,10 +1,11 @@
 socket = require "socket"
-json = require("json")
+local json = require("json")
+local location = require("location")
 require "print_r"
-
 require "utils"
 
 local client = nil
+local FRAME_SEPARATOR = "\n"
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -46,10 +47,18 @@ function receive_until(end_separator )
 	return str
 end
 
+function sendPosition()
+	if client ~= nil then
+		location.enable_location()
+		packet = {latitude=currentLatitude, longitude=currentLongitude}
+		sendData(json.encode(packet))
+		location.disable_location()
+	end
+end
+
 function receiveMap()
 	if client ~= nil then
-		client:send("Bonjour!\n")
-		jsonMap = receive_until("\n")
+		jsonMap = receive_until(FRAME_SEPARATOR)
 		print ("JSON MAP RECEIVED :"..jsonMap)
 		luaMap = json.decode(jsonMap)
 		print "DESERIALIZED MAP"
@@ -58,3 +67,10 @@ function receiveMap()
 	end
 	return nil
 end
+
+function sendData(data)
+	if client ~= nil then
+		client:send(data..FRAME_SEPARATOR)
+	end
+end
+
