@@ -49,6 +49,7 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
 	newPlayer.nbDeath = pNDeath or 0
 	newPlayer.currentState = PLAYER_FROZE_STATE 
 	newPlayer.drawable=nil
+    
 
 	--newPlayer.drawable = display.newImageRect( "images/bomberman.jpg",25,25)
 
@@ -57,8 +58,10 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
 
 newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
 
- newPlayer.drawable.x = display.contentWidth/2
- newPlayer.drawable.y = display.contentHeight/2
+newPlayer.drawable.x = display.contentWidth/2
+newPlayer.drawable.y = display.contentHeight/2
+newPlayer.toX=newPlayer.drawable.x
+newPlayer.toY= newPlayer.drawable.y
 -- newPlayer.x = display.contentCenterX
 -- newPlayer.y = display.contentCenterY
 
@@ -158,18 +161,47 @@ function addBodyWithCutCornersRectangle(displayObject, percentageOfCut)
     displayObject.isFixedRotation = true
 end
 
- function player:goTo(nodes)
- 	for i=1,#nodes do
+function player:goTo(nodes)
+  for i=1,#nodes do
  		-- lookAt(worldPos)
-  	local from = Vector2D:new(self.drawable.x, self.drawable.y)
-  	local dist =from:Dist(from, nodes[i].pos)
+         local from = Vector2D:new(self.drawable.x, self.drawable.y)
+         local dist =from:Dist(from, nodes[i].pos)
     --speed=dist/time
- transition.to(self.drawable,{time=dist/self.speed,x=nodes[i].pos.x,y=nodes[i].pos.y})
- 	end
+    transition.to(self.drawable,{time=dist/self.speed,x=nodes[i].pos.x,y=nodes[i].pos.y})
+end
 	-- -- lookAt(worldPos)
  --  	local from = Vector2D:new(self.drawable.x, self.drawable.y)
  --  	local dist =from:Dist(from, nodes[1].pos)
  --    --speed=dist/time
  -- transition.to(self.drawable,{time=dist/self.speed,x=nodes[1].pos.x,y=nodes[1].pos.y})
- end
+end
+
+function player:saveNewDestination(e)
+    
+    local screenPos = Vector2D:new(e.x, e.y)
+    local  worldPos = screenToWorld(screenPos)
+    self.toX=worldPos.x
+    self.toY=worldPos.y
+end
+
+
+function player:refresh()
+
+    if(self.drawable.x==self.toX and self.drawable.y == self.toY) then
+        self.currentState = PLAYER_FROZE_STATE 
+    else 
+     self.currentState = PLAYER_WALKING_STATE 
+     local from = Vector2D:new(self.drawable.x, self.drawable.y)
+     local to = Vector2D:new(self.toX, self.toY)
+     local vectDir = Vector2D:new(0,0)
+     vectDir = Vector2D:Sub(to,from)
+     vectDir:normalize()
+  -- vecteur normalisé de la direction * la vitesse * delta temps
+  self.drawable.x= self.drawable.x+(vectDir.x*self.speed)
+  self.drawable.y= self.drawable.y+(vectDir.y*self.speed)
+end
+
+end
+
+
 return player
