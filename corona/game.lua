@@ -133,6 +133,7 @@ local function moveObject(e)
 	if(trans)then
 		transition.cancel(trans)
 	end
+
 	player:saveNewDestination(e)
 	-- -- local nodes= {}
 	-- -- nodes[1] = n1
@@ -149,6 +150,7 @@ Runtime:addEventListener("tap",moveObject)
 
 local myListener = function( event )
 player:refresh()
+--lookAt()
 end
 Runtime:addEventListener( "enterFrame", myListener )
 
