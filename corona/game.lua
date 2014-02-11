@@ -91,7 +91,12 @@ local function moveObject(e)
 if (btnBombClicked) then
 	btnBombClicked = false
 else
-	player:saveNewDestination(e)
+	local screenPos = Vector2D:new(e.x,e.y)
+    local  worldPos = screenToWorld(screenPos)
+	local node = Node:new(0,0)
+	node = currentMap:getClosestNode(worldPos)
+	--print(n6.pos.x .." ,".. n6.pos.y .." ")
+	player:saveNewDestinationVect(node.pos)
 end
 
 
@@ -133,7 +138,7 @@ end
 	
 	bombBtn.x = display.contentWidth*POS_X_WIDGET_BUTTON 
 	bombBtn.y = display.contentHeight*POS_Y_WIDGET_BUTTON
-
+group:insert( bombBtn )
 
 	-----------------------------------------------------------------------------
 	
@@ -150,7 +155,8 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
-	
+	storyboard.returnTo = "menu"
+
 	-----------------------------------------------------------------------------
 
 	--	INSERT code here (e.g. start timers, load audio, start listeners, etc.)
@@ -163,7 +169,7 @@ end
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-	
+
 	-----------------------------------------------------------------------------
 	
 	--	INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)
