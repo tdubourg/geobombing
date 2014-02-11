@@ -70,7 +70,7 @@ physics.start( )
 -- connect to server
 local client = connect_to_server("127.0.0.1", 3000)
 print "connected"
-
+sendPosition()
 luaMap = receiveMap(client)
 currentMap = Map:new(luaMap)
 
