@@ -1,7 +1,7 @@
 // library call
-var clMap = require("./classes/clMap").clMap; 
-var clNode = require("./classes/clNode").clNode;
-var clWay = require("./classes/clWay").clWay; 
+var clMap = require("./Classes/clMap").clMap; 
+var clNode = require("./Classes/clNode").clNode;
+var clWay = require("./Classes/clWay").clWay; 
 
 // -- Creating
 exports.CreateNode = CreateNode
