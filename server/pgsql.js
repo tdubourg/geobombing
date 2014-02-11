@@ -2,23 +2,50 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap; 
 var utils = require("./common"); 
-//var qh = require('./query_helper'); // for generic query
+var qh = require('./query_helper'); // for generic query
 var lastMapId = 1;
 var lastNodeId = 1;
 
-function getMapFromPGSQL(latitude, longitude)
+function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 {
-	//var queryResult = qh.text_query(""); // todo replace by select_query();
-	return [[
+	var queryResult = qh.text_query("	\
+		SELECT ST_asText(box), r.*		\
+		from roads as r,				\
+			ST_MakeBox2D (				\
+				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\
+			) as box					\
+		--WHERE ST_Crosses(r.geom, box) and exists (	\
+		WHERE ST_Intersects(r.geom, box) and exists (	\
+		  select r						\
+		  from (						\
+		    select pp.geom as p			\
+		    from ST_DumpPoints(r.geom) as pp	\
+		  ) as foo						\
+		  where ST_Contains (			\
+		    box, p						\
+		  )								\
+		)								\
+		;								\
+	", callback); // todo replace by select_query();
+	
+	/*return [[
 	["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
 	["8.7369374", "41.9186287"]],
 			[["8.7347978", "41.919762"], ["8.7353263", "41.9198519"]]];
+			*/
 }
 
 function fullMapAccordingToLocalisation(latitude, longitude)
 {
-	var listString = getMapFromPGSQL(latitude, longitude);
-	if (listString == null) return null;
+	//var listString = getMapFromPGSQL(latitude, longitude);
+	//if (listString == null) return null;
+	
+	var s = 0.0001
+	getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) {
+		
+		// TODO
+		
+	});
 
 	// todo construct map struture using utils functions
 	var map = utils.CreateEmptyMap(++lastMapId, "mapName");
