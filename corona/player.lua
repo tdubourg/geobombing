@@ -173,31 +173,19 @@ function player:saveNewNodes(nodes)
    -- self.saveNewDestination(self.nodes[1])
    if (nodes~=nil) then
     self.nodesI=1
-     self.nodesMax=#nodes
+    self.nodesMax=#nodes
     print (self.nodesMax)
     self.toX=self.nodes[1].pos.x
     self.toY=self.nodes[1].pos.y
-   
+
 else
-   self.nodesI=0
-   self.nodesMax=0
+ self.nodesI=0
+ self.nodesMax=0
 end
 end
 
 
-function player:goTo(nodes)
-  for i=1,#nodes do
- 		-- lookAt(worldPos)
-       local dist =from:Dist(self.pos, nodes[i].pos)
-    --speed=dist/time
-    transition.to(self.drawable,{time=dist/self.speed,x=nodes[i].pos.x,y=nodes[i].pos.y})
-end
-	-- -- lookAt(worldPos)
- --  	local from = Vector2D:new(self.drawable.x, self.drawable.y)
- --  	local dist =from:Dist(from, nodes[1].pos)
- --    --speed=dist/time
- -- transition.to(self.drawable,{time=dist/self.speed,x=nodes[1].pos.x,y=nodes[1].pos.y})
-end
+
 
 function player:refreshPos()
     self.drawable.x=self.pos.x
@@ -223,6 +211,7 @@ function player:refresh()
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
+            err = 1
         else
             self.toX=self.nodes[self.nodesI].pos.x
             self.toY=self.nodes[self.nodesI].pos.y
@@ -230,19 +219,37 @@ function player:refresh()
         end
 
     else 
-       self.currentState = PLAYER_WALKING_STATE 
-       local to = Vector2D:new(self.toX, self.toY)
-       local vectDir = Vector2D:new(0,0)
-       vectDir = Vector2D:Sub(to,self.pos)
-       vectDir:normalize()
-  -- vecteur normalisé de la direction * la vitesse * delta temps
-  vectDir:mult(self.speed)
-  self.pos:add(vectDir)
-  self:refreshPos()
+     self.currentState = PLAYER_WALKING_STATE 
+     local to = Vector2D:new(self.toX, self.toY)
+     local vectDir = Vector2D:new(0,0)
+     vectDir = Vector2D:Sub(to,self.pos)
+     vectDir:normalize()
+        -- vecteur normalisé de la direction * la vitesse * delta temps
+        
+        tempVectDir = Vector2D:Mult(vectDir, self.speed)
+        -- check if there is an obstacle
+        temp = Vector2D:Add(self.pos,tempVectDir)
+        -- if (temp.x<= (100+err) and temp.x>=(100-err) and temp.y <=(20+err) and  temp.y>=(20-err)) then
+        --     self.currentState = PLAYER_FROZEN_STATE 
+        --     self.nodesI=0
+        --     self.nodesMax=0
+        --     err = 1
+        --     -- check if there is a bonus
+        --     elseif (temp.x<= (20+err) and temp.x>=(20-err) and temp.y <=(200+err) and  temp.y>=(200-err)) then
+        --         self.speed= self.speed+1
+        --         vectDir:mult(self.speed)
+        --         self.pos:add(vectDir)
+        --         self:refreshPos()
+        --         err = err +1
 
-end
+        --     else
+                vectDir:mult(self.speed)
+                self.pos:add(vectDir)
+                self:refreshPos()
+            -- end
+        end
 
-end
+    end
 
 
-return player
+    return player
