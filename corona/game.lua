@@ -91,7 +91,12 @@ local function moveObject(e)
 if (btnBombClicked) then
 	btnBombClicked = false
 else
-	player:saveNewDestination(e)
+	local screenPos = Vector2D:new(e.x,e.y)
+    local  worldPos = screenToWorld(screenPos)
+	local node = Node:new(0,0)
+	node = currentMap:getClosestNode(worldPos)
+	--print(n6.pos.x .." ,".. n6.pos.y .." ")
+	player:saveNewDestinationVect(node.pos)
 end
 
 
@@ -133,7 +138,7 @@ end
 	
 	bombBtn.x = display.contentWidth*POS_X_WIDGET_BUTTON 
 	bombBtn.y = display.contentHeight*POS_Y_WIDGET_BUTTON
-
+group:insert( bombBtn )
 
 	-----------------------------------------------------------------------------
 	
