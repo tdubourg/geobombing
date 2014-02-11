@@ -18,7 +18,7 @@ var sendmap_action = function (frame_data, stream)
 			"data": map
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent:\n" + data)})
+		stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent")})
 	}); // lat, lon
 }
 
@@ -27,7 +27,7 @@ var sendInit_location = function (frame_data, stream) {}
 
 var frame_actions = 
 {
-	"map": sendmap_action,
+	"map": sendmap_action, // reponse function to localise
 	"loc": sendInit_location
 }
 

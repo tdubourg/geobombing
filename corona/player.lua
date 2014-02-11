@@ -202,6 +202,20 @@ function player:saveNewDestination(e)
 
 end
 
+function player:saveNewDestinationVect(e)
+
+    self.toX=e.x
+    self.toY=e.y
+
+end
+
+function player:saveNewDestinationNode(e)
+
+    self.toX=e.pos.x
+    self.toY=e.pos.y
+
+end
+
 
 function player:refresh()
 
@@ -225,7 +239,7 @@ function player:refresh()
      vectDir = Vector2D:Sub(to,self.pos)
      vectDir:normalize()
         -- vecteur normalisé de la direction * la vitesse * delta temps
-        
+
         tempVectDir = Vector2D:Mult(vectDir, self.speed)
         -- check if there is an obstacle
         temp = Vector2D:Add(self.pos,tempVectDir)
