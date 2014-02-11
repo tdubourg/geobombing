@@ -8,7 +8,7 @@ local storyboard = require "storyboard"
 loc = require "location"
 print( loc )
 -- load scenetemplate.lua
-storyboard.gotoScene( "game" )
+storyboard.gotoScene( "menu" )
 net = require "network"
 
 loc.enable_location()
