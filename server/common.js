@@ -56,14 +56,14 @@ function AddWayToMap(map, way)
 	else map.mapListWay[map.mapListWay.length] = way;
 }
 
-exports.CreateFakeMap = CreateFakeMap
+exports.CreateFakeMap = CreateFakeMap // todo delete
 function CreateFakeMap() // todo replace by SQL result map
 {
 	var mapObj = CreateEmptyMap(123, "maptest");
-	var node1 = CreateNode(1, 10, 10);
-	var node2 = CreateNode(2, 10, 50);
-	var node3 = CreateNode(3, 20, 50);
-	var node4 = CreateNode(4, 100, 50);
+	var node1 = CreateNode(1, 10, 100);
+	var node2 = CreateNode(2, 100, 50);
+	var node3 = CreateNode(3, 0, 150);
+	var node4 = CreateNode(4, 50, 50);
 	var node5 = CreateNode(5, 100, 100);
 	AddNodeToMap(mapObj, node1);
 	AddNodeToMap(mapObj, node2);
