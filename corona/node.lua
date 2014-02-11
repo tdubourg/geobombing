@@ -30,7 +30,6 @@ end
 
 -- creates an Arc if necessary and link everything
 function Node:linkTo(node1)
-  print_r(node1)
 	if self.arcs[node1] == nil then
 		local newArc = Arc:new(self, node1)
 		self.arcs[node1] = newArc

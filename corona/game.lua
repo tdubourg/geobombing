@@ -91,8 +91,6 @@ if luaMap then
     for j,nodeID in ipairs(nodeList) do
       local node = nodesByUID[nodeID]
       if (previousNode) then
-          print_r (previousNode)
-          print_r (node)
         previousNode:linkTo(node)
       end
       previousNode = node
