@@ -89,12 +89,8 @@ local function moveObject(e)
 
 	---------------
 	--dummy map
-
-	-- local nodes= {}
-	-- nodes[1] = n1
-	-- nodes[2] = n2
  
-	-- player:saveNewNodes(nodes)
+	--player:saveNewNodes(currentMap.nodesByUID)
 
 	player:saveNewDestination(e)
 
