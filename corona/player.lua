@@ -21,7 +21,7 @@ PLAYER_SPRITESHEET_HEIGHT = 513
 
 PLAYER_DEAD_STATE = 42
 PLAYER_WALKING_STATE = 43
-PLAYER_FROZE_STATE = 44
+PLAYER_FROZEN_STATE = 44
 
 spriteWidth = 25
 spriteHeight = 25
@@ -44,36 +44,45 @@ local PLAYER_SPRITE_SEQUENCE_DATA = {
 function player.new( pName, pSpeed, pNbDeath)	-- constructor
 	local newPlayer = {}
 	setmetatable( newPlayer, player_mt )
+    --Player name / speed / number of death
 	newPlayer.name = pName or "Unnamed"
 	newPlayer.speed = pSpeed or 0.2
 	newPlayer.nbDeath = pNDeath or 0
-	newPlayer.currentState = PLAYER_FROZE_STATE 
+
+    --Player current state : FROZEN / WALKING / DEAD
+	newPlayer.currentState = PLAYER_FROZEN_STATE 
+
+    --Player Sprite
 	newPlayer.drawable=nil
-    
-
-	--newPlayer.drawable = display.newImageRect( "images/bomberman.jpg",25,25)
-
 	local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
 	height = PLAYER_SPRITE_RAW_HEIGHT, numFrames = 7})--, sheetContentWidth=PLAYER_SPRITESHEET_WIDTH, sheetContentHeight=PLAYER_SPRITESHEET_HEIGHT})
+    newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
 
-newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
+    --Player current position
+    newPlayer.drawable.x = display.contentWidth/2
+    newPlayer.drawable.y = display.contentHeight/2
 
-newPlayer.drawable.x = display.contentWidth/2
-newPlayer.drawable.y = display.contentHeight/2
-newPlayer.toX=newPlayer.drawable.x
-newPlayer.toY= newPlayer.drawable.y
--- newPlayer.x = display.contentCenterX
--- newPlayer.y = display.contentCenterY
+    --Player destination
+    newPlayer.toX=newPlayer.drawable.x
+    newPlayer.toY= newPlayer.drawable.y
 
-newPlayer.objectType = objectType
-newPlayer.drawable.objectType = objectType
-newPlayer.drawable.playerObject = newPlayer
-newPlayer.drawable.width, newPlayer.drawable.height = spriteWidth, spriteHeight
-newPlayer.drawable.xScale = spriteWidth / PLAYER_SPRITE_RAW_WIDTH
+    --???
+    newPlayer.objectType = objectType
+    newPlayer.drawable.objectType = objectType
+    newPlayer.drawable.playerObject = newPlayer
+
+    -- setting player sprite resize
+    newPlayer.drawable.width, newPlayer.drawable.height = spriteWidth, spriteHeight
+    newPlayer.drawable.xScale = spriteWidth / PLAYER_SPRITE_RAW_WIDTH
     newPlayer.drawable.yScale = spriteHeight / PLAYER_SPRITE_RAW_HEIGHT--signof(gravityScale) * spriteHeight / PLAYER_SPRITE_RAW_HEIGHT
+
+    --??
     addBodyWithCutCornersRectangle(newPlayer.drawable, 30)
 
+    --playing the sprite
     newPlayer.drawable:play()
+
+    --???
     newPlayer.drawable.gravityScale = gravityScale
 
     cameraGroup:insert(newPlayer.drawable)
@@ -177,7 +186,7 @@ end
 end
 
 function player:saveNewDestination(e)
-    
+
     local screenPos = Vector2D:new(e.x, e.y)
     local  worldPos = screenToWorld(screenPos)
     self.toX=worldPos.x
@@ -188,7 +197,7 @@ end
 function player:refresh()
 
     if(self.drawable.x==self.toX and self.drawable.y == self.toY) then
-        self.currentState = PLAYER_FROZE_STATE 
+        self.currentState = PLAYER_FROZEN_STATE 
     else 
      self.currentState = PLAYER_WALKING_STATE 
      local from = Vector2D:new(self.drawable.x, self.drawable.y)
@@ -199,6 +208,7 @@ function player:refresh()
   -- vecteur normalisé de la direction * la vitesse * delta temps
   self.drawable.x= self.drawable.x+(vectDir.x*self.speed)
   self.drawable.y= self.drawable.y+(vectDir.y*self.speed)
+
 end
 
 end
