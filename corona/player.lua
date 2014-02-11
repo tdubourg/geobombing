@@ -26,6 +26,9 @@ PLAYER_FROZEN_STATE = 44
 spriteWidth = 25
 spriteHeight = 25
 
+-- error accepted when moving the player
+err = 1
+
 -------------------------------------------------
 -- PRIVATE FUNCTIONS
 -------------------------------------------------
@@ -45,26 +48,33 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
 	local newPlayer = {}
 	setmetatable( newPlayer, player_mt )
     --Player name / speed / number of death
-	newPlayer.name = pName or "Unnamed"
-	newPlayer.speed = pSpeed or 0.2
-	newPlayer.nbDeath = pNDeath or 0
+    newPlayer.name = pName or "Unnamed"
+    newPlayer.speed = pSpeed or 0.2
+    newPlayer.nbDeath = pNDeath or 0
 
     --Player current state : FROZEN / WALKING / DEAD
-	newPlayer.currentState = PLAYER_FROZEN_STATE 
+    newPlayer.currentState = PLAYER_FROZEN_STATE 
 
     --Player Sprite
-	newPlayer.drawable=nil
-	local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
+    newPlayer.drawable=nil
+    local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
 	height = PLAYER_SPRITE_RAW_HEIGHT, numFrames = 7})--, sheetContentWidth=PLAYER_SPRITESHEET_WIDTH, sheetContentHeight=PLAYER_SPRITESHEET_HEIGHT})
-    newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
+newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
 
     --Player current position
     newPlayer.drawable.x = display.contentWidth/2
     newPlayer.drawable.y = display.contentHeight/2
 
-    --Player destination
+    newPlayer.pos = Vector2D:new(newPlayer.drawable.x, newPlayer.drawable.y)
+
+    --Player current destination
     newPlayer.toX=newPlayer.drawable.x
     newPlayer.toY= newPlayer.drawable.y
+
+    --nodes to go to the final destination
+    newPlayer.nodes= nil
+    newPlayer.nodesI=0
+    newPlayer.nodesMax=0
 
     --???
     newPlayer.objectType = objectType
@@ -79,21 +89,18 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
     --??
     addBodyWithCutCornersRectangle(newPlayer.drawable, 30)
 
-    --playing the sprite
+    -- playing the sprite
     newPlayer.drawable:play()
 
     --???
     newPlayer.drawable.gravityScale = gravityScale
 
+    -- insert in camera group
     cameraGroup:insert(newPlayer.drawable)
     return newPlayer
 end
 
 -------------------------------------------------
-
-
-
-
 
 function player:printPlayerSpeed()
 	print( self.name .. " is at speed " .. self.speed .. " ." )
@@ -101,14 +108,11 @@ end
 
 -------------------------------------------------
 
-
 function player:setPlayerNbDeath(newNbDeath)
 	self.nbDeath = newNbDeath
 end
 
 -------------------------------------------------
-
-
 
 function player:printPlayerNbDeath()
 	print( self.name .. " is at dead " .. self.nbDeath .. " time(s)." )
@@ -117,19 +121,11 @@ end
 
 -------------------------------------------------
 
-
-
-
-
 function player:printPlayerX()
 	print( self.name .. " is at x = " .. self.drawable.x .. " ." )
 end
 
  -------------------------------------------------
-
-
-
-
 
  function player:printPlayerY()
  	print( self.name .. " is at y = " .. self.drawable.y .. " ." )
@@ -170,11 +166,29 @@ function addBodyWithCutCornersRectangle(displayObject, percentageOfCut)
     displayObject.isFixedRotation = true
 end
 
+function player:saveNewNodes(nodes)
+    self.nodes=nodes
+    -- print( self.nodes[1].pos.x .. ", " .. self.nodes[1].pos.y .. " ." )
+    -- print( self.nodes[2].pos.x .. ", " .. self.nodes[2].pos.y .. " ." )
+   -- self.saveNewDestination(self.nodes[1])
+   if (nodes~=nil) then
+    self.nodesI=1
+     self.nodesMax=#nodes
+    print (self.nodesMax)
+    self.toX=self.nodes[1].pos.x
+    self.toY=self.nodes[1].pos.y
+   
+else
+   self.nodesI=0
+   self.nodesMax=0
+end
+end
+
+
 function player:goTo(nodes)
   for i=1,#nodes do
  		-- lookAt(worldPos)
-         local from = Vector2D:new(self.drawable.x, self.drawable.y)
-         local dist =from:Dist(from, nodes[i].pos)
+       local dist =from:Dist(self.pos, nodes[i].pos)
     --speed=dist/time
     transition.to(self.drawable,{time=dist/self.speed,x=nodes[i].pos.x,y=nodes[i].pos.y})
 end
@@ -185,29 +199,46 @@ end
  -- transition.to(self.drawable,{time=dist/self.speed,x=nodes[1].pos.x,y=nodes[1].pos.y})
 end
 
+function player:refreshPos()
+    self.drawable.x=self.pos.x
+    self.drawable.y = self.pos.y
+end
+
+
 function player:saveNewDestination(e)
 
     local screenPos = Vector2D:new(e.x, e.y)
     local  worldPos = screenToWorld(screenPos)
     self.toX=worldPos.x
     self.toY=worldPos.y
+
 end
 
 
 function player:refresh()
 
-    if(self.drawable.x==self.toX and self.drawable.y == self.toY) then
+    if(self.drawable.x<= (self.toX+err) and self.drawable.x>=(self.toX-err) and self.drawable.y <=(self.toY+err) and  self.drawable.y>=(self.toY-err)) then
         self.currentState = PLAYER_FROZEN_STATE 
+        self.nodesI=self.nodesI+1
+        if (self.nodesI>self.nodesMax) then
+            self.nodesI=0
+            self.nodesMax=0
+        else
+            self.toX=self.nodes[self.nodesI].pos.x
+            self.toY=self.nodes[self.nodesI].pos.y
+            self:refresh()
+        end
+
     else 
-     self.currentState = PLAYER_WALKING_STATE 
-     local from = Vector2D:new(self.drawable.x, self.drawable.y)
-     local to = Vector2D:new(self.toX, self.toY)
-     local vectDir = Vector2D:new(0,0)
-     vectDir = Vector2D:Sub(to,from)
-     vectDir:normalize()
+       self.currentState = PLAYER_WALKING_STATE 
+       local to = Vector2D:new(self.toX, self.toY)
+       local vectDir = Vector2D:new(0,0)
+       vectDir = Vector2D:Sub(to,self.pos)
+       vectDir:normalize()
   -- vecteur normalisé de la direction * la vitesse * delta temps
-  self.drawable.x= self.drawable.x+(vectDir.x*self.speed)
-  self.drawable.y= self.drawable.y+(vectDir.y*self.speed)
+  vectDir:mult(self.speed)
+  self.pos:add(vectDir)
+  self:refreshPos()
 
 end
 

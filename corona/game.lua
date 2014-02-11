@@ -71,55 +71,43 @@ physics.start( )
 network.connect_to_server("127.0.0.1", 3000)
 network.sendPosition()
 luaMap = network.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+
 currentMap = Map:new(luaMap)
 
+
 local player = player.new( "Me",  2)
- -- player.tx = 0
- -- player.ty = 0
---player.drawable:addEventListener( "touch", player.drawable )
 
--- function square
-local square = math.sqrt;
--- function to get the euclidian distance 
---btw actual position and desired position
-local getDistance = function(a, b)
-local x, y = a.x-b.x, a.y-b.y;
-return square(x*x+y*y);
-end;
-
---get way to destination
-
----------------
 local trans
 local function moveObject(e)
 	if(trans)then
 		transition.cancel(trans)
 	end
 
+	--find nearest node
+
+	---------------
+	--get way to destination
+
+	---------------
+	--dummy map
+
+	-- local nodes= {}
+	-- nodes[1] = n1
+	-- nodes[2] = n2
+ 
+	-- player:saveNewNodes(nodes)
+
 	player:saveNewDestination(e)
-	-- -- local nodes= {}
-	-- -- nodes[1] = n1
-	-- -- nodes[2] = n2
-	-- -- player:goTo(nodes)
-	-- local screenPos = Vector2D:new(e.x, e.y)
-	-- local  worldPos = screenToWorld(screenPos)
- --  --lookAt(worldPos)
- --  	local dist = getDistance(player.drawable,e)
- --    --speed=dist/time
- --    trans = transition.to(player.drawable,{time=dist/player.speed,x=worldPos.x,y=worldPos.y})  -- move to touch position
+
+
 end
 Runtime:addEventListener("tap",moveObject)
 
 local myListener = function( event )
 player:refresh()
---lookAt()
+lookAt(player.pos)
 end
 Runtime:addEventListener( "enterFrame", myListener )
-
-
-player:printPlayerX()
-player:printPlayerY()
-
 
 	-----------------------------------------------------------------------------
 	
