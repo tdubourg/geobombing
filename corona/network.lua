@@ -50,9 +50,9 @@ function receiveMap()
 	if client ~= nil then
 		client:send("Bonjour!\n")
 		jsonMap = receive_until("\n")
-		print ("JSON :"..jsonMap)
+		print ("JSON MAP RECEIVED :"..jsonMap)
 		luaMap = json.decode(jsonMap)
-		print "DUMP"
+		print "DESERIALIZED MAP"
 		print_r(luaMap)
 		return luaMap
 	end
