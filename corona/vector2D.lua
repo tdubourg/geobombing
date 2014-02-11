@@ -66,7 +66,9 @@ function Vector2D:dot(vec)
 end
  
 function Vector2D:dist(vec2)
-	return math.sqrt( (vec2.x - self.x) + (vec2.y - self.y) )
+	dx = (vec2.x - self.x)
+	dy = (vec2.y - self.y)
+	return math.sqrt( dx*dx + dy*dy )
 end
  
 -- Class Methods
@@ -129,7 +131,9 @@ function Vector2D:Div(vec, s)
 end
  
 function Vector2D:Dist(vec1, vec2)
-	return math.sqrt( (vec2.x - vec1.x) + (vec2.y - vec1.y) )
+	dx = (vec2.x - vec1.x)
+	dy = (vec2.y - vec1.y)
+	return math.sqrt( dx*dx + dy*dy )
 end
  
 return Vector2D

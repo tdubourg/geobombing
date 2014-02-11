@@ -8,13 +8,12 @@ var lastNodeId = 1;
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 {
-	var queryResult = qh.text_query("	\
+	var query = "	\
 		SELECT ST_asText(ST_GeometryN(r.geom,1))	\
 		from roads as r,				\
 			ST_MakeBox2D (				\
 				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\
 			) as box					\
-		--WHERE ST_Crosses(r.geom, box) and exists (	\
 		WHERE ST_Intersects(r.geom, box) and exists (	\
 		  select r						\
 		  from (						\
@@ -26,11 +25,38 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 		  )								\
 		)								\
 		;								\
-	", function(err, rez) {
+	"
+	qh.text_query( query
+	, //function(err, rez) {
+		//*/
+	/*
+	qh.text_query("SELECT ST_asText(ST_GeometryN(r.geom,1)) from roads as r, 	ST_MakeBox2D ( 			ST_Point(8.7360006, 41.9204551), ST_Point(8.7362006, 41.920655100000005) 	) as box WHERE ST_Intersects(r.geom, box) and exists (   select r   from (     select pp.geom as p     from ST_DumpPoints(r.geom) as pp   ) as foo   where ST_Contains (     box, p   ) )",
+	//*/
+	function(err, rez) {
 		
+		//console.log("ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")")
+		console.log(query)
+		console.log(rez.rows.length)
+		//console.log(rez.rows[0]["st_astext"].replace("LINESTRING(","").replace(")","")).split(",")
+		//coords = rez.rows[0]["st_astext"].replace("LINESTRING(","").replace(")","")).split(",")
+		//coords.forEach
+		var roads = []
+		rez.rows.forEach(function (r) {
+			var pts = []
+			r.st_astext.replace("LINESTRING(","").replace(")","").split(",").forEach(function(e) {
+				var coords = e.split(" ")
+				pts.push([parseFloat(coords[0]),parseFloat(coords[1])])
+			})
+			roads.push(pts)
+		})
+		console.log(roads)
 		
+		//r = null
+		//var r = null
 		
-		callback(err, );
+		//console.log(rez.rows)
+		
+		callback(err, roads);
 	});
 	// todo replace by select_query();
 	/*return [[
@@ -40,34 +66,30 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 			*/
 }
 
-function fullMapAccordingToLocalisation(latitude, longitude)
+function fullMapAccordingToLocation(latitude, longitude, callback)
 {
-	//var listString = getMapFromPGSQL(latitude, longitude);
-	//if (listString == null) return null;
-	
 	var s = 0.0001
-	getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) {
-		
-		// TODO
-		
+	// TODO use latitude, longitude
+	getMapFromPGSQL(41.9205551, 8.7361006, s, s, function(err,listString)
+	//getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) 
+	{
+		// construct map struture using utils functions
+		var map = utils.CreateEmptyMap(++lastMapId, "mapName");
+	    for (var i = 0; i < listString.length; i++) 
+	    {
+	    	var way = utils.CreateEmptyWay("way" + i);
+	        for (var j = 0; j < listString[i].length; j++) 
+	    	{
+	    		if (listString[i][j] == null || listString[i][j].length != 2) return null;
+	        	var node = utils.CreateNode(++lastNodeId,
+	        		listString[i][j][0],listString[i][j][1]);
+	        	utils.AddNodeToMap(map, node);
+	        	utils.AddNodeIdToWay(way, lastNodeId);
+	    	}
+	    	utils.AddWayToMap(map, way);
+	    }
+		callback(map)
 	});
-
-	// todo construct map struture using utils functions
-	var map = utils.CreateEmptyMap(++lastMapId, "mapName");
-    for (var i = 0; i < listString.length; i++) 
-    {
-    	var way = utils.CreateEmptyWay("way" + i);
-        for (var j = 0; j < listString[i].length; j++) 
-    	{
-    		if (listString[i][j] == null || listString[i][j].length != 2) return null;
-        	var node = utils.CreateNode(++lastNodeId,
-        		listString[i][j][0],listString[i][j][1]);
-        	utils.AddNodeToMap(map, node);
-        	utils.AddNodeIdToWay(way, lastNodeId);
-    	}
-    	utils.AddWayToMap(map, way);
-    }
-	return map;
 }
 
-exports.fullMapAccordingToLocalisation = fullMapAccordingToLocalisation
+exports.fullMapAccordingToLocation = fullMapAccordingToLocation
