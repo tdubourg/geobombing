@@ -57,3 +57,21 @@ end
 
   return object
 end
+
+function Map:getClosestNode(v2pos)
+  print_r(v2pos)
+  local min = math.huge
+  local best = nil
+  for i,node in ipairs(self.nodesByUID) do
+    print_r(node.pos)
+    local dist = v2pos:dist(node.pos)
+    print "dist"
+    print(dist)
+    if dist < min then
+      print "yes"
+      min = dist
+      best = node
+    end
+  end
+  return best
+end

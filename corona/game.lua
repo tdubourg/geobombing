@@ -74,7 +74,6 @@ luaMap = network.receiveSerialized()	-- for now, first frame received is map. TO
 
 currentMap = Map:new(luaMap)
 
-
 local player = player.new( "Me",  2)
 
 local trans
