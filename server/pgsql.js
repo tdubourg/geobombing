@@ -9,7 +9,7 @@ var lastNodeId = 1;
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 {
 	var queryResult = qh.text_query("	\
-		SELECT ST_asText(box), r.*		\
+		SELECT ST_asText(ST_GeometryN(r.geom,1))	\
 		from roads as r,				\
 			ST_MakeBox2D (				\
 				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\
@@ -26,8 +26,13 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 		  )								\
 		)								\
 		;								\
-	", callback); // todo replace by select_query();
-	
+	", function(err, rez) {
+		
+		
+		
+		callback(err, );
+	});
+	// todo replace by select_query();
 	/*return [[
 	["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
 	["8.7369374", "41.9186287"]],
