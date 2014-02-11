@@ -36,6 +36,7 @@ local PLAYER_SPRITE_SEQUENCE_DATA = {
 }
 
 
+
 -------------------------------------------------
 -- PUBLIC FUNCTIONS
 -------------------------------------------------
@@ -157,7 +158,18 @@ function addBodyWithCutCornersRectangle(displayObject, percentageOfCut)
     displayObject.isFixedRotation = true
 end
 
--- function way(nodes{})
--- transition.to(player.drawable,{time=dist/player.speed,x=e.x,y=e.y})
--- end
+ function player:goTo(nodes)
+ 	for i=1,#nodes do
+ 		-- lookAt(worldPos)
+  	local from = Vector2D:new(self.drawable.x, self.drawable.y)
+  	local dist =from:Dist(from, nodes[i].pos)
+    --speed=dist/time
+ transition.to(self.drawable,{time=dist/self.speed,x=nodes[i].pos.x,y=nodes[i].pos.y})
+ 	end
+	-- -- lookAt(worldPos)
+ --  	local from = Vector2D:new(self.drawable.x, self.drawable.y)
+ --  	local dist =from:Dist(from, nodes[1].pos)
+ --    --speed=dist/time
+ -- transition.to(self.drawable,{time=dist/self.speed,x=nodes[1].pos.x,y=nodes[1].pos.y})
+ end
 return player
