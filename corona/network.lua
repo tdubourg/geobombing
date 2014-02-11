@@ -47,11 +47,14 @@ function receive_until(end_separator )
 end
 
 function receiveMap()
-	client:send("Bonjour!\n")
-	jsonMap = receive_until("\n")
-	print ("JSON :"..jsonMap)
-	luaMap = json.decode(jsonMap)
-	print "DUMP"
-	print_r(luaMap)
-	return luaMap
+	if client ~= nil then
+		client:send("Bonjour!\n")
+		jsonMap = receive_until("\n")
+		print ("JSON :"..jsonMap)
+		luaMap = json.decode(jsonMap)
+		print "DUMP"
+		print_r(luaMap)
+		return luaMap
+	end
+	return nil
 end
