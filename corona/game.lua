@@ -12,7 +12,7 @@ require "network"
 require "consts"
 require "camera"
 require "vector2D"
-
+local physics = require( "physics" )
 
 ----------------------------------------------------------------------------------
 -- 
@@ -63,7 +63,7 @@ _H = display.contentHeight
 
 delay=1
 initCamera()
-
+physics.start( )
 
 -- connect to server
 local client = connect_to_server("127.0.0.1", 3000)
@@ -83,6 +83,7 @@ if luaMap then
     local uid = node[JSON_NODE_UID]
     nodesByUID[uid] = Node:new(lat, lon, uid)
   end
+
 
   -- load arcs
   for i,way in ipairs(ways) do
@@ -115,9 +116,9 @@ else
   n5:linkTo(n2)
   n6:linkTo(n2)
   n6:linkTo(n3)
-  end
+end
 
-local player = player.new( "Me",  0.5)
+local player = player.new( "Me",  2)
  -- player.tx = 0
  -- player.ty = 0
 --player.drawable:addEventListener( "touch", player.drawable )
@@ -130,7 +131,7 @@ local getDistance = function(a, b)
 local x, y = a.x-b.x, a.y-b.y;
 return square(x*x+y*y);
 end;
-	
+
 --get way to destination
 
 ---------------
@@ -139,21 +140,26 @@ local function moveObject(e)
 	if(trans)then
 		transition.cancel(trans)
 	end
-	-- local nodes= {}
-	-- nodes[1] = n1
-	-- nodes[2] = n2
-	-- player:goTo(nodes)
-	local screenPos = Vector2D:new(e.x, e.y)
-	local  worldPos = screenToWorld(screenPos)
-  lookAt(worldPos)
-  	local dist = getDistance(player.drawable,e)
-    --speed=dist/time
-    trans = transition.to(player.drawable,{time=dist/player.speed,x=worldPos.x,y=worldPos.y})  -- move to touch position
-    
 
+	player:saveNewDestination(e)
+	-- -- local nodes= {}
+	-- -- nodes[1] = n1
+	-- -- nodes[2] = n2
+	-- -- player:goTo(nodes)
+	-- local screenPos = Vector2D:new(e.x, e.y)
+	-- local  worldPos = screenToWorld(screenPos)
+ --  --lookAt(worldPos)
+ --  	local dist = getDistance(player.drawable,e)
+ --    --speed=dist/time
+ --    trans = transition.to(player.drawable,{time=dist/player.speed,x=worldPos.x,y=worldPos.y})  -- move to touch position
 end
 Runtime:addEventListener("tap",moveObject)
 
+local myListener = function( event )
+player:refresh()
+--lookAt()
+end
+Runtime:addEventListener( "enterFrame", myListener )
 
 
 player:printPlayerX()
