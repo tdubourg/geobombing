@@ -139,7 +139,7 @@ local function moveObject(e)
 	-- player:goTo(nodes)
 	local screenPos = Vector2D:new(e.x, e.y)
 	local  worldPos = screenToWorld(screenPos)
-  --lookAt(worldPos)
+  lookAt(worldPos)
   	local dist = getDistance(player.drawable,e)
     --speed=dist/time
     trans = transition.to(player.drawable,{time=dist/player.speed,x=worldPos.x,y=worldPos.y})  -- move to touch position
