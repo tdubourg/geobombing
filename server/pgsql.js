@@ -26,38 +26,24 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 		)								\
 		;								\
 	"
-	qh.text_query( query
-	, //function(err, rez) {
-		//*/
-	/*
-	qh.text_query("SELECT ST_asText(ST_GeometryN(r.geom,1)) from roads as r, 	ST_MakeBox2D ( 			ST_Point(8.7360006, 41.9204551), ST_Point(8.7362006, 41.920655100000005) 	) as box WHERE ST_Intersects(r.geom, box) and exists (   select r   from (     select pp.geom as p     from ST_DumpPoints(r.geom) as pp   ) as foo   where ST_Contains (     box, p   ) )",
-	//*/
-	function(err, rez) {
+	qh.text_query ( query, function(err, rez) {
 		
-		//console.log("ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")")
-		console.log(query)
-		console.log(rez.rows.length)
-		//console.log(rez.rows[0]["st_astext"].replace("LINESTRING(","").replace(")","")).split(",")
-		//coords = rez.rows[0]["st_astext"].replace("LINESTRING(","").replace(")","")).split(",")
-		//coords.forEach
+		var SHIFTX = 8.73, SHIFTY = 41.92, COEFF = 50000  // FIXME: not the right place!!
+		
 		var roads = []
 		rez.rows.forEach(function (r) {
 			var pts = []
 			r.st_astext.replace("LINESTRING(","").replace(")","").split(",").forEach(function(e) {
 				var coords = e.split(" ")
-				pts.push([parseFloat(coords[0]),parseFloat(coords[1])])
+				pts.push( [parseFloat((coords[0]-SHIFTX)*COEFF), parseFloat((coords[1]-SHIFTY)*COEFF)] )
 			})
 			roads.push(pts)
 		})
 		console.log(roads)
 		
-		//r = null
-		//var r = null
-		
-		//console.log(rez.rows)
-		
 		callback(err, roads);
 	});
+	
 	// todo replace by select_query();
 	/*return [[
 	["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
