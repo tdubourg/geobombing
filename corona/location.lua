@@ -1,3 +1,6 @@
+currentLatitude = nil
+currentLongitude = nil
+
 local locationHandler = function( event ) 
     -- Check for error (user may have turned off Location Services)
     if event.errorCode then
