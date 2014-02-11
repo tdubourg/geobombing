@@ -6,9 +6,9 @@
 
 local storyboard = require( "storyboard" )
 local player = require( "player" )
+local network = require ("network")
 local scene = storyboard.newScene()
 require "node"
-require "network"
 require "consts"
 require "camera"
 require "vector2D"
@@ -68,10 +68,9 @@ initCamera()
 physics.start( )
 
 -- connect to server
-local client = connect_to_server("127.0.0.1", 3000)
-print "connected"
-sendPosition()
-luaMap = receiveMap(client)
+network.connect_to_server("127.0.0.1", 3000)
+network.sendPosition()
+luaMap = network.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
 currentMap = Map:new(luaMap)
 
 local player = player.new( "Me",  2)
