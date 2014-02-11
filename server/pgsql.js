@@ -6,7 +6,7 @@ var utils = require("./common");
 var lastMapId = 1;
 var lastNodeId = 1;
 
-function getMapFromPGSQL()
+function getMapFromPGSQL(latitude, longitude)
 {
 	//var queryResult = qh.text_query(""); // todo replace by select_query();
 	return [[
@@ -17,7 +17,7 @@ function getMapFromPGSQL()
 
 function fullMapAccordingToLocalisation(latitude, longitude)
 {
-	var listString = getMapFromPGSQL();
+	var listString = getMapFromPGSQL(latitude, longitude);
 	if (listString == null) return null;
 
 	// todo construct map struture using utils functions
@@ -27,9 +27,13 @@ function fullMapAccordingToLocalisation(latitude, longitude)
     	var way = utils.CreateEmptyWay("way" + i);
         for (var j = 0; j < listString[i].length; j++) 
     	{
-
-        	var node = utils.CreateNode(++lastNodeId,0,0);
+    		if (listString[i][j] == null || listString[i][j].length != 2) return null;
+        	var node = utils.CreateNode(++lastNodeId,
+        		listString[i][j][0],listString[i][j][1]);
+        	utils.AddNodeToMap(map, node);
+        	utils.AddNodeIdToWay(way, lastNodeId);
     	}
+    	utils.AddWayToMap(map, way);
     }
 
 
