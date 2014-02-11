@@ -8,7 +8,8 @@ var lastNodeId = 1;
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 {
-	var queryResult = qh.text_query("	\
+	// todo replace by select_query();
+	qh.text_query("	\ 
 		SELECT ST_asText(box), r.*		\
 		from roads as r,				\
 			ST_MakeBox2D (				\
@@ -26,7 +27,7 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 		  )								\
 		)								\
 		;								\
-	", callback); // todo replace by select_query();
+	", callback); // pass in parameter the function which will send the map
 	
 	/*return [[
 	["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
@@ -35,34 +36,28 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 			*/
 }
 
-function fullMapAccordingToLocalisation(latitude, longitude)
+function fullMapAccordingToLocation(latitude, longitude, callback)
 {
-	//var listString = getMapFromPGSQL(latitude, longitude);
-	//if (listString == null) return null;
-	
 	var s = 0.0001
-	getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) {
-		
-		// TODO
-		
+	getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) 
+	{
+		// construct map struture using utils functions
+		var map = utils.CreateEmptyMap(++lastMapId, "mapName");
+	    for (var i = 0; i < listString.length; i++) 
+	    {
+	    	var way = utils.CreateEmptyWay("way" + i);
+	        for (var j = 0; j < listString[i].length; j++) 
+	    	{
+	    		if (listString[i][j] == null || listString[i][j].length != 2) return null;
+	        	var node = utils.CreateNode(++lastNodeId,
+	        		listString[i][j][0],listString[i][j][1]);
+	        	utils.AddNodeToMap(map, node);
+	        	utils.AddNodeIdToWay(way, lastNodeId);
+	    	}
+	    	utils.AddWayToMap(map, way);
+	    }
+		callback(map)
 	});
-
-	// todo construct map struture using utils functions
-	var map = utils.CreateEmptyMap(++lastMapId, "mapName");
-    for (var i = 0; i < listString.length; i++) 
-    {
-    	var way = utils.CreateEmptyWay("way" + i);
-        for (var j = 0; j < listString[i].length; j++) 
-    	{
-    		if (listString[i][j] == null || listString[i][j].length != 2) return null;
-        	var node = utils.CreateNode(++lastNodeId,
-        		listString[i][j][0],listString[i][j][1]);
-        	utils.AddNodeToMap(map, node);
-        	utils.AddNodeIdToWay(way, lastNodeId);
-    	}
-    	utils.AddWayToMap(map, way);
-    }
-	return map;
 }
 
-exports.fullMapAccordingToLocalisation = fullMapAccordingToLocalisation
+exports.fullMapAccordingToLocation = fullMapAccordingToLocation
