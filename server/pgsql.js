@@ -1,7 +1,7 @@
 
 "use strict"
 var clMap = require("./Classes/clMap").clMap; 
-var utils = require("./common"); 
+var utils = require("./common");
 var conDB = true
 var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1;
@@ -38,6 +38,11 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 		);								\n\
 	"
 	qh.text_query ( query, function(err, rez) {
+		
+		if (err) {
+			console.log(err)
+			throw "SQL ERROR"
+		}
 		
 		//var SHIFTX = 8.73, SHIFTY = 41.92, COEFF = 50000  // FIXME: not the right place!!
 		var SHIFTX = 0, SHIFTY = 0, COEFF = 1
