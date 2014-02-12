@@ -99,7 +99,10 @@ else
 	local node
 	node = currentMap:getClosestNode(worldPos)
 	--print(n6.pos.x .." ,".. n6.pos.y .." ")
-	player:saveNewDestinationVect(node.pos)
+	local from = currentMap:getClosestNode(player.pos)
+	local nodes = currentMap:findPath(from, node)
+	player:saveNewNodes(nodes)
+	--player:saveNewDestinationVect(node.pos)
 end
 
 
