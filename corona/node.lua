@@ -7,7 +7,13 @@ function Node:new(lat, lon, uid)  -- The constructor
   local object = {lat=lat, lon=lon, uid=uid}
   object.pos = Vector2D:new(gpsToLinear(lat,lon))    -- linearized position, used for game logic
   object.arcs = {}                                   -- K: destination node, V: corresponding arc
-  object.drawable = display.newCircle( object.pos.x, object.pos.y, 10 )
+
+  object.drawable = display.newGroup( )
+  display.newCircle(object.drawable, object.pos.x, object.pos.y, 10 )
+  local text = display.newText(uid, object.pos.x, object.pos.y, native.systemFont, 16 )
+  text:setFillColor( 0, 0, 1 )
+  object.drawable:insert(text)
+
 
   cameraGroup:insert(object.drawable)
 

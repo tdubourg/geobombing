@@ -1,3 +1,5 @@
+require "heap"
+
 Map = {}                   -- Create a table to hold the class methods
 function Map:new(luaMap)  -- The constructor
   local object = {}
@@ -55,7 +57,7 @@ else
   -- n6:linkTo(n3)
 
   object.nodesByUID[1] = Node:new(0, 0, 1)
-  object.nodesByUID[2] = Node:new(20, 200, 2)
+  object.nodesByUID[2] = Node:new(0, 200, 2)
   object.nodesByUID[3]= Node:new(100,100, 3)
   object.nodesByUID[4]= Node:new(100,20, 4)
   object.nodesByUID[5] = Node:new(150,250, 5)
@@ -89,4 +91,85 @@ function Map:getClosestNode(v2pos)
     end
   end
   return best
+end
+
+function Map:findPath(from, to)
+  local open = {}
+  local closed = {}
+  local precedence = { }
+
+  open[from] = 0
+
+  local currentNode = nil
+  local currentDist = 0
+
+  while next(open) ~= nil do
+    print "while"
+    currentNode, currentDist = popSmalestValue(open)
+    print(currentDist)
+    --inserting neighbours
+    closed[currentNode] = true
+    for next,_ in pairs(currentNode.arcs) do
+      if closed[next] == nil then
+        local nextDist = open[next]
+        local newNextDist = currentDist + currentNode.pos:dist(next.pos)
+        if (not nextDist or newNextDist<nextDist) then
+          open[next] = newNextDist
+          precedence[next] = currentNode
+        end
+        --adding to closed licensing.init( providerName )
+      else
+        print "in closed"
+      end
+
+    end
+    if currentNode == to then
+      return rewindPath(precedence, currentNode)
+    end
+  end
+  print "not found"
+  return nil
+
+end
+
+function popSmalestValue(table)
+  minV = math.huge
+  bestK = nil
+  for k,v in pairs(table) do
+    if (v < minV) then
+      minV = v
+      bestK = k
+    end
+  end
+  table[bestK] = nil
+  return bestK,minV
+end
+
+
+function rewindPath(precedence, to)
+    revPath = {}
+
+    local node = to
+    local prevNode = nil
+
+    repeat
+      print "revrev"
+      print (node.uid)
+      revPath[#revPath+1] = node
+      prevNode = precedence[node]
+      node = prevNode
+    until prevNode == nil
+
+    return invertIndexedTable(revPath)
+end
+
+function invertIndexedTable ( tab )
+    local size = #tab
+    local newTable = {}
+
+    for i,v in ipairs ( tab ) do
+        newTable[size-i] = v
+    end
+
+    return newTable
 end
