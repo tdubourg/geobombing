@@ -40,10 +40,6 @@ function scene:createScene( event )
 	currentMap = Map:new(luaMap)
 
 	player = Player.new( "Me",  2)
-
-
-
-
 end
 
 local myListener = function( event )
@@ -78,9 +74,12 @@ local function moveObject(e)
 			local screenPos = Vector2D:new(e.x,e.y)
 			local worldPos = screenToWorld(screenPos)
 			local node = currentMap:getClosestNode(worldPos)
+			-- print ("Closest node is", node)
 			--print(n6.pos.x .." ,".. n6.pos.y .." ")
 			local from = currentMap:getClosestNode(player.pos)
+			-- print ("Closest from is", from)
 			local nodes = currentMap:findPath(from, node)
+			-- print ("Nodes:", nodes)
 			player:saveNewNodes(nodes)
 	--player:saveNewDestinationVect(node.pos)
 		end

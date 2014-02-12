@@ -9,8 +9,12 @@ var db = require('./pgsql');
 // executed function according to client result
 var sendmap_action = function (frame_data, stream) 
 {
-	console.log("sendmap_action");
-	db.fullMapAccordingToLocation(0, 0, function (map) 
+	var lat = 0;
+	var lon = 0;
+	if (frame_data.latitude != null) lat = frame_data.latitude;
+	if (frame_data.longitude != null) lon = frame_data.longitude;
+	console.log("sendmap_action:\nlat=" + lat + "\nlon=" + lon);
+	db.fullMapAccordingToLocation(lat, lon, function (map) 
 	{
 		var content = 
 		{
@@ -22,13 +26,13 @@ var sendmap_action = function (frame_data, stream)
 	}); // lat, lon
 }
 
-var sendInit_location = function (frame_data, stream) {}
+var test_action = function (frame_data, stream) {console.log("test_action");}
 
 
 var frame_actions = 
 {
-	"map": sendmap_action, // reponse function to localise
-	"loc": sendInit_location
+	"gps": sendmap_action, // reponse function to localise
+	"test": test_action
 }
 
 exports.frame_actions = frame_actions
