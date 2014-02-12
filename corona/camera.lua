@@ -8,8 +8,9 @@ local centerOffset = nil
 local cameraPos = nil
 
 
-function initCamera()
+local function initCamera()
   cameraGroup = display.newGroup()
+  displayMainGroup:insert(cameraGroup)
   --cameraGroup.anchorX = 0.5
   --cameraGroup.anchorY = 0.5
 
@@ -35,6 +36,14 @@ function worldToScreen(v2Pos)
   return Vector2D:Add(v2Pos, cameraPos)
 end
 
+local exitCamera = function (  )
+    cameraGroup:removeSelf( )
+end
+
+return {
+  initCamera = initCamera,
+  exitCamera = exitCamera
+}
 -- function Camera:new()  -- The constructor
 --   local object = {}
 

@@ -13,6 +13,10 @@
     JSON_NODE_LAT = "la"
     JSON_NODE_LON = "lo"
 
+  -- GPS data
+    JSON_GPS_LATITUDE = "latitude"
+    JSON_GPS_LONGITUDE = "longitude"
+
 -- Frame Types
   FRAMETYPE_MAP = "map"
   FRAMETYPE_GPS = "gps"
