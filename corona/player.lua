@@ -34,7 +34,7 @@ err = 1
 -------------------------------------------------
 
 local PLAYER_SPRITE_SEQUENCE_DATA = {
-{ name="normal", start=1, count=8, time=400}--,
+{ name="normal", start=1, count=7, time=400}--,
 --{ name="dead", start=9, count=4, time=400}
 }
 
