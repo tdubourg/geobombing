@@ -5,7 +5,7 @@ require "camera"
 Node = {}                   -- Create a table to hold the class methods
 function Node:new(lat, lon, uid)  -- The constructor
   local object = {lat=lat, lon=lon, uid=uid}
-  object.pos = Vector2D:new(gpsToLinear(lat,lon))    -- linearized position, used for game logic
+  object.pos = Vector2D:new(gpsToLinear(lon,lat))    -- linearized position, used for game logic
   object.arcs = {}                                   -- K: destination node, V: corresponding arc
 
   object.drawable = display.newGroup( )
@@ -43,6 +43,6 @@ function Node:linkTo(node1)
 	end
 end
 
-function gpsToLinear(lat, lon)
-	return lat, lon --TODO: spherical to linear transform
+function gpsToLinear(lon, lat)
+	return lon, lat --TODO: spherical to linear transform
 end
