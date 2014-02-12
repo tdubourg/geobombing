@@ -7,20 +7,22 @@
 local storyboard = require( "storyboard" )
 local Player = require( "player" )
 local network = require ("network")
-local gui = require ("gui")
 local scene = storyboard.newScene()
 require "node"
 require "consts"
 local camera = require "camera"
 require "vector2D"
 require "map"
+require "items"
 local physics = require( "physics" )
 
 local playBtn
-local player
+player = nil -- global in order to be accessed from everywhere
 
 local bombBtn = nil
 local currentMap = nil
+itemsManager = nil
+local gui = require ("gui") -- has to be required after globals definition
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
@@ -40,6 +42,8 @@ function scene:createScene( event )
 	currentMap = Map:new(luaMap)
 
 	player = Player.new( "Me",  2)
+	itemsManager = ItemsManager.new()
+	print ("IM", itemsManager)
 end
 
 local myListener = function( event )
@@ -108,6 +112,9 @@ function scene:exitScene( event )
 	local group = self.view
 	gui.exitGUI()
 	camera.exitCamera()
+	if (itemsManager ~= nil) then
+		itemsManager:destroy()
+	end
 	Runtime:removeEventListener( "enterFrame", myListener )
 	Runtime:removeEventListener("tap",moveObject)	
 end
