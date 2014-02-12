@@ -14,6 +14,24 @@ require "camera"
 require "vector2D"
 require "map"
 local physics = require( "physics" )
+-- include Corona's "widget" library
+local widget = require "widget"
+
+-- forward declarations and other locals
+local playBtn
+-- Those constants are the ratio of the sizes and positions of the widget button relative to the full sized-background,
+-- As the background is going to be scaled, using the ratio, and multiplying by the contentWidth/contentHeight, we're
+-- going to place them at the exact location where they should be
+POS_X_WIDGET_BUTTON = 0.90
+POS_Y_WIDGET_BUTTON = 0.85
+
+-- Those constants are because Corona does weird things
+WIDTH_RATIO_WIDGET_BUTTON = 0.5
+HEIGHT_RATIO_WIDGET_BUTTON = 0.5
+BOMB_BTN_PIXELS_HEIGHT = 100
+BOMB_BTN_PIXELS_WIDTH = 100
+
+local btnBombClicked = false
 
 ----------------------------------------------------------------------------------
 -- 
@@ -38,28 +56,6 @@ function scene:createScene( event )
 
 	--	CREATE display objects and add them to 'group' here.
 	--	Example use-case: Restore 'group' from previously saved state.
-
--- -- create object
---local myObject = display.newRect( 0, 0, 100, 100 )
---myObject:setFillColor( 255 )
-
--- -- touch listener function
--- function myObject:touch( event )
--- if event.phase == "began" then
--- self.markX = self.x -- store x location of object
--- self.markY = self.y -- store y location of object
--- elseif event.phase == "moved" then
--- local x = (event.x - event.xStart) + self.markX
--- local y = (event.y - event.yStart) + self.markY
--- self.x, self.y = x, y -- move object based on calculations above
--- end
--- return true
--- end
-
-
--- get the screen size
-_W = display.contentWidth
-_H = display.contentHeight
 
 local currentMap = nil
 
@@ -95,17 +91,57 @@ local function moveObject(e)
  
 	--player:saveNewNodes(currentMap.nodesByUID)
 
-	player:saveNewDestination(e)
+if (btnBombClicked) then
+	btnBombClicked = false
+else
+	local screenPos = Vector2D:new(e.x,e.y)
+    local  worldPos = screenToWorld(screenPos)
+	local node = Node:new(0,0)
+	node = currentMap:getClosestNode(worldPos)
+	--print(n6.pos.x .." ,".. n6.pos.y .." ")
+	player:saveNewDestinationVect(node.pos)
+end
 
 
 end
 Runtime:addEventListener("tap",moveObject)
 
 local myListener = function( event )
+if (btnBombClicked) then
+	btnBombClicked = false
+else
 player:refresh()
 lookAt(player.pos)
 end
+end
 Runtime:addEventListener( "enterFrame", myListener )
+
+-- 'onRelease' event listener for playBtn
+local function onBombBtnRelease()
+	
+	print("BOMB")
+	btnBombClicked = true
+	-- player:saveNewDestination(player.pos)
+	-- go to level1.lua scene
+	--storyboard.gotoScene( "game", "fade", 500 )
+
+	return true	-- indicates successful touch
+end
+
+-- create a widget button (which will loads level1.lua on release)
+	bombBtn = widget.newButton{
+		label="",
+		labelColor = { default={128}, over={128} },
+		defaultFile="images/bombButton2.png",
+		overFile="images/bombButton3.png",
+		width=BOMB_BTN_PIXELS_WIDTH*WIDTH_RATIO_WIDGET_BUTTON,
+		height=BOMB_BTN_PIXELS_HEIGHT*HEIGHT_RATIO_WIDGET_BUTTON,
+		onRelease = onBombBtnRelease	-- event listener function
+	}
+	
+	bombBtn.x = display.contentWidth*POS_X_WIDGET_BUTTON 
+	bombBtn.y = display.contentHeight*POS_Y_WIDGET_BUTTON
+group:insert( bombBtn )
 
 	-----------------------------------------------------------------------------
 	
@@ -122,7 +158,8 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
-	
+	storyboard.returnTo = "menu"
+
 	-----------------------------------------------------------------------------
 
 	--	INSERT code here (e.g. start timers, load audio, start listeners, etc.)
@@ -135,7 +172,7 @@ end
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-	
+
 	-----------------------------------------------------------------------------
 	
 	--	INSERT code here (e.g. stop timers, remove listeners, unload sounds, etc.)

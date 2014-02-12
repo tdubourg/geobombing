@@ -59,14 +59,45 @@ function scene:createScene( event )
 	group:insert( playBtn )
 end
 
+
+local function onKeyEvent( event )
+
+   local phase = event.phase
+   local keyName = event.keyName
+   -- print( event.phase, event.keyName )
+
+   if ( "back" == keyName and phase == "up" ) then
+      if ( storyboard.currentScene == "splash" ) then
+         native.requestExit()
+      else
+         if ( storyboard.isOverlay ) then
+            storyboard.hideOverlay()
+         else
+            local lastScene = storyboard.returnTo
+            print( "previous scene", lastScene )
+            if ( lastScene ) then
+               storyboard.gotoScene( lastScene, { effect="crossFade", time=500 } )
+            else
+               native.requestExit()
+            end
+         end
+      end
+   end
+   return false  -- We only return true for the keys the app is "overriding", false for the other ones
+end
+
+
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
+	storyboard.returnTo = nil -- We want to exit things, if back button is pressed when on menu
+	Runtime:addEventListener( "key", onKeyEvent )
 end
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
+	Runtime:removeEventListener( "key", onKeyEvent )
 end
 
 -- If scene's view is removed, scene:destroyScene() will be called just prior to:
@@ -81,7 +112,6 @@ function scene:destroyScene( event )
 		playBtn = nil
 	end
 end
-
 -- "createScene" event is dispatched if scene's view does not exist
 scene:addEventListener( "createScene", scene )
 

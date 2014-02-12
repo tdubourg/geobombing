@@ -17,6 +17,9 @@ function Map:new(luaMap)  -- The constructor
       local lat = node[JSON_NODE_LAT]
       local lon = node[JSON_NODE_LON]
       local uid = node[JSON_NODE_UID]
+      
+      --         print (">>>>>> ".. lat .."  " .. lon)
+
 
        if object.nodesByUID[uid] ~= nil then
          print ("WARNING: node uid: ".. uid .." is not unique!")
