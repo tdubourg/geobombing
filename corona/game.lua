@@ -7,20 +7,22 @@
 local storyboard = require( "storyboard" )
 local Player = require( "player" )
 local network = require ("network")
-local gui = require ("gui")
 local scene = storyboard.newScene()
 require "node"
 require "consts"
 local camera = require "camera"
 require "vector2D"
 require "map"
+require "items"
 local physics = require( "physics" )
 
 local playBtn
-local player
+player = nil -- global in order to be accessed from everywhere
 
 local bombBtn = nil
 local currentMap = nil
+itemsManager = nil
+local gui = require ("gui") -- has to be required after globals definition
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
@@ -33,13 +35,15 @@ function scene:createScene( event )
 	physics.start( )
 
 	-- connect to server
-	network.connect_to_server("127.0.0.1", 3000)
+	network.connect_to_server("192.168.43.119", 3000)
 	network.sendPosition()
 	luaMap = network.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
 
 	currentMap = Map:new(luaMap)
 
 	player = Player.new( "Me",  2)
+	itemsManager = ItemsManager.new()
+	print ("IM", itemsManager)
 end
 
 local myListener = function( event )
@@ -119,6 +123,9 @@ function scene:exitScene( event )
 	local group = self.view
 	gui.exitGUI()
 	camera.exitCamera()
+	if (itemsManager ~= nil) then
+		itemsManager:destroy()
+	end
 	Runtime:removeEventListener( "enterFrame", myListener )
 	Runtime:removeEventListener("tap",moveObject)	
 end
