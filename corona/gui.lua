@@ -3,14 +3,15 @@ local widget = require "widget"
 local gui_group = display.newGroup( )
 local bombBtn = nil
 btnBombClicked = false
-
 local function onBombBtnRelease()
 	
 	print("BOMB")
 	btnBombClicked = true
-	-- player:saveNewDestination(player.pos)
-	-- go to level1.lua scene
-	--storyboard.gotoScene( "game", "fade", 500 )
+
+	print (itemsManager)
+	-- if (itemsManager ~= nil) then
+		itemsManager:newBomb(player.pos.x, player.pos.y)
+	-- end
 
 	return true	-- indicates successful touch
 end
