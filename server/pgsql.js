@@ -12,6 +12,15 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	hauteur /= 2
 	largeur /= 2
 	
+	
+	//////////////////////////////////
+	// FIXME !! (méthode agile)
+	//latitude = 4.8730; longitude = 45.7816
+	latitude = 45.7816; longitude = 4.8730
+	//latitude = 41.9205551; longitude = 8.7361006
+	
+	//////////////////////////////////
+	
 	if (!conDB) {
 		callback(null, autoScaleMap([[[8.7369691, 41.9198811], [8.7368306, 41.9191348], [8.7369374, 41.9186287]],
 			[[8.7347978, 41.919762], [8.7353263, 41.9198519]]]));
@@ -159,7 +168,7 @@ function autoScaleMap(leMap) {
 function fullMapAccordingToLocation(latitude, longitude, callback) {
 	//var s = 0.0001
 	//var s = 0.003
-	var s = 0.006
+	var s = 0.01
 	
 	// TODO use latitude, longitude
 	//getMapFromPGSQL(41.9205551, 8.7361006, s, s, function(err,listString)

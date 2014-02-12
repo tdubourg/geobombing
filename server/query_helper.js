@@ -1,7 +1,8 @@
 "use strict"
 
 var pg = require('pg');
-var conString = "postgres://postgres:quepasa@localhost/postgres" // todo modify
+//var conString = "postgres://postgres:quepasa@localhost/postgres" // todo modify
+var conString = "postgres://postgres:quepasa@localhost/rhonealpes" // todo modify
 
 var client = new pg.Client(conString)
 
