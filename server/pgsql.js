@@ -2,7 +2,7 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap; 
 var utils = require("./common"); 
-var conDB = false
+var conDB = false;
 var qh = conDB? require('./query_helper'):null; // for generic query
 var lastMapId = 1;
 var lastNodeId = 1;
