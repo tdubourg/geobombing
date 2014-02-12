@@ -96,7 +96,7 @@ if (btnBombClicked) then
 else
 	local screenPos = Vector2D:new(e.x,e.y)
     local  worldPos = screenToWorld(screenPos)
-	local node = Node:new(0,0)
+	local node
 	node = currentMap:getClosestNode(worldPos)
 	--print(n6.pos.x .." ,".. n6.pos.y .." ")
 	player:saveNewDestinationVect(node.pos)
