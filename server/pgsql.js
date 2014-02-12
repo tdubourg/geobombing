@@ -10,7 +10,7 @@ var lastNodeId = 1;
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 {
 	if (!conDB) {
-		callback([[["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
+		callback(null, [[["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
 	["8.7369374", "41.9186287"]],
 			[["8.7347978", "41.919762"], ["8.7353263", "41.9198519"]]]);
 		return;
