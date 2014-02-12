@@ -10,14 +10,16 @@ var db = require('./pgsql');
 var sendmap_action = function (frame_data, stream) 
 {
 	console.log("sendmap_action");
-	var map = db.fullMapAccordingToLocalisation(0, 0); // lat, lon
-	var content = 
+	db.fullMapAccordingToLocation(0, 0, function (map) 
 	{
-		"type": TYPEMAP, 
-		"data": map
-	};
-	var data = JSON.stringify(content); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent:\n" + data)})
+		var content = 
+		{
+			"type": TYPEMAP, 
+			"data": map
+		};
+		var data = JSON.stringify(content); // parsage JSON
+		stream.write(data + FRAME_SEPARATOR, function () {console.log("Data sent")})
+	}); // lat, lon
 }
 
 var sendInit_location = function (frame_data, stream) {}
@@ -25,7 +27,7 @@ var sendInit_location = function (frame_data, stream) {}
 
 var frame_actions = 
 {
-	"map": sendmap_action,
+	"map": sendmap_action, // reponse function to localise
 	"loc": sendInit_location
 }
 
