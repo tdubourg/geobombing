@@ -35,7 +35,7 @@ function scene:createScene( event )
 	physics.start( )
 
 	-- connect to server
-	network.connect_to_server("127.0.0.1", 3000)
+	network.connect_to_server("192.168.43.119", 3000)
 	network.sendPosition()
 	luaMap = network.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
 
