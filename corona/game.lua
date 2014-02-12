@@ -69,8 +69,6 @@ network.sendPosition()
 luaMap = network.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
 
 currentMap = Map:new(luaMap)
-print "nonono"
-print (#(currentMap:findPath(currentMap.nodesByUID[1], currentMap.nodesByUID[5])))
 
 
 local player = player.new( "Me",  2)
