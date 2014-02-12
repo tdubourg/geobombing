@@ -78,10 +78,21 @@ local function moveObject(e)
 			--print(n6.pos.x .." ,".. n6.pos.y .." ")
 			local from = currentMap:getClosestNode(player.pos)
 			-- print ("Closest from is", from)
-			local nodes = currentMap:findPath(from, node)
+			
+			if (from == node ) then
+				print("la1")
+				player:saveNewDestination(e)
+			elseif (from == nil) then
+				print("la2")
+				--player:saveNewDestinationVect(node.pos)
+			elseif (node == nil) then
+				print("la3")
+				--player:saveNewDestination(e)
 			-- print ("Nodes:", nodes)
+			else
+			local nodes = currentMap:findPath(from, node)
 			player:saveNewNodes(nodes)
-	--player:saveNewDestinationVect(node.pos)
+			end
 		end
 
 
