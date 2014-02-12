@@ -79,16 +79,11 @@ end
 end
 
 function Map:getClosestNode(v2pos)
-  print_r(v2pos)
   local min = math.huge
   local best = nil
   for i,node in ipairs(self.nodesByUID) do
-    print_r(node.pos)
     local dist = v2pos:dist(node.pos)
-    print "dist"
-    print(dist)
     if dist < min then
-      print "yes"
       min = dist
       best = node
     end
@@ -107,9 +102,7 @@ function Map:findPath(from, to)
   local currentDist = 0
 
   while next(open) ~= nil do
-    print "while"
     currentNode, currentDist = popSmalestValue(open)
-    print(currentDist)
     --inserting neighbours
     closed[currentNode] = true
     for next,_ in pairs(currentNode.arcs) do
@@ -122,7 +115,6 @@ function Map:findPath(from, to)
         end
         --adding to closed licensing.init( providerName )
       else
-        print "in closed"
       end
 
     end
@@ -130,7 +122,6 @@ function Map:findPath(from, to)
       return rewindPath(precedence, currentNode)
     end
   end
-  print "not found"
   return nil
 
 end
@@ -156,8 +147,6 @@ function rewindPath(precedence, to)
     local prevNode = nil
 
     repeat
-      print "revrev"
-      print (node.uid)
       revPath[#revPath+1] = node
       prevNode = precedence[node]
       node = prevNode
