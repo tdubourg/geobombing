@@ -44,8 +44,8 @@ function start (port)
 				console.log(buffer)
 				var frame = buffer.substr(0, pos)
 				buffer = buffer.substr(pos + FRAME_SEPARATOR.length, buffer.length) //* If the second parameter is >= the maximum possible length substr can return, substr just returns the maximum length possible, so who cares substracting?
-				var frame_data = decode(frame)
-				frame_action(frame_data, stream)
+				var frame_data = decode(frame); // returns type (map, gps, move, bomb...)
+				frame_action(frame_data, stream);
 			};
 			console.log("SERV: ", "Ending the client stream data receiver function") //* Mainly for the purpose of being able to check when the VELOV_FRAME_EVENT handler function is executed with respect to the current function execution
 		});
