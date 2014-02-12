@@ -12,8 +12,8 @@ var sendmap_action = function (frame_data, stream)
 	var lat = 0;
 	var lon = 0;
 	console.log("sendmap_action:\n", frame_data.latitude);
-	if (frame_data != null && frame_data.latitude != null) lat = parsefloat(frame_data.latitude);
-	if (frame_data != null && frame_data.longitude != null) lon = parsefloat(frame_data.longitude);
+	if (frame_data != null && frame_data.latitude != null) lat = parseFloat(frame_data.latitude);
+	if (frame_data != null && frame_data.longitude != null) lon = parseFloat(frame_data.longitude);
 	console.log("sendmap_action:\nlat=" + lat + "\nlon=" + lon);
 	db.fullMapAccordingToLocation(lat, lon, function (map) 
 	{
