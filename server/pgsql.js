@@ -3,18 +3,22 @@
 var clMap = require("./Classes/clMap").clMap; 
 var utils = require("./common"); 
 var conDB = true
-var qh = conDB? require('./query_helper'):null; // for generic query
+var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1;
 var lastNodeId = 1;
 
-function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
-{
+function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
+	// from now on "hauteur" refers to hauteur/2 :-P
+	hauteur /= 2
+	largeur /= 2
+	
 	if (!conDB) {
-		callback(null, [[["8.7369691", "41.9198811"], ["8.7368306", "41.9191348"], 
-	["8.7369374", "41.9186287"]],
-			[["8.7347978", "41.919762"], ["8.7353263", "41.9198519"]]]);
+		callback(null, autoScaleMap([[[8.7369691, 41.9198811], [8.7368306, 41.9191348], [8.7369374, 41.9186287]],
+			[[8.7347978, 41.919762], [8.7353263, 41.9198519]]]));
 		return;
 	}
+	
+	console.log("Loading map from: " + latitude + ", " + hauteur)
 	
 	var query = "	\n\
 		SELECT ST_asText(ST_GeometryN(r.geom,1))	\n\
@@ -31,12 +35,12 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 		  where ST_Contains (			\n\
 		    box, p						\n\
 		  )								\n\
-		)								\n\
-		;								\n\
+		);								\n\
 	"
 	qh.text_query ( query, function(err, rez) {
 		
-		var SHIFTX = 8.73, SHIFTY = 41.92, COEFF = 50000  // FIXME: not the right place!!
+		//var SHIFTX = 8.73, SHIFTY = 41.92, COEFF = 50000  // FIXME: not the right place!!
+		var SHIFTX = 0, SHIFTY = 0, COEFF = 1
 		
 		var roads = []
 		rez.rows.forEach(function (r) {
@@ -47,22 +51,114 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback)
 			})
 			roads.push(pts)
 		})
-		console.log(roads)
+		//console.log(roads)
+		console.log("Number of roads loaded: " + roads.length)
 		
-		callback(err, roads);
+		callback(err, autoScaleMap(trimMap(roads, latitude, longitude, hauteur, largeur)));
+		
 	});
 	
 	// todo replace by select_query();
 	
 }
 
-function fullMapAccordingToLocation(latitude, longitude, callback)
-{
+function apply(f, arr) { return f.apply(null, arr) }
+function min(arr) { return apply(Math.min, arr) }
+function max(arr) { return apply(Math.max, arr) }
+function flatten(arrays) {
+	var merged = []
+	merged = merged.concat.apply(merged, arrays)
+	return merged
+}
+
+// removes points lying outside the selection box
+function trimMap(leMap, latitude, longitude, hauteur, largeur) {
+	
+	//////////////////////////////////
+	//return leMap // FIXME !!
+	//////////////////////////////////
+	
+	/*leMap.forEach(function(road) {
+		road.forEach(function(p) {
+			if (p[0] < longitude-largeur)
+		})
+	})*/
+	//for (var i = 0; i < leMap.length; i++) console.log(leMap[i])
+	var total = 0, trimmed = 0
+	for (var i = 0; i < leMap.length; i++)
+	for (var j = 0; j < leMap[i].length; j++) {
+		//console.log((longitude-largeur)+" "+leMap[i][j][0])
+		total++
+		if ( leMap[i][j][0] < longitude-largeur || leMap[i][j][0] > longitude+largeur
+		  && leMap[i][j][1] < latitude-hauteur  || leMap[i][j][1] > latitude+hauteur
+		) {
+			//console.log("Trimming point "+leMap[i][j])
+			trimmed++
+			leMap[i].splice(j, 1)
+			j--
+			//leMap[i].splice(j, -1) // FIXME working?
+			// need to split roads instead?
+		}
+	}
+	console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
+	return leMap
+}
+
+function autoScaleMap(leMap) {
+	
+	//////////////////////////////////
+	//return leMap // FIXME !!
+	//////////////////////////////////
+	
+	//	console.log(map)
+	/*
+	var minX = Math.min( leMap.map(function(r){ return Math.min( r.map(function(p){return p[0]})) }) ) // console.log(p); 
+	console.log(leMap[0].map(function(p){return p[0]}) )
+	console.log(Math.min( leMap[0].map(function(p){return p[0]}) ))
+	console.log( Math.min.apply(null, leMap[0].map(function(p){return p[0]})) )
+	*/
+	//var minX = Math.min.apply(null, leMap.map(function(r){ return Math.min.apply(null, r.map(function(p){return p[0]})) }) ) // console.log(p);
+	//var minX = min( leMap.map(function(r){ return r.map(function(p){return p[0]})) }) ) // console.log(p);
+	
+	function extr(coord,coeff) {
+		return min( flatten( leMap.map(function(r){ return r.map(function(p){return p[coord]*coeff}) }) ) )
+	}
+	var minX =  extr(0,  1),
+	    maxX = -extr(0, -1),
+	    minY =  extr(1,  1),
+	    maxY = -extr(1, -1),
+	    
+	    shiftX = minX,
+	    shiftY = minY,
+	    coeff = 1/(maxY-minY) // or use coord X
+	
+	//console.log(minX)
+	
+	//////////////////////////////////
+	coeff = 50000 // FIXME
+	//////////////////////////////////
+	
+	leMap.forEach(function(road) {
+		road.forEach(function(p) {
+			//console.log(p[0])
+			p[0] = (p[0]-shiftX)*coeff
+			p[1] = (p[1]-shiftY)*coeff
+		})
+	})
+	
+	//console.log(leMap)
+	
+	return leMap
+}
+
+function fullMapAccordingToLocation(latitude, longitude, callback) {
 	//var s = 0.0001
-	var s = 0.003
+	//var s = 0.003
+	var s = 0.006
 	
 	// TODO use latitude, longitude
-	getMapFromPGSQL(41.9205551, 8.7361006, s, s, function(err,listString)
+	//getMapFromPGSQL(41.9205551, 8.7361006, s, s, function(err,listString)
+	getMapFromPGSQL(latitude, longitude, s, s, function(err,listString)
 	//getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) 
 	{
 		// construct map struture using utils functions
