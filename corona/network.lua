@@ -55,8 +55,10 @@ end
 function sendPosition()
 	if client ~= nil then
 		location.enable_location()
-		packet = {latitude=currentLatitude, longitude=currentLongitude}
-	 sendSerialized(json.encode(packet), FRAMETYPE_GPS)
+		packet = {}
+		packet.JSON_GPS_LATITUDE = currentLatitude
+		packet.JSON_GPS_LONGITUDE = currentLongitude
+	 sendSerialized(packet, FRAMETYPE_GPS)
 		location.disable_location()
 	end
 end
