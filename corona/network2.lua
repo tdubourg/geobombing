@@ -118,7 +118,7 @@ function sendPathToServer( nodes )
 	to_send[JSON_MOVE_NODES] = net_nodes
 	to_send[JSON_MOVE_START_EDGE_POS] = 0.0
 	to_send[JSON_MOVE_END_EDGE_POS] = 1.0
-	sendSerialized(net_nodes, FRAMETYPE_MOVE)
+	sendSerialized(to_send, FRAMETYPE_MOVE)
 end
 
 return
