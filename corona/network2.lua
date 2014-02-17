@@ -110,10 +110,14 @@ function sendPathToServer( nodes )
 	if (nodes == nil) then
 		return
 	end
+	local to_send = {}
 	local net_nodes = {}
 	for i,v in ipairs(nodes) do
 		net_nodes[i] = v.uid
 	end
+	to_send[JSON_MOVE_NODES] = net_nodes
+	to_send[JSON_MOVE_START_EDGE_POS] = 0.0
+	to_send[JSON_MOVE_END_EDGE_POS] = 1.0
 	sendSerialized(net_nodes, FRAMETYPE_MOVE)
 end
 
