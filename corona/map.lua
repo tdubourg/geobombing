@@ -4,6 +4,10 @@ Map = {}                   -- Create a table to hold the class methods
 function Map:new(luaMap)  -- The constructor
   local object = {}
   object.nodesByUID = {}
+  object.latMin = math.huge
+  object.lonMin = math.huge
+  object.latMax = -math.huge
+  object.lonMax = -math.huge
  
   setmetatable(object, { __index = Map })  -- Inheritance
 
@@ -12,20 +16,28 @@ function Map:new(luaMap)  -- The constructor
     local nodes = luaMap[JSON_NODE_LIST]
     local ways = luaMap[JSON_WAY_LIST]
 
+    -- update min/max
+    for i,node in ipairs(nodes) do
+      local lat = node[JSON_NODE_LAT]
+      local lon = node[JSON_NODE_LON]
+      object.latMin = math.min( object.latMin, lat )
+      object.lonMin = math.min( object.lonMin, lon )
+      object.latMax = math.max( object.latMax, lat )
+      object.lonMax = math.max( object.lonMax, lon )
+
+    end
+
     -- load nodes
     for i,node in ipairs(nodes) do
       local lat = node[JSON_NODE_LAT]
       local lon = node[JSON_NODE_LON]
-      local uid = node[JSON_NODE_UID]
-      
-      --         print (">>>>>> ".. lat .."  " .. lon)
-
+      local uid = tostring(node[JSON_NODE_UID])
 
        if object.nodesByUID[uid] ~= nil then
          print ("WARNING: node uid: ".. uid .." is not unique!")
       end
-
-      object.nodesByUID[uid] = Node:new(lat, lon, uid)
+      local x,y = gpsToLinear(lat, lon)
+      object.nodesByUID[uid] = Node:new(x, y , uid)
     end
 
 
@@ -34,7 +46,7 @@ function Map:new(luaMap)  -- The constructor
       local nodeList = way[JSON_WAY_NODE_LIST]
       local previousNode = nil
       for j,nodeID in ipairs(nodeList) do
-        local strUid = toString(nodeID)
+        local strUid = tostring(nodeID)
         local node = object.nodesByUID[strUid]
         if (previousNode) then
           previousNode:linkTo(node)
@@ -151,4 +163,9 @@ function invertIndexedTable ( tab )
     end
 
     return newTable
+end
+
+
+function gpsToLinear(lat, lon)
+  return lat, lon --TODO: spherical to linear transform
 end
