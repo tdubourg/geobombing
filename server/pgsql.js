@@ -1,17 +1,18 @@
 
 "use strict"
 var clMap = require("./Classes/clMap").clMap; 
-var utils = require("./common");
+var common = require("./common");
 var conDB = false;
 var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1;
 var lastNodeId = 1;
+var u = require("./util")
+
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	// from now on "hauteur" refers to hauteur/2 :-P
 	hauteur /= 2
 	largeur /= 2
-	
 	
 	//////////////////////////////////
 	// FIXME !! (méthode agile)
@@ -77,15 +78,6 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	
 }
 
-function apply(f, arr) { return f.apply(null, arr) }
-function min(arr) { return apply(Math.min, arr) }
-function max(arr) { return apply(Math.max, arr) }
-function flatten(arrays) {
-	var merged = []
-	merged = merged.concat.apply(merged, arrays)
-	return merged
-}
-
 // removes points lying outside the selection box
 function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 	
@@ -93,26 +85,16 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 	//return leMap // FIXME !!
 	//////////////////////////////////
 	
-	/*leMap.forEach(function(road) {
-		road.forEach(function(p) {
-			if (p[0] < longitude-largeur)
-		})
-	})*/
-	//for (var i = 0; i < leMap.length; i++) console.log(leMap[i])
 	var total = 0, trimmed = 0
 	for (var i = 0; i < leMap.length; i++)
 	for (var j = 0; j < leMap[i].length; j++) {
-		//console.log((longitude-largeur)+" "+leMap[i][j][0])
 		total++
 		if ( leMap[i][j][0] < longitude-largeur || leMap[i][j][0] > longitude+largeur
 		  && leMap[i][j][1] < latitude-hauteur  || leMap[i][j][1] > latitude+hauteur
 		) {
-			//console.log("Trimming point "+leMap[i][j])
 			trimmed++
 			leMap[i].splice(j, 1)
 			j--
-			//leMap[i].splice(j, -1) // FIXME working?
-			// need to split roads instead?
 		}
 	}
 	console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
@@ -125,18 +107,8 @@ function autoScaleMap(leMap) {
 	//return leMap // FIXME !!
 	//////////////////////////////////
 	
-	//	console.log(map)
-	/*
-	var minX = Math.min( leMap.map(function(r){ return Math.min( r.map(function(p){return p[0]})) }) ) // console.log(p); 
-	console.log(leMap[0].map(function(p){return p[0]}) )
-	console.log(Math.min( leMap[0].map(function(p){return p[0]}) ))
-	console.log( Math.min.apply(null, leMap[0].map(function(p){return p[0]})) )
-	*/
-	//var minX = Math.min.apply(null, leMap.map(function(r){ return Math.min.apply(null, r.map(function(p){return p[0]})) }) ) // console.log(p);
-	//var minX = min( leMap.map(function(r){ return r.map(function(p){return p[0]})) }) ) // console.log(p);
-	
 	function extr(coord,coeff) {
-		return min( flatten( leMap.map(function(r){ return r.map(function(p){return p[coord]*coeff}) }) ) )
+		return u.min( u.flatten( leMap.map(function(r){ return r.map(function(p){return p[coord]*coeff}) }) ) )
 	}
 	var minX =  extr(0,  1),
 	    maxX = -extr(0, -1),
@@ -147,10 +119,8 @@ function autoScaleMap(leMap) {
 	    shiftY = minY,
 	    coeff = 1/(maxY-minY) // or use coord X
 	
-	//console.log(minX)
-	
 	//////////////////////////////////
-	coeff = 1; // FIXME
+	//coeff = 50000; // FIXME
 	//////////////////////////////////
 	
 	leMap.forEach(function(road) {
@@ -160,8 +130,6 @@ function autoScaleMap(leMap) {
 			p[1] = (p[1]-shiftY)*coeff
 		})
 	})
-	
-	//console.log(leMap)
 	
 	return leMap
 }
@@ -176,20 +144,20 @@ function fullMapAccordingToLocation(latitude, longitude, callback) {
 	getMapFromPGSQL(latitude, longitude, s, s, function(err,listString)
 	//getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) 
 	{
-		// construct map struture using utils functions
-		var map = utils.CreateEmptyMap(++lastMapId, "mapName");
+		// construct map struture using common functions
+		var map = common.CreateEmptyMap(++lastMapId, "mapName");
 	    for (var i = 0; i < listString.length; i++) 
 	    {
-	    	var way = utils.CreateEmptyWay("way" + i);
+	    	var way = common.CreateEmptyWay("way" + i);
 	        for (var j = 0; j < listString[i].length; j++) 
 	    	{
 	    		if (listString[i][j] == null || listString[i][j].length != 2) return null;
-	        	var node = utils.CreateNode(++lastNodeId,
+	        	var node = common.CreateNode(++lastNodeId,
 	        		listString[i][j][0],listString[i][j][1]);
-	        	utils.AddNodeToMap(map, node);
-	        	utils.AddNodeIdToWay(way, lastNodeId);
+	        	common.AddNodeToMap(map, node);
+	        	common.AddNodeIdToWay(way, lastNodeId);
 	    	}
-	    	utils.AddWayToMap(map, way);
+	    	common.AddWayToMap(map, way);
 	    }
 		callback(map)
 	});
