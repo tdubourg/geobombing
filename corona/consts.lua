@@ -10,8 +10,8 @@
     JSON_WAY_NODE_LIST = "wLstNdId"
 
     JSON_NODE_UID = "id"
-    JSON_NODE_LAT = "la"
-    JSON_NODE_LON = "lo"
+    JSON_NODE_X = "x"
+    JSON_NODE_Y = "y"
 
   -- GPS data
     JSON_GPS_LATITUDE = "latitude"
