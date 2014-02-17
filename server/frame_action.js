@@ -12,7 +12,7 @@ var TYPEBOMB = "bomb";
 var TYPEPLAYERBOMB = "pbomb"
 
 var db = require('./pgsql');
-var now = new Date();
+var nb_instance_move = 0;
 
 
 // executed function according to client result
@@ -32,7 +32,7 @@ var sendmap_action = function (frame_data, stream)
 			"data": map
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log("MapData sent")})
+		stream.write(data + FRAME_SEPARATOR, function () {console.log("MapData sent:\n" + data)})
 	}); // lat, lon
 }
 
@@ -41,17 +41,25 @@ var test_action = function (frame_data, stream)
 	console.log("test_action:\n" + frame_data);
 }
 
+var multiple_send_position = function (stream) 
+{
+        var pos = utils.CreatePosition(0, 0, -1)
+		var content = 
+		{
+			"type": TYPEPOS, 
+			"data": pos
+		};
+
+		var data = JSON.stringify(content); // parsage JSON
+		stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent:\n" + data)})
+		if (nb_instance_move < 2) {setTimeout(function(){multiple_send_position(stream)}, 1000);}
+        
+}
 var move_action = function (frame_data, stream) 
 {
 	console.log("move_action:\n" + frame_data);
-	var pos = utils.CreatePosition(0, 0, -1)
-	var content = 
-	{
-		"type": TYPEPOS, 
-		"data": pos
-	};
-	var data = JSON.stringify(content); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent:\n" + data)})
+	nb_instance_move++;
+	setTimeout(function(){multiple_send_position(stream)}, 1000); // execute the function every 1000ms
 }
 
 var bomb_action = function (frame_data, stream) 
