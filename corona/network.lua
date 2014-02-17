@@ -107,6 +107,9 @@ function sendString(data)
 end
 
 function sendPathToServer( nodes )
+	if (nodes == nil) then
+		return
+	end
 	local net_nodes = {}
 	for i,v in ipairs(nodes) do
 		net_nodes[i] = v.uid
