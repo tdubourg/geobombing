@@ -5,6 +5,7 @@
 --
 -------------------------------------------------
 require "camera"
+require "vector2D"
 local physics = require( "physics" )
 
 local player = {}
