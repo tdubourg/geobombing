@@ -57,7 +57,7 @@ var move_action = function (frame_data, stream)
 var multiple_send_position = function (stream, startedge, endedge, idnodes) 
 {
     // calculate position
-    if (idnodes.length == 2 && startedge >= endedge) startedge = endedge; // add stop send
+    if (idnodes.length == 2 && startedge >= endedge) return // stop send
 	else if (startedge < 1) startedge += 0.2;
 	else if (startedge >= 1)
 	{
@@ -76,19 +76,6 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 	if (nb_instance_move < 2) {setTimeout(function(){multiple_send_position(stream, startedge, endedge, idnodes)}, 1000);}
 	else nb_instance_move--;
         
-}
-var calculate_position= function (startedge, endedge, idnodes)
-{
-	if (idnodes.length == 2 && startedge >= endedge) startedge = endedge;
-	else if (startedge < 1) startedge += 0.2;
-	else if (startedge >= 1)
-	{
-		startedge = 0;
-		if (idnodes.length > 2) idnodes.shift();
-	}
-
-    var pos = utils.CreatePosition(idnodes[0], idnodes[1], startedge);
-	return pos;
 }
 
 var bomb_action = function (frame_data, stream) 
