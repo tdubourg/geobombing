@@ -1,5 +1,5 @@
 
-require "Vector2D"
+require "vector2D"
 require "print_r"
 
 local MAP_WIDTH_ON_SCREEN = 2
