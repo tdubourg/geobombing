@@ -10,7 +10,7 @@ function Node:new(worldX, worldY, uid)  -- The constructor
   object.arcs = {}                                   -- K: destination node, V: corresponding arc
 
   object.drawable = display.newGroup( )
-  display.newCircle(object.drawable, object.pos.x, object.pos.y, 10 )
+  display.newCircle(object.drawable, object.pos.x, object.pos.y, 7 )
   local text = display.newText(uid, object.pos.x, object.pos.y, native.systemFont, 16 )
   text:setFillColor( 0, 0, 1 )
   object.drawable:insert(text)
