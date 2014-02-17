@@ -85,7 +85,7 @@ local function moveObject(e)
 			
 			if (from == node ) then
 				print("la1")
-				player:saveNewDestination(e)
+				--player:saveNewDestination(e)
 			elseif (from == nil) then
 				print("la2")
 				--player:saveNewDestinationVect(node.pos)
