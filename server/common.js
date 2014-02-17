@@ -6,11 +6,11 @@ var clPosition = require('./network').clPosition;
 
 // -- Creating
 
-function CreatePosition(node1, node2, coef)
+function CreatePosition(idNode1, idNode2, coef)
 {
-	var pos = new clNode();
-	pos.n1 = node1;
-	pos.n2 = node2;
+	var pos = new clPosition();
+	pos.n1 = idNode1;
+	pos.n2 = idNode2;
     pos.c = coef;
 	return pos;
 }
