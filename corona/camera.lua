@@ -1,5 +1,5 @@
 
-require "Vector2D"
+require "vector2D"
 require "print_r"
 
 cameraGroup = nil
