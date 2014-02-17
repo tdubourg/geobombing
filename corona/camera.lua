@@ -2,6 +2,8 @@
 require "Vector2D"
 require "print_r"
 
+local MAP_WIDTH_ON_SCREEN = 2
+local MAP_HEIGHT_ON_SCREEN = 2
 cameraGroup = nil
 
 local centerOffset = nil
