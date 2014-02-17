@@ -92,7 +92,7 @@ local function moveObject(e)
 			local nodes = currentMap:findPath(from, node)
 
 
-			-- net.sendPathToServer(nodes)
+			net.sendPathToServer(nodes)
 
 			player:saveNewNodes(nodes)
 			end
