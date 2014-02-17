@@ -6,11 +6,11 @@
 
 local storyboard = require "storyboard"
 displayMainGroup = display.newGroup( )
+net = require "network"
 loc = require "location"
 print( loc )
 -- load scenetemplate.lua
 storyboard.gotoScene( "menu" )
-net = require "network"
 
 loc.enable_location()
 -- Add any objects that should appear on all scenes below (e.g. tab bar, hud, etc.):
