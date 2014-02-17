@@ -6,7 +6,6 @@
 
 local storyboard = require( "storyboard" )
 local Player = require( "player" )
-local network = require ("network")
 local scene = storyboard.newScene()
 require "node"
 require "consts"
@@ -35,9 +34,11 @@ function scene:createScene( event )
 	physics.start( )
 
 	-- connect to server
-	network.connect_to_server("127.0.0.1", 3000)
-	network.sendPosition()
-	luaMap = network.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+	result = net.connect_to_server("127.0.0.1", 3000)
+	if result then
+		net.sendPosition()
+		luaMap = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+	end
 
 	currentMap = Map:new(luaMap)
 
@@ -95,6 +96,7 @@ local function moveObject(e)
 			-- print ("Nodes:", nodes)
 			else
 			local nodes = currentMap:findPath(from, node)
+			net.sendPathToServer(nodes)
 			player:saveNewNodes(nodes)
 			end
 		end
