@@ -25,7 +25,7 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	if (!conDB) {
 		callback(null, autoScaleMap(
 			[[[0, 0], [0, 200], [100, 100], [100, 200]], 
-			[[0, 0], [100, 200], [150, 250], [150, 250]]]));
+			[[0, 0], [100, 200], [150, 250], [500, 250]]]));
 		return;
 	}
 	

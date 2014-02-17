@@ -38,12 +38,12 @@ var sendmap_action = function (frame_data, stream)
 
 var test_action = function (frame_data, stream) 
 {
-	console.log("test_action");
+	console.log("test_action:\n" + frame_data);
 }
 
 var move_action = function (frame_data, stream) 
 {
-	console.log("move_action");
+	console.log("move_action:\n" + frame_data);
 	var pos = utils.CreatePosition(0, 0, -1)
 	var content = 
 	{
@@ -51,12 +51,12 @@ var move_action = function (frame_data, stream)
 		"data": pos
 	};
 	var data = JSON.stringify(content); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent")})
+	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent:\n" + data)})
 }
 
 var bomb_action = function (frame_data, stream) 
 {
-	console.log("bomb_action");
+	console.log("bomb_action:\n" + frame_data);
 	var pos = CreatePosition(0, 0, -1)
 	var content = 
 	{
@@ -64,7 +64,7 @@ var bomb_action = function (frame_data, stream)
 		"data": pos
 	};
 	var data = JSON.stringify(content); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("BombData sent")})
+	stream.write(data + FRAME_SEPARATOR, function () {console.log("BombData sent:\n" + data)})
 }
 
 
