@@ -5,11 +5,9 @@
 ----------------------------------------------------------------------------------
 
 local storyboard = require( "storyboard" )
-print("1")
-local player = require( "player" )
-print("2")
-local network = require ("network")
-print("3")
+
+local Player = require( "player" )
+
 local scene = storyboard.newScene()
 print("4")
 require "node"
@@ -59,51 +57,55 @@ function scene:createScene( event )
 
 	-- connect to server
 
-	
-
-	network.connect_to_server("127.0.0.1", 3000)
+	result = net.connect_to_server("127.0.0.1", 3000)
 	print("25")
-	network.sendPosition()
-	print("26")
-	luaMap = network.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
-	print("27")
+	
+	if result then
+		print("26")
+		net.sendPosition()
+		print("26")
+		luaMap = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+		print("26")
+	end
+print("27")
+
 	currentMap = Map:new(luaMap)
 	print("28")
 	player = Player.new( "Me",  2)
 	print("29")
 	itemsManager = ItemsManager.new()
-	print("29")
+	print("30")
 	print ("IM", itemsManager)
-	print("29")
+	print("31")
 end
-	print("29")
+	print("32")
 local myListener = function( event )
-	print("29")
+	print("33")
 	if (btnBombClicked) then
-	print("29")
+	print("34")
 		btnBombClicked = false
-	print("29")
+	print("35")
 	else
-	print("29")
+	print("36")
 		player:refresh()
-	print("29")
+	print("37")
 		lookAt(player.pos)
-	print("29")
+	print("38")
 	end
-	print("29")
+	print("39")
 end
 local trans
-	print("29")
+	print("40")
 local function moveObject(e)
-	print("29")
+	print("41")
 		print ("Received tap event in moveObject")
-	print("29")
+	print("42")
 		if(trans)then
-	print("29")
+	print("43")
 			transition.cancel(trans)
-	print("29")
+	print("44")
 		end
-	print("29")
+	print("45")
 
 		--find nearest node
 
@@ -115,50 +117,54 @@ local function moveObject(e)
 	 
 		--player:saveNewNodes(currentMap.nodesByUID)
 
-	print("29")
+	print("46")
 		if (btnBombClicked) then
-	print("29")
+	print("47")
 			btnBombClicked = false
-	print("29")
+	print("48")
 		else
-	print("29")
+	print("49")
 			local screenPos = Vector2D:new(e.x,e.y)
 			local worldPos = screenToWorld(screenPos)
-	print("29")
+	print("50")
 			local node = currentMap:getClosestNode(worldPos)
-	print("29")
+	print("51")
 			-- print ("Closest node is", node)
 			--print(n6.pos.x .." ,".. n6.pos.y .." ")
 			local from = currentMap:getClosestNode(player.pos)
-	print("29")
+	print("52")
 			-- print ("Closest from is", from)
 			
 			if (from == node ) then
-	print("29")
+	print("53")
 				print("la1")
-	print("29")
+	print("54")
 				--player:saveNewDestination(e)
 			elseif (from == nil) then
-	print("29")
+	print("55")
 				print("la2")
-	print("29")
+	print("56")
 				--player:saveNewDestinationVect(node.pos)
 			elseif (node == nil) then
-	print("29")
+	print("57")
 				print("la3")
-	print("29")
+	print("58")
 				--player:saveNewDestination(e)
 			-- print ("Nodes:", nodes)
 			else
-	print("29")
+	print("59")
 			local nodes = currentMap:findPath(from, node)
-	print("29")
+
+	print("60")
+
+			-- net.sendPathToServer(nodes)
+
 			player:saveNewNodes(nodes)
-	print("29")
+	print("61")
 			end
-	print("29")
+	print("62")
 		end
-	print("29")
+	print("63")
 
 
 	end
