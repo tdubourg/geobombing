@@ -29,20 +29,26 @@ var sendmap_action = function (frame_data, stream)
 }
 
 var test_action = function (frame_data, stream) 
-{console.log("test_action");}
+{
+	console.log("test_action");
+}
 
 var move_action = function (frame_data, stream) 
-{console.log("move_action");}
+{
+	console.log("move_action");
+}
 
 var bomb_action = function (frame_data, stream) 
-{console.log("bomb_action");}
+{
+	console.log("bomb_action");
+}
 
 
 var frame_actions = 
 {
 	"gps": sendmap_action, // reponse function to localise
-	"move":
-	"bomb": 
+	"move": move_action,
+	"bomb": bomb_action,
 	"test": test_action
 }
 
