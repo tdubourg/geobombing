@@ -2,6 +2,12 @@
   -- protocol
     JSON_FRAME_TYPE = "type"
     JSON_FRAME_DATA = "data"
+    -- Frame Types
+      FRAMETYPE_MOVE = "move"
+      FRAMETYPE_MAP = "map"
+      FRAMETYPE_GPS = "gps"
+      FRAMETYPE_BOMB = "bomb"
+
 
   -- map data
     JSON_MAP_NAME = "mapName"
@@ -16,7 +22,3 @@
   -- GPS data
     JSON_GPS_LATITUDE = "latitude"
     JSON_GPS_LONGITUDE = "longitude"
-
--- Frame Types
-  FRAMETYPE_MAP = "map"
-  FRAMETYPE_GPS = "gps"

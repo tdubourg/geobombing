@@ -36,8 +36,11 @@ function scene:createScene( event )
 	-- connect to server
 	result = net.connect_to_server("127.0.0.1", 3000)
 	if result then
+		print ("We are connected!")
 		net.sendPosition()
 		luaMap = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+	else
+		print ("Could not connect to server")
 	end
 
 	currentMap = Map:new(luaMap)
