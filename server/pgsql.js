@@ -22,8 +22,9 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	//////////////////////////////////
 	
 	if (!conDB) {
-		callback(null, autoScaleMap([[[8.7369691, 41.9198811], [8.7368306, 41.9191348], [8.7369374, 41.9186287]],
-			[[8.7347978, 41.919762], [8.7353263, 41.9198519]]]));
+		callback(null, autoScaleMap(
+			[[[0, 0], [0, 200], [100, 100], [100, 200]], 
+			[[0, 0], [100, 200], [150, 250], [150, 250]]]));
 		return;
 	}
 	
@@ -149,7 +150,7 @@ function autoScaleMap(leMap) {
 	//console.log(minX)
 	
 	//////////////////////////////////
-	coeff = 50000 // FIXME
+	coeff = 1; // FIXME
 	//////////////////////////////////
 	
 	leMap.forEach(function(road) {

@@ -61,11 +61,16 @@ function scene:createScene( event )
 	print("25")
 	
 	if result then
+
 		print("26")
+		print ("We are connected!")
 		net.sendPosition()
 		print("26")
 		luaMap = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+
 		print("26")
+	else
+		print ("Could not connect to server")
 	end
 print("27")
 
