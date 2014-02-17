@@ -6,7 +6,7 @@
 
 local storyboard = require( "storyboard" )
 print("1")
-local Player = require( "player" )
+local player = require( "player" )
 print("2")
 local network = require ("network")
 print("3")
@@ -58,7 +58,10 @@ function scene:createScene( event )
 	print("24")
 
 	-- connect to server
-	network.connect_to_server("192.168.43.119", 3000)
+
+	
+
+	network.connect_to_server("127.0.0.1", 3000)
 	print("25")
 	network.sendPosition()
 	print("26")
