@@ -4,6 +4,10 @@ Map = {}                   -- Create a table to hold the class methods
 function Map:new(luaMap)  -- The constructor
   local object = {}
   object.nodesByUID = {}
+  object.latMin = math.huge
+  object.lonMin = math.huge
+  object.latMax = -math.huge
+  object.lonMax = -math.huge
  
   setmetatable(object, { __index = Map })  -- Inheritance
 
@@ -12,20 +16,28 @@ function Map:new(luaMap)  -- The constructor
     local nodes = luaMap[JSON_NODE_LIST]
     local ways = luaMap[JSON_WAY_LIST]
 
+    -- update min/max
+    for i,node in ipairs(nodes) do
+      local lat = node[JSON_NODE_LAT]
+      local lon = node[JSON_NODE_LON]
+      object.latMin = math.min( object.latMin, lat )
+      object.lonMin = math.min( object.lonMin, lon )
+      object.latMax = math.max( object.latMax, lat )
+      object.lonMax = math.max( object.lonMax, lon )
+
+    end
+
     -- load nodes
     for i,node in ipairs(nodes) do
       local lat = node[JSON_NODE_LAT]
       local lon = node[JSON_NODE_LON]
-      local uid = node[JSON_NODE_UID]
-      
-      --         print (">>>>>> ".. lat .."  " .. lon)
-
+      local uid = tostring(node[JSON_NODE_UID])
 
        if object.nodesByUID[uid] ~= nil then
          print ("WARNING: node uid: ".. uid .." is not unique!")
       end
-
-      object.nodesByUID[uid] = Node:new(lat, lon, uid)
+      local x,y = gpsToLinear(lat, lon)
+      object.nodesByUID[uid] = Node:new(x, y , uid)
     end
 
 
@@ -34,7 +46,8 @@ function Map:new(luaMap)  -- The constructor
       local nodeList = way[JSON_WAY_NODE_LIST]
       local previousNode = nil
       for j,nodeID in ipairs(nodeList) do
-        local node = object.nodesByUID[nodeID]
+        local strUid = tostring(nodeID)
+        local node = object.nodesByUID[strUid]
         if (previousNode) then
           previousNode:linkTo(node)
         end
@@ -43,36 +56,22 @@ function Map:new(luaMap)  -- The constructor
     end
 else
   --dummy map
-  -- local n1 = Node:new(0, 0, 1)
-  -- local n2 = Node:new(20, 200, 2)
-  -- local n3 = Node:new(100,100, 3)
-  -- local n4 = Node:new(100,20, 4)
-  -- local n5 = Node:new(150,250, 5)
-  -- local n6 = Node:new(150,150, 6)
+  print "loading dummy map"
 
+  object.nodesByUID["1"] = Node:new(0, 0, "1")
+  object.nodesByUID["2"] = Node:new(0, 200, "2")
+  object.nodesByUID["3"]= Node:new(100,100, "3")
+  object.nodesByUID["4"]= Node:new(100,20, "4")
+  object.nodesByUID["5"] = Node:new(150,250, "5")
+  object.nodesByUID["6"]= Node:new(150,150, "6")
 
-  -- n1:linkTo(n2)
-  -- n2:linkTo(n3)
-  -- n3:linkTo(n4)
-  -- n4:linkTo(n1)
-  -- n5:linkTo(n2)
-  -- n6:linkTo(n2)
-  -- n6:linkTo(n3)
-
-  object.nodesByUID[1] = Node:new(0, 0, 1)
-  object.nodesByUID[2] = Node:new(0, 200, 2)
-  object.nodesByUID[3]= Node:new(100,100, 3)
-  object.nodesByUID[4]= Node:new(100,20, 4)
-  object.nodesByUID[5] = Node:new(150,250, 5)
-  object.nodesByUID[6]= Node:new(150,150, 6)
-
-  object.nodesByUID[1]:linkTo(object.nodesByUID[2])
-  object.nodesByUID[2]:linkTo(object.nodesByUID[3])
-  object.nodesByUID[3]:linkTo(object.nodesByUID[4])
-  object.nodesByUID[4]:linkTo(object.nodesByUID[1])
-  object.nodesByUID[5]:linkTo(object.nodesByUID[2])
-  object.nodesByUID[6]:linkTo( object.nodesByUID[2])
-  object.nodesByUID[6]:linkTo( object.nodesByUID[3])
+  object.nodesByUID["1"]:linkTo(object.nodesByUID["2"])
+  object.nodesByUID["2"]:linkTo(object.nodesByUID["3"])
+  object.nodesByUID["3"]:linkTo(object.nodesByUID["4"])
+  object.nodesByUID["4"]:linkTo(object.nodesByUID["1"])
+  object.nodesByUID["5"]:linkTo(object.nodesByUID["2"])
+  object.nodesByUID["6"]:linkTo( object.nodesByUID["2"])
+  object.nodesByUID["6"]:linkTo( object.nodesByUID["3"])
 end
 
   return object
@@ -81,7 +80,7 @@ end
 function Map:getClosestNode(v2pos)
   local min = math.huge
   local best = nil
-  for i,node in ipairs(self.nodesByUID) do
+  for _,node in pairs(self.nodesByUID) do
     local dist = v2pos:dist(node.pos)
     if dist < min then
       min = dist
@@ -164,4 +163,9 @@ function invertIndexedTable ( tab )
     end
 
     return newTable
+end
+
+
+function gpsToLinear(lat, lon)
+  return lat, lon --TODO: spherical to linear transform
 end
