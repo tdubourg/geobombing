@@ -24,6 +24,7 @@ var frame_action = function (frame_data, stream)
 exports.start = start
 function start (port) 
 {
+	var now = new Date();
 	var server = net.createServer(function(stream) 
 	{
 		console.log("SERV: A new client is connected");

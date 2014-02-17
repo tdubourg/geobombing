@@ -2,9 +2,19 @@
 var clMap = require("./Classes/clMap").clMap; 
 var clNode = require("./Classes/clNode").clNode;
 var clWay = require("./Classes/clWay").clWay; 
+var clPosition = require('./network').clPosition; 
 
 // -- Creating
-exports.CreateNode = CreateNode
+exports.CreatePosition = CreatePosition
+function CreatePosition(node1, node2, coef)
+{
+	var pos = new clNode();
+	pos.n1 = node1;
+	pos.n2 = node2;
+    pos.c = coef;
+	return pos;
+}
+
 function CreateNode(id, lat, lon)
 {
 	var node = new clNode();

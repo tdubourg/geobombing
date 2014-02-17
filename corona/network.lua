@@ -9,7 +9,7 @@ local FRAME_SEPARATOR = "\n"
 local NETWORK_DUMP = true
 
 function test_network()
-	local ip = "192.168.43.119"
+	local ip = "127.0.0.1"
 	local port = 3000
 	connect_to_server(ip, port)
 	if (not client) then
