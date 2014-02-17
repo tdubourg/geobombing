@@ -93,6 +93,9 @@ local function moveObject(e)
 
 
 			-- net.sendPathToServer(nodes)
+			player.nodeFrom=from
+			--player.nodeTo=nodes[1]
+			--player:goToAR(from.arcs[nodes[1]],50)
 
 			player:saveNewNodes(nodes)
 			end
