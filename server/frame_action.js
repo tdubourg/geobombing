@@ -5,18 +5,21 @@ var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
 
 // Type from server
 var TYPEMAP = "map";
-var TYPEPOS = "position";
+var TYPEPOS = "pos"; // current player position
+var TYPEPLAYERPOS = "ppos"; // other players pos
 var TYPEBOMB = "bomb";
+var TYPEPLAYERBOMB = "pbomb"
 
 var db = require('./pgsql');
 var now = new Date();
+
 
 // executed function according to client result
 var sendmap_action = function (frame_data, stream) 
 {
 	var lat = 0;
 	var lon = 0;
-	console.log("sendmap_action:\n", frame_data.latitude);
+
 	if (frame_data != null && frame_data.latitude != null) lat = parseFloat(frame_data.latitude);
 	if (frame_data != null && frame_data.longitude != null) lon = parseFloat(frame_data.longitude);
 	console.log("sendmap_action:\nlat=" + lat + "\nlon=" + lon);
@@ -60,17 +63,16 @@ var bomb_action = function (frame_data, stream)
 		"data": pos
 	};
 	var data = JSON.stringify(content); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent")})
+	stream.write(data + FRAME_SEPARATOR, function () {console.log("BombData sent")})
 }
 
 
 var frame_actions = 
 {
 	//Type from client
-	"gps": sendmap_action, // reponse function to localise
+	"gps":  sendmap_action, // reponse function to localise
 	"move": move_action,
 	"bomb": bomb_action,
 	"test": test_action
 }
-
 exports.frame_actions = frame_actions
