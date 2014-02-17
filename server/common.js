@@ -20,8 +20,8 @@ function CreateNode(id, lat, lon)
 {
 	var node = new clNode();
 	node.id = id;
-	node.la = lat;
-	node.lo = lon;
+	node.x = lat;
+	node.y = lon;
 	return node;
 }
 function CreateEmptyWay(name)

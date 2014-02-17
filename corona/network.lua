@@ -1,6 +1,7 @@
 socket = require "socket"
 local json = require("json")
 local location = require("location")
+require ("consts")
 require "print_r"
 require "utils"
 
@@ -105,10 +106,19 @@ function sendString(data)
 	end
 end
 
+function sendPathToServer( nodes )
+	local net_nodes = {}
+	for i,v in ipairs(nodes) do
+		net_nodes[i] = v.uid
+	end
+	sendSerialized(net_nodes, FRAMETYPE_MOVE)
+end
+
 return
 {
-	connect_to_server = connect_to_server,
-	receiveSerialized = receiveSerialized,
-	sendSerialized = sendSerialized,
-	sendPosition = sendPosition
+	  connect_to_server = connect_to_server
+	, receiveSerialized = receiveSerialized
+	, sendSerialized = sendSerialized
+	, sendPosition = sendPosition
+	, sendPathToServer = sendPathToServer
 }

@@ -63,8 +63,8 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
 newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
 
     --Player current position
-    newPlayer.drawable.x = display.contentWidth/2
-    newPlayer.drawable.y = display.contentHeight/2
+    newPlayer.drawable.x = 0
+    newPlayer.drawable.y = 0
 
     newPlayer.pos = Vector2D:new(newPlayer.drawable.x, newPlayer.drawable.y)
 

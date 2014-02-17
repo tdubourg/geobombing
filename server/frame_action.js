@@ -1,6 +1,7 @@
 "use strict"
 
 var netw = require('./network');
+var utils = require("./common");
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
 
 // Type from server
@@ -43,7 +44,7 @@ var test_action = function (frame_data, stream)
 var move_action = function (frame_data, stream) 
 {
 	console.log("move_action");
-	var pos = CreatePosition(0, 0, -1)
+	var pos = utils.CreatePosition(0, 0, -1)
 	var content = 
 	{
 		"type": TYPEPOS, 
