@@ -3,9 +3,10 @@ require "arc"
 require "camera"
 
 Node = {}                   -- Create a table to hold the class methods
-function Node:new(lat, lon, uid)  -- The constructor
-  local object = {lat=lat, lon=lon, uid=uid}
-  object.pos = Vector2D:new(gpsToLinear(lon,lat))    -- linearized position, used for game logic
+function Node:new(worldX, worldY, uid)  -- The constructor
+  
+  local object = {uid=uid}
+  object.pos = Vector2D:new(worldX, worldY)    -- linearized position, used for game logic
   object.arcs = {}                                   -- K: destination node, V: corresponding arc
 
   object.drawable = display.newGroup( )
@@ -41,8 +42,4 @@ function Node:linkTo(node1)
 		self.arcs[node1] = newArc
 		node1.arcs[self] = newArc
 	end
-end
-
-function gpsToLinear(lon, lat)
-	return lon, lat --TODO: spherical to linear transform
 end
