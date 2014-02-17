@@ -6,7 +6,7 @@
 
 local storyboard = require "storyboard"
 displayMainGroup = display.newGroup( )
-net = require "network"
+net = require "network2"
 loc = require "location"
 print( loc )
 -- load scenetemplate.lua
