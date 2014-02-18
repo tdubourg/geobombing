@@ -5,25 +5,25 @@ require "camera"
 Node = {}                   -- Create a table to hold the class methods
 function Node:new(worldX, worldY, uid)  -- The constructor
   
-  local object = {uid=uid}
-  object.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
-  object.arcs = {}                                   -- K: destination node, V: corresponding arc
+  local self = {uid=uid}
+  self.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
+  self.arcs = {}                                   -- K: destination node, V: corresponding arc
 
-  object.drawable = display.newGroup( )
+  self.drawable = display.newGroup( )
 
-  display.newCircle(object.drawable, object.pos.x, object.pos.y, 7 )
-  local text = display.newText(object.drawable, uid, object.pos.x, object.pos.y, native.systemFont, 16 )
+  display.newCircle(self.drawable, self.pos.x, self.pos.y, 7 )
+  local text = display.newText(self.drawable, uid, self.pos.x, self.pos.y, native.systemFont, 16 )
   text:setFillColor( 0, 0, 1 )
 
-  camera:addListener(object)
+  camera:addListener(self)
 
   -- if nodesByUID[uid] ~= nil then
   -- 	print ("WARNING: node uid: ".. uid .." is not unique!")
   -- end
-  -- nodesByUID[uid] = object;
+  -- nodesByUID[uid] = self;
 
-  setmetatable(object, { __index = Node })  -- Inheritance
-  return object
+  setmetatable(self, { __index = Node })  -- Inheritance
+  return self
 end
 
 -- part of the contract with Camera
