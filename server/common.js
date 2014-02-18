@@ -27,7 +27,7 @@ function CreateNode(id, lat, lon)
 function CreateEmptyWay(name)
 {
 	var way = new clWay();
-	way.wayName = name;
+	way.wName = name;
 	way.wLstNdId = new Array();
 	return way;
 }
