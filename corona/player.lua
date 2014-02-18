@@ -294,36 +294,38 @@ function player:refresh()
 
 
 function player:upCurrentArc(from, to)
-        if (from == nil) then
-            print ("from == nil")
-        end
-        if (to == nil) then
-            print ("end == nil")
-         end
-        if (from.arcs[to] == 0) then
-            print ("from.arc[to] == nil")    
-        end
+    if (from == nil) then
+        print ("from == nil")
+    elseif (to == nil) then
+        print ("to == nil")
+    elseif (from.arcs[to] == nil) then
+        print ("from.arc[to] == nil")    
+    else 
         local dist = Vector2D:Dist(from.pos,self.pos)
         self.currentArc=from.arcs[to]
         if(self.currentArc.end1==from) then
-        self.currentArcRatio=(dist/self.currentArc.len)*100
-    else
-        self.currentArcRatio=100-(dist/self.currentArc.len)*100
+            self.currentArcRatio=(dist/self.currentArc.len)*100
+        else
+            self.currentArcRatio=100-(dist/self.currentArc.len)*100
+        end
+        print(from.uid.. " to " ..to.uid .." ratio" ..  self.currentArcRatio)
     end
-    print(from.uid.. " to " ..to.uid .." ratio" ..  self.currentArcRatio)
 end
 
 function player:goToAR(arc,ratio)
+
     local from = arc.end1.pos
+    self.nodeFrom = arc.end1
     print(from.x .. " , " ..from.y )
     local to = arc.end2.pos
+    self.nodeTo = arc.end2
     print(to.x .. " , " ..to.y )
     local vectDir = Vector2D:new(0,0)
     vectDir = Vector2D:Sub(to,from)
     print(vectDir.x .. " , " ..vectDir.y )
     vectDir:mult(ratio/100)
     print(vectDir.x .. " , " ..vectDir.y )
-    from:add(vectDir)
+    local finalPos = Vector2D:Add(from,vectDir)
     print(from.x .. " , " ..from.y )
     print(" ratio" ..  ratio)
     self.toX=from.x
