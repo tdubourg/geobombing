@@ -42,3 +42,11 @@ function Node:linkTo(node1)
 	end
   return self.arcs[node1]
 end
+
+function Node:destroy()
+  camera:removeListener(self)
+  if self.drawable then
+    self.drawable:removeSelf()
+    self.drawable = nil
+  end
+end
