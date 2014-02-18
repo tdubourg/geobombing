@@ -42,3 +42,11 @@ end
 --     return nil
 --   end
 -- end
+
+function Arc:destroy()
+  camera:removeListener(self)
+  if self.drawable then
+    self.drawable:removeSelf()
+    self.drawable = nil
+  end
+end

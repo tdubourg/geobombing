@@ -171,6 +171,16 @@ function Map:findPath(from, to)
 
 end
 
+function Map:destroy()
+  for _,node in pairs(self.nodesByUID) do
+    node:destroy()
+  end
+
+    for _,arc in ipairs(self.arcs) do
+    arc:destroy()
+  end
+end
+
 function popSmalestValue(table)
   minV = math.huge
   bestK = nil
