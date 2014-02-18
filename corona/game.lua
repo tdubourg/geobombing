@@ -32,11 +32,11 @@ function scene:createScene( event )
 	displayMainGroup:insert(group)
 	camera = Camera:new()
 	camera:setZoomXY(200,200)
-	camera:lookAtXY(0,0)
+	camera:lookAtXY(0,0)	
 	gui.initGUI()
 
-	delay=1
-	physics.start( )
+	-- loading dummy map, will be replaced as soon as map is received from server
+	currentMap = Map:new(nil)
 
 	-- connect to server
 	local result = net.connect_to_server("127.0.0.1", 3000)
@@ -45,14 +45,15 @@ function scene:createScene( event )
 
 		net.net_handlers['map'] = function ( json_obj )
 			luaMap = json_obj[JSON_FRAME_DATA]
+			currentMap = Map:new(luaMap)
 		end
 		net.net_handlers['pos'] = function ( json_obj )
-			print (json.encode(json_obj))
+			print ("Received pos from server: " .. json.encode(json_obj))
+			player:setAR(currentMap.getArc(json_obj.n1, json_obj.n2), json_obj.c)
 		end
 		net.sendPosition()
-		 -- = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
-
 	else
+		print ("Could no connect to server")
 	end
 
 	currentMap = Map:new(luaMap)
@@ -61,6 +62,7 @@ function scene:createScene( event )
 		nodeT=voisin
 	end
 	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
+
 
 	itemsManager = ItemsManager.new()
 end
@@ -107,13 +109,13 @@ local function moveObject(e)
 			else
 			local nodes = currentMap:findPath(from, node)
 
-			local toPos = currentMap:getClosestPos(worldPos)
+			--local toPos = currentMap:getClosestPos(worldPos)
 			net.sendPathToServer(nodes)
-			player.nodeFrom=from
+			--player.nodeFrom=from
 			--player.nodeTo=nodes[1]
-			print(toPos[1].end1.uid .."  ratio ".. toPos[2])
+			--print(toPos[1].end1.uid .."  ratio ".. toPos[2])
 			--player:goToAR(toPos[1],toPos[2])
-
+			print(nodes[1].uid)
 			player:saveNewNodes(nodes)
 			end
 		end

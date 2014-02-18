@@ -134,6 +134,25 @@ function autoScaleMap(leMap) {
 	return leMap
 }
 
+function mapDataToJSon(mapData) {
+	var map = common.CreateEmptyMap(++lastMapId, "mapName");
+    for (var i = 0; i < mapData.length; i++) 
+    {
+    	var way = common.CreateEmptyWay("way" + i);
+        for (var j = 0; j < mapData[i].length; j++) 
+    	{
+    		if (mapData[i][j] == null || mapData[i][j].length != 2) return null;
+        	var node = common.CreateNode(++lastNodeId,
+        		mapData[i][j][0],mapData[i][j][1]);
+        	common.AddNodeToMap(map, node);
+        	common.AddNodeIdToWay(way, lastNodeId);
+    	}
+    	common.AddWayToMap(map, way);
+    }
+    return map
+}
+exports.mapDataToJSon = mapDataToJSon
+
 function fullMapAccordingToLocation(latitude, longitude, callback) {
 	//var s = 0.0001
 	//var s = 0.003
@@ -141,9 +160,10 @@ function fullMapAccordingToLocation(latitude, longitude, callback) {
 	
 	// TODO use latitude, longitude
 	//getMapFromPGSQL(41.9205551, 8.7361006, s, s, function(err,listString)
-	getMapFromPGSQL(latitude, longitude, s, s, function(err,listString)
+	getMapFromPGSQL(latitude, longitude, s, s, function(err,mapData)
 	//getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) 
 	{
+		/*
 		// construct map struture using common functions
 		var map = common.CreateEmptyMap(++lastMapId, "mapName");
 	    for (var i = 0; i < listString.length; i++) 
@@ -159,8 +179,9 @@ function fullMapAccordingToLocation(latitude, longitude, callback) {
 	    	}
 	    	common.AddWayToMap(map, way);
 	    }
-		callback(map)
+	    */
+		//callback({jsonMap: map, mapData: listString})
+		callback(mapData)
 	});
 }
-
 exports.fullMapAccordingToLocation = fullMapAccordingToLocation
