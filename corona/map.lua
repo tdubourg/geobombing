@@ -207,7 +207,7 @@ function rewindPath(precedence, to)
     repeat
       revPath[#revPath+1] = node
       node = precedence[node]
-    until precedence[node] == nil --TODO : "until node == nil"  -> ajoute from dans le resultat, plus propre
+    until node == nil --TODO : "until node == nil"  -> ajoute from dans le resultat, plus propre
       
     return invertIndexedTable(revPath)
 end
