@@ -34,9 +34,6 @@ function scene:createScene( event )
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 
-	-- loading dummy map, will be replaced as soon as map is received from server
-	currentMap = Map:new(nil)
-
 	-- connect to server
 	local result = net.connect_to_server("127.0.0.1", 3000)
 	
@@ -44,6 +41,7 @@ function scene:createScene( event )
 
 		net.net_handlers['map'] = function ( json_obj )
 			luaMap = json_obj[JSON_FRAME_DATA]
+			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 		end
 		net.net_handlers['pos'] = function ( json_obj )
@@ -53,6 +51,7 @@ function scene:createScene( event )
 		net.sendPosition()
 	else
 		print ("Could no connect to server")
+		currentMap = Map:new(nil)
 	end
 
 	currentMap = Map:new(luaMap)
