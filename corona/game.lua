@@ -12,8 +12,7 @@ local scene = storyboard.newScene()
 
 require "node"
 require "consts"
-local json = require( "json" )
-local camera = require "camera"
+require "camera"
 require "vector2D"
 require "map"
 require "items"
@@ -22,6 +21,7 @@ local playBtn
 player = nil -- global in order to be accessed from everywhere
 local bombBtn = nil
 local currentMap = nil
+camera = nil
 itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 
@@ -30,7 +30,9 @@ local gui = require ("gui") -- has to be required after globals definition
 function scene:createScene( event )
 	local group = self.view
 	displayMainGroup:insert(group)
-	camera.initCamera()
+	camera = Camera:new()
+	camera:setZoomXY(200,200)
+	camera:lookAtXY(0,0)
 	gui.initGUI()
 
 	delay=1
@@ -54,7 +56,8 @@ function scene:createScene( event )
 	end
 
 	currentMap = Map:new(luaMap)
-	player = Player.new( "Me",  2)
+	player = Player.new( "Me",  0.02)
+
 	itemsManager = ItemsManager.new()
 end
 local myListener = function( event )
@@ -62,7 +65,7 @@ local myListener = function( event )
 		btnBombClicked = false
 	else
 		player:refresh()
-		lookAt(player.pos)
+		camera:lookAt(player.pos)
 	end
 end
 local trans
@@ -70,6 +73,8 @@ local function moveObject(e)
 		if(trans)then
 			transition.cancel(trans)
 		end
+		--camera:lookAt(camera:screenToWorld(Vector2D:new(e.x,e.y)))
+
 
 		--find nearest node
 
@@ -85,7 +90,7 @@ local function moveObject(e)
 			btnBombClicked = false
 		else
 			local screenPos = Vector2D:new(e.x,e.y)
-			local worldPos = screenToWorld(screenPos)
+			local worldPos = camera:screenToWorld(screenPos)
 			local node = currentMap:getClosestNode(worldPos)
 			local from = currentMap:getClosestNode(player.pos)
 			
