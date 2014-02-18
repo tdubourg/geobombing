@@ -120,7 +120,7 @@ function autoScaleMap(leMap) {
 	    coeff = 1/(maxY-minY) // or use coord X
 	
 	//////////////////////////////////
-	coeff = 1; // FIXME
+	//coeff = 1; //50000; // FIXME
 	//////////////////////////////////
 	
 	leMap.forEach(function(road) {
