@@ -17,7 +17,6 @@ var nb_instance_move = 0;
 
 var g = require('./Game')
 var single_game_instance/*: g.Game */ = null
-//var single_game_instance = new g.Game(fullMapAccordingToLocation(lat, lon));
 
 
 // executed function according to client result
@@ -55,12 +54,11 @@ var sendmap_action = function (frame_data, stream)
 
 var move_action = function (frame_data, stream) 
 {
-	console.log("\nmove_action:");
-
 	//decode frame
 	if (frame_data != null && frame_data.start_edge_pos != null && frame_data.end_edge_pos != null
 		&& frame_data.nodes != null && frame_data.nodes.length >= 2) // minimum of two nodes for moving
 		{
+			console.log("\nmove_action:");
 			var startedge = parseFloat(frame_data.start_edge_pos);
 			var endedge = parseFloat(frame_data.end_edge_pos);
 
@@ -91,7 +89,7 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 		"data": position
 	};
 	var data = JSON.stringify(content); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent:\n" + data);}) // send network
+	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent:\n" + data + "\n");}) // send network
 
 	setTimeout(function(){multiple_send_position(stream, startedge, endedge, idnodes)}, 
 			MOVE_REFRESH_FREQUENCY);
