@@ -42,10 +42,10 @@ function receive_until(end_separator)
 		str = str .. chunk
 		start, _end = str:find(end_separator)
 	end
-	if NETWORK_DUMP then
-			print "NETWORK DUMP - IN"
-			print(str)
-	end
+	-- if NETWORK_DUMP then
+	-- 		print "NETWORK DUMP - IN"
+	-- 		print(str)
+	-- end
 	if (str == "") then
 		return nil
 	end
@@ -144,13 +144,14 @@ function sendPathToServer( nodes )
 	if (nodes == nil) then
 		return
 	end
+	local arc, ratio = player.currentArc, player.currentArcRatio
 	local to_send = {}
-	local net_nodes = {}
+	local net_nodes = {arc.end1.uid}
 	for i,v in ipairs(nodes) do
-		net_nodes[i] = v.uid
+		net_nodes[#net_nodes+1] = v.uid
 	end
 	to_send[JSON_MOVE_NODES] = net_nodes
-	to_send[JSON_MOVE_START_EDGE_POS] = 0.0
+	to_send[JSON_MOVE_START_EDGE_POS] = ratio
 	to_send[JSON_MOVE_END_EDGE_POS] = 1.0
 	sendSerialized(to_send, FRAMETYPE_MOVE)
 end

@@ -47,12 +47,12 @@ function scene:createScene( event )
 			luaMap = json_obj[JSON_FRAME_DATA]
 		end
 		net.net_handlers['pos'] = function ( json_obj )
-			print (json.encode(json_obj))
+			print ("Received pos from server: " .. json.encode(json_obj))
+			player:setAR(currentMap.getArc(json_obj.n1, json_obj.n2), json_obj.c)
 		end
 		net.sendPosition()
-		 -- = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
-
 	else
+		print ("Could no connect to server")
 	end
 
 	currentMap = Map:new(luaMap)
