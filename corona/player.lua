@@ -289,7 +289,15 @@ function player:refresh()
 
 
 function player:upCurrentArc(from, to)
-    
+        if (from == nil) then
+            print ("from == nil")
+        end
+        if (to == nil) then
+            print ("end == nil")
+         end
+        if (from.arcs[to] == 0) then
+            print ("from.arc[to] == nil")    
+        end
         local dist = Vector2D:Dist(from.pos,self.pos)
         self.currentArc=from.arcs[to]
         if(self.currentArc.end1==from) then
@@ -313,8 +321,9 @@ function player:goToAR(arc,ratio)
     from:add(vectDir)
     print(from.x .. " , " ..from.y )
     print(" ratio" ..  ratio)
-    self.pos=from 
-    self:refreshPos()
+    self.toX=from.x
+    self.toY=from.y
+    
 end
 
 return player
