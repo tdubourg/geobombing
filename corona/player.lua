@@ -27,7 +27,7 @@ spriteWidth = 25
 spriteHeight = 25
 
 -- error accepted when moving the player
-err = 1
+err = 0.005
 
 -------------------------------------------------
 -- PRIVATE FUNCTIONS
@@ -59,13 +59,13 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
     newPlayer.drawable=nil
     local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
 	height = PLAYER_SPRITE_RAW_HEIGHT, numFrames = 7})--, sheetContentWidth=PLAYER_SPRITESHEET_WIDTH, sheetContentHeight=PLAYER_SPRITESHEET_HEIGHT})
-newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
+    newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
 
     --Player current position
     newPlayer.drawable.x = 0
     newPlayer.drawable.y = 0
 
-    newPlayer.pos = Vector2D:new(newPlayer.drawable.x, newPlayer.drawable.y)
+    newPlayer.pos = Vector2D:new(0, 0)
 
     --Player current destination
     newPlayer.toX=newPlayer.drawable.x
@@ -96,8 +96,10 @@ newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
     newPlayer.drawable.gravityScale = gravityScale
 
     -- insert in camera group
-    cameraGroup:insert(newPlayer.drawable)
-    return newPlayer
+    --cameraGroup:insert(newPlayer.drawable)
+
+    camera:addListener(newPlayer)
+     return newPlayer
 end
 
 -------------------------------------------------
@@ -216,6 +218,12 @@ function player:saveNewDestinationNode(e)
 
 end
 
+-- part of the contract with Camera
+function player:redraw(camera)
+  local newPos = camera:worldToScreen(self.pos)
+  self.drawable.x = newPos.x
+  self.drawable.y = newPos.y
+end
 
 function player:refresh()
 
@@ -225,7 +233,7 @@ function player:refresh()
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
-            err = 1
+            -- err = 1
         else
             self.toX=self.nodes[self.nodesI].pos.x
             self.toY=self.nodes[self.nodesI].pos.y
