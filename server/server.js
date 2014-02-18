@@ -7,6 +7,7 @@ var netw = require('./network'); // import class-file network.js
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
 var decode = netw.decode_frame;
 var frame_actions = require('./frame_action').frame_actions;
+var debug = true;
 
 // tree which choose which action to perform
 var frame_action = function (frame_data, stream) 
@@ -24,10 +25,9 @@ var frame_action = function (frame_data, stream)
 exports.start = start
 function start (port) 
 {
-	var now = new Date();
 	var server = net.createServer(function(stream) 
 	{
-		console.log("SERV: A new client is connected");
+		if (debug) console.log("SERV: A new client is connected");
 		stream.setTimeout(0);
 		stream.setEncoding("utf8");
 		stream.addListener("connect", function(){console.log("SERV: ", new Date(), "New client server connection established.")});
@@ -35,18 +35,18 @@ function start (port)
 		var buffer = ""
 		stream.addListener("data", function (data) 
 		{
-			console.log("SERV: ", new Date(), "Receiving data from a client")
+			if (debug) console.log("SERV: ", new Date(), "Receiving data from a client")
 			buffer += data
 			var pos = -1
 			while (-1 != (pos = buffer.indexOf(FRAME_SEPARATOR))) {//* We have found a separator, that means that the previous frame (that may be incomplete or may not) is over and a new one starts
-				console.log(new Date(), "A frame is over")
-				console.log(buffer)
+				if (debug) console.log(new Date(), "A frame is over")
+				if (debug) console.log(buffer)
 				var frame = buffer.substr(0, pos)
 				buffer = buffer.substr(pos + FRAME_SEPARATOR.length, buffer.length) //* If the second parameter is >= the maximum possible length substr can return
 				var frame_data = decode(frame); // returns type (map, gps, move, bomb...)
 				frame_action(frame_data, stream);
 			};
-			console.log("SERV: ", "Ending the client stream data receiver function") 
+			if (debug) console.log("SERV: ", "Ending the client stream data receiver function") 
 		});
 
 		stream.addListener("end", function() 
