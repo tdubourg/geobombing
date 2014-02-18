@@ -1,9 +1,11 @@
 -- listener contract:
--- self.redraw(camera) -> method that handles redrawing the object (ie. moving DrawObjets or modifying them)
+-- self.redraw() -> method that handles redrawing the object (ie. moving DrawObjets or modifying them)
 -- The Camera should be queried for conversion from world to screen, and scale if necessary.
 
 require "vector2D"
 require "print_r"
+
+camera = nil  -- global / singleton
 
 Camera = {}                   -- Create a table to hold the class methods
 function Camera:new()  -- The constructor
@@ -72,6 +74,6 @@ end
 function Camera:updateManaged()
   for obj,_ in pairs(self.listeners) do
     local v2Screen = self:worldToScreen(obj.pos)
-    obj:redraw(self)
+    obj:redraw()
   end
 end
