@@ -4,6 +4,7 @@ Map = {}                   -- Create a table to hold the class methods
 function Map:new(luaMap)  -- The constructor
   local object = {}
   object.nodesByUID = {}
+  object.arcs ={}
   object.latMin = math.huge
   object.lonMin = math.huge
   object.latMax = -math.huge
@@ -49,7 +50,8 @@ function Map:new(luaMap)  -- The constructor
         local strUid = tostring(nodeID)
         local node = object.nodesByUID[strUid]
         if (previousNode) then
-          previousNode:linkTo(node)
+          object.arcs[j] =previousNode:linkTo(node)
+          print(j .. " / ")
         end
         previousNode = node
       end
@@ -89,6 +91,32 @@ function Map:getClosestNode(v2pos)
   end
   return best
 end
+
+function Map:getClosestPos(v2pos)
+  local min = math.huge
+  local best = nil
+  for _,arc in pairs(self.arcs) do
+    local from = arc.end1.pos
+    local to = arc.end2.pos
+    local vectDir = Vector2D:new(0,0)
+    vectDir = Vector2D:Sub(to,from)
+    vectDir:normalize()
+   
+    local vectPos = Vector2D:Sub(v2pos,from)
+
+    local distProj = vectPos:dot(vectDir)
+
+    
+
+    local dist = v2pos:dist(node.pos)
+    if dist < min then
+      min = dist
+      best = node
+    end
+  end
+  return best
+end
+
 
 function Map:findPath(from, to)
   local open = {}

@@ -42,4 +42,5 @@ function Node:linkTo(node1)
 		self.arcs[node1] = newArc
 		node1.arcs[self] = newArc
 	end
+  return newArc
 end
