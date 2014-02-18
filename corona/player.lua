@@ -66,7 +66,7 @@ function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
     newPlayer.drawable.x = 0
     newPlayer.drawable.y = 0
 
-    newPlayer.pos = Vector2D:new(0, 0)
+    newPlayer.pos = Vector2D:new(0.0000, 0.0000)
 
     --Player current destination
     newPlayer.toX=newPlayer.drawable.x
@@ -198,8 +198,8 @@ end
 
 
 function player:refreshPos()
-    self.drawable.x=self.pos.x
-    self.drawable.y = self.pos.y
+    self.drawable.x=worldToScreen(self.pos.x)
+    self.drawable.y = worldToScreen(self.pos.y)
     self:upCurrentArc(self.nodeFrom,self.nodeTo)
 end
 
@@ -236,14 +236,12 @@ end
 
 function player:refresh()
 
-    if(self.drawable.x<= (self.toX+err) and self.drawable.x>=(self.toX-err) and self.drawable.y <=(self.toY+err) and  self.drawable.y>=(self.toY-err)) then
+    if(self.pos.x<= (self.toX+err) and self.pos.x>=(self.toX-err) and self.pos.y <=(self.toY+err) and  self.pos.y>=(self.toY-err)) then
         self.currentState = PLAYER_FROZEN_STATE 
         self.nodesI=self.nodesI+1
-        print ("ICIIIIIIIIIII")
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
-             print ("LAAAA")
             --self.nodeFrom=self.nodeTo
             --self.nodeTo=nil
 
@@ -255,7 +253,6 @@ function player:refresh()
             self.nodeTo=self.nodes[self.nodesI]
             --self.upCurrentArc(self.nodeFrom,self.nodeTo)
             self:refresh()
-            print ("ON AVANCE")
 
         end
 
@@ -286,8 +283,10 @@ function player:refresh()
         --     else
         vectDir:mult(self.speed)
         self.pos:add(vectDir)
-        self:refreshPos()
+         print(" ( " .. self.pos.x.. " <= (" .. self.toX+err .. ") and  " .. self.pos.x..">= (" ..self.toX-err..") and " .. self.pos.y.." <= (" .. self.toY+err..") and  " ..  self.pos.y .. " >=(" ..self.toY-err..") " )
 
+        self:refreshPos()
+       
             -- end
             
         end
@@ -306,8 +305,8 @@ function player:upCurrentArc(from, to)
         
         
         
-           -- print ("from.arc[to] == nil") 
-            --print ("error ici")
+           print ("from.arc[to] == nil") 
+        print ("error ici")
       
     else 
         local dist = Vector2D:Dist(from.pos,self.pos)
