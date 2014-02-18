@@ -2,15 +2,15 @@ require "heap"
 
 Map = {}                   -- Create a table to hold the class methods
 function Map:new(luaMap)  -- The constructor
-  local object = {}
-  object.nodesByUID = {}
-  object.arcs ={}
-  object.latMin = math.huge
-  object.lonMin = math.huge
-  object.latMax = -math.huge
-  object.lonMax = -math.huge
+  local self = {}
+  self.nodesByUID = {}
+  self.arcs ={}
+  self.latMin = math.huge
+  self.lonMin = math.huge
+  self.latMax = -math.huge
+  self.lonMax = -math.huge
  
-  setmetatable(object, { __index = Map })  -- Inheritance
+  setmetatable(self, { __index = Map })  -- Inheritance
 
   if luaMap then
     local mapName = luaMap[JSON_MAP_NAME]
@@ -21,10 +21,10 @@ function Map:new(luaMap)  -- The constructor
     -- for i,node in ipairs(nodes) do
     --   local lat = node[JSON_NODE_LAT]
     --   local lon = node[JSON_NODE_LON]
-    --   object.latMin = math.min( object.latMin, lat )
-    --   object.lonMin = math.min( object.lonMin, lon )
-    --   object.latMax = math.max( object.latMax, lat )
-    --   object.lonMax = math.max( object.lonMax, lon )
+    --   self.latMin = math.min( self.latMin, lat )
+    --   self.lonMin = math.min( self.lonMin, lon )
+    --   self.latMax = math.max( self.latMax, lat )
+    --   self.lonMax = math.max( self.lonMax, lon )
 
     -- end
 
@@ -34,11 +34,11 @@ function Map:new(luaMap)  -- The constructor
       local y = node[JSON_NODE_Y]
       local uid = tostring(node[JSON_NODE_UID])
 
-       if object.nodesByUID[uid] ~= nil then
+       if self.nodesByUID[uid] ~= nil then
          print ("WARNING: node uid: ".. uid .." is not unique!")
       end
 
-      object.nodesByUID[uid] = Node:new(x, y , uid)
+      self.nodesByUID[uid] = Node:new(x, y , uid)
     end
 
 
@@ -48,9 +48,9 @@ function Map:new(luaMap)  -- The constructor
       local previousNode = nil
       for j,nodeID in ipairs(nodeList) do
         local strUid = tostring(nodeID)
-        local node = object.nodesByUID[strUid]
+        local node = self.nodesByUID[strUid]
         if (previousNode) then
-          object.arcs[#(object.arcs)+1] =previousNode:linkTo(node)
+          self.arcs[#(self.arcs)+1] =previousNode:linkTo(node)
           print(j .. " / ")
         end
         previousNode = node
@@ -60,27 +60,31 @@ else
   --dummy map
   print "loading dummy map"
 
-  object.nodesByUID["1"] = Node:new(0, 0, "1")
-  object.nodesByUID["2"] = Node:new(0, 200, "2")
-  object.nodesByUID["3"]= Node:new(100,100, "3")
-  object.nodesByUID["4"]= Node:new(100,20, "4")
-  object.nodesByUID["5"] = Node:new(150,250, "5")
-  object.nodesByUID["6"]= Node:new(150,150, "6")
+  self.nodesByUID["1"] = Node:new(0, 0, "1")
+  self.nodesByUID["2"] = Node:new(0, 200, "2")
+  self.nodesByUID["3"]= Node:new(100,100, "3")
+  self.nodesByUID["4"]= Node:new(100,20, "4")
+  self.nodesByUID["5"] = Node:new(150,250, "5")
+  self.nodesByUID["6"]= Node:new(150,150, "6")
 
-  object.arcs[1] = object.nodesByUID["1"]:linkTo(object.nodesByUID["2"])
-    object.arcs[2] = object.nodesByUID["2"]:linkTo(object.nodesByUID["3"])
-  object.arcs[3] = object.nodesByUID["3"]:linkTo(object.nodesByUID["4"])
-  object.arcs[4] = object.nodesByUID["4"]:linkTo(object.nodesByUID["1"])
-  object.arcs[5] = object.nodesByUID["5"]:linkTo(object.nodesByUID["2"])
-  object.arcs[6] = object.nodesByUID["6"]:linkTo( object.nodesByUID["2"])
-  object.arcs[7] = object.nodesByUID["6"]:linkTo( object.nodesByUID["3"])
+  self.arcs[1] = self.nodesByUID["1"]:linkTo(self.nodesByUID["2"])
+  self.arcs[2] = self.nodesByUID["2"]:linkTo(self.nodesByUID["3"])
+  self.arcs[3] = self.nodesByUID["3"]:linkTo(self.nodesByUID["4"])
+  self.arcs[4] = self.nodesByUID["4"]:linkTo(self.nodesByUID["1"])
+  self.arcs[5] = self.nodesByUID["5"]:linkTo(self.nodesByUID["2"])
+  self.arcs[6] = self.nodesByUID["6"]:linkTo(self.nodesByUID["2"])
+  self.arcs[7] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
 end
 
   return object
 end
 
-function Map:getArc( node_from, node_to )
-  return self.nodesByUID[node_from].arcs[node_to]
+function Map:getArc( node_from_uid, node_to_uid )
+  return self.nodesByUID[node_from_uid].arcs[self.nodesByUID[node_to_uid]]
+end
+
+function Map:getNode( node_uid )
+  return self.nodesByUID[node_uid]
 end
 
 function Map:getClosestNode(v2pos)
