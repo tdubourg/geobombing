@@ -228,7 +228,7 @@ function player:saveNewDestinationNode(e)
 end
 
 -- part of the contract with Camera
-function player:redraw(camera)
+function player:redraw()
   local newPos = camera:worldToScreen(self.pos)
   self.drawable.x = newPos.x
   self.drawable.y = newPos.y
