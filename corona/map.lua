@@ -137,7 +137,7 @@ function Map:findPath(from, to)
   local currentNode = nil
   local currentDist = 0
 
-  while next(open) ~= nil do
+  while next(open) ~= nil do   -- open not empty
     currentNode, currentDist = popSmalestValue(open)
     --inserting neighbours
     closed[currentNode] = true
