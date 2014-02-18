@@ -326,4 +326,14 @@ function player:goToAR(arc,ratio)
     
 end
 
+function player:setAR(arc,ratio)
+    local from = arc.end1.pos
+    local to = arc.end2.pos
+    local vectDir = Vector2D:new(0,0)
+    vectDir = Vector2D:Sub(to,from)
+    vectDir:mult(ratio/100)
+    local destination = Vector2D:Add(from, vectDir)
+    self.pos=destination
+end
+
 return player
