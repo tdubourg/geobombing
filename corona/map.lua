@@ -1,5 +1,6 @@
 require "heap"
 
+<<<<<<< HEAD
 Map = {}                   -- Create a table to hold the class methods
 function Map:new(luaMap)  -- The constructor
   local self = {}
@@ -9,6 +10,17 @@ function Map:new(luaMap)  -- The constructor
   self.lonMin = math.huge
   self.latMax = -math.huge
   self.lonMax = -math.huge
+=======
+Map = {}
+function Map:new(luaMap)  -- luaMap = nil  ->  build dummy map
+  local object = {}
+  object.nodesByUID = {}
+  object.arcs ={}
+  object.latMin = math.huge
+  object.lonMin = math.huge
+  object.latMax = -math.huge
+  object.lonMax = -math.huge
+>>>>>>> 45ab04b297a51cb3f201616bb38d552d2e07ee81
  
   setmetatable(self, { __index = Map })  -- Inheritance
 
@@ -61,11 +73,11 @@ else
   print "loading dummy map"
 
   self.nodesByUID["1"] = Node:new(0, 0, "1")
-  self.nodesByUID["2"] = Node:new(0, 200, "2")
-  self.nodesByUID["3"]= Node:new(100,100, "3")
-  self.nodesByUID["4"]= Node:new(100,20, "4")
-  self.nodesByUID["5"] = Node:new(150,250, "5")
-  self.nodesByUID["6"]= Node:new(150,150, "6")
+  self.nodesByUID["2"] = Node:new(0, 1, "2")
+  self.nodesByUID["3"]= Node:new(0.5,0.5, "3")
+  self.nodesByUID["4"]= Node:new(0.5,0.2, "4")
+  self.nodesByUID["5"] = Node:new(0.8,1, "5")
+  self.nodesByUID["6"]= Node:new(0.7,0.7, "6")
 
   self.arcs[1] = self.nodesByUID["1"]:linkTo(self.nodesByUID["2"])
   self.arcs[2] = self.nodesByUID["2"]:linkTo(self.nodesByUID["3"])
@@ -183,21 +195,35 @@ function popSmalestValue(table)
   return bestK,minV
 end
 
+-- BACKUP
+-- function rewindPath(precedence, to)
+--     revPath = {}
+
+--     local node = to
+--     local prevNode = nil
+
+--     repeat
+--       revPath[#revPath+1] = node
+--       prevNode = precedence[node]
+--       node = prevNode
+--     until prevNode == nil
+
+--     return invertIndexedTable(revPath)
+-- end
+
 
 function rewindPath(precedence, to)
     revPath = {}
-
     local node = to
-    local prevNode = nil
 
     repeat
       revPath[#revPath+1] = node
-      prevNode = precedence[node]
-      node = prevNode
-    until prevNode == nil
-
+      node = precedence[node]
+    until precedence[node] == nil --TODO : "until node == nil"  -> ajoute from dans le resultat, plus propre
+      
     return invertIndexedTable(revPath)
 end
+
 
 function invertIndexedTable ( tab )
     local size = #tab
@@ -209,10 +235,3 @@ function invertIndexedTable ( tab )
 
     return newTable
 end
-
-
--- function Map:gpsToLinear(lat, lon)
---   local x = (lon - self.lonMin) / (self.lonMax - self.lonMin)
---   local y = (lat - self.latMin) / (self.latMax - self.latMin)
---   return x,y
--- end

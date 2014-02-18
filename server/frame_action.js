@@ -32,23 +32,40 @@ var sendmap_action = function (frame_data, stream)
 	function sendMap(mapData)
 	{
 		var jsonMap = db.mapDataToJSon(mapData)
-		var content =  {
+		var content =  
+		{
 			"type": TYPEMAP, 
 			"data": jsonMap
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR,
-			function () {console.log("MapData sent:\n" + data)})
+		stream.write(data + FRAME_SEPARATOR, function () {console.log("MapData sent:\n" + data)})
+	}
+
+	function sendInitialPosition()
+	{
+		var position = db.getInitialPosition();
+		var content =  
+		{
+			"type": TYPEPOS, 
+			"data": position
+		};
+		var data = JSON.stringify(content); // parsage JSON
+		stream.write(data + FRAME_SEPARATOR, function () {console.log("sendInitialPosition sent:\n" + data)})
 	}
 	
 	if (single_game_instance == null)
 		db.fullMapAccordingToLocation(lat, lon, function (mapData)
 		{
-			single_game_instance = new g.Game(new g.Map(mapData))
-			sendMap(single_game_instance.map.data /* == mapData */)
+			single_game_instance = new g.Game(new g.Map(mapData));
+			sendMap(single_game_instance.map.data /* == mapData */);
+			//sendInitialPosition();
 			//sendMap(mapData /* == single_game_instance.map.data */)
 		}); // lat, lon
-	else sendMap(single_game_instance.map.data)
+	else
+	{
+	 	sendMap(single_game_instance.map.data);
+	 	//sendInitialPosition();
+	}
 }
 
 
