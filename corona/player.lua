@@ -28,7 +28,7 @@ spriteWidth = 25
 spriteHeight = 25
 
 -- error accepted when moving the player
-err = 0.005
+err = 0.01
 
 -------------------------------------------------
 -- PRIVATE FUNCTIONS
@@ -183,14 +183,14 @@ function player:saveNewNodes(nodes)
    if (nodes~=nil) then
         self.nodesI=1
         self.nodesMax=#nodes
-        print (self.nodesMax)
+        print (self.nodesMax .." BOUH")
         self.toX=self.nodes[1].pos.x
         self.toY=self.nodes[1].pos.y
         self.nodeTo=nodes[1]
     else
         self.nodesI=0
         self.nodesMax=0
-        self.nodeTo=nil
+        --self.nodeTo=nil
     end
 end
 
@@ -239,10 +239,11 @@ function player:refresh()
     if(self.drawable.x<= (self.toX+err) and self.drawable.x>=(self.toX-err) and self.drawable.y <=(self.toY+err) and  self.drawable.y>=(self.toY-err)) then
         self.currentState = PLAYER_FROZEN_STATE 
         self.nodesI=self.nodesI+1
+        print ("ICIIIIIIIIIII")
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
-
+             print ("LAAAA")
             --self.nodeFrom=self.nodeTo
             --self.nodeTo=nil
 
@@ -254,6 +255,7 @@ function player:refresh()
             self.nodeTo=self.nodes[self.nodesI]
             --self.upCurrentArc(self.nodeFrom,self.nodeTo)
             self:refresh()
+            print ("ON AVANCE")
 
         end
 
@@ -298,12 +300,14 @@ function player:upCurrentArc(from, to)
         print ("from == nil")
     elseif (to == nil) then
         print ("to == nil")
+    elseif (from == to) then
+         print ("from == to") 
     elseif (from.arcs[to] == nil) then
         
         
         
-            print ("from.arc[to] == nil") 
-            print ("error ici")
+           -- print ("from.arc[to] == nil") 
+            --print ("error ici")
       
     else 
         local dist = Vector2D:Dist(from.pos,self.pos)
@@ -336,6 +340,16 @@ function player:goToAR(arc,ratio)
     self.toX=from.x
     self.toY=from.y
     
+end
+
+function player:setAR(arc,ratio)
+    local from = arc.end1.pos
+    local to = arc.end2.pos
+    local vectDir = Vector2D:new(0,0)
+    vectDir = Vector2D:Sub(to,from)
+    vectDir:mult(ratio/100)
+    local destination = Vector2D:Add(from, vectDir)
+    self.pos=destination
 end
 
 return player
