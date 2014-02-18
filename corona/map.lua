@@ -81,6 +81,7 @@ end
 end
 
 function Map:getArc( node_from_uid, node_to_uid )
+    print(node_from_uid, node_to_uid)
   return self.nodesByUID[node_from_uid].arcs[self.nodesByUID[node_to_uid]]
 end
 

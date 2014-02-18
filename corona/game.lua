@@ -16,6 +16,7 @@ require "camera"
 require "vector2D"
 require "map"
 require "items"
+local json = require "json"
 local physics = require( "physics" )
 local playBtn
 player = nil -- global in order to be accessed from everywhere
@@ -48,7 +49,7 @@ function scene:createScene( event )
 		end
 		net.net_handlers['pos'] = function ( json_obj )
 			print ("Received pos from server: " .. json.encode(json_obj))
-			player:setAR(currentMap.getArc(json_obj.n1, json_obj.n2), json_obj.c)
+			player:setAR(currentMap:getArc(json_obj.data.n1, json_obj.data.n2), json_obj.data.c)
 		end
 		net.sendPosition()
 	else
