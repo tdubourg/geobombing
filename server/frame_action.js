@@ -16,6 +16,7 @@ var db = require('./pgsql');
 var nb_instance_move = 0;
 
 var g = require('./Game')
+var single_game_instance/*: g.Game */ = null
 
 
 // executed function according to client result
@@ -27,16 +28,27 @@ var sendmap_action = function (frame_data, stream)
 	if (frame_data != null && frame_data.latitude != null) lat = parseFloat(frame_data.latitude);
 	if (frame_data != null && frame_data.longitude != null) lon = parseFloat(frame_data.longitude);
 	console.log("sendmap_action:\nlat=" + lat + "\nlon=" + lon);
-	db.fullMapAccordingToLocation(lat, lon, function (map) 
+	
+	function sendMap(mapData)
 	{
-		var content = 
-		{
+		var jsonMap = db.mapDataToJSon(mapData)
+		var content =  {
 			"type": TYPEMAP, 
-			"data": map
+			"data": jsonMap
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log("MapData sent:\n" + data)})
-	}); // lat, lon
+		stream.write(data + FRAME_SEPARATOR,
+			function () {console.log("MapData sent:\n" + data)})
+	}
+	
+	if (single_game_instance == null)
+		db.fullMapAccordingToLocation(lat, lon, function (mapData)
+		{
+			single_game_instance = new g.Game(new g.Map(mapData))
+			sendMap(single_game_instance.map.data /* == mapData */)
+			//sendMap(mapData /* == single_game_instance.map.data */)
+		}); // lat, lon
+	else sendMap(single_game_instance.map.data)
 }
 
 
