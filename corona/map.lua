@@ -51,7 +51,7 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
         local node = self.nodesByUID[strUid]
         if (previousNode) then
           self.arcs[#(self.arcs)+1] =previousNode:linkTo(node)
-          print(j .. " / ")
+          print(previousNode.uid .. " / " .. node.uid)
         end
         previousNode = node
       end
@@ -105,12 +105,12 @@ function Map:getClosestPos(v2pos)
   local ratio =0
   local min = math.huge
   local best = nil
-  print ("La")
+  --print ("La")
   for _,arc in ipairs(self.arcs) do
     local from = arc.end1.pos
-    print (arc.end1.uid)
+    --print (arc.end1.uid)
     local to = arc.end2.pos
-    print (arc.end2.uid)
+    --print (arc.end2.uid)
     local vectDir = Vector2D:new(0,0)
     vectDir = Vector2D:Sub(to,from)
     vectDir:normalize()
@@ -120,17 +120,17 @@ function Map:getClosestPos(v2pos)
     --Pythagore
     local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
 
-    print (dist)
+    --print (dist)
     if dist < min then
       min = dist
       best = arc
       ratio = distProj/arc.len
     end
   end
-  print("Ici")
+  --print("Ici")
   toReturn[1]=best
   toReturn[2]=ratio
-  print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ration ="..toReturn[2])
+  print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ratio ="..toReturn[2])
   return toReturn
 end
 
