@@ -280,7 +280,7 @@ function player:refresh()
         --     else
         vectDir:mult(self.speed)
         self.pos:add(vectDir)
-         print(" ( " .. self.pos.x.. " <= (" .. self.toX+err .. ") and  " .. self.pos.x..">= (" ..self.toX-err..") and " .. self.pos.y.." <= (" .. self.toY+err..") and  " ..  self.pos.y .. " >=(" ..self.toY-err..") " )
+        -- print(" ( " .. self.pos.x.. " <= (" .. self.toX+err .. ") and  " .. self.pos.x..">= (" ..self.toX-err..") and " .. self.pos.y.." <= (" .. self.toY+err..") and  " ..  self.pos.y .. " >=(" ..self.toY-err..") " )
 
         self:upCurrentArc(self.nodeFrom,self.nodeTo)
         self:redraw()

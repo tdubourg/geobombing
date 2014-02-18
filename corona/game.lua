@@ -114,7 +114,6 @@ local function moveObject(e)
 			--player.nodeTo=nodes[1]
 			--print(toPos[1].end1.uid .."  ratio ".. toPos[2])
 			--player:goToAR(toPos[1],toPos[2])
-			print(nodes[1].uid)
 			player:saveNewNodes(nodes)
 			end
 		end
