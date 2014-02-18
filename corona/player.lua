@@ -99,8 +99,13 @@ function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
     -------------
     newPlayer.nodeFrom=nodeF
     newPlayer.nodeTo=nodeT
-    newPlayer.currentArc=nil
-    newPlayer.currentArcRatio=0
+    newPlayer.currentArc=nodeF.arcs[nodeT]
+    if(newPlayer.currentArc.end1==nodeF) then
+            newPlayer.currentArcRatio=0
+        else
+            newPlayer.currentArcRatio=100
+        end
+    
 
     -- insert in camera group
     --cameraGroup:insert(newPlayer.drawable)
@@ -196,14 +201,6 @@ end
 
 
 
-
-function player:refreshPos()
-    self.drawable.x=worldToScreen(self.pos.x)
-    self.drawable.y = worldToScreen(self.pos.y)
-    self:upCurrentArc(self.nodeFrom,self.nodeTo)
-end
-
-
 function player:saveNewDestination(e)
 
     local screenPos = Vector2D:new(e.x, e.y)
@@ -223,7 +220,7 @@ end
 function player:saveNewDestinationNode(e)
 
     self.toX=e.pos.x
-    self.toY=e.pos.y
+    self.toY=e.pos.y 
 
 end
 
@@ -285,7 +282,8 @@ function player:refresh()
         self.pos:add(vectDir)
          print(" ( " .. self.pos.x.. " <= (" .. self.toX+err .. ") and  " .. self.pos.x..">= (" ..self.toX-err..") and " .. self.pos.y.." <= (" .. self.toY+err..") and  " ..  self.pos.y .. " >=(" ..self.toY-err..") " )
 
-        self:refreshPos()
+        self:upCurrentArc(self.nodeFrom,self.nodeTo)
+        self:redraw()
        
             -- end
             
