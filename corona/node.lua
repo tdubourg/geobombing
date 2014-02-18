@@ -27,7 +27,7 @@ function Node:new(worldX, worldY, uid)  -- The constructor
 end
 
 -- part of the contract with Camera
-function Node:redraw(camera)
+function Node:redraw()
   local newPos = camera:worldToScreen(self.pos)
   self.drawable.x = newPos.x
   self.drawable.y = newPos.y

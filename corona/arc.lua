@@ -19,7 +19,7 @@ function Arc:new(end1, end2)  -- The constructor
 end
 
 -- part of the contract with Camera
-function Arc:redraw(camera)
+function Arc:redraw()
   local newPos1 = camera:worldToScreen(self.end1.pos)
   local newPos2 = camera:worldToScreen(self.end2.pos)
   self.drawable:removeSelf()
