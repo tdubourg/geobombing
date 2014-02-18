@@ -12,6 +12,7 @@ local scene = storyboard.newScene()
 
 require "node"
 require "consts"
+local json = require( "json" )
 local camera = require "camera"
 require "vector2D"
 require "map"
@@ -36,12 +37,18 @@ function scene:createScene( event )
 	physics.start( )
 
 	-- connect to server
-	result = net.connect_to_server("127.0.0.1", 3000)
+	local result = net.connect_to_server("127.0.0.1", 3000)
 	
 	if result then
 
+		net.net_handlers['map'] = function ( json_obj )
+			luaMap = json_obj[JSON_FRAME_DATA]
+		end
+		net.net_handlers['pos'] = function ( json_obj )
+			print (json.encode(json_obj))
+		end
 		net.sendPosition()
-		luaMap = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+		 -- = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
 
 	else
 	end
