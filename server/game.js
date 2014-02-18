@@ -2,6 +2,7 @@
 
 exports.Node = Node
 exports.Arc = Arc
+exports.Map = Map
 exports.Player = Player
 exports.Game = Game
 
@@ -21,15 +22,21 @@ function Arc(id, n1, n2) {
 	//this.arcs[id] = this
 }
 
+function Map(data) {
+	this.nodes = []
+	this.arcs = []
+	this.data = data
+	// TODO
+}
+
 function Player(id, name) {
 	this.id = id
 	this.name = name
 	this.currentPath = []
 }
 
-function Game() {
-	this.nodes = []
-	this.arcs = []
+function Game(map) {
+	this.map = map
 	this.players = []
 }
 
