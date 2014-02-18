@@ -1,8 +1,7 @@
 require "heap"
 
-<<<<<<< HEAD
-Map = {}                   -- Create a table to hold the class methods
-function Map:new(luaMap)  -- The constructor
+Map = {}
+function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
   local self = {}
   self.nodesByUID = {}
   self.arcs ={}
@@ -10,18 +9,7 @@ function Map:new(luaMap)  -- The constructor
   self.lonMin = math.huge
   self.latMax = -math.huge
   self.lonMax = -math.huge
-=======
-Map = {}
-function Map:new(luaMap)  -- luaMap = nil  ->  build dummy map
-  local object = {}
-  object.nodesByUID = {}
-  object.arcs ={}
-  object.latMin = math.huge
-  object.lonMin = math.huge
-  object.latMax = -math.huge
-  object.lonMax = -math.huge
->>>>>>> 45ab04b297a51cb3f201616bb38d552d2e07ee81
- 
+
   setmetatable(self, { __index = Map })  -- Inheritance
 
   if luaMap then
