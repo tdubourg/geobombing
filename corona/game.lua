@@ -32,11 +32,11 @@ function scene:createScene( event )
 	displayMainGroup:insert(group)
 	camera = Camera:new()
 	camera:setZoomXY(200,200)
-	camera:lookAtXY(0,0)
+	camera:lookAtXY(0,0)	
 	gui.initGUI()
 
-	delay=1
-	physics.start( )
+	-- loading dummy map, will be replaced as soon as map is received from server
+	currentMap = Map:new(nil)
 
 	-- connect to server
 	local result = net.connect_to_server("127.0.0.1", 3000)
@@ -45,6 +45,7 @@ function scene:createScene( event )
 
 		net.net_handlers['map'] = function ( json_obj )
 			luaMap = json_obj[JSON_FRAME_DATA]
+			currentMap = Map:new(luaMap)
 		end
 		net.net_handlers['pos'] = function ( json_obj )
 			print ("Received pos from server: " .. json.encode(json_obj))
@@ -55,7 +56,6 @@ function scene:createScene( event )
 		print ("Could no connect to server")
 	end
 
-	currentMap = Map:new(luaMap)
 	player = Player.new( "Me",  0.02)
 
 	itemsManager = ItemsManager.new()

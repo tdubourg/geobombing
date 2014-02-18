@@ -22,7 +22,8 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	
 	//////////////////////////////////
 	
-	if (!conDB) {
+	if (!conDB) 
+	{
 		callback(null, autoScaleMap(
 			[[[0, 0], [0, 200], [100, 100], [100, 200]], 
 			[[0, 0], [100, 200], [150, 250], [500, 250]]]));
@@ -101,14 +102,19 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 	return leMap
 }
 
-function autoScaleMap(leMap) {
+function autoScaleMap(leMap) 
+{
 	
 	//////////////////////////////////
 	//return leMap // FIXME !!
 	//////////////////////////////////
 	
-	function extr(coord,coeff) {
-		return u.min( u.flatten( leMap.map(function(r){ return r.map(function(p){return p[coord]*coeff}) }) ) )
+	function extr(coord,coeff) 
+	{
+		return u.min( u.flatten( leMap.map(function(r)
+			{ return r.map(function(p)
+				{return p[coord]*coeff}) 
+		}) ) )
 	}
 	var minX =  extr(0,  1),
 	    maxX = -extr(0, -1),
@@ -134,7 +140,8 @@ function autoScaleMap(leMap) {
 	return leMap
 }
 
-function mapDataToJSon(mapData) {
+function mapDataToJSon(mapData) 
+{
 	var map = common.CreateEmptyMap(++lastMapId, "mapName");
     for (var i = 0; i < mapData.length; i++) 
     {
@@ -152,6 +159,18 @@ function mapDataToJSon(mapData) {
     return map
 }
 exports.mapDataToJSon = mapDataToJSon
+
+function getInitialPosition() 
+{
+	var position;
+	position = common.CreatePosition(0, 0, 0);
+	if (!conDB) 
+	{
+		position = common.CreatePosition(1, 2, 0.5);
+	}
+    return position;
+}
+exports.getInitialPosition = getInitialPosition
 
 function fullMapAccordingToLocation(latitude, longitude, callback) {
 	//var s = 0.0001
