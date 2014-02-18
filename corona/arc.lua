@@ -9,8 +9,8 @@ function Arc:new(end1, end2)  -- The constructor
   --TODO : display groupS
 
   object.drawable = display.newLine(end1.pos.x, end1.pos.y, end2.pos.x, end2.pos.y )
-  object.drawable.strokeWidth = 4
-  object.drawable:setStrokeColor( 255, 0, 0 )
+  object.drawable.strokeWidth = 2
+  object.drawable:setStrokeColor( 255, 255, 255 )
 
   camera:addListener(object)
 

@@ -5,6 +5,7 @@
 --
 -------------------------------------------------
 require "camera"
+require "vector2D"
 local physics = require( "physics" )
 
 local player = {}
@@ -95,6 +96,12 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
     --???
     newPlayer.drawable.gravityScale = gravityScale
 
+    -------------
+    newPlayer.nodeFrom=nil
+    newPlayer.nodeTo=nil
+    newPlayer.currentArc=nil
+    newPlayer.currentArcRatio=0
+
     -- insert in camera group
     --cameraGroup:insert(newPlayer.drawable)
 
@@ -174,16 +181,17 @@ function player:saveNewNodes(nodes)
     -- print( self.nodes[2].pos.x .. ", " .. self.nodes[2].pos.y .. " ." )
    -- self.saveNewDestination(self.nodes[1])
    if (nodes~=nil) then
-    self.nodesI=1
-    self.nodesMax=#nodes
-    print (self.nodesMax)
-    self.toX=self.nodes[1].pos.x
-    self.toY=self.nodes[1].pos.y
-
-else
- self.nodesI=0
- self.nodesMax=0
-end
+        self.nodesI=1
+        self.nodesMax=#nodes
+        print (self.nodesMax)
+        self.toX=self.nodes[1].pos.x
+        self.toY=self.nodes[1].pos.y
+        self.nodeTo=nodes[1]
+    else
+        self.nodesI=0
+        self.nodesMax=0
+        self.nodeTo=nil
+    end
 end
 
 
@@ -192,6 +200,7 @@ end
 function player:refreshPos()
     self.drawable.x=self.pos.x
     self.drawable.y = self.pos.y
+    self:upCurrentArc(self.nodeFrom,self.nodeTo)
 end
 
 
@@ -233,19 +242,27 @@ function player:refresh()
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
-            -- err = 1
+
+            self.nodeFrom=self.nodeTo
+            self.nodeTo=nil
+
+            -- self.upCurrentArc(self.nodeFrom,self.nodeTo)
         else
+            self.nodeFrom=self.nodes[self.nodesI-1]
             self.toX=self.nodes[self.nodesI].pos.x
             self.toY=self.nodes[self.nodesI].pos.y
+            self.nodeTo=self.nodes[self.nodesI]
+            --self.upCurrentArc(self.nodeFrom,self.nodeTo)
             self:refresh()
+
         end
 
     else 
-     self.currentState = PLAYER_WALKING_STATE 
-     local to = Vector2D:new(self.toX, self.toY)
-     local vectDir = Vector2D:new(0,0)
-     vectDir = Vector2D:Sub(to,self.pos)
-     vectDir:normalize()
+       self.currentState = PLAYER_WALKING_STATE 
+       local to = Vector2D:new(self.toX, self.toY)
+       local vectDir = Vector2D:new(0,0)
+       vectDir = Vector2D:Sub(to,self.pos)
+       vectDir:normalize()
         -- vecteur normalisé de la direction * la vitesse * delta temps
 
         tempVectDir = Vector2D:Mult(vectDir, self.speed)
@@ -265,13 +282,53 @@ function player:refresh()
         --         err = err +1
 
         --     else
-                vectDir:mult(self.speed)
-                self.pos:add(vectDir)
-                self:refreshPos()
+        vectDir:mult(self.speed)
+        self.pos:add(vectDir)
+        self:refreshPos()
+
             -- end
+            
         end
 
     end
 
 
-    return player
+function player:upCurrentArc(from, to)
+        if (from == nil) then
+            print ("from == nil")
+        end
+        if (to == nil) then
+            print ("end == nil")
+         end
+        if (from.arcs[to] == 0) then
+            print ("from.arc[to] == nil")    
+        end
+        local dist = Vector2D:Dist(from.pos,self.pos)
+        self.currentArc=from.arcs[to]
+        if(self.currentArc.end1==from) then
+        self.currentArcRatio=(dist/self.currentArc.len)*100
+    else
+        self.currentArcRatio=100-(dist/self.currentArc.len)*100
+    end
+    print(from.uid.. " to " ..to.uid .." ratio" ..  self.currentArcRatio)
+end
+
+function player:goToAR(arc,ratio)
+    local from = arc.end1.pos
+    print(from.x .. " , " ..from.y )
+    local to = arc.end2.pos
+    print(to.x .. " , " ..to.y )
+    local vectDir = Vector2D:new(0,0)
+    vectDir = Vector2D:Sub(to,from)
+    print(vectDir.x .. " , " ..vectDir.y )
+    vectDir:mult(ratio/100)
+    print(vectDir.x .. " , " ..vectDir.y )
+    from:add(vectDir)
+    print(from.x .. " , " ..from.y )
+    print(" ratio" ..  ratio)
+    self.toX=from.x
+    self.toY=from.y
+    
+end
+
+return player

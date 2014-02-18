@@ -5,8 +5,11 @@
 ----------------------------------------------------------------------------------
 
 local storyboard = require( "storyboard" )
+
 local Player = require( "player" )
+
 local scene = storyboard.newScene()
+
 require "node"
 require "consts"
 require "camera"
@@ -14,15 +17,14 @@ require "vector2D"
 require "map"
 require "items"
 local physics = require( "physics" )
-
 local playBtn
 player = nil -- global in order to be accessed from everywhere
-
 local bombBtn = nil
 local currentMap = nil
 camera = nil
 itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
+
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
@@ -37,22 +39,27 @@ function scene:createScene( event )
 	physics.start( )
 
 	-- connect to server
-	result = net.connect_to_server("127.0.0.1", 3000)
+	local result = net.connect_to_server("127.0.0.1", 3000)
+	
 	if result then
-		print ("We are connected!")
+
+		net.net_handlers['map'] = function ( json_obj )
+			luaMap = json_obj[JSON_FRAME_DATA]
+		end
+		net.net_handlers['pos'] = function ( json_obj )
+			print (json.encode(json_obj))
+		end
 		net.sendPosition()
-		luaMap = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+		 -- = net.receiveSerialized()	-- for now, first frame received is map. TODO: add listeners
+
 	else
-		print ("Could not connect to server")
 	end
 
 	currentMap = Map:new(luaMap)
-
 	player = Player.new( "Me",  0.02)
-	itemsManager = ItemsManager.new()
-	print ("IM", itemsManager)
-end
 
+	itemsManager = ItemsManager.new()
+end
 local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
@@ -61,10 +68,8 @@ local myListener = function( event )
 		camera:lookAt(player.pos)
 	end
 end
-
 local trans
 local function moveObject(e)
-		print ("Received tap event in moveObject")
 		if(trans)then
 			transition.cancel(trans)
 		end
@@ -87,24 +92,24 @@ local function moveObject(e)
 			local screenPos = Vector2D:new(e.x,e.y)
 			local worldPos = camera:screenToWorld(screenPos)
 			local node = currentMap:getClosestNode(worldPos)
-			-- print ("Closest node is", node)
-			--print(n6.pos.x .." ,".. n6.pos.y .." ")
 			local from = currentMap:getClosestNode(player.pos)
-			-- print ("Closest from is", from)
 			
 			if (from == node ) then
-				print("la1")
 				--player:saveNewDestination(e)
 			elseif (from == nil) then
-				print("la2")
 				--player:saveNewDestinationVect(node.pos)
 			elseif (node == nil) then
-				print("la3")
 				--player:saveNewDestination(e)
-			-- print ("Nodes:", nodes)
 			else
 			local nodes = currentMap:findPath(from, node)
+
+
+
 			net.sendPathToServer(nodes)
+			player.nodeFrom=from
+			--player.nodeTo=nodes[1]
+			--player:goToAR(from.arcs[nodes[1]],20)
+
 			player:saveNewNodes(nodes)
 			end
 		end
@@ -115,7 +120,6 @@ local function moveObject(e)
 -- local function myTapListener( event )
 
 --     --code executed when the button is tapped
---     print( "object tapped = "..tostring(event.target) )  --'event.target' is the tapped object
 --     return true
 -- end
 
