@@ -56,7 +56,11 @@ function scene:createScene( event )
 	end
 
 	currentMap = Map:new(luaMap)
-	player = Player.new( "Me",  0.02)
+	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
+	for voisin,_ in pairs(nodeFr.arcs) do
+		nodeT=voisin
+	end
+	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
 
 	itemsManager = ItemsManager.new()
 end

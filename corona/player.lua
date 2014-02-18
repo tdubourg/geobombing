@@ -45,7 +45,7 @@ local PLAYER_SPRITE_SEQUENCE_DATA = {
 -- PUBLIC FUNCTIONS
 -------------------------------------------------
 
-function player.new( pName, pSpeed, pNbDeath)	-- constructor
+function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
 	local newPlayer = {}
 	setmetatable( newPlayer, player_mt )
     --Player name / speed / number of death
@@ -97,8 +97,8 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
     newPlayer.drawable.gravityScale = gravityScale
 
     -------------
-    newPlayer.nodeFrom=nil
-    newPlayer.nodeTo=nil
+    newPlayer.nodeFrom=nodeF
+    newPlayer.nodeTo=nodeT
     newPlayer.currentArc=nil
     newPlayer.currentArcRatio=0
 
@@ -243,8 +243,8 @@ function player:refresh()
             self.nodesI=0
             self.nodesMax=0
 
-            self.nodeFrom=self.nodeTo
-            self.nodeTo=nil
+            --self.nodeFrom=self.nodeTo
+            --self.nodeTo=nil
 
             -- self.upCurrentArc(self.nodeFrom,self.nodeTo)
         else
@@ -299,7 +299,12 @@ function player:upCurrentArc(from, to)
     elseif (to == nil) then
         print ("to == nil")
     elseif (from.arcs[to] == nil) then
-        print ("from.arc[to] == nil")    
+        
+        
+        
+            print ("from.arc[to] == nil") 
+            print ("error ici")
+      
     else 
         local dist = Vector2D:Dist(from.pos,self.pos)
         self.currentArc=from.arcs[to]
@@ -308,7 +313,7 @@ function player:upCurrentArc(from, to)
         else
             self.currentArcRatio=100-(dist/self.currentArc.len)*100
         end
-        print(from.uid.. " to " ..to.uid .." ratio" ..  self.currentArcRatio)
+        --print(from.uid.. " to " ..to.uid .." ratio " ..  self.currentArcRatio)
     end
 end
 
