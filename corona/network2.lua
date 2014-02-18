@@ -8,6 +8,8 @@ require "utils"
 local client = nil
 local FRAME_SEPARATOR = "\n"
 local NETWORK_DUMP = true
+local _msgsendtable = {} -- send message queue
+local net_handlers = {}
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -27,22 +29,16 @@ function test_network()
 -- load scenetemplate.lua
 end
 
-function connect_to_server( ip, port )
-	client = socket.connect(ip, port)
-	if (client == nil) then
-		return false
-	else
-		return client
-	end
-end
-
 function receive_until(end_separator)
 	local str = ""
 	local start, _end = str:find(end_separator)
 	-- print (start, _end)
 	while start == nil do
 		-- print (start, _end)
-		chunk = client:receive(1)
+		local chunk = client:receive(1)
+		if (chunk == nil) then
+			break
+		end
 		str = str .. chunk
 		start, _end = str:find(end_separator)
 	end
@@ -50,8 +46,37 @@ function receive_until(end_separator)
 			print "NETWORK DUMP - IN"
 			print(str)
 	end
+	if (str == "") then
+		return nil
+	end
 	return str
 end
+
+function _mrcv(connection)
+	connection:settimeout(0)
+	local frameString, status = receive_until(FRAME_SEPARATOR)
+
+	if frameString ~= nil then
+		print ( "Received network data: " .. frameString)
+		local json_obj = json.decode(frameString)
+		if (json_obj ~= nil) then
+			net_handlers[json_obj.type](json_obj)
+		end
+	end        
+end
+
+function connect_to_server( ip, port )
+	client = socket.connect(ip, port)
+	if (client == nil) then
+		return false
+	else
+		--setup timers to handle update and receive
+		timer.performWithDelay(1, function() _mrcv(client) end, 0)
+		-- timer.performWithDelay(1,function() _msend(conn) end,0)
+		return client
+	end
+end
+
 
 function sendPosition()
 	if client ~= nil then
@@ -59,7 +84,7 @@ function sendPosition()
 		packet = {}
 		packet[JSON_GPS_LATITUDE] = currentLatitude
 		packet[JSON_GPS_LONGITUDE] = currentLongitude
-	 sendSerialized(packet, FRAMETYPE_GPS)
+	 	sendSerialized(packet, FRAMETYPE_GPS)
 		location.disable_location()
 	end
 end
@@ -85,26 +110,35 @@ function sendSerialized(obj, frameType)
 	end
 end
 
-
---TODO: add listeners regarding frameTypes
-function receiveSerialized()
-	if client then
-		frameString = receive_until(FRAME_SEPARATOR)
-		local json = json.decode(frameString)
-		return json[JSON_FRAME_DATA]
-	end
-end
-
-
 function sendString(data)
 	if client ~= nil then
-		client:send(data..FRAME_SEPARATOR)
+		client:send(data .. FRAME_SEPARATOR)
 		if NETWORK_DUMP then
 			print "NETWORK DUMP - OUT"
 			print(data)
 		end
 	end
 end
+
+-- function _msend(connection)
+--     local cnt = #_msgsendtable
+--     if cnt > 0 then
+--       for key,msg in pairs(_msgsendtable) do 
+--         if msg ~= nil then
+--             connection:send(msg .. "\r\n")
+--         end    
+--         _msgsendtable[key] = nil
+--       end    
+--     end    
+-- end
+ 
+--send function queues data for transmission 
+-- function msgsend(data)
+--   table.insert(_msgsendtable,data)
+-- end
+ 
+
+ 
 
 function sendPathToServer( nodes )
 	if (nodes == nil) then
@@ -124,8 +158,8 @@ end
 return
 {
 	  connect_to_server = connect_to_server
-	, receiveSerialized = receiveSerialized
 	, sendSerialized = sendSerialized
 	, sendPosition = sendPosition
 	, sendPathToServer = sendPathToServer
+	, net_handlers = net_handlers
 }
