@@ -68,12 +68,13 @@ else
   self.nodesByUID["6"]= Node:new(0.7,0.7, "6")
 
   self.arcs[1] = self.nodesByUID["1"]:linkTo(self.nodesByUID["2"])
-  self.arcs[2] = self.nodesByUID["2"]:linkTo(self.nodesByUID["3"])
-  self.arcs[3] = self.nodesByUID["3"]:linkTo(self.nodesByUID["4"])
-  self.arcs[4] = self.nodesByUID["4"]:linkTo(self.nodesByUID["1"])
-  self.arcs[5] = self.nodesByUID["5"]:linkTo(self.nodesByUID["2"])
-  self.arcs[6] = self.nodesByUID["6"]:linkTo(self.nodesByUID["2"])
-  self.arcs[7] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["2"]:linkTo(self.nodesByUID["3"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["3"]:linkTo(self.nodesByUID["4"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["4"]:linkTo(self.nodesByUID["1"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["5"]:linkTo(self.nodesByUID["2"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["6"]:linkTo(self.nodesByUID["2"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
+
 end
 
   return self
