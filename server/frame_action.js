@@ -15,6 +15,8 @@ var TYPEPLAYERBOMB = "pbomb"
 var db = require('./pgsql');
 var nb_instance_move = 0;
 
+var g = require('./Game')
+
 
 // executed function according to client result
 var sendmap_action = function (frame_data, stream) 
