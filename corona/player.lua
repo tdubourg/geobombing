@@ -6,6 +6,7 @@
 -------------------------------------------------
 require "camera"
 require "vector2D"
+require "print_r"
 local physics = require( "physics" )
 
 local player = {}
@@ -69,8 +70,8 @@ function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
     newPlayer.pos = Vector2D:new(0.0000, 0.0000)
 
     --Player current destination
-    newPlayer.toX=newPlayer.drawable.x
-    newPlayer.toY= newPlayer.drawable.y
+    newPlayer.toX=newPlayer.pos.x
+    newPlayer.toY= newPlayer.pos.y
 
     --nodes to go to the final destination
     newPlayer.nodes= nil
@@ -103,7 +104,7 @@ function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
     if(newPlayer.currentArc.end1==nodeF) then
             newPlayer.currentArcRatio=0
         else
-            newPlayer.currentArcRatio=100
+            newPlayer.currentArcRatio=1
         end
     
 
@@ -188,7 +189,7 @@ function player:saveNewNodes(nodes)
    if (nodes~=nil) then
         self.nodesI=1
         self.nodesMax=#nodes
-        print (self.nodesMax .." BOUH")
+       -- print (self.nodesMax .." BOUH")
         self.toX=self.nodes[1].pos.x
         self.toY=self.nodes[1].pos.y
         self.nodeTo=nodes[1]
@@ -236,9 +237,12 @@ function player:refresh()
     if(self.pos.x<= (self.toX+err) and self.pos.x>=(self.toX-err) and self.pos.y <=(self.toY+err) and  self.pos.y>=(self.toY-err)) then
         self.currentState = PLAYER_FROZEN_STATE 
         self.nodesI=self.nodesI+1
+        --print("la")
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
+            --print("la2")
+            --print_r(self.pos)
             --self.nodeFrom=self.nodeTo
             --self.nodeTo=nil
 
@@ -250,6 +254,7 @@ function player:refresh()
             self.nodeTo=self.nodes[self.nodesI]
             --self.upCurrentArc(self.nodeFrom,self.nodeTo)
             self:refresh()
+            --print("la3")
 
         end
 
@@ -284,6 +289,7 @@ function player:refresh()
 
         self:upCurrentArc(self.nodeFrom,self.nodeTo)
         self:redraw()
+        --print("la4")
        
             -- end
             
@@ -304,15 +310,16 @@ function player:upCurrentArc(from, to)
         
         
            print ("from.arc[to] == nil") 
-        print ("error ici")
+        print (from.uid .."   " .. to.uid)
+
       
     else 
         local dist = Vector2D:Dist(from.pos,self.pos)
         self.currentArc=from.arcs[to]
         if(self.currentArc.end1==from) then
-            self.currentArcRatio=(dist/self.currentArc.len)*100
+            self.currentArcRatio=(dist/self.currentArc.len)
         else
-            self.currentArcRatio=100-(dist/self.currentArc.len)*100
+            self.currentArcRatio=1-(dist/self.currentArc.len)
         end
         --print(from.uid.. " to " ..to.uid .." ratio " ..  self.currentArcRatio)
     end
@@ -322,31 +329,27 @@ function player:goToAR(arc,ratio)
 
     local from = arc.end1.pos
     self.nodeFrom = arc.end1
-    print(from.x .. " , " ..from.y )
     local to = arc.end2.pos
     self.nodeTo = arc.end2
-    print(to.x .. " , " ..to.y )
-    local vectDir = Vector2D:new(0,0)
-    vectDir = Vector2D:Sub(to,from)
-    print(vectDir.x .. " , " ..vectDir.y )
-    vectDir:mult(ratio/100)
-    print(vectDir.x .. " , " ..vectDir.y )
+    local vectDir = Vector2D:Sub(to,from)
+    vectDir:mult(ratio)
     local finalPos = Vector2D:Add(from,vectDir)
-    print(from.x .. " , " ..from.y )
-    print(" ratio" ..  ratio)
-    self.toX=from.x
-    self.toY=from.y
+    self.toX=finalPos.x
+    self.toY=finalPos.y
     
 end
 
 function player:setAR(arc,ratio)
     local from = arc.end1.pos
     local to = arc.end2.pos
-    local vectDir = Vector2D:new(0,0)
-    vectDir = Vector2D:Sub(to,from)
-    vectDir:mult(ratio/100)
+    local vectDir = Vector2D:Sub(to,from)
+    vectDir:mult(ratio)
     local destination = Vector2D:Add(from, vectDir)
+    self.toX=destination.x
+    self.toY=destination.y
     self.pos=destination
+    self:redraw()
+    
 end
 
 return player
