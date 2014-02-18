@@ -166,21 +166,35 @@ function popSmalestValue(table)
   return bestK,minV
 end
 
+-- BACKUP
+-- function rewindPath(precedence, to)
+--     revPath = {}
+
+--     local node = to
+--     local prevNode = nil
+
+--     repeat
+--       revPath[#revPath+1] = node
+--       prevNode = precedence[node]
+--       node = prevNode
+--     until prevNode == nil
+
+--     return invertIndexedTable(revPath)
+-- end
+
 
 function rewindPath(precedence, to)
     revPath = {}
-
     local node = to
-    local prevNode = nil
 
     repeat
       revPath[#revPath+1] = node
-      prevNode = precedence[node]
-      node = prevNode
-    until prevNode == nil
-
+      node = precedence[node]
+    until precedence[node] == nil --TODO : "until node == nil"  -> ajoute from dans le resultat, plus propre
+      
     return invertIndexedTable(revPath)
 end
+
 
 function invertIndexedTable ( tab )
     local size = #tab
@@ -192,10 +206,3 @@ function invertIndexedTable ( tab )
 
     return newTable
 end
-
-
--- function Map:gpsToLinear(lat, lon)
---   local x = (lon - self.lonMin) / (self.lonMax - self.lonMin)
---   local y = (lat - self.latMin) / (self.latMax - self.latMin)
---   return x,y
--- end
