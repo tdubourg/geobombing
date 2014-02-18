@@ -50,7 +50,7 @@ function Map:new(luaMap)  -- The constructor
         local strUid = tostring(nodeID)
         local node = object.nodesByUID[strUid]
         if (previousNode) then
-          object.arcs[j] =previousNode:linkTo(node)
+          object.arcs[#(object.arcs)+1] =previousNode:linkTo(node)
           print(j .. " / ")
         end
         previousNode = node
@@ -67,13 +67,13 @@ else
   object.nodesByUID["5"] = Node:new(150,250, "5")
   object.nodesByUID["6"]= Node:new(150,150, "6")
 
-  object.nodesByUID["1"]:linkTo(object.nodesByUID["2"])
-  object.nodesByUID["2"]:linkTo(object.nodesByUID["3"])
-  object.nodesByUID["3"]:linkTo(object.nodesByUID["4"])
-  object.nodesByUID["4"]:linkTo(object.nodesByUID["1"])
-  object.nodesByUID["5"]:linkTo(object.nodesByUID["2"])
-  object.nodesByUID["6"]:linkTo( object.nodesByUID["2"])
-  object.nodesByUID["6"]:linkTo( object.nodesByUID["3"])
+  object.arcs[1] = object.nodesByUID["1"]:linkTo(object.nodesByUID["2"])
+    object.arcs[2] = object.nodesByUID["2"]:linkTo(object.nodesByUID["3"])
+  object.arcs[3] = object.nodesByUID["3"]:linkTo(object.nodesByUID["4"])
+  object.arcs[4] = object.nodesByUID["4"]:linkTo(object.nodesByUID["1"])
+  object.arcs[5] = object.nodesByUID["5"]:linkTo(object.nodesByUID["2"])
+  object.arcs[6] = object.nodesByUID["6"]:linkTo( object.nodesByUID["2"])
+  object.arcs[7] = object.nodesByUID["6"]:linkTo( object.nodesByUID["3"])
 end
 
   return object
@@ -97,9 +97,12 @@ function Map:getClosestPos(v2pos)
   local ratio =0
   local min = math.huge
   local best = nil
-  for _,arc in pairs(self.arcs) do
+  print ("La")
+  for _,arc in ipairs(self.arcs) do
     local from = arc.end1.pos
+    print (arc.end1.uid)
     local to = arc.end2.pos
+    print (arc.end2.uid)
     local vectDir = Vector2D:new(0,0)
     vectDir = Vector2D:Sub(to,from)
     vectDir:normalize()
@@ -108,15 +111,19 @@ function Map:getClosestPos(v2pos)
     local distVectPos = Vector2D:Dist(v2pos,from)
     --Pythagore
     local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
+
+    print (dist)
     if dist < min then
       min = dist
       best = arc
       ratio = distProj/arc.len
     end
   end
+  print("Ici")
   toReturn[1]=best
-  toReturn[2] = ratio
-  return 
+  toReturn[2]=ratio
+  print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ration ="..toReturn[2])
+  return toReturn
 end
 
 

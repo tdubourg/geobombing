@@ -99,14 +99,15 @@ local function moveObject(e)
 			local nodes = currentMap:findPath(from, node)
 
 
-			local toPos = Map:getClosestPos(worldPos)
-
+			local toPos = currentMap:getClosestPos(worldPos)
+print("Coucou")
 			net.sendPathToServer(nodes)
 			player.nodeFrom=from
 			--player.nodeTo=nodes[1]
-			player:goToAR(toPos[1],toPos[2])
+			print(toPos[1].end1.uid .."  youhou ".. toPos[2])
+			--player:goToAR(toPos[1],toPos[2])
 
-			--player:saveNewNodes(nodes)
+			player:saveNewNodes(nodes)
 			end
 		end
 
