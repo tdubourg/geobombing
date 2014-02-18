@@ -79,6 +79,10 @@ end
   return object
 end
 
+function Map:getArc( node_from, node_to )
+  return self.nodesByUID[node_from].arcs[node_to]
+end
+
 function Map:getClosestNode(v2pos)
   local min = math.huge
   local best = nil
