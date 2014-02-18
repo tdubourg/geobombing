@@ -31,7 +31,7 @@ function scene:createScene( event )
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
-	camera:setZoomXY(200,200)
+	camera:setZoomXY(50,50)
 	camera:lookAtXY(0,0)
 	gui.initGUI()
 
