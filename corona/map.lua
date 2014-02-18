@@ -1,7 +1,7 @@
 require "heap"
 
-Map = {}                   -- Create a table to hold the class methods
-function Map:new(luaMap)  -- The constructor
+Map = {}
+function Map:new(luaMap)  -- luaMap = nil  ->  build dummy map
   local object = {}
   object.nodesByUID = {}
   object.arcs ={}
@@ -61,11 +61,11 @@ else
   print "loading dummy map"
 
   object.nodesByUID["1"] = Node:new(0, 0, "1")
-  object.nodesByUID["2"] = Node:new(0, 200, "2")
-  object.nodesByUID["3"]= Node:new(100,100, "3")
-  object.nodesByUID["4"]= Node:new(100,20, "4")
-  object.nodesByUID["5"] = Node:new(150,250, "5")
-  object.nodesByUID["6"]= Node:new(150,150, "6")
+  object.nodesByUID["2"] = Node:new(0, 1, "2")
+  object.nodesByUID["3"]= Node:new(0.5,0.5, "3")
+  object.nodesByUID["4"]= Node:new(0.5,0.2, "4")
+  object.nodesByUID["5"] = Node:new(0.8,1, "5")
+  object.nodesByUID["6"]= Node:new(0.7,0.7, "6")
 
   object.arcs[1] = object.nodesByUID["1"]:linkTo(object.nodesByUID["2"])
     object.arcs[2] = object.nodesByUID["2"]:linkTo(object.nodesByUID["3"])

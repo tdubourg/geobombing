@@ -35,8 +35,8 @@ function scene:createScene( event )
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 
-	delay=1
-	physics.start( )
+	-- loading dummy map, will be replaced as soon as map is received from server
+	currentMap = Map:new(nil)
 
 	-- connect to server
 	local result = net.connect_to_server("127.0.0.1", 3000)
