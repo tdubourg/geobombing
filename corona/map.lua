@@ -76,7 +76,7 @@ else
   self.arcs[7] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
 end
 
-  return object
+  return self
 end
 
 function Map:getArc( node_from_uid, node_to_uid )
