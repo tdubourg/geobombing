@@ -93,6 +93,8 @@ function Map:getClosestNode(v2pos)
 end
 
 function Map:getClosestPos(v2pos)
+  local toReturn={}
+  local ratio =0
   local min = math.huge
   local best = nil
   for _,arc in pairs(self.arcs) do
@@ -101,20 +103,20 @@ function Map:getClosestPos(v2pos)
     local vectDir = Vector2D:new(0,0)
     vectDir = Vector2D:Sub(to,from)
     vectDir:normalize()
-   
     local vectPos = Vector2D:Sub(v2pos,from)
-
     local distProj = vectPos:dot(vectDir)
-
-    
-
-    local dist = v2pos:dist(node.pos)
+    local distVectPos = Vector2D:Dist(v2pos,from)
+    --Pythagore
+    local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
     if dist < min then
       min = dist
-      best = node
+      best = arc
+      ratio = distProj/arc.len
     end
   end
-  return best
+  toReturn[1]=best
+  toReturn[2] = ratio
+  return 
 end
 
 

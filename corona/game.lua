@@ -99,13 +99,14 @@ local function moveObject(e)
 			local nodes = currentMap:findPath(from, node)
 
 
+			local toPos = Map:getClosestPos(worldPos)
 
 			net.sendPathToServer(nodes)
 			player.nodeFrom=from
 			--player.nodeTo=nodes[1]
-			--player:goToAR(from.arcs[nodes[1]],20)
+			player:goToAR(toPos[1],toPos[2])
 
-			player:saveNewNodes(nodes)
+			--player:saveNewNodes(nodes)
 			end
 		end
 
