@@ -12,6 +12,10 @@ exports.min = min
 exports.max = max
 exports.flatten = flatten
 
+Array.prototype.thismap(f, arg) {
+	this.forEach(function(e) { f.apply(e, arg) })
+}
+
 /*
 exps = {
 	apply: function(f, arr) { return f.apply(null, arr) },
