@@ -1,3 +1,4 @@
+"use strict"
 
 function apply(f, arr) { return f.apply(null, arr) }
 function min(arr) { return apply(Math.min, arr) }
@@ -12,8 +13,12 @@ exports.min = min
 exports.max = max
 exports.flatten = flatten
 
-Array.prototype.thismap(f, arg) {
-	this.forEach(function(e) { f.apply(e, arg) })
+Array.prototype.thismap = function(f) {
+	var args = []
+	for(var i = 1; i < arguments.length; i++) {
+		args[i] = arguments[i]
+	}
+	this.forEach(function(e) { f.apply(e, args) })
 }
 
 /*
