@@ -28,7 +28,7 @@ spriteWidth = 25
 spriteHeight = 25
 
 -- error accepted when moving the player
-err = 0.005
+err = 0.01
 
 -------------------------------------------------
 -- PRIVATE FUNCTIONS
@@ -45,7 +45,7 @@ local PLAYER_SPRITE_SEQUENCE_DATA = {
 -- PUBLIC FUNCTIONS
 -------------------------------------------------
 
-function player.new( pName, pSpeed, pNbDeath)	-- constructor
+function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
 	local newPlayer = {}
 	setmetatable( newPlayer, player_mt )
     --Player name / speed / number of death
@@ -66,7 +66,7 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
     newPlayer.drawable.x = 0
     newPlayer.drawable.y = 0
 
-    newPlayer.pos = Vector2D:new(0, 0)
+    newPlayer.pos = Vector2D:new(0.0000, 0.0000)
 
     --Player current destination
     newPlayer.toX=newPlayer.drawable.x
@@ -97,10 +97,15 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
     newPlayer.drawable.gravityScale = gravityScale
 
     -------------
-    newPlayer.nodeFrom=nil
-    newPlayer.nodeTo=nil
-    newPlayer.currentArc=nil
-    newPlayer.currentArcRatio=0
+    newPlayer.nodeFrom=nodeF
+    newPlayer.nodeTo=nodeT
+    newPlayer.currentArc=nodeF.arcs[nodeT]
+    if(newPlayer.currentArc.end1==nodeF) then
+            newPlayer.currentArcRatio=0
+        else
+            newPlayer.currentArcRatio=100
+        end
+    
 
     -- insert in camera group
     --cameraGroup:insert(newPlayer.drawable)
@@ -183,25 +188,17 @@ function player:saveNewNodes(nodes)
    if (nodes~=nil) then
         self.nodesI=1
         self.nodesMax=#nodes
-        print (self.nodesMax)
+        print (self.nodesMax .." BOUH")
         self.toX=self.nodes[1].pos.x
         self.toY=self.nodes[1].pos.y
         self.nodeTo=nodes[1]
     else
         self.nodesI=0
         self.nodesMax=0
-        self.nodeTo=nil
+        --self.nodeTo=nil
     end
 end
 
-
-
-
-function player:refreshPos()
-    self.drawable.x=self.pos.x
-    self.drawable.y = self.pos.y
-    self:upCurrentArc(self.nodeFrom,self.nodeTo)
-end
 
 
 function player:saveNewDestination(e)
@@ -223,7 +220,7 @@ end
 function player:saveNewDestinationNode(e)
 
     self.toX=e.pos.x
-    self.toY=e.pos.y
+    self.toY=e.pos.y 
 
 end
 
@@ -236,15 +233,14 @@ end
 
 function player:refresh()
 
-    if(self.drawable.x<= (self.toX+err) and self.drawable.x>=(self.toX-err) and self.drawable.y <=(self.toY+err) and  self.drawable.y>=(self.toY-err)) then
+    if(self.pos.x<= (self.toX+err) and self.pos.x>=(self.toX-err) and self.pos.y <=(self.toY+err) and  self.pos.y>=(self.toY-err)) then
         self.currentState = PLAYER_FROZEN_STATE 
         self.nodesI=self.nodesI+1
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
-
-            self.nodeFrom=self.nodeTo
-            self.nodeTo=nil
+            --self.nodeFrom=self.nodeTo
+            --self.nodeTo=nil
 
             -- self.upCurrentArc(self.nodeFrom,self.nodeTo)
         else
@@ -284,8 +280,11 @@ function player:refresh()
         --     else
         vectDir:mult(self.speed)
         self.pos:add(vectDir)
-        self:refreshPos()
+        -- print(" ( " .. self.pos.x.. " <= (" .. self.toX+err .. ") and  " .. self.pos.x..">= (" ..self.toX-err..") and " .. self.pos.y.." <= (" .. self.toY+err..") and  " ..  self.pos.y .. " >=(" ..self.toY-err..") " )
 
+        self:upCurrentArc(self.nodeFrom,self.nodeTo)
+        self:redraw()
+       
             -- end
             
         end
@@ -298,8 +297,15 @@ function player:upCurrentArc(from, to)
         print ("from == nil")
     elseif (to == nil) then
         print ("to == nil")
+    elseif (from == to) then
+         print ("from == to") 
     elseif (from.arcs[to] == nil) then
-        print ("from.arc[to] == nil")    
+        
+        
+        
+           print ("from.arc[to] == nil") 
+        print ("error ici")
+      
     else 
         local dist = Vector2D:Dist(from.pos,self.pos)
         self.currentArc=from.arcs[to]
@@ -308,7 +314,7 @@ function player:upCurrentArc(from, to)
         else
             self.currentArcRatio=100-(dist/self.currentArc.len)*100
         end
-        print(from.uid.. " to " ..to.uid .." ratio" ..  self.currentArcRatio)
+        --print(from.uid.. " to " ..to.uid .." ratio " ..  self.currentArcRatio)
     end
 end
 
