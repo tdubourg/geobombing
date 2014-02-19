@@ -4,6 +4,14 @@ var clNode = require("./Classes/clNode").clNode;
 var clWay = require("./Classes/clWay").clWay; 
 var clPosition = require('./network').clPosition; 
 
+// -- Math
+
+function dist(ptA,ptB) {
+	return Math.sqrt(Math.pow(ptB.x-ptA.x) + Math.pow(ptB.y-ptA.y))
+}
+exports.dist = dist
+
+
 // -- Creating
 
 function CreatePosition(idNode1, idNode2, coef)
