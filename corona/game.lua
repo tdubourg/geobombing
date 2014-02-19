@@ -26,6 +26,14 @@ itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 
 
+function initGame()
+	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
+	for voisin,_ in pairs(nodeFr.arcs) do
+		nodeT=voisin
+	end
+	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
+end
+
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 	local group = self.view
@@ -44,6 +52,7 @@ function scene:createScene( event )
 			luaMap = json_obj[JSON_FRAME_DATA]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
+			initGame()
 		end
 		net.net_handlers['pos'] = function ( json_obj )
 			print ("Received pos from server: " .. json.encode(json_obj))
@@ -53,15 +62,8 @@ function scene:createScene( event )
 	else
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
+		initGame()
 	end
-
-	currentMap = Map:new(luaMap)
-	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
-	for voisin,_ in pairs(nodeFr.arcs) do
-		nodeT=voisin
-	end
-	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
-
 
 	itemsManager = ItemsManager.new()
 end
