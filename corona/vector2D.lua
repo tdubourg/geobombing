@@ -138,8 +138,8 @@ end
 
 function Vector2D:Lerp(vec1, vec2, ratio)
 	local ratioComp = 1-ratio
-	local x = vec1.x * ratio + vec2.x * ratioComp
-	local y = vec1.y * ratio + vec2.y * ratioComp
+	local x = vec1.x * ratioComp + vec2.x * ratio
+	local y = vec1.y * ratioComp + vec2.y * ratio
 	return Vector2D:new(x,y)
 end
  

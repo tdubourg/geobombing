@@ -3,7 +3,7 @@
 var netw = require('./network');
 var utils = require("./common");
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
-var MOVE_REFRESH_FREQUENCY = 500; // in milliseconds
+var MOVE_REFRESH_FREQUENCY = 200; // in milliseconds
 
 // Type from server
 var TYPEMAP = "map";
@@ -18,6 +18,8 @@ var nb_instance_move = 0;
 
 var g = require('./Game')
 var single_game_instance/*: g.Game */ = null
+var gs = require('./game_server')
+//var single_game_server = null
 
 
 // executed function according to client result
@@ -30,9 +32,9 @@ var sendmap_action = function (frame_data, stream)
 	if (frame_data != null && frame_data.longitude != null) lon = parseFloat(frame_data.longitude);
 	console.log("sendmap_action:\nlat=" + lat + "\nlon=" + lon);
 	
-	function sendMap(mapData)
+	function sendMap(jsonMap)
 	{
-		var jsonMap = db.mapDataToJSon(mapData)
+		//var jsonMap = db.mapDataToJSon(mapData)
 		var content =  
 		{
 			"type": TYPEMAP, 
@@ -57,14 +59,14 @@ var sendmap_action = function (frame_data, stream)
 	if (single_game_instance == null)
 		db.fullMapAccordingToLocation(lat, lon, function (mapData)
 		{
-			single_game_instance = new g.Game(new g.Map(mapData));
-			sendMap(single_game_instance.map.data /* == mapData */);
+			single_game_instance = new g.Game(new g.Map(db.mapDataToJSon(mapData)))
+			sendMap(single_game_instance.map.jsonObj /* == mapData */)
 			//sendInitialPosition();
 			//sendMap(mapData /* == single_game_instance.map.data */)
 		}); // lat, lon
 	else
 	{
-	 	sendMap(single_game_instance.map.data);
+	 	sendMap(single_game_instance.map.jsonObj);
 	 	//sendInitialPosition();
 	}
 }
@@ -91,21 +93,22 @@ var move_action = function (frame_data, stream)
 	//decode frame
 	if (frame_data != null && frame_data.start_edge_pos != null && frame_data.end_edge_pos != null
 		&& frame_data.nodes != null && frame_data.nodes.length >= 2) // minimum of two nodes for moving
-		{
-			console.log("\nmove_action:");
-			var startedge = parseFloat(frame_data.start_edge_pos);
-			var endedge = parseFloat(frame_data.end_edge_pos);
-
-			// send answer
-			multiple_send_position(stream, startedge, endedge, frame_data.nodes); // execute the function every 1000ms
-		}
-		else console.log("Erreur move msg from client.")
+	{
+		console.log("\nmove_action:");
+		var startedge = parseFloat(frame_data.start_edge_pos);
+		var endedge = parseFloat(frame_data.end_edge_pos);
+		
+		// send answer
+		multiple_send_position(stream, startedge, endedge, frame_data.nodes); // execute the function every 1000ms
+	}
+	else console.log("Erreur move msg from client.")
 }
 var multiple_send_position = function (stream, startedge, endedge, idnodes) 
 {
-    // calculate position
-    if (idnodes.length < 2 // do not send if invalid request
-    || (idnodes.length == 2 && startedge >= endedge)) return; // stop send when destination reached
+	// calculate position
+	if (idnodes.length < 2 // do not send if invalid request
+		|| (idnodes.length == 2 && startedge >= endedge)
+	) return; // stop send when destination reached
 	else
 	{
 		while (idnodes.length > 2 && idnodes[0] == idnodes[1]) {idnodes.shift();}
@@ -121,7 +124,7 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 		}
 	}
 
-    var position = utils.CreatePosition(idnodes[0], idnodes[1], startedge);
+ 	var position = utils.CreatePosition(idnodes[0], idnodes[1], startedge);
 	var content = 
 	{
 		"type": TYPEPOS, 
