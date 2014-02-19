@@ -39,8 +39,8 @@ function Node:linkTo(node1)
 		local newArc = Arc:new(self, node1)
 		self.arcs[node1] = newArc
 		node1.arcs[self] = newArc
-	end
-  return self.arcs[node1]
+    return newArc
+  end
 end
 
 function Node:destroy()

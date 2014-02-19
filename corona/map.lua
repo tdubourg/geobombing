@@ -1,4 +1,5 @@
 require "heap"
+require "arcPos"
 
 Map = {}
 function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
@@ -74,7 +75,6 @@ else
   self.arcs[#(self.arcs)+1] = self.nodesByUID["5"]:linkTo(self.nodesByUID["2"])
   self.arcs[#(self.arcs)+1] = self.nodesByUID["6"]:linkTo(self.nodesByUID["2"])
   self.arcs[#(self.arcs)+1] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
-
 end
 
   return self
@@ -100,6 +100,32 @@ function Map:getClosestNode(v2pos)
     end
   end
   return best
+end
+
+-- returns nil if non existing arc
+function Map:createArcPos(n1, n2, ratio)
+  if not n1 then print "b1 nil" end
+  if not n2 then print "b2 nil" end
+  local arc = n1.arcs[n2]
+  if arc then
+    if arc.end1==n1 then
+      return ArcPos:new(arc, ratio)
+    else -- arc.end1==n2
+      return ArcPos:new(arc, 1-ratio)
+    end
+  end
+  return nil
+end
+
+-- returns nil if non existing arc
+function Map:createArcPosByUID(n1uid, n2uid, ratio)
+  local n1 = self.nodesByUID[n1uid]
+  local n2 = self.nodesByUID[n2uid]
+
+  if n1 and n2 then
+    return self:createArcPos(n1,n2,ratio)
+  end
+  return nil
 end
 
 function Map:getClosestPos(v2pos)
@@ -172,15 +198,6 @@ function Map:findPath(from, to)
 
 end
 
-function Map:destroy()
-  for _,node in pairs(self.nodesByUID) do
-    node:destroy()
-  end
-
-    for _,arc in ipairs(self.arcs) do
-    arc:destroy()
-  end
-end
 
 function popSmalestValue(table)
   minV = math.huge
@@ -226,7 +243,7 @@ end
 
 
 function invertIndexedTable ( tab )
-    local size = #tab
+    local size = #tab+1
     local newTable = {}
 
     for i,v in ipairs ( tab ) do
@@ -234,4 +251,15 @@ function invertIndexedTable ( tab )
     end
 
     return newTable
+end
+
+
+function Map:destroy()
+  for _,node in pairs(self.nodesByUID) do
+    node:destroy()
+  end
+
+    for _,arc in ipairs(self.arcs) do
+    arc:destroy()
+  end
 end
