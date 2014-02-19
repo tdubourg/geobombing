@@ -136,7 +136,7 @@ local function moveObject(e)
 				print(nod.uid)
 				end
 
-			net.sendPathToServer(from,nodes)
+			net.sendPathToServer(from,nodes,arcP)
 			
 			--player.nodeTo=nodes[1]
 			
