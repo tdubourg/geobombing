@@ -1,6 +1,6 @@
 ArcPos = {}                   -- Create a table to hold the class methods
 function ArcPos:new(arc, progress)  -- The constructor
-  local self = {arc=arc, start=start, progress=progress}
+  local self = {arc=arc, progress=progress}
   
   setmetatable(self, { __index = ArcPos })  -- Inheritance
   return self
