@@ -17,6 +17,8 @@ var nb_instance_move = 0;
 
 var g = require('./Game')
 var single_game_instance/*: g.Game */ = null
+var gs = require('./game_server')
+//var single_game_server = null
 
 
 // executed function according to client result
