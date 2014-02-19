@@ -19,7 +19,7 @@ function Node(id, x, y) {
 function Arc(id, name, n1, n2) {
 	this.id = id
 	this.name = name
-	this.name = length = com.dist(n1,n2)
+	this.length = com.dist(n1,n2)
 	this.nodes = [this.n1 = n1, this.n2 = n2]
 	this.walls = []
 	this.bombs = []
@@ -80,7 +80,7 @@ Player.prototype.update = function (period) {
 	if (this.nextNode != null) {
 		var distToWalk = this.speed*period
 		var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
-		if (distToWalk < distToNode)
+		//if (distToWalk < distToNode)
 	}
 	
 }
