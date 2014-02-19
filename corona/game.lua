@@ -111,20 +111,26 @@ local function moveObject(e)
 			elseif (node == nil) then
 				--player:saveNewDestination(e)
 			else
+
+			local arcP = currentMap:getClosestPos(worldPos)
+			print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
+			--player.arcPDest = arcP
+
 			local nodes = currentMap:findPath(from, node)
-print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
-print(from.uid .. "<--- from")
-			--local toPos = currentMap:getClosestPos(worldPos)
+--print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
+--print(from.uid .. "<--- from")
+			
 			player.nodeFrom=from
-			 for _,nod in ipairs(nodes) do
-				print(nod.uid)
-				end
+			 -- for _,nod in ipairs(nodes) do
+				-- print(nod.uid)
+				-- end
 
 			net.sendPathToServer(from,nodes)
 			
 			--player.nodeTo=nodes[1]
-			--print(toPos[1].end1.uid .."  ratio ".. toPos[2])
-			--player:goToAR(toPos[1],toPos[2])
+			
+			--player:goToAR(arcP)
+			
 			player:saveNewNodes(nodes)
 			end
 		end
