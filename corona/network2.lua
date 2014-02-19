@@ -4,6 +4,7 @@ local location = require("location")
 require ("consts")
 require "print_r"
 require "utils"
+require "arcPos"
 
 local client = nil
 local FRAME_SEPARATOR = "\n"
@@ -140,11 +141,12 @@ end
 
  
 
-function sendPathToServer(from, nodes )
+function sendPathToServer(from, nodes, arcP )
 	if (nodes == nil) then
 		return
 	end
 	local arc, ratio = player.currentArc, player.currentArcRatio
+	local ratioEnd =0
 	local to_send = {}
 	local net_nodes =nil
 	if (arc.end1.uid == nodes[1].uid) then
@@ -157,9 +159,20 @@ function sendPathToServer(from, nodes )
 	for i,v in ipairs(nodes) do
 		net_nodes[#net_nodes+1] = v.uid
 	end
+
+	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+		net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+		ratioEnd =arcP.progress
+elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+		net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+		ratioEnd = 1- arcP.progress
+
+	else
+		print("error in sendPathToServer")
+	end
 	to_send[JSON_MOVE_NODES] = net_nodes
 	to_send[JSON_MOVE_START_EDGE_POS] = ratio
-	to_send[JSON_MOVE_END_EDGE_POS] = 1.0
+	to_send[JSON_MOVE_END_EDGE_POS] = arcP.progress
 	sendSerialized(to_send, FRAMETYPE_MOVE)
 end
 
