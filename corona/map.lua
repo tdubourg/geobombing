@@ -128,7 +128,6 @@ function Map:createArcPosByUID(n1uid, n2uid, ratio)
 end
 
 function Map:getClosestPos(v2pos)
-  local toReturn={}
   local ratio =0
   local min = math.huge
   local best = nil
@@ -148,17 +147,18 @@ function Map:getClosestPos(v2pos)
     local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
 
     --print (dist)
-    if dist < min then
+    if (dist>0 and dist < min) then
       min = dist
       best = arc
       ratio = distProj/arc.len
     end
   end
-  --print("Ici")
-  toReturn[1]=best
-  toReturn[2]=ratio
-  print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ratio ="..toReturn[2])
-  return toReturn
+  local arcP = self:createArcPos(best.end1, best.end2, ratio)
+  -- --print("Ici")
+  -- toReturn[1]=best
+  -- toReturn[2]=ratio
+  -- print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ratio ="..toReturn[2])
+  return arcP
 end
 
 
