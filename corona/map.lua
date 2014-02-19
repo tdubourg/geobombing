@@ -105,8 +105,6 @@ end
 
 -- returns nil if non existing arc
 function Map:createArcPos(n1, n2, ratio)
-  if not n1 then print "b1 nil" end
-  if not n2 then print "b2 nil" end
   local arc = n1.arcs[n2]
   if arc then
     if arc.end1==n1 then
@@ -164,10 +162,55 @@ function Map:getClosestPos(v2pos)
 end
 
 
+function Map:findPathArcs(arcPosFrom, arcPosTo)
+  local open = {}
+  local closed = {}
+  local precedence = {}
+
+  open[arcPosFrom.arc.end1] = Vector2D:Dist(arcPosFrom:getPosXY(), arcPosFrom.arc.end1.pos)
+  open[arcPosFrom.arc.end2] = Vector2D:Dist(arcPosFrom:getPosXY(), arcPosFrom.arc.end2.pos)
+
+  local currentNode = nil
+  local currentDist = 0
+
+  while next(open) ~= nil do   -- open not empty
+    currentNode, currentDist = popSmalestValue(open)
+    --inserting neighbours
+    closed[currentNode] = true
+
+    if currentNode == "TARGET" then
+      return rewindPathArcs(precedence)
+    end
+
+    for next,arc in pairs(currentNode.arcs) do
+      if closed[next] == nil then  -- not in closed list
+        local nextDist = open[next]
+        local newNextDist = currentDist + currentNode.pos:dist(next.pos)
+        if (not nextDist or newNextDist<nextDist) then
+          open[next] = newNextDist
+          precedence[next] = currentNode
+        end
+      end
+
+      -- fake node insertion regarding
+      if (arc == arcPosTo.arc) then
+        local newTargetDist = currentDist + Vector2D:Dist(arcPosTo:getPosXY(), currentNode.pos)
+        local targetDist = open["TARGET"]
+        if (not targetDist or newTargetDist < targetDist) then
+          open["TARGET"] = newTargetDist
+          precedence["TARGET"] = currentNode
+        end
+      end
+
+    end
+  end
+  return nil
+end
+
 function Map:findPath(from, to)
   local open = {}
   local closed = {}
-  local precedence = { }
+  local precedence = {}
 
   open[from] = 0
 
@@ -186,8 +229,6 @@ function Map:findPath(from, to)
           open[next] = newNextDist
           precedence[next] = currentNode
         end
-        --adding to closed licensing.init( providerName )
-      else
       end
 
     end
@@ -213,22 +254,6 @@ function popSmalestValue(table)
   return bestK,minV
 end
 
--- BACKUP
--- function rewindPath(precedence, to)
---     revPath = {}
-
---     local node = to
---     local prevNode = nil
-
---     repeat
---       revPath[#revPath+1] = node
---       prevNode = precedence[node]
---       node = prevNode
---     until prevNode == nil
-
---     return invertIndexedTable(revPath)
--- end
-
 
 function rewindPath(precedence, to)
     revPath = {}
@@ -237,7 +262,19 @@ function rewindPath(precedence, to)
     repeat
       revPath[#revPath+1] = node
       node = precedence[node]
-    until node == nil --TODO : "until node == nil"  -> ajoute from dans le resultat, plus propre
+    until node == nil
+      
+    return invertIndexedTable(revPath)
+end
+
+function rewindPathArcs(precedence)
+    revPath = {}
+    local node = precedence["TARGET"]
+
+    repeat
+      revPath[#revPath+1] = node
+      node = precedence[node]
+    until node == nil
       
     return invertIndexedTable(revPath)
 end
