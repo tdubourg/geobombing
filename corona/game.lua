@@ -109,8 +109,12 @@ local function moveObject(e)
 			local nodes = currentMap:findPath(from, node)
 
 			--local toPos = currentMap:getClosestPos(worldPos)
-			net.sendPathToServer(nodes)
 			player.nodeFrom=from
+			 for _,node in ipairs(nodes) do
+				print(node.uid)
+				end
+			net.sendPathToServer(from,nodes)
+			
 			--player.nodeTo=nodes[1]
 			--print(toPos[1].end1.uid .."  ratio ".. toPos[2])
 			--player:goToAR(toPos[1],toPos[2])
