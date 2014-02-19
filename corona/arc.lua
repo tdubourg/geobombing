@@ -28,20 +28,6 @@ function Arc:redraw()
   self.drawable:setStrokeColor( 255, 255, 255 )
 end
 
--- NOT TESTED
--- function Arc:computePosition(nodeFrom, progress)
-
---   if nodeFrom == end1 then
---   print "1"
---     return Vector2D:Lerp(end1.pos, end2.pos, progress)
---   elseif nodeFrom == end2 then
---     print "2"
---     return Vector2D:Lerp(end2.pos, end1.pos, progress)
---   else
---     print "3"
---     return nil
---   end
--- end
 
 function Arc:destroy()
   camera:removeListener(self)
