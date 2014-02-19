@@ -6,10 +6,9 @@
 -------------------------------------------------
 require "camera"
 require "vector2D"
-local physics = require( "physics" )
+local utils = require("lib.ecusson.utils")
+local CameraAwareSprite = require("camera_aware_sprite")
 
-local player = {}
-local player_mt = { __index = player }	-- metatable
 -- The following constants define the widht and height of the player in percentage of the screen so that the player
 -- takes the same amount of space on a small and on a big screen
 PLAYER_WIDTH_IN_PERCENTAGE = 10
@@ -28,7 +27,7 @@ spriteWidth = 25
 spriteHeight = 25
 
 -- error accepted when moving the player
-err = 0.005
+local accepted_error = 0.005
 
 -------------------------------------------------
 -- PRIVATE FUNCTIONS
@@ -39,106 +38,112 @@ local PLAYER_SPRITE_SEQUENCE_DATA = {
 --{ name="dead", start=9, count=4, time=400}
 }
 
-
+local Player = {}
 
 -------------------------------------------------
 -- PUBLIC FUNCTIONS
 -------------------------------------------------
 
-function player.new( pName, pSpeed, pNbDeath)	-- constructor
-	local newPlayer = {}
-	setmetatable( newPlayer, player_mt )
+function Player.create( pName, pSpeed, pNbDeath)	-- constructor
+	local self = utils.extend(Player)
+    print ( "Creating player... " )
     --Player name / speed / number of death
-    newPlayer.name = pName or "Unnamed"
-    newPlayer.speed = pSpeed or 0.2
-    newPlayer.nbDeath = pNDeath or 0
+    self.name = pName or "Unnamed"
+    self.speed = pSpeed or 0.2
+    self.nbDeath = pNDeath or 0
 
     --Player current state : FROZEN / WALKING / DEAD
-    newPlayer.currentState = PLAYER_FROZEN_STATE 
+    self.currentState = PLAYER_FROZEN_STATE 
 
     --Player Sprite
-    newPlayer.drawable=nil
+    self.pos = Vector2D:new(0, 0)
+    print ("worldToScreen:", camera:worldToScreen(self.pos).x, camera:worldToScreen(self.pos).y)
+    self.sprite = CameraAwareSprite.create {
+        spriteSet = "bonhomme",
+        animation = "idle",
+        worldPosition = self.pos,
+        position = camera:worldToScreen(self.pos),
+    }
  --    local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
 	-- height = PLAYER_SPRITE_RAW_HEIGHT, numFrames = 7})--, sheetContentWidth=PLAYER_SPRITESHEET_WIDTH, sheetContentHeight=PLAYER_SPRITESHEET_HEIGHT})
- --    newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
-    newPlayer.drawable = display.newCircle( 0, 0, 50 ) -- TODO replace that by sprite
+ --    self.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
 
     --Player current position
-    newPlayer.drawable.x = 0
-    newPlayer.drawable.y = 0
-
-    newPlayer.pos = Vector2D:new(0, 0)
+    -- self.drawable.x = 0
+    -- self.drawable.y = 0
 
     --Player current destination
-    newPlayer.toX=newPlayer.drawable.x
-    newPlayer.toY= newPlayer.drawable.y
+    self.toX= self.pos.x
+    self.toY= self.pos.y
 
     --nodes to go to the final destination
-    newPlayer.nodes= nil
-    newPlayer.nodesI=0
-    newPlayer.nodesMax=0
+    self.nodes= nil
+    self.nodesI=0
+    self.nodesMax=0
 
     --???
-    newPlayer.objectType = objectType
-    newPlayer.drawable.objectType = objectType
-    newPlayer.drawable.playerObject = newPlayer
+    self.objectType = objectType
+    -- self.drawable.objectType = objectType
+    -- self.drawable.playerObject = self
 
     -- setting player sprite resize
-    newPlayer.drawable.width, newPlayer.drawable.height = spriteWidth, spriteHeight
-    newPlayer.drawable.xScale = spriteWidth / PLAYER_SPRITE_RAW_WIDTH
-    newPlayer.drawable.yScale = spriteHeight / PLAYER_SPRITE_RAW_HEIGHT--signof(gravityScale) * spriteHeight / PLAYER_SPRITE_RAW_HEIGHT
+    -- self.drawable.width, self.drawable.height = spriteWidth, spriteHeight
+    -- self.drawable.xScale = spriteWidth / PLAYER_SPRITE_RAW_WIDTH
+    -- self.drawable.yScale = spriteHeight / PLAYER_SPRITE_RAW_HEIGHT--signof(gravityScale) * spriteHeight / PLAYER_SPRITE_RAW_HEIGHT
 
     --??
-    addBodyWithCutCornersRectangle(newPlayer.drawable, 30)
+    -- addBodyWithCutCornersRectangle(self.drawable, 30)
 
     -- playing the sprite
-    -- newPlayer.drawable:play()
+    -- self.drawable:play()
 
     --???
-    newPlayer.drawable.gravityScale = gravityScale
+    -- self.drawable.gravityScale = gravityScale
 
     -------------
-    newPlayer.nodeFrom=nil
-    newPlayer.nodeTo=nil
-    newPlayer.currentArc=nil
-    newPlayer.currentArcRatio=0
+    self.nodeFrom=nil
+    self.nodeTo=nil
+    self.currentArc=nil
+    self.currentArcRatio=0
 
     -- insert in camera group
-    --cameraGroup:insert(newPlayer.drawable)
+    --cameraGroup:insert(self.drawable)
+     return self
+end
 
-    camera:addListener(newPlayer)
-     return newPlayer
+function Player:getPos(  )
+    return self.pos
 end
 
 -------------------------------------------------
 
-function player:printPlayerSpeed()
+function Player:printPlayerSpeed()
 	print( self.name .. " is at speed " .. self.speed .. " ." )
 end
 
 -------------------------------------------------
 
-function player:setPlayerNbDeath(newNbDeath)
+function Player:setPlayerNbDeath(newNbDeath)
 	self.nbDeath = newNbDeath
 end
 
 -------------------------------------------------
 
-function player:printPlayerNbDeath()
+function Player:printPlayerNbDeath()
 	print( self.name .. " is at dead " .. self.nbDeath .. " time(s)." )
 end
 
 
 -------------------------------------------------
 
-function player:printPlayerX()
-	print( self.name .. " is at x = " .. self.drawable.x .. " ." )
+function Player:printPlayerX()
+	print( self.name .. " is at x = " .. self.sprite.position.x .. " ." )
 end
 
  -------------------------------------------------
 
- function player:printPlayerY()
- 	print( self.name .. " is at y = " .. self.drawable.y .. " ." )
+ function Player:printPlayerY()
+ 	print( self.name .. " is at y = " .. self.sprite.position.y .. " ." )
  end
 
 -------------------------------------------------
@@ -176,7 +181,7 @@ function addBodyWithCutCornersRectangle(displayObject, percentageOfCut)
     displayObject.isFixedRotation = true
 end
 
-function player:saveNewNodes(nodes)
+function Player:saveNewNodes(nodes)
     self.nodes=nodes
     -- print( self.nodes[1].pos.x .. ", " .. self.nodes[1].pos.y .. " ." )
     -- print( self.nodes[2].pos.x .. ", " .. self.nodes[2].pos.y .. " ." )
@@ -198,30 +203,29 @@ end
 
 
 
-function player:refreshPos()
-    self.drawable.x=self.pos.x
-    self.drawable.y = self.pos.y
+function Player:refreshPos()
+    self.sprite:setWorldPosition(self.pos)
     self:upCurrentArc(self.nodeFrom,self.nodeTo)
 end
 
 
-function player:saveNewDestination(e)
+function Player:saveNewDestination(e)
 
     local screenPos = Vector2D:new(e.x, e.y)
-    local  worldPos = screenToWorld(screenPos)
+    local worldPos = screenToWorld(screenPos)
     self.toX=worldPos.x
     self.toY=worldPos.y
 
 end
 
-function player:saveNewDestinationVect(e)
+function Player:saveNewDestinationVect(e)
 
     self.toX=e.x
     self.toY=e.y
 
 end
 
-function player:saveNewDestinationNode(e)
+function Player:saveNewDestinationNode(e)
 
     self.toX=e.pos.x
     self.toY=e.pos.y
@@ -229,15 +233,15 @@ function player:saveNewDestinationNode(e)
 end
 
 -- part of the contract with Camera
-function player:redraw()
-  local newPos = camera:worldToScreen(self.pos)
-  self.drawable.x = newPos.x
-  self.drawable.y = newPos.y
-end
+-- function Player:redraw()
+--   local newPos = camera:worldToScreen(self.pos)
+--   self.drawable.x = newPos.x
+--   self.drawable.y = newPos.y
+-- end
 
-function player:refresh()
+function Player:refresh()
 
-    if(self.drawable.x<= (self.toX+err) and self.drawable.x>=(self.toX-err) and self.drawable.y <=(self.toY+err) and  self.drawable.y>=(self.toY-err)) then
+    if(self.sprite.position.x<= (self.toX+accepted_error) and self.sprite.position.x>=(self.toX-accepted_error) and self.sprite.position.y <=(self.toY+accepted_error) and  self.sprite.position.y>=(self.toY-accepted_error)) then
         self.currentState = PLAYER_FROZEN_STATE 
         self.nodesI=self.nodesI+1
         if (self.nodesI>self.nodesMax) then
@@ -269,18 +273,18 @@ function player:refresh()
         tempVectDir = Vector2D:Mult(vectDir, self.speed)
         -- check if there is an obstacle
         temp = Vector2D:Add(self.pos,tempVectDir)
-        -- if (temp.x<= (100+err) and temp.x>=(100-err) and temp.y <=(20+err) and  temp.y>=(20-err)) then
+        -- if (temp.x<= (100+accepted_error) and temp.x>=(100-accepted_error) and temp.y <=(20+accepted_error) and  temp.y>=(20-accepted_error)) then
         --     self.currentState = PLAYER_FROZEN_STATE 
         --     self.nodesI=0
         --     self.nodesMax=0
-        --     err = 1
+        --     accepted_error = 1
         --     -- check if there is a bonus
-        --     elseif (temp.x<= (20+err) and temp.x>=(20-err) and temp.y <=(200+err) and  temp.y>=(200-err)) then
+        --     elseif (temp.x<= (20+accepted_error) and temp.x>=(20-accepted_error) and temp.y <=(200+accepted_error) and  temp.y>=(200-accepted_error)) then
         --         self.speed= self.speed+1
         --         vectDir:mult(self.speed)
         --         self.pos:add(vectDir)
         --         self:refreshPos()
-        --         err = err +1
+        --         accepted_error = accepted_error +1
 
         --     else
         vectDir:mult(self.speed)
@@ -294,9 +298,9 @@ function player:refresh()
     end
 
 
-function player:upCurrentArc(from, to)
+function Player:upCurrentArc(from, to)
     if (from == nil) then
-        print ("from == nil")
+        -- print ("from == nil")
     elseif (to == nil) then
         print ("to == nil")
     elseif (from.arcs[to] == nil) then
@@ -313,7 +317,7 @@ function player:upCurrentArc(from, to)
     end
 end
 
-function player:goToAR(arc,ratio)
+function Player:goToAR(arc,ratio)
 
     local from = arc.end1.pos
     self.nodeFrom = arc.end1
@@ -334,7 +338,7 @@ function player:goToAR(arc,ratio)
     
 end
 
-function player:setAR(arc,ratio)
+function Player:setAR(arc,ratio)
     local from = arc.end1.pos
     local to = arc.end2.pos
     local vectDir = Vector2D:new(0,0)
@@ -344,4 +348,4 @@ function player:setAR(arc,ratio)
     self.pos=destination
 end
 
-return player
+return Player

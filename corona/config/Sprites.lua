@@ -29,6 +29,14 @@ return {
 				foreground = {}
 			},
 
+			bonhomme = {
+				idle = {
+					frameCount = 8,
+					period = 0.9
+					-- loopCount = 1
+				}
+			},
+
 			bomb = {
 				idle = {
 					frameCount = 1,
@@ -37,7 +45,7 @@ return {
 				},
 
 				explode = {
-					frameCount = 63,
+					frameCount = 60,
 					period = EXPLOSION_DURATION,
 					loopCount = 1
 				}

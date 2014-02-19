@@ -4,7 +4,7 @@ local Bomb = {}
 
 local utils = require("lib.ecusson.utils")
 local vec2 = require("lib.ecusson.math.vec2")
-local Sprite = require("lib.ecusson.Sprite")
+local CameraAwareSprite = require("camera_aware_sprite")
 local Sound = require("lib.ecusson.Sound")
 
 -----------------------------------------------------------------------------------------
@@ -27,11 +27,13 @@ function Bomb.create(options)
 	self.time = 0.0
 	self.alive = true
 
-	self.sprite = Sprite.create {
+	print ("bomb options.pos", options.pos)
+
+	self.sprite = CameraAwareSprite.create {
 		spriteSet = "bomb",
 		animation = "idle",
-		-- group = groups.animals,
-		position = options.pos,
+		worldPosition = options.pos,
+		position = camera:worldToScreen(options.pos),
 		-- rotation = self.spawnPoint.rotation
 	}
 
@@ -75,9 +77,13 @@ function Bomb:ecussonEnterFrame(options)
 end
 
 function Bomb:explode(options)
+	print ("Bomb explosion!")
 	self.sprite:play("explode")
-	timer.performWithDelay(EXPLOSION_DURATION, function (  )
-		self:destroy( )				
+	print ( "self!", self)
+	local a = self
+	timer.performWithDelay(EXPLOSION_DURATION*1000, function (  ) -- converting from seconds to ms
+		print ( "self?", self )
+		a:destroy()
 	end)
 end
 
