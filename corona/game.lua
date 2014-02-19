@@ -67,9 +67,8 @@ function scene:createScene( event )
 		net.net_handlers['pos'] = function ( json_obj )
 			print ("Received pos from server: " .. json.encode(json_obj))
 
-			local arcP = currentMap:createArcPos(currentMap:getNode(json_obj.data.n1), currentMap:getNode(json_obj.data.n2),json_obj.data.c)
+			local arcP = currentMap:createArcPosByUID(json_obj.data.n1, json_obj.data.n2,json_obj.data.c)
 			player:setAR(arcP)
-			--player:setAR(currentMap:getArc(json_obj.data.n1, json_obj.data.n2), json_obj.data.c)
 		end
 		net.sendPosition()
 	else
@@ -126,14 +125,16 @@ local function moveObject(e)
 			print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
 			--player.arcPDest = arcP
 
-			local nodes = currentMap:findPath(from, node)
+			--local nodes = currentMap:findPath(from, node)
+			local ap1 = currentMap:createArcPos(player.currentArc.end1,player.currentArc.end2,player.currentArcRatio)
+			local nodes = currentMap:findPathArcs(ap1,arcP)
 --print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
 --print(from.uid .. "<--- from")
 			
 			player.nodeFrom=from
-			 -- for _,nod in ipairs(nodes) do
-				-- print(nod.uid)
-				-- end
+			 for _,nod in ipairs(nodes) do
+				print(nod.uid)
+				end
 
 			net.sendPathToServer(from,nodes)
 			
@@ -141,7 +142,7 @@ local function moveObject(e)
 			
 			--player:goToAR(arcP)
 			
-			player:saveNewNodes(nodes)
+			--player:saveNewNodes(nodes)
 			end
 		end
 
