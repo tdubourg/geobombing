@@ -310,7 +310,7 @@ function player:upCurrentArc(from, to)
         
         
            print ("from.arc[to] == nil") 
-        print (from.uid .."   " .. to.uid)
+        print (from.uid .."  à " .. to.uid)
 
       
     else 
