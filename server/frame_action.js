@@ -3,7 +3,7 @@
 var netw = require('./network');
 var utils = require("./common");
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
-var MOVE_REFRESH_FREQUENCY = 50; // in milliseconds
+var MOVE_REFRESH_FREQUENCY = 20; // in milliseconds
 
 // Type from server
 var TYPEMAP = "map";
@@ -114,7 +114,7 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 		while (idnodes.length > 2 && idnodes[0] == idnodes[1]) {idnodes.shift();}
 	 	if (startedge < 1) 
 		{
-			startedge += 0.01;
+			startedge += 0.05;
 			if (startedge > 1) startedge = 1;
 		}
 		else if (startedge >= 1)
