@@ -73,7 +73,6 @@ end
 
 function Camera:updateManaged()
   for obj,_ in pairs(self.listeners) do
-    local v2Screen = self:worldToScreen(obj.pos)
     obj:redraw()
   end
 end

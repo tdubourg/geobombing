@@ -58,9 +58,10 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
 
     --Player Sprite
     newPlayer.drawable=nil
-    local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
-	height = PLAYER_SPRITE_RAW_HEIGHT, numFrames = 7})--, sheetContentWidth=PLAYER_SPRITESHEET_WIDTH, sheetContentHeight=PLAYER_SPRITESHEET_HEIGHT})
-    newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
+ --    local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
+	-- height = PLAYER_SPRITE_RAW_HEIGHT, numFrames = 7})--, sheetContentWidth=PLAYER_SPRITESHEET_WIDTH, sheetContentHeight=PLAYER_SPRITESHEET_HEIGHT})
+ --    newPlayer.drawable = display.newSprite(imageSheet, PLAYER_SPRITE_SEQUENCE_DATA)
+    newPlayer.drawable = display.newCircle( 0, 0, 50 ) -- TODO replace that by sprite
 
     --Player current position
     newPlayer.drawable.x = 0
@@ -91,7 +92,7 @@ function player.new( pName, pSpeed, pNbDeath)	-- constructor
     addBodyWithCutCornersRectangle(newPlayer.drawable, 30)
 
     -- playing the sprite
-    newPlayer.drawable:play()
+    -- newPlayer.drawable:play()
 
     --???
     newPlayer.drawable.gravityScale = gravityScale

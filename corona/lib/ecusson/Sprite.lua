@@ -25,6 +25,7 @@
 
 local utils = require("lib.ecusson.Utils")
 local vec2 = require("lib.ecusson.math.vec2")
+require "camera"
 local EcussonDisplayObject = require("lib.ecusson.internal.EcussonDisplayObject")
 
 -----------------------------------------------------------------------------------------
@@ -279,6 +280,9 @@ function Class.create(options)
 		options.group:insert(self.group)
 	end
 
+	camera:addListener(self)
+
+
 	-- Create groups for attachments
 	self.backAttachmentsGroup = display.newGroup()
 	self.attachmentsGroup = display.newGroup()
@@ -340,6 +344,7 @@ function Class:destroy()
 		attachment:destroy()
 	end
 
+	camera:removeListener(self)
 	Super.destroy(self)
 
 	self._displayObject:removeSelf()
@@ -555,6 +560,12 @@ function Class:attach(attachmentName)
 	else
 		return self.attachments[attachmentName]
 	end
+end
+
+function Class:redraw( options )
+	print (self.position, self.position.x, self.position.y)
+	local newPos = camera:worldToScreen(self.position)
+	self:setPosition(newPos)
 end
 
 -- Detach an attachment previously attached
