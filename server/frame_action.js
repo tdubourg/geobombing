@@ -92,11 +92,19 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
     // calculate position
     if (idnodes.length < 2 // do not send if invalid request
     || (idnodes.length == 2 && startedge >= endedge)) return; // stop send when destination reached
-	else if (startedge < 1) startedge += 0.2;
-	else if (startedge >= 1)
+	else
 	{
-		startedge = 0;
-		if (idnodes.length > 2) idnodes.shift();
+		while (idnodes.length > 2 && idnodes[0] == idnodes[1]) {idnodes.shift();}
+	 	if (startedge < 1) 
+		{
+			startedge += 0.2;
+			if (startedge < 1) startedge = 1;
+		}
+		else if (startedge >= 1)
+		{
+			startedge = 0;
+			if (idnodes.length > 2) idnodes.shift();
+		}
 	}
 
     var position = utils.CreatePosition(idnodes[0], idnodes[1], startedge);
