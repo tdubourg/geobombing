@@ -32,6 +32,16 @@ function initGame()
 		nodeT=voisin
 	end
 	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
+
+	-- PATHFINDING TEST
+	-- local ap1 = currentMap:createArcPosByUID("1","4", 0.3)
+	-- local ap2 = currentMap:createArcPosByUID("2","5", 0.2)
+	-- local result = currentMap:findPathArcs(ap1, ap2)
+
+	-- for i,v in ipairs(result) do
+	-- 	print("i"..i)
+	-- 	print("v"..v.uid)
+	-- end
 end
 
 -- Called when the scene's view does not exist:
