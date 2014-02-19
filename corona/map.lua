@@ -1,5 +1,6 @@
 require "heap"
 require "arcPos"
+require "print_r"
 
 Map = {}
 function Map:new(luaMap) -- luaMap = nil  ->  build dummy map

@@ -7,6 +7,7 @@
 require "camera"
 require "vector2D"
 require "print_r"
+require "arcPos"
 local physics = require( "physics" )
 
 local player = {}
@@ -339,15 +340,18 @@ function player:goToAR(arc,ratio)
     
 end
 
-function player:setAR(arc,ratio)
-    local from = arc.end1.pos
-    local to = arc.end2.pos
-    local vectDir = Vector2D:Sub(to,from)
-    vectDir:mult(ratio)
-    local destination = Vector2D:Add(from, vectDir)
+function player:setAR(arcP)
+    -- local from = arc.end1.pos
+    -- local to = arc.end2.pos
+    -- local vectDir = Vector2D:Sub(to,from)
+    -- vectDir:mult(ratio)
+    -- local destination = Vector2D:Add(from, vectDir)
+    local destination = arcP:getXY()
     self.toX=destination.x
     self.toY=destination.y
     self.pos=destination
+    self.currentArc = arcP.arc
+    self.currentArcRatio = arcP.progress
     self:redraw()
     
 end
