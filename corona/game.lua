@@ -37,14 +37,17 @@ function scene:createScene( event )
 	-- loading dummy map, will be replaced as soon as map is received from server
 	currentMap = Map:new(nil)
 
+	player = Player.create( "Me",  0.02)
 	-- connect to server
 	local result = net.connect_to_server("127.0.0.1", 3000)
 	
 	if result then
-
+		print ( "!!CONNECTED!!" )
 		net.net_handlers['map'] = function ( json_obj )
 			luaMap = json_obj[JSON_FRAME_DATA]
 			currentMap = Map:new(luaMap)
+			player:refresh()
+			camera:lookAt(player:getPos())
 		end
 		net.net_handlers['pos'] = function ( json_obj )
 			print ("Received pos from server: " .. json.encode(json_obj))
@@ -53,9 +56,10 @@ function scene:createScene( event )
 		net.sendPosition()
 	else
 		print ("Could no connect to server")
+		player:refresh()
+		camera:lookAt(player:getPos())
 	end
 
-	player = Player.new( "Me",  0.02)
 
 	itemsManager = ItemsManager.new()
 end
@@ -63,8 +67,6 @@ local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
-		player:refresh()
-		camera:lookAt(player.pos)
 	end
 end
 local trans

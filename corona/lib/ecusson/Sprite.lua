@@ -25,7 +25,6 @@
 
 local utils = require("lib.ecusson.Utils")
 local vec2 = require("lib.ecusson.math.vec2")
-require "camera"
 local EcussonDisplayObject = require("lib.ecusson.internal.EcussonDisplayObject")
 
 -----------------------------------------------------------------------------------------
@@ -263,8 +262,8 @@ end
 --  autoHide: If true, hide the sprite when the animation ends (default is false)
 --  autoDestroy: If true, destroys the sprite when the animation ends (default is false)
 --  hitTestable: If true, forces the display object to be hitTestable (cf Corona documentation) (default is false)
-function Class.create(options)
-	local self = utils.extend(Class)
+function Class:super(options)
+	-- local self = utils.extend(Class) -- will be created by the Super class
 
 	-- Initialize attributes
 	self.spriteSet = options.spriteSet
@@ -279,9 +278,6 @@ function Class.create(options)
 	if options.group then
 		options.group:insert(self.group)
 	end
-
-	camera:addListener(self)
-
 
 	-- Create groups for attachments
 	self.backAttachmentsGroup = display.newGroup()
@@ -332,6 +328,10 @@ function Class.create(options)
 	self._displayObject:addEventListener("sprite", self)
 
 	return self
+end
+
+function Class.create( options )
+	return utils.extend(Class):super(options)
 end
 
 -- Destroy the sprite
@@ -560,12 +560,6 @@ function Class:attach(attachmentName)
 	else
 		return self.attachments[attachmentName]
 	end
-end
-
-function Class:redraw( options )
-	print (self.position, self.position.x, self.position.y)
-	local newPos = camera:worldToScreen(self.position)
-	self:setPosition(newPos)
 end
 
 -- Detach an attachment previously attached

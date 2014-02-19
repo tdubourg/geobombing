@@ -73,6 +73,8 @@ end
 
 function Camera:updateManaged()
   for obj,_ in pairs(self.listeners) do
-    obj:redraw()
+  	if (obj ~= nil) then
+	    obj:redraw()
+  	end
   end
 end
