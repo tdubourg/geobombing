@@ -162,6 +162,21 @@ function Map:getClosestPos(v2pos)
 end
 
 
+-- WORK IN PROGRESS
+function Map:getExplosionPos(bombArcPos, bombPower, interval)
+  local posList = {} -- Vector2D list, world coordinates
+  local end1Power = bombPower - (bombArcPos:getPosXY()):dist(bombArcPos.end1)
+  local end2Power = bombPower - (bombArcPos:getPosXY()):dist(bombArcPos.end2)
+
+  if end1Power > 0 then
+    --bombArcPos.end1:recursiveCall(end1Power)
+  end
+  if end2Power > 0 then
+    --bombArcPos.end2:recursiveCall(end2Power)
+  end
+end
+
+-- OPTIM: replace open table & popSmalestValue() by a priority queue
 function Map:findPathArcs(arcPosFrom, arcPosTo)
   local open = {}
   local closed = {}
@@ -207,6 +222,7 @@ function Map:findPathArcs(arcPosFrom, arcPosTo)
   return nil
 end
 
+-- OPTIM: replace open table & popSmalestValue() by a priority queue
 function Map:findPath(from, to)
   local open = {}
   local closed = {}
