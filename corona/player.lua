@@ -241,10 +241,13 @@ function player:refresh()
         self.currentState = PLAYER_FROZEN_STATE 
         self.nodesI=self.nodesI+1
         --print("la")
-        if (self.nodesI>=self.nodesMax) then
+        if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
-           
+             if (self.arcPDest ~= nil) then
+              self:goToAR(self.arcPDest)
+               print("laAAAAA")
+        end
             --print("la2")
             --print_r(self.pos)
             --self.nodeFrom=self.nodeTo
@@ -252,16 +255,10 @@ function player:refresh()
 
             -- self.upCurrentArc(self.nodeFrom,self.nodeTo)
         else
-            -- if (nodesI == self.nodesMax-1) then
-            --     if (self.arcPDest ~= nil) then
-            --     self:goToAR(self.arcPDest)
-            --     print("laAAAAA")
-            -- end
-            -- else
-                -- print("la14314")
+           
                 self.toX=self.nodes[self.nodesI].pos.x
             self.toY=self.nodes[self.nodesI].pos.y
-            -- end
+           
             self.nodeFrom=self.nodes[self.nodesI-1]
             self.nodeTo=self.nodes[self.nodesI]
             --self.upCurrentArc(self.nodeFrom,self.nodeTo)
@@ -346,10 +343,11 @@ function player:goToAR(arcP)
     -- local vectDir = Vector2D:Sub(to,from)
     -- vectDir:mult(ratio)
     -- local finalPos = Vector2D:Add(from,vectDir)
-    local destination = arcP:getXY()
+    local destination = arcP:getPosXY()
     self.toX=destination.x
     self.toY=destination.y
     self.arcPDest = nil
+    print("ICI")
     
 end
 
@@ -359,7 +357,7 @@ function player:setAR(arcP)
     -- local vectDir = Vector2D:Sub(to,from)
     -- vectDir:mult(ratio)
     -- local destination = Vector2D:Add(from, vectDir)
-    local destination = arcP:getXY()
+    local destination = arcP:getPosXY()
     self.toX=destination.x
     self.toY=destination.y
     self.pos=destination
