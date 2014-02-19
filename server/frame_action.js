@@ -3,7 +3,7 @@
 var netw = require('./network');
 var utils = require("./common");
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
-var MOVE_REFRESH_FREQUENCY = 1000; // in milliseconds
+var MOVE_REFRESH_FREQUENCY = 500; // in milliseconds
 
 // Type from server
 var TYPEMAP = "map";
@@ -84,7 +84,7 @@ var move_action = function (frame_data, stream)
 			console.log("endedge: " + endedge + "\n");
 
 			// send answer
-			setTimeout(function(){multiple_send_position(stream, startedge, endedge, frame_data.nodes)}, MOVE_REFRESH_FREQUENCY); // execute the function every 1000ms
+			multiple_send_position(stream, startedge, endedge, frame_data.nodes); // execute the function every 1000ms
 		}
 }
 var multiple_send_position = function (stream, startedge, endedge, idnodes) 
@@ -98,7 +98,7 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 	 	if (startedge < 1) 
 		{
 			startedge += 0.2;
-			if (startedge < 1) startedge = 1;
+			if (startedge > 1) startedge = 1;
 		}
 		else if (startedge >= 1)
 		{
