@@ -146,8 +146,8 @@ function sendPathToServer(from, nodes )
 	end
 	local arc, ratio = player.currentArc, player.currentArcRatio
 	local to_send = {}
-	--local net_nodes = {arc.end1.uid}
-	local net_nodes = {from.uid}
+	local net_nodes = {arc.end1.uid}
+	--local net_nodes = {from.uid}
 	for i,v in ipairs(nodes) do
 		net_nodes[#net_nodes+1] = v.uid
 	end
