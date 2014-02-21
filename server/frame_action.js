@@ -3,7 +3,7 @@
 var netw = require('./network');
 var utils = require("./common");
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
-var MOVE_REFRESH_FREQUENCY = 500; // in milliseconds
+//var MOVE_REFRESH_FREQUENCY = 500; // in milliseconds
 
 // Type from server
 var TYPEMAP = "map";
@@ -16,9 +16,9 @@ var db = require('./pgsql');
 var nb_instance_move = 0;
 
 var g = require('./Game')
-var single_game_instance/*: g.Game */ = null
+//var single_game_instance/*: g.Game */ = null
 var gs = require('./game_server')
-//var single_game_server = null
+var single_game_server = null
 
 
 // executed function according to client result
@@ -33,6 +33,12 @@ var sendmap_action = function (frame_data, stream)
 	
 	function sendMap(jsonMap)
 	{
+		
+		///////////////////
+		var conId = single_game_server.addPlayer(stream).conId
+		// TODO send id!!
+		///////////////////
+		
 		//var jsonMap = db.mapDataToJSon(mapData)
 		var content =  
 		{
@@ -55,19 +61,21 @@ var sendmap_action = function (frame_data, stream)
 		stream.write(data + FRAME_SEPARATOR, function () {console.log("sendInitialPosition sent:\n" + data)})
 	}
 	
-	if (single_game_instance == null)
+	if (single_game_server == null)
 		db.fullMapAccordingToLocation(lat, lon, function (mapData)
 		{
-			single_game_instance = new g.Game(new g.Map(db.mapDataToJSon(mapData)))
-			sendMap(single_game_instance.map.jsonObj /* == mapData */)
+			single_game_server = new gs.GameServer(
+				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
+			sendMap(single_game_server.game.map.jsonObj /* == mapData */)
 			//sendInitialPosition();
 			//sendMap(mapData /* == single_game_instance.map.data */)
 		}); // lat, lon
 	else
 	{
-	 	sendMap(single_game_instance.map.jsonObj);
+	 	sendMap(single_game_server.game.map.jsonObj);
 	 	//sendInitialPosition();
 	}
+	
 }
 
 
@@ -91,6 +99,8 @@ var move_action = function (frame_data, stream)
 }
 var multiple_send_position = function (stream, startedge, endedge, idnodes) 
 {
+	console.log("CC")
+	
 	// calculate position
 	if (idnodes.length < 2 // do not send if invalid request
 		|| (idnodes.length == 2 && startedge >= endedge)
@@ -119,9 +129,11 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 	var data = JSON.stringify(content); // parsage JSON
 	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent:\n" + data + "\n");}) // send network
 
+///////////////// TODO
+/*
 	setTimeout(function(){multiple_send_position(stream, startedge, endedge, idnodes)}, 
 			MOVE_REFRESH_FREQUENCY);
-
+*/
 }
 
 var bomb_action = function (frame_data, stream) 
