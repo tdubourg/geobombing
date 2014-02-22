@@ -147,11 +147,12 @@ function mapDataToJSon(mapData)
     	var way = common.CreateEmptyWay("way" + i);
         for (var j = 0; j < mapData[i].length; j++) 
     	{
+    		var id = lastNodeId++
     		if (mapData[i][j] == null || mapData[i][j].length != 2) return null;
-        	var node = common.CreateNode(++lastNodeId,
+        	var node = common.CreateNode(id,
         		mapData[i][j][0],mapData[i][j][1]);
         	common.AddNodeToMap(map, node);
-        	common.AddNodeIdToWay(way, lastNodeId);
+        	common.AddNodeIdToWay(way, id);
     	}
     	common.AddWayToMap(map, way);
     }
@@ -159,8 +160,8 @@ function mapDataToJSon(mapData)
 }
 exports.mapDataToJSon = mapDataToJSon
 
-function getInitialPosition() 
-{
+
+function getInitialPosition() {
 	var position;
 	position = common.CreatePosition(0, 0, 0);
 	if (!conDB) 
@@ -170,6 +171,7 @@ function getInitialPosition()
     return position;
 }
 exports.getInitialPosition = getInitialPosition
+
 
 function fullMapAccordingToLocation(latitude, longitude, callback) {
 	//var s = 0.0001

@@ -49,35 +49,70 @@ var sendmap_action = function (frame_data, stream)
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + FRAME_SEPARATOR, function () {console.log("MapData sent:\n" + data)})
 	}
-
+	
 	function sendInitialPosition()
 	{
-		var position = db.getInitialPosition(); // A modifier par Lionel
-		var content =  
+		var position = db.getInitialPosition(); // FIXME bullshit
+		single_game_server.setInitialPosition(stream, position)
+		var content =
 		{
 			"type": TYPEPOS, 
 			"data": position
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log("sendInitialPosition sent:\n" + data)})
+		
+		/////////
+		// FIXME: removing this makes the client crash
+		return
+		/////////
+		
+		stream.write(data + FRAME_SEPARATOR, function() {
+			console.log("sendInitialPosition sent:\n" + data)
+		})
 	}
 	
 	if (single_game_server == null)
-		db.fullMapAccordingToLocation(lat, lon, function (mapData)
+		db.fullMapAccordingToLocation(lat, lon, function (mapData, position)
 		{
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 			sendMap(single_game_server.game.map.jsonObj /* == mapData */)
-			//sendInitialPosition();
+			sendInitialPosition();
 			//sendMap(mapData /* == single_game_instance.map.data */)
 		}); // lat, lon
 	else
 	{
 	 	sendMap(single_game_server.game.map.jsonObj);
-	 	//sendInitialPosition();
+	 	sendInitialPosition();
 	}
 	
 }
+
+var sendPlayerPosition = function (stream, pos) {
+	
+	// FIXME: strings for ids? seriously?
+	pos.n1 = pos.n1.toString()
+	pos.n2 = pos.n2.toString()
+	
+	var content = 
+	{
+		"type": TYPEPOS, 
+		"data": pos
+	};
+	
+	//console.log(pos)
+	
+	var data = JSON.stringify(content);
+	//return
+	stream.write(data + FRAME_SEPARATOR,
+		function() {
+			// too verbose:
+			//console.log("PosData sent:\n" + data + "\n");
+		})
+	
+}
+exports.sendPlayerPosition = sendPlayerPosition
+
 
 var player_state = function (frame_data, stream) 
 {
@@ -102,18 +137,20 @@ var move_action = function (frame_data, stream)
 	if (frame_data != null && frame_data.start_edge_pos != null && frame_data.end_edge_pos != null
 		&& frame_data.nodes != null && frame_data.nodes.length >= 2) // minimum of two nodes for moving
 	{
-		console.log("\nmove_action:");
+		console.log("\nmove_action:"); // FIXME message?
 		var startedge = parseFloat(frame_data.start_edge_pos);
 		var endedge = parseFloat(frame_data.end_edge_pos);
 
 		// send answer
-		multiple_send_position(stream, startedge, endedge, frame_data.nodes); // execute the function every 1000ms
+		//multiple_send_position(stream, startedge, endedge, frame_data.nodes); // execute the function every 1000ms
+		single_game_server.moveCommand(stream, startedge, endedge, frame_data.nodes)
 	}
-	else console.log("Erreur move msg from client.")
+	else console.log("Error move msg from client.")
 }
+/*
 var multiple_send_position = function (stream, startedge, endedge, idnodes) 
 {
-	console.log("CC")
+	//console.log("CC")
 	
 	// calculate position
 	if (idnodes.length < 2 // do not send if invalid request
@@ -144,11 +181,10 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 	stream.write(data + FRAME_SEPARATOR, function () {console.log("PosData sent:\n" + data + "\n");}) // send network
 
 ///////////////// TODO
-/*
-	setTimeout(function(){multiple_send_position(stream, startedge, endedge, idnodes)}, 
-			MOVE_REFRESH_FREQUENCY);
-*/
+	setTimeout(function(){console.log("STREAM>> "+stream); multiple_send_position(stream, startedge, endedge, idnodes)}, 
+			20);
 }
+*/
 
 var bomb_action = function (frame_data, stream) 
 {
