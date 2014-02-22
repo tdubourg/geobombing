@@ -39,8 +39,30 @@ function Node:linkTo(node1)
 		local newArc = Arc:new(self, node1)
 		self.arcs[node1] = newArc
 		node1.arcs[self] = newArc
-	end
-  return self.arcs[node1]
+    return newArc
+  end
+end
+
+-- WORK IN PROGRESS
+function Node:transmitExplosion(origin, power, posList, interval)
+  for node,arc in pairs(arcs) do
+    local dist = self.pos:dist(node.pos)
+    local transmitedPower = power*self:transmitionCoef(origin, node)
+    if transmitedPower > dist then
+      -- add points on whole arc
+      node:transmitExplosion(transmitedPower - dist)
+    else
+      -- add points on partial arc
+    end
+  end
+end
+
+function Node:transmitionCoef(fromNode, toNode)
+  local v1 = (Vector2D:Sub(self.pos, fromNode)):normalize()
+  local v2 = (Vector2D:Sub(toNode, self.pos)):normalize()
+
+  local dot = v1:dot(v2)
+  return (dot+1)*0.5    -- 0..1
 end
 
 function Node:destroy()
