@@ -26,6 +26,24 @@ itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 
 
+function initGame()
+	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
+	for voisin,_ in pairs(nodeFr.arcs) do
+		nodeT=voisin
+	end
+	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
+
+	-- PATHFINDING TEST
+	-- local ap1 = currentMap:createArcPosByUID("1","4", 0.3)
+	-- local ap2 = currentMap:createArcPosByUID("2","5", 0.2)
+	-- local result = currentMap:findPathArcs(ap1, ap2)
+
+	-- for i,v in ipairs(result) do
+	-- 	print("i"..i)
+	-- 	print("v"..v.uid)
+	-- end
+end
+
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 	local group = self.view
@@ -44,24 +62,20 @@ function scene:createScene( event )
 			luaMap = json_obj[JSON_FRAME_DATA]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
+			initGame()
 		end
 		net.net_handlers['pos'] = function ( json_obj )
 			print ("Received pos from server: " .. json.encode(json_obj))
-			player:setAR(currentMap:getArc(json_obj.data.n1, json_obj.data.n2), json_obj.data.c)
+
+			local arcP = currentMap:createArcPosByUID(json_obj.data.n1, json_obj.data.n2,json_obj.data.c)
+			player:setAR(arcP)
 		end
 		net.sendPosition()
 	else
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
+		initGame()
 	end
-
-	currentMap = Map:new(luaMap)
-	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
-	for voisin,_ in pairs(nodeFr.arcs) do
-		nodeT=voisin
-	end
-	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
-
 
 	itemsManager = ItemsManager.new()
 end
@@ -106,15 +120,29 @@ local function moveObject(e)
 			elseif (node == nil) then
 				--player:saveNewDestination(e)
 			else
-			local nodes = currentMap:findPath(from, node)
 
-			--local toPos = currentMap:getClosestPos(worldPos)
-			net.sendPathToServer(nodes)
+			local arcP = currentMap:getClosestPos(worldPos)
+			print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
+			--player.arcPDest = arcP
+
+			--local nodes = currentMap:findPath(from, node)
+			local ap1 = currentMap:createArcPos(player.currentArc.end1,player.currentArc.end2,player.currentArcRatio)
+			local nodes = currentMap:findPathArcs(ap1,arcP)
+--print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
+--print(from.uid .. "<--- from")
+			
 			player.nodeFrom=from
+			 for _,nod in ipairs(nodes) do
+				print(nod.uid)
+				end
+
+			net.sendPathToServer(from,nodes)
+			
 			--player.nodeTo=nodes[1]
-			--print(toPos[1].end1.uid .."  ratio ".. toPos[2])
-			--player:goToAR(toPos[1],toPos[2])
-			player:saveNewNodes(nodes)
+			
+			--player:goToAR(arcP)
+			
+			--player:saveNewNodes(nodes)
 			end
 		end
 

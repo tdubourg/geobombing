@@ -7,6 +7,7 @@
 require "camera"
 require "vector2D"
 require "print_r"
+require "arcPos"
 local physics = require( "physics" )
 
 local player = {}
@@ -69,7 +70,17 @@ function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
 
     newPlayer.pos = Vector2D:new(0.0000, 0.0000)
 
+    newPlayer.nodeFrom=nodeF
+    newPlayer.nodeTo=nodeT
+    newPlayer.currentArc=nodeF.arcs[nodeT]
+    if(newPlayer.currentArc.end1==nodeF) then
+            newPlayer.currentArcRatio=0
+        else
+            newPlayer.currentArcRatio=1
+        end
+    
     --Player current destination
+    newPlayer.arcPDest = nil
     newPlayer.toX=newPlayer.pos.x
     newPlayer.toY= newPlayer.pos.y
 
@@ -98,15 +109,7 @@ function player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)	-- constructor
     newPlayer.drawable.gravityScale = gravityScale
 
     -------------
-    newPlayer.nodeFrom=nodeF
-    newPlayer.nodeTo=nodeT
-    newPlayer.currentArc=nodeF.arcs[nodeT]
-    if(newPlayer.currentArc.end1==nodeF) then
-            newPlayer.currentArcRatio=0
-        else
-            newPlayer.currentArcRatio=1
-        end
-    
+  
 
     -- insert in camera group
     --cameraGroup:insert(newPlayer.drawable)
@@ -241,6 +244,10 @@ function player:refresh()
         if (self.nodesI>self.nodesMax) then
             self.nodesI=0
             self.nodesMax=0
+             if (self.arcPDest ~= nil) then
+              self:goToAR(self.arcPDest)
+               print("laAAAAA")
+        end
             --print("la2")
             --print_r(self.pos)
             --self.nodeFrom=self.nodeTo
@@ -248,9 +255,11 @@ function player:refresh()
 
             -- self.upCurrentArc(self.nodeFrom,self.nodeTo)
         else
-            self.nodeFrom=self.nodes[self.nodesI-1]
-            self.toX=self.nodes[self.nodesI].pos.x
+           
+                self.toX=self.nodes[self.nodesI].pos.x
             self.toY=self.nodes[self.nodesI].pos.y
+           
+            self.nodeFrom=self.nodes[self.nodesI-1]
             self.nodeTo=self.nodes[self.nodesI]
             --self.upCurrentArc(self.nodeFrom,self.nodeTo)
             self:refresh()
@@ -310,7 +319,7 @@ function player:upCurrentArc(from, to)
         
         
            print ("from.arc[to] == nil") 
-        print (from.uid .."   " .. to.uid)
+        print (from.uid .."  à " .. to.uid)
 
       
     else 
@@ -325,29 +334,35 @@ function player:upCurrentArc(from, to)
     end
 end
 
-function player:goToAR(arc,ratio)
+function player:goToAR(arcP)
 
-    local from = arc.end1.pos
-    self.nodeFrom = arc.end1
-    local to = arc.end2.pos
-    self.nodeTo = arc.end2
-    local vectDir = Vector2D:Sub(to,from)
-    vectDir:mult(ratio)
-    local finalPos = Vector2D:Add(from,vectDir)
-    self.toX=finalPos.x
-    self.toY=finalPos.y
+    -- local from = arc.end1.pos
+    -- self.nodeFrom = arc.end1
+    -- local to = arc.end2.pos
+    -- self.nodeTo = arc.end2
+    -- local vectDir = Vector2D:Sub(to,from)
+    -- vectDir:mult(ratio)
+    -- local finalPos = Vector2D:Add(from,vectDir)
+    local destination = arcP:getPosXY()
+    self.toX=destination.x
+    self.toY=destination.y
+    self.arcPDest = nil
+    print("ICI")
     
 end
 
-function player:setAR(arc,ratio)
-    local from = arc.end1.pos
-    local to = arc.end2.pos
-    local vectDir = Vector2D:Sub(to,from)
-    vectDir:mult(ratio)
-    local destination = Vector2D:Add(from, vectDir)
+function player:setAR(arcP)
+    -- local from = arc.end1.pos
+    -- local to = arc.end2.pos
+    -- local vectDir = Vector2D:Sub(to,from)
+    -- vectDir:mult(ratio)
+    -- local destination = Vector2D:Add(from, vectDir)
+    local destination = arcP:getPosXY()
     self.toX=destination.x
     self.toY=destination.y
     self.pos=destination
+    self.currentArc = arcP.arc
+    self.currentArcRatio = arcP.progress
     self:redraw()
     
 end

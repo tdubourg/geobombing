@@ -3,13 +3,14 @@
 var netw = require('./network');
 var utils = require("./common");
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
-//var MOVE_REFRESH_FREQUENCY = 500; // in milliseconds
+//var MOVE_REFRESH_FREQUENCY = 20; // in milliseconds
 
 // Type from server
 var TYPEMAP = "map";
 var TYPEPOS = "pos"; // current player position
 var TYPEPLAYERPOS = "ppos"; // other players pos
 var TYPEBOMB = "bomb";
+var TYPEPLAYER = "player";
 var TYPEPLAYERBOMB = "pbomb"
 
 var db = require('./pgsql');
@@ -51,7 +52,7 @@ var sendmap_action = function (frame_data, stream)
 
 	function sendInitialPosition()
 	{
-		var position = db.getInitialPosition();
+		var position = db.getInitialPosition(); // A modifier par Lionel
 		var content =  
 		{
 			"type": TYPEPOS, 
@@ -78,6 +79,22 @@ var sendmap_action = function (frame_data, stream)
 	
 }
 
+var player_state = function (frame_data, stream) 
+{
+	//decode frame if one
+	var state = netw.clPlayer(); // A modifier par Lionel
+	if (stream = null)
+	{
+		// todo by lionel
+	}
+	var content =  
+	{
+		"type": TYPEPLAYER, 
+		"data": state
+	};
+	var data = JSON.stringify(content); // parsage JSON
+	stream.write(data + FRAME_SEPARATOR, function () {console.log("sendPlayerState sent:\n" + data)})
+}
 
 var move_action = function (frame_data, stream) 
 {
@@ -89,13 +106,10 @@ var move_action = function (frame_data, stream)
 		var startedge = parseFloat(frame_data.start_edge_pos);
 		var endedge = parseFloat(frame_data.end_edge_pos);
 
-		console.log("nb of nodes of itinerary: " + frame_data.nodes.length);
-		console.log("startedge: " + startedge);
-		console.log("endedge: " + endedge + "\n");
-
-			// send answer
-			multiple_send_position(stream, startedge, endedge, frame_data.nodes); // execute the function every 1000ms
-		}
+		// send answer
+		multiple_send_position(stream, startedge, endedge, frame_data.nodes); // execute the function every 1000ms
+	}
+	else console.log("Erreur move msg from client.")
 }
 var multiple_send_position = function (stream, startedge, endedge, idnodes) 
 {
@@ -110,7 +124,7 @@ var multiple_send_position = function (stream, startedge, endedge, idnodes)
 		while (idnodes.length > 2 && idnodes[0] == idnodes[1]) {idnodes.shift();}
 	 	if (startedge < 1) 
 		{
-			startedge += 0.2;
+			startedge += 0.05;
 			if (startedge > 1) startedge = 1;
 		}
 		else if (startedge >= 1)
@@ -155,6 +169,7 @@ var frame_actions =
 	//Type from client
 	"gps":  sendmap_action, // reponse function to localise
 	"move": move_action,
+	"player": player_state,
 	"bomb": bomb_action
 }
 exports.frame_actions = frame_actions
