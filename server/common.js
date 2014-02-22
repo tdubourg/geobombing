@@ -1,3 +1,5 @@
+"use strict"
+
 // library call
 var clMap = require("./Classes/clMap").clMap; 
 var clNode = require("./Classes/clNode").clNode;
@@ -7,7 +9,7 @@ var clPosition = require('./network').clPosition;
 // -- Math
 
 function dist(ptA,ptB) {
-	return Math.sqrt(Math.pow(ptB.x-ptA.x) + Math.pow(ptB.y-ptA.y))
+	return Math.sqrt(Math.pow(ptB.x-ptA.x,2) + Math.pow(ptB.y-ptA.y,2))
 }
 exports.dist = dist
 
