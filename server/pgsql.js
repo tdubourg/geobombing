@@ -149,18 +149,15 @@ function mapDataToJSon(mapData)
     	var way = common.CreateEmptyWay("way" + i);
         for (var j = 0; j < mapData[i].length; j++)
     	{
-    		var node, id
+    		var node
     		if (nodes_dic[mapData[i][j]] == undefined)
     		{
-    			id = lastNodeId++
+    			var id = lastNodeId++
         		node = common.CreateNode(id, mapData[i][j][0], mapData[i][j][1]);
         		nodes_dic[mapData[i][j]] = node;
         	}
-        	else
-        	{
-        		node = nodes_dic[mapData[i][j]]
-        		id = node.id     		
-        	}
+        	else node = nodes_dic[mapData[i][j]]  		
+        	
         	common.AddNodeToMap(map, node);
         	common.AddNodeIdToWay(way, node.id);
     	}
