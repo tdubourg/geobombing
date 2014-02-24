@@ -84,7 +84,12 @@ function GameServer(game) {
 			//console.log("Pos:", player.getPosition())
 			var id = 0;
 			//fa.sendPlayerPosition(player.stream, id, player.getPosition())
-			fa.sendPlayerUpdate(player.stream, id, player.getPosition()); // if position
+
+			var data = 
+			{
+				fa.TYPEPOS: player.getPosition()
+			};
+			fa.sendPlayerUpdate(player.stream, id, data) // if position
 			
 		}
 		
