@@ -57,12 +57,14 @@ function scene:createScene( event )
 	local result = net.connect_to_server("127.0.0.1", 3000)
 	
 	if result then
-
+		print ( "!!CONNECTED!!" )
 		net.net_handlers['map'] = function ( json_obj )
 			luaMap = json_obj[JSON_FRAME_DATA]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 			initGame()
+			player:refresh()
+			camera:lookAt(player:getPos())
 		end
 		net.net_handlers['pos'] = function ( json_obj )
 			print ("Received pos from server: " .. json.encode(json_obj))
@@ -75,16 +77,17 @@ function scene:createScene( event )
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
 		initGame()
+		player:refresh()
+		camera:lookAt(player:getPos())
 	end
 
 	itemsManager = ItemsManager.new()
 end
+
 local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
-		player:refresh()
-		camera:lookAt(player.pos)
 	end
 end
 local trans
