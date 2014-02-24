@@ -4,12 +4,14 @@ var netw = require('./network');
 var utils = require("./common");
 var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
 
-// Type from server
+// Type from server to client
 var TYPEMAP = "map";
+
+// types update
+var TYPEPLAYERUPDATE = "pu";
 var TYPEPOS = "pos"; // current player position
 var TYPEBOMB = "bomb";
-var TYPEPLAYER = "player";
-var TYPEPLAYERBOMB = "pbomb"
+// end of type to client
 
 var db = require('./pgsql');
 var nb_instance_move = 0;
@@ -26,9 +28,10 @@ var sendmap_action = function (frame_data, stream)
 	var lat = 0;
 	var lon = 0;
 
-	if (frame_data != null && frame_data.latitude != null) lat = parseFloat(frame_data.latitude);
-	if (frame_data != null && frame_data.longitude != null) lon = parseFloat(frame_data.longitude);
-	console.log("sendmap_action:\nlat=" + lat + "\nlon=" + lon);
+	if (frame_data != null && frame_data.latitude != null) 
+		lat = parseFloat(frame_data.latitude);
+	if (frame_data != null && frame_data.longitude != null) 
+		lon = parseFloat(frame_data.longitude);
 	
 	function sendMap(jsonMap)
 	{	
@@ -37,14 +40,14 @@ var sendmap_action = function (frame_data, stream)
 		var content =  
 		{
 			"type": TYPEMAP, 
-			"id": conId,
+			"id": conId, // kesako?!
 			"data": jsonMap
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {})
+		stream.write(data + FRAME_SEPARATOR, function () {console.log(conId)})
 	}
 	
-	function sendInitialPosition()
+	function setInitialPosition()
 	{
 		var position = db.getInitialPosition(); // FIXME calcul de position initiale par la base de données
 		single_game_server.setInitialPosition(stream, position)
@@ -57,25 +60,28 @@ var sendmap_action = function (frame_data, stream)
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 
 			sendMap(single_game_server.game.map.jsonObj);
-			sendInitialPosition();
+			setInitialPosition();
 		}); // lat, lon
 		else
 		{
 			sendMap(single_game_server.game.map.jsonObj);
-			sendInitialPosition();
+			setInitialPosition();
 		}
-}
+} // end send map
 
-var sendPlayerPosition = function (stream, pos) // player and other players
+
+// --- updates ---
+
+
+var sendPlayerPosition = function (stream, id, pos) // player and other players
 {
 	// IDs are string on client side
 	pos.n1 = pos.n1.toString()
 	pos.n2 = pos.n2.toString()
-	var id = 0;
 	
 	var content = 
 	{
-		"type": TYPEPOS, 
+		"type": TYPEPLAYERUPDATE, 
 		"id": id,
 		"data": pos
 	};
@@ -85,26 +91,7 @@ var sendPlayerPosition = function (stream, pos) // player and other players
 }
 exports.sendPlayerPosition = sendPlayerPosition
 
-
-var player_state = function (frame_data, stream) 
-{
-	//decode frame if one
-	var state = netw.clPlayer(); // A modifier par Lionel
-	var id = 0;
-	if (stream = null)
-	{
-		// todo by lionel
-	}
-	var content =  
-	{
-		"type": TYPEPLAYER, 
-		"id": id,
-		"data": state
-	};
-	var data = JSON.stringify(content); // parsage JSON
-	stream.write(data + FRAME_SEPARATOR, function () {console.log("sendPlayerState sent:\n" + data)})
-}
-
+// receiving function 
 var move_action = function (frame_data, stream) 
 {
 	//decode frame
@@ -112,7 +99,7 @@ var move_action = function (frame_data, stream)
 		&& frame_data.nodes != null && frame_data.nodes.length > 0) // minimum of two nodes for moving
 	{
 		var endedge = parseFloat(frame_data.end_edge_pos);	
-		single_game_server.moveCommand(stream, 0, endedge, frame_data.nodes) // send new position
+		single_game_server.moveCommand(stream, endedge, frame_data.nodes) // send new position
 	}
 	else console.log("Error move msg from client.")
 }
@@ -124,24 +111,30 @@ var bomb_action = function (frame_data, stream)
 	{
 		var id = frame_data.id;
 		var pos = CreatePosition(0, 0, 0)
-		var content = 
+		single_game_server.bombCommand(stream, id, pos) // send bomb
+		/*var content = 
 		{
-			"type": TYPEBOMB,
+			"type": TYPEPLAYERUPDATE,
 			"id": id,
+			"bomb": true,
 			"data": pos
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log("BombData sent:\n" + data)})
+		stream.write(data + FRAME_SEPARATOR, function () {console.log("BombData sent:\n" + data)})*/
 	}
 }
+
+
+// --- end updates ---
 
 
 var frame_actions = 
 {
 	//Type from client
 	"gps":  sendmap_action, // reponse function to localise
+
+	// answer type update
 	"move": move_action,
-	"player": player_state,
 	"bomb": bomb_action
 }
 exports.frame_actions = frame_actions
