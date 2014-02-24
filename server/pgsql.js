@@ -25,6 +25,7 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	if (!conDB) 
 	{
 		callback(null, autoScaleMap(
+			//[[[0, 0], [0, 200], [100, 100], [100, 200], [30, 100], [50, 250], [150, 250], [250, 250]]]));
 			[[[0, 0], [0, 200], [100, 100], [100, 200], [30, 100], [50, 250], [150, 250], [250, 250]]]));
 		return;
 	}
@@ -142,15 +143,15 @@ function autoScaleMap(leMap)
 function mapDataToJSon(mapData) 
 {
 	var map = common.CreateEmptyMap(++lastMapId, "mapName");
-    for (var i = 0; i < mapData.length; i++) 
+    for (var i = 0; i < mapData.length; i++)
     {
     	var way = common.CreateEmptyWay("way" + i);
-        for (var j = 0; j < mapData[i].length; j++) 
+        for (var j = 0; j < mapData[i].length; j++)
     	{
     		var id = lastNodeId++
     		if (mapData[i][j] == null || mapData[i][j].length != 2) return null;
         	var node = common.CreateNode(id,
-        		mapData[i][j][0],mapData[i][j][1]);
+        		mapData[i][j][0], mapData[i][j][1]);
         	common.AddNodeToMap(map, node);
         	common.AddNodeIdToWay(way, id);
     	}
