@@ -36,12 +36,12 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
       local y = node[JSON_NODE_Y]
       local uid = tostring(node[JSON_NODE_UID])
 
-       if self.nodesByUID[uid] ~= nil then
-         print ("WARNING: node uid: ".. uid .." is not unique!")
-      end
+      if self.nodesByUID[uid] ~= nil then
+       print ("WARNING: node uid: ".. uid .." is not unique!")
+     end
 
-      self.nodesByUID[uid] = Node:new(x, y , uid)
-    end
+     self.nodesByUID[uid] = Node:new(x, y , uid)
+   end
 
 
     -- load arcs
@@ -58,7 +58,7 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
         previousNode = node
       end
     end
-else
+  else
   --dummy map
   print "loading dummy map"
 
@@ -78,11 +78,11 @@ else
   self.arcs[#(self.arcs)+1] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
 end
 
-  return self
+return self
 end
 
 function Map:getArc( node_from_uid, node_to_uid )
-    print(node_from_uid, node_to_uid)
+  print(node_from_uid, node_to_uid)
   return self.nodesByUID[node_from_uid].arcs[self.nodesByUID[node_to_uid]]
 end
 
@@ -108,12 +108,12 @@ function Map:createArcPos(n1, n2, ratio)
   local arc = n1.arcs[n2]
   if arc then
     if arc.end1==n1 then
-      return ArcPos:new(arc, ratio)
+    return ArcPos:new(arc, ratio)
     else -- arc.end1==n2
-      return ArcPos:new(arc, 1-ratio)
-    end
+    return ArcPos:new(arc, 1-ratio)
   end
-  return nil
+end
+return nil
 end
 
 -- returns nil if non existing arc
@@ -131,30 +131,41 @@ function Map:getClosestPos(v2pos)
   local ratio =0
   local min = math.huge
   local best = nil
+  local arcP = nil
+  
   --print ("La")
   for _,arc in ipairs(self.arcs) do
     local from = arc.end1.pos
     --print (arc.end1.uid)
     local to = arc.end2.pos
     --print (arc.end2.uid)
-    local vectDir = Vector2D:new(0,0)
-    vectDir = Vector2D:Sub(to,from)
+    -- local minX = math.min(from.x,to.x)
+    -- local minY = math.min(from.y,to.y)
+    -- local maxX = math.max(from.x,to.x)
+    -- local maxY = math.max(from.y,to.y)
+
+    local vectDir = Vector2D:Sub(to,from)
     vectDir:normalize()
     local vectPos = Vector2D:Sub(v2pos,from)
     local distProj = vectPos:dot(vectDir)
     local distVectPos = Vector2D:Dist(v2pos,from)
-    --Pythagore
-    local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
 
-    --print (dist)
-    if (dist>0 and dist < min) then
-      min = dist
-      best = arc
-      ratio = distProj/arc.len
-    end
-  end
-  local arcP = self:createArcPos(best.end1, best.end2, ratio)
-  -- --print("Ici")
+    -- local proj = Vector2D:Add(from,Vector2D:Mult(vectDir,distProj))
+    print("non ClosestP")
+      -- local arcPTemp = self:createArcPos(arc.end1, arc.end2,distProj/arc.len)
+      -- local proj = arcPTemp:getPosXY()
+      -- if (proj.x>=minX and proj.x<=maxX and proj.y>=minY and proj.y<=maxY) then
+         --Pythagore
+         if (distProj >=0 and distProj <=arc.len) then
+          local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
+          if (dist < min) then
+            min = dist
+           arcP = self:createArcPos(arc.end1, arc.end2,distProj/arc.len)
+           print("ClosestP")
+            end
+          end
+     end
+
   -- toReturn[1]=best
   -- toReturn[2]=ratio
   -- print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ratio ="..toReturn[2])
@@ -272,48 +283,48 @@ end
 
 
 function rewindPath(precedence, to)
-    revPath = {}
-    local node = to
+  revPath = {}
+  local node = to
 
-    repeat
-      revPath[#revPath+1] = node
-      node = precedence[node]
+  repeat
+    revPath[#revPath+1] = node
+    node = precedence[node]
     until node == nil
-      
-    return invertIndexedTable(revPath)
-end
 
-function rewindPathArcs(precedence)
-    revPath = {}
-    local node = precedence["TARGET"]
-
-    repeat
-      revPath[#revPath+1] = node
-      node = precedence[node]
-    until node == nil
-      
-    return invertIndexedTable(revPath)
-end
-
-
-function invertIndexedTable ( tab )
-    local size = #tab+1
-    local newTable = {}
-
-    for i,v in ipairs ( tab ) do
-        newTable[size-i] = v
+      return invertIndexedTable(revPath)
     end
 
-    return newTable
-end
+    function rewindPathArcs(precedence)
+      revPath = {}
+      local node = precedence["TARGET"]
+
+      repeat
+        revPath[#revPath+1] = node
+        node = precedence[node]
+        until node == nil
+
+          return invertIndexedTable(revPath)
+        end
 
 
-function Map:destroy()
-  for _,node in pairs(self.nodesByUID) do
-    node:destroy()
-  end
+        function invertIndexedTable ( tab )
+          local size = #tab+1
+          local newTable = {}
 
-    for _,arc in ipairs(self.arcs) do
-    arc:destroy()
-  end
-end
+          for i,v in ipairs ( tab ) do
+            newTable[size-i] = v
+          end
+
+          return newTable
+        end
+
+
+        function Map:destroy()
+          for _,node in pairs(self.nodesByUID) do
+            node:destroy()
+          end
+
+          for _,arc in ipairs(self.arcs) do
+            arc:destroy()
+          end
+        end

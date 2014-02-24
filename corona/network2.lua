@@ -4,6 +4,7 @@ local location = require("location")
 require ("consts")
 require "print_r"
 require "utils"
+require "arcPos"
 
 local client = nil
 local FRAME_SEPARATOR = "\n"
@@ -25,7 +26,7 @@ function test_network()
 	response_packet = receive_until("\n")
 	client:close()
 
-	print ("Serveur answered:", response_packet)
+	--print ("Serveur answered:", response_packet)
 -- load scenetemplate.lua
 end
 
@@ -57,7 +58,7 @@ function _mrcv(connection)
 	local frameString, status = receive_until(FRAME_SEPARATOR)
 
 	if frameString ~= nil then
-		print ( "Received network data: " .. frameString)
+		--print ( "Received network data: " .. frameString)
 		local json_obj = json.decode(frameString)
 		if (json_obj ~= nil) then
 			net_handlers[json_obj.type](json_obj)
@@ -114,8 +115,8 @@ function sendString(data)
 	if client ~= nil then
 		client:send(data .. FRAME_SEPARATOR)
 		if NETWORK_DUMP then
-			print "NETWORK DUMP - OUT"
-			print(data)
+			--print "NETWORK DUMP - OUT"
+			--print(data)
 		end
 	end
 end
@@ -140,11 +141,12 @@ end
 
  
 
-function sendPathToServer(from, nodes )
+function sendPathToServer(from, nodes, arcP )
 	if (nodes == nil) then
 		return
 	end
 	local arc, ratio = player.currentArc, player.currentArcRatio
+	local ratioEnd =0
 	local to_send = {}
 	local net_nodes =nil
 	if (arc.end1.uid == nodes[1].uid) then
@@ -157,9 +159,34 @@ function sendPathToServer(from, nodes )
 	for i,v in ipairs(nodes) do
 		net_nodes[#net_nodes+1] = v.uid
 	end
+
+	 for _,nod in ipairs(net_nodes) do
+				print("chemin" .. nod)
+				end
+
+	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+		if (#net_nodes>1) then
+		net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+		end
+		ratioEnd =arcP.progress
+		print ("ratioooooo" .. ratioEnd)
+	elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+		if (#net_nodes>1) then
+		net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+		end
+		ratioEnd = 1- arcP.progress
+		print ("ratioooooo 1-" .. ratioEnd)
+
+	else
+		print("error in sendPathToServer")
+	end
+
+	for _,nod in ipairs(net_nodes) do
+				print("chemin apres" .. nod)
+				end
 	to_send[JSON_MOVE_NODES] = net_nodes
 	to_send[JSON_MOVE_START_EDGE_POS] = ratio
-	to_send[JSON_MOVE_END_EDGE_POS] = 1.0
+	to_send[JSON_MOVE_END_EDGE_POS] = arcP.progress
 	sendSerialized(to_send, FRAMETYPE_MOVE)
 end
 
