@@ -64,6 +64,7 @@ function Player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)   -- constructor
         spriteSet = "bonhomme",
         animation = "idle",
         worldPosition = self.pos,
+        scale = 0.4,
         position = camera:worldToScreen(self.pos),
     }
  --    local imageSheet = graphics.newImageSheet("images/spritesheet.png", {width = PLAYER_SPRITE_RAW_WIDTH,
