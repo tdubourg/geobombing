@@ -30,7 +30,7 @@ var sendmap_action = function (frame_data, stream)
 		//var jsonMap = db.mapDataToJSon(mapData)
 		var content =  
 		{
-			"type": TYPEMAP, 
+			"type": net.TYPEMAP, 
 			"id": conId, // kesako?!
 			"data": jsonMap
 		};
