@@ -10,7 +10,8 @@ local function onBombBtnRelease()
 
 	print (itemsManager)
 	-- if (itemsManager ~= nil) then
-		itemsManager:newBomb(player.pos.x, player.pos.y)
+		local p = player:getPos()
+		itemsManager:newBomb(p.x, p.y)
 	-- end
 
 	return true	-- indicates successful touch
