@@ -73,7 +73,8 @@ end
 
 function Camera:updateManaged()
   for obj,_ in pairs(self.listeners) do
-    local v2Screen = self:worldToScreen(obj.pos)
-    obj:redraw()
+  	if (obj ~= nil) then
+	    obj:redraw()
+  	end
   end
 end
