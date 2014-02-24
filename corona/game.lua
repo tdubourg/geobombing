@@ -13,6 +13,7 @@ require "camera"
 require "vector2D"
 require "map"
 require "items"
+require "print_r"
 local json = require "json"
 local physics = require( "physics" )
 local playBtn
@@ -106,23 +107,26 @@ local function moveObject(e)
 			end
 	
 			local ap1 = currentMap:createArcPos(player.currentArc.end1,player.currentArc.end2,player.currentArcRatio)
-			local nodes = currentMap:findPathArcs(ap1,arcP)
-			--print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
-			--print(from.uid .. "<--- from")
-			
-			player.nodeFrom=from
-			 for _,nod in ipairs(nodes) do
-				print("aaa".. nod.uid)
-				end
 
-			net.sendPathToServer(from,nodes,arcP)
+			if (ap1.arc.end1.uid == arcP.arc.end1.uid and ap1.arc.end2.uid == arcP.arc.end2.uid) then
+
+				net.sendPathToServer1(arcP)
+			else
+				local nodes = currentMap:findPathArcs(ap1,arcP)
+				--print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
+				--print(from.uid .. "<--- from")			
+				player.nodeFrom=from
+			 	for _,nod in ipairs(nodes) do
+					print("aaa".. nod.uid)
+				end
+				net.sendPathToServer(nodes,arcP)
 			
-			--player:goToAR(arcP)
-			
-			--player:saveNewNodes(nodes)
+				--player:goToAR(arcP)
+				--player:saveNewNodes(nodes)
 			end
 		end
 	end
+end
 
 -- local function myTapListener( event )
 
