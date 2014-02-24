@@ -23,7 +23,7 @@ spriteWidth = 25
 spriteHeight = 25
 
 -- error accepted when moving the player
--- local accepted_error = 0.005
+--local accepted_error = 0.005
 
 -------------------------------------------------
 -- PRIVATE FUNCTIONS
@@ -72,14 +72,14 @@ function Player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)   -- constructor
     end
 
     --Player current destination
-    self.arcPDest = nil
-    self.toX= self.pos.x
-    self.toY= self.pos.y
+    -- self.arcPDest = nil
+    -- self.toX= self.pos.x
+    -- self.toY= self.pos.y
 
     --nodes to go to the final destination
-    self.nodes= nil
-    self.nodesI=0
-    self.nodesMax=0
+    -- self.nodes= nil
+    -- self.nodesI=0
+    -- self.nodesMax=0
 
     --???
     self.objectType = objectType
@@ -211,8 +211,8 @@ end
 function Player:setAR(arcP)
 
     local destination = arcP:getPosXY()
-    self.toX=destination.x
-    self.toY=destination.y
+    -- self.toX=destination.x
+    -- self.toY=destination.y
     self.pos=destination
     self.sprite:setWorldPosition(self.pos)
     self.currentArc = arcP.arc
