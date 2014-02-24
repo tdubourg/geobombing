@@ -40,7 +40,7 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
        print ("WARNING: node uid: ".. uid .." is not unique!")
      end
 
-     self.nodesByUID[uid] = Node:new(x, y , uid)
+     self.nodesByUID[uid] = Node:new(x, y , uid, self)
    end
 
 
@@ -62,12 +62,12 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
   --dummy map
   print "loading dummy map"
 
-  self.nodesByUID["1"] = Node:new(0, 0, "1")
-  self.nodesByUID["2"] = Node:new(0, 1, "2")
-  self.nodesByUID["3"]= Node:new(0.5,0.5, "3")
-  self.nodesByUID["4"]= Node:new(0.5,0.2, "4")
-  self.nodesByUID["5"] = Node:new(0.8,1, "5")
-  self.nodesByUID["6"]= Node:new(0.7,0.7, "6")
+  self.nodesByUID["1"] = Node:new(0, 0, "1", self)
+  self.nodesByUID["2"] = Node:new(0, 1, "2", self)
+  self.nodesByUID["3"]= Node:new(0.5,0.5, "3", self)
+  self.nodesByUID["4"]= Node:new(0.5,0.2, "4", self)
+  self.nodesByUID["5"] = Node:new(0.8,1, "5", self)
+  self.nodesByUID["6"]= Node:new(0.7,0.7, "6", self)
 
   self.arcs[1] = self.nodesByUID["1"]:linkTo(self.nodesByUID["2"])
   self.arcs[#(self.arcs)+1] = self.nodesByUID["2"]:linkTo(self.nodesByUID["3"])

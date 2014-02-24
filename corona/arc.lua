@@ -1,6 +1,8 @@
 require "camera"
 
 Arc = {}                   -- Create a table to hold the class methods
+
+-- do not call this method, use Map:createArcPos() or Map:createArcPosByUID()
 function Arc:new(end1, end2)  -- The constructor
   local self = {end1=end1, end2=end2}
   self.len = end1.pos:dist(end2.pos)

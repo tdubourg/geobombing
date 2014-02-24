@@ -35,3 +35,6 @@ DEV_MODE = true
   -- GPS data
     JSON_GPS_LATITUDE = "latitude"
     JSON_GPS_LONGITUDE = "longitude"
+
+-- DISPLAY
+  EXPLOSION_INTERVAL = 0.001

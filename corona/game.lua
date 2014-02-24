@@ -122,6 +122,7 @@ local function moveObject(e)
 			else
 
 			local arcP = currentMap:getClosestPos(worldPos)
+			--arcP:initExplosion(1.0)
 			print(arcP.arc.end1.uid .."AAAAAAAAAAAAAAAAAAAA/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
 			if (arcP.progress<0) then
 				print (arcP.progress.." ERROR")
