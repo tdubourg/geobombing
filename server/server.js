@@ -40,12 +40,11 @@ function start (port)
 			buffer += data
 			var pos = -1
 			while (-1 != (pos = buffer.indexOf(FRAME_SEPARATOR))) {//* We have found a separator, that means that the previous frame (that may be incomplete or may not) is over and a new one starts
-				if (debug) console.log(new Date(), "A frame is over")
-				if (debug) console.log(buffer)
+				//if (debug) console.log(new Date(), "A frame is over")
+				if (debug) console.log("buffer:\n" + buffer)
 				var frame = buffer.substr(0, pos)
 				buffer = buffer.substr(pos + FRAME_SEPARATOR.length, buffer.length) //* If the second parameter is >= the maximum possible length substr can return
 				var frame_data = decode(frame); // returns type (map, gps, move, bomb...)
-				//if (debug) console.log(frame_data)
 				frame_action(frame_data, stream);
 			};
 			if (debug) console.log("SERV: ", "Ending the client stream data receiver function") 
