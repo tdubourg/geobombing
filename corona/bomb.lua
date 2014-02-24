@@ -26,14 +26,15 @@ function Bomb.create(options)
 	self.phase = "idle"
 	self.time = 0.0
 	self.alive = true
+	self.arcPos = options.arcPos:getXYPos()
 
-	print ("bomb options.pos", options.pos)
+	print ("bomb options.arcPos", options.arcPos)
 
 	self.sprite = CameraAwareSprite.create {
 		spriteSet = "bomb",
 		animation = "idle",
-		worldPosition = options.pos,
-		position = camera:worldToScreen(options.pos),
+		worldPosition = options.arcPos.getXYPos(),
+		position = camera:worldToScreen(options.arcPos.getXYPos()),
 		-- rotation = self.spawnPoint.rotation
 	}
 
@@ -77,6 +78,16 @@ function Bomb:ecussonEnterFrame(options)
 end
 
 function Bomb:explode(options)
+	local explosionPoints = self.arcPos:initExplosion()
+
+	self.expSprites = {}
+	for _,ap in ipairs(explosionPoints) do
+		self.expSprites[#self.expSprites+1] = CameraAwareSprite.create {
+																					spriteSet = "bomb",
+																					animation = "explode",
+																					worldPosition = ap.getXYPos(),
+																						}
+	end
 	print ("Bomb explosion!")
 	self.sprite:play("explode")
 	print ( "self!", self)
