@@ -91,6 +91,20 @@ var sendPlayerPosition = function (stream, id, pos) // player and other players
 }
 exports.sendPlayerPosition = sendPlayerPosition
 
+var sendPlayerUpdate = function (stream, id, data) // player and other players
+{	
+	var content = 
+	{
+		"type": TYPEPLAYERUPDATE, 
+		"id": id,
+		"data": data
+	};
+	
+	var data = JSON.stringify(content);
+	stream.write(data + FRAME_SEPARATOR,function() {console.log("player update:\n" + data)})
+}
+exports.sendPlayerUpdate = sendPlayerUpdate
+
 // receiving function 
 var move_action = function (frame_data, stream) 
 {
@@ -122,6 +136,7 @@ var bomb_action = function (frame_data, stream)
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + FRAME_SEPARATOR, function () {console.log("BombData sent:\n" + data)})*/
 	}
+	else console.log("Error bomb msg from client.")
 }
 
 
