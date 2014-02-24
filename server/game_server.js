@@ -10,7 +10,7 @@ exports.Connexion = Connexion
 
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
-var MOVE_REFRESH_PERIOD = 200
+var MOVE_REFRESH_PERIOD = 50
 
 
 function Connexion(gserver, stream, player) {
