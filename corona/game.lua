@@ -5,17 +5,15 @@
 ----------------------------------------------------------------------------------
 
 local storyboard = require( "storyboard" )
-
 local Player = require( "player" )
-
 local scene = storyboard.newScene()
-
 require "node"
 require "consts"
 require "camera"
 require "vector2D"
 require "map"
 require "items"
+require "print_r"
 local json = require "json"
 local physics = require( "physics" )
 local playBtn
@@ -25,23 +23,12 @@ local currentMap = nil
 itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 
-
 function initGame()
 	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
 	for voisin,_ in pairs(nodeFr.arcs) do
 		nodeT=voisin
 	end
 	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
-
-	-- PATHFINDING TEST
-	-- local ap1 = currentMap:createArcPosByUID("1","4", 0.3)
-	-- local ap2 = currentMap:createArcPosByUID("2","5", 0.2)
-	-- local result = currentMap:findPathArcs(ap1, ap2)
-
-	-- for i,v in ipairs(result) do
-	-- 	print("i"..i)
-	-- 	print("v"..v.uid)
-	-- end
 end
 
 -- Called when the scene's view does not exist:
@@ -52,10 +39,10 @@ function scene:createScene( event )
 	camera:setZoomXY(200,200)
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
-
+	
 	-- connect to server
 	local result = net.connect_to_server("127.0.0.1", 3000)
-	
+
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers['map'] = function ( json_obj )
@@ -63,7 +50,7 @@ function scene:createScene( event )
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 			initGame()
-			player:refresh()
+			-- player:refresh()
 			camera:lookAt(player:getPos())
 		end
 		net.net_handlers['pos'] = function ( json_obj )
@@ -77,7 +64,7 @@ function scene:createScene( event )
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
 		initGame()
-		player:refresh()
+		-- player:refresh()
 		camera:lookAt(player:getPos())
 	end
 
@@ -91,70 +78,55 @@ local myListener = function( event )
 		camera:lookAt(player:getPos())
 	end
 end
+
 local trans
 local function moveObject(e)
-		if(trans)then
-			transition.cancel(trans)
-		end
-		--camera:lookAt(camera:screenToWorld(Vector2D:new(e.x,e.y)))
+	if(trans)then
+		transition.cancel(trans)
+	end
 
-
-		--find nearest node
-
-		---------------
-		--get way to destination
-
-		---------------
-		--dummy map
-	 
-		--player:saveNewNodes(currentMap.nodesByUID)
-
-		if (btnBombClicked) then
-			btnBombClicked = false
-		else
-			local screenPos = Vector2D:new(e.x,e.y)
-			local worldPos = camera:screenToWorld(screenPos)
-			local node = currentMap:getClosestNode(worldPos)
-			local from = currentMap:getClosestNode(player.pos)
+	if (btnBombClicked) then
+		btnBombClicked = false
+	else
+		local screenPos = Vector2D:new(e.x,e.y)
+		local worldPos = camera:screenToWorld(screenPos)
+		local node = currentMap:getClosestNode(worldPos)
+		local from = currentMap:getClosestNode(player.pos)	
 			
-			if (from == node ) then
-				--player:saveNewDestination(e)
-			elseif (from == nil) then
-				--player:saveNewDestinationVect(node.pos)
-			elseif (node == nil) then
-				--player:saveNewDestination(e)
-			else
-
+		if (from == node ) then
+			--player:saveNewDestination(e)
+		elseif (from == nil) then
+			--player:saveNewDestinationVect(node.pos)
+		elseif (node == nil) then
+			--player:saveNewDestination(e)
+		else
 			local arcP = currentMap:getClosestPos(worldPos)
 			print(arcP.arc.end1.uid .."AAAAAAAAAAAAAAAAAAAA/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
 			if (arcP.progress<0) then
 				print (arcP.progress.." ERROR")
 			end
-			--player.arcPDest = arcP
-
-			--local nodes = currentMap:findPath(from, node)
+	
 			local ap1 = currentMap:createArcPos(player.currentArc.end1,player.currentArc.end2,player.currentArcRatio)
-			local nodes = currentMap:findPathArcs(ap1,arcP)
---print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
---print(from.uid .. "<--- from")
-			
-			player.nodeFrom=from
-			 for _,nod in ipairs(nodes) do
-				print("aaa".. nod.uid)
-				end
 
-			net.sendPathToServer(from,nodes,arcP)
+			if (ap1.arc.end1.uid == arcP.arc.end1.uid and ap1.arc.end2.uid == arcP.arc.end2.uid) then
+
+				net.sendPathToServer1(arcP)
+			else
+				local nodes = currentMap:findPathArcs(ap1,arcP)
+				--print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
+				--print(from.uid .. "<--- from")			
+				player.nodeFrom=from
+			 	for _,nod in ipairs(nodes) do
+					print("aaa".. nod.uid)
+				end
+				net.sendPathToServer(nodes,arcP)
 			
-			--player.nodeTo=nodes[1]
-			
-			--player:goToAR(arcP)
-			
-			--player:saveNewNodes(nodes)
+				--player:goToAR(arcP)
+				--player:saveNewNodes(nodes)
 			end
 		end
-
-
 	end
+end
 
 -- local function myTapListener( event )
 
