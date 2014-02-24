@@ -138,10 +138,29 @@ end
 --   table.insert(_msgsendtable,data)
 -- end
  
-
+function sendPathToServer1( arcP )
+	if (nodes == nil) then
+		return
+	end
+	local arc, ratio = player.currentArc, player.currentArcRatio
+	local ratioEnd =0
+	local to_send = {}
+	local net_nodes ={}
+	if (arcP.progress >= ratio) then
+		net_nodes={arc.end2.uid}
+	else
+		net_nodes={arc.end2.uid}
+		ratio=1-ratio
+	end
+	
+	to_send[JSON_MOVE_NODES] = net_nodes
+	to_send[JSON_MOVE_START_EDGE_POS] = ratio
+	to_send[JSON_MOVE_END_EDGE_POS] = ratio
+	sendSerialized(to_send, FRAMETYPE_MOVE)
+end
  
 
-function sendPathToServer(from, nodes, arcP )
+function sendPathToServer( nodes, arcP )
 	if (nodes == nil) then
 		return
 	end
