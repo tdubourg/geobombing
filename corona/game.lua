@@ -28,7 +28,24 @@ function initGame()
 	for voisin,_ in pairs(nodeFr.arcs) do
 		nodeT=voisin
 	end
-	player = Player.new( "Me",  0.02, 0,nodeFr , nodeT )
+	local arcP = currentMap:createArcPosByUID(nodeFr, nodeT,0.5)
+	player = Player.new( "Me",  0.02, 0,arcP)
+
+	others = {}
+
+end
+
+function movePlayerById(id,arcP)
+	local exist = false
+	for _,other in ipairs(others) do
+		if (other:checkID(id)) then
+			other:setAR(arcP)
+			exist = true
+		end
+	end
+	if (exist == false) then
+		others[#others] = Player.new(id,0.02,0,arcP)
+	end
 end
 
 -- Called when the scene's view does not exist:
@@ -106,15 +123,12 @@ local function moveObject(e)
 			if (arcP.progress<0) then
 				print (arcP.progress.." ERROR")
 			end
-	
-			local ap1 = currentMap:createArcPos(player.currentArc.end1,player.currentArc.end2,player.currentArcRatio)
-
-			if (ap1.arc.end1.uid == arcP.arc.end1.uid and ap1.arc.end2.uid == arcP.arc.end2.uid) then
-
-				net.sendPathToServer1(arcP)
+			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
+				print("arcP 1 " .. arcP.arc.end1.uid)
+				print("arcP 2 " ..arcP.arc.end2.uid)
+				net.sendPathToServer(nil,arcP)
 			else
-				local nodes = currentMap:findPathArcs(ap1,arcP)
-				--print(player.currentArc.end1.uid,player.currentArc.end2.uid,player.currentArcRatio)
+				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
 				--print(from.uid .. "<--- from")			
 				player.nodeFrom=from
 			 	for _,nod in ipairs(nodes) do

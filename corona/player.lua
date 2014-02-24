@@ -40,7 +40,7 @@ local Player = {}
 -- PUBLIC FUNCTIONS
 -------------------------------------------------
 
-function Player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)   -- constructor
+function Player.new( pName, pSpeed, pNbDeath,arcP)   -- constructor
 	local self = utils.extend(Player)
     print ( "Creating player... " )
     --Player name / speed / number of death
@@ -62,15 +62,16 @@ function Player.new( pName, pSpeed, pNbDeath,nodeF,nodeT)   -- constructor
         position = camera:worldToScreen(self.pos),
     }
 
-    self.nodeFrom=nodeF
-    self.nodeTo=nodeT
-    self.currentArc=nodeF.arcs[nodeT]
-    if(self.currentArc.end1==nodeF) then
-        self.currentArcRatio=0
-    else
-        self.currentArcRatio=1
-    end
+    --self.nodeFrom=nodeF
+    --self.nodeTo=nodeT
+    -- self.currentArc=nodeF.arcs[nodeT]
+    -- if(self.currentArc.end1==nodeF) then
+    --     self.currentArcRatio=0
+    -- else
+    --     self.currentArcRatio=1
+    -- end
 
+    self.arcPCurrent = arcP
     --Player current destination
     -- self.arcPDest = nil
     -- self.toX= self.pos.x
@@ -89,6 +90,15 @@ end
 
 function Player:getPos(  )
     return self.pos
+end
+
+function Player:checkID(id )
+    if (self.name == id) then
+        return true
+    else
+        return false
+    end
+    return false
 end
 
 -- function Player:saveNewNodes(nodes)
@@ -215,8 +225,7 @@ function Player:setAR(arcP)
     -- self.toY=destination.y
     self.pos=destination
     self.sprite:setWorldPosition(self.pos)
-    self.currentArc = arcP.arc
-    self.currentArcRatio = arcP.progress
+    self.arcPCurrent = arcP
 end
 
 return Player
