@@ -108,9 +108,9 @@ function Map:createArcPos(n1, n2, ratio)
   local arc = n1.arcs[n2]
   if arc then
     if arc.end1==n1 then
-    return ArcPos:new(arc, ratio)
+      return ArcPos:new(arc, ratio)
     else -- arc.end1==n2
-    return ArcPos:new(arc, 1-ratio)
+      return ArcPos:new(arc, 1-ratio)
   end
 end
 return nil
@@ -118,6 +118,8 @@ end
 
 -- returns nil if non existing arc
 function Map:createArcPosByUID(n1uid, n2uid, ratio)
+  n1uid = "" .. n1uid
+  n2uid = "" .. n2uid
   local n1 = self.nodesByUID[n1uid]
   local n2 = self.nodesByUID[n2uid]
 
