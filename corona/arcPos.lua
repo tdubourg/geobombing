@@ -14,13 +14,34 @@ function ArcPos:getPosXY()
   return self.posXY
 end
 
+
 function ArcPos:initExplosion(power)
   drawPosList = {}
-  self.arc.end1:transmitExplosion(self.arc.end2, power-self.progress*self.arc.len, EXPLOSION_INTERVAL, drawPosList)
-  self.arc.end2:transmitExplosion(self.arc.end1, power-(1-self.progress)*self.arc.len, EXPLOSION_INTERVAL, drawPosList)
-  -- TODO draw sprites on drawPosList
-  print "tranmit list len"
-  print(#drawPosList)
+  local end1Power = power - self.progress*self.arc.len
+  local end2Power = power - (1-self.progress)*self.arc.len
+  local end1AP = nil
+  local end2AP = nil
+
+  -- TODO: faire un truc plus générique et moins dégueu
+  -- ... ou s'en foutre et faire refaire cette partie au stagiaire quand on est riches.
+  if end1Power>0 then
+    self.arc.end1:transmitExplosion(self.arc.end2, end1Power, EXPLOSION_INTERVAL, drawPosList)
+    end1AP = ArcPos:new(self.arc, 0.0)
+  else
+    end1AP = ArcPos:new(self.arc, self.progress - power/self.arc.len)
+  end
+
+  if end2Power>0 then
+    self.arc.end2:transmitExplosion(self.arc.end1, end2Power, EXPLOSION_INTERVAL, drawPosList)
+    end2AP = ArcPos:new(self.arc, 1.0)
+  else
+    end2AP = ArcPos:new(self.arc, self.progress + power/self.arc.len)
+  end
+ 
+  array_insert(drawPosList, ArcPos.PosListBetween(self, end1AP, EXPLOSION_INTERVAL))
+  array_insert(drawPosList, ArcPos.PosListBetween(self, end2AP, EXPLOSION_INTERVAL))
+
+  return drawPosList
 end
 
 -- generates a table filled with positions between arcPosFrom and arcPosTo.

@@ -26,15 +26,15 @@ function Bomb.create(options)
 	self.phase = "idle"
 	self.time = 0.0
 	self.alive = true
-	self.arcPos = options.arcPos:getXYPos()
+	self.arcPos = options.arcPos
 
 	print ("bomb options.arcPos", options.arcPos)
 
 	self.sprite = CameraAwareSprite.create {
 		spriteSet = "bomb",
 		animation = "idle",
-		worldPosition = options.arcPos.getXYPos(),
-		position = camera:worldToScreen(options.arcPos.getXYPos()),
+		worldPosition = options.arcPos:getPosXY(),
+		position = camera:worldToScreen(options.arcPos:getPosXY()),
 		-- rotation = self.spawnPoint.rotation
 	}
 
@@ -54,6 +54,10 @@ function Bomb:destroy()
 	self.sprite:removeEventListener("touch", self)
 
 	self.sprite:destroy()
+
+	for _,explosionSprite in ipairs(self.expSprites) do
+		explosionSprite:destroy()
+	end
 
 	utils.deleteObject(self)
 end
@@ -78,23 +82,23 @@ function Bomb:ecussonEnterFrame(options)
 end
 
 function Bomb:explode(options)
-	local explosionPoints = self.arcPos:initExplosion()
+	local explosionPoints = self.arcPos:initExplosion(EXPLOSION_POWER)
 
 	self.expSprites = {}
 	for _,ap in ipairs(explosionPoints) do
-		self.expSprites[#self.expSprites+1] = CameraAwareSprite.create {
-																					spriteSet = "bomb",
-																					animation = "explode",
-																					worldPosition = ap.getXYPos(),
-																						}
+		print "explosion point"
+		print_r(ap:getPosXY())
+		local newSprite = CameraAwareSprite.create {
+												spriteSet = "bomb",
+												animation = "explode",
+												worldPosition = ap:getPosXY(),
+													}
+		self.expSprites[#self.expSprites+1] = newSprite
 	end
-	print ("Bomb explosion!")
+
 	self.sprite:play("explode")
-	print ( "self!", self)
-	local a = self
-	timer.performWithDelay(EXPLOSION_DURATION*1000, function (  ) -- converting from seconds to ms
-		print ( "self?", self )
-		a:destroy()
+	timer.performWithDelay(EXPLOSION_DURATION*1000, function ( ) -- converting from seconds to ms
+		self:destroy()
 	end)
 end
 
