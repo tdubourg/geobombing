@@ -85,10 +85,8 @@ function GameServer(game) {
 			var id = 0;
 			//fa.sendPlayerPosition(player.stream, id, player.getPosition())
 
-			var data = 
-			{
-				fa.TYPEPOS: player.getPosition()
-			};
+			var data = {};
+			data[fa.TYPEPOS] = player.getPosition()
 			fa.sendPlayerUpdate(player.stream, id, data) // if position
 			
 		}
@@ -103,6 +101,10 @@ GameServer.prototype.addPlayer = function(stream) {
 	var c = new Connexion(this, stream, new g.Player(this.game, stream))
 	//this.connexions.push(c)
 	//game.addPlayer(c)
+
+			/*var data = {};
+			data[fa.TYPEPOS] = player.getPosition()
+			fa.sendPlayerUpdate(player.stream, id, data) // if position*/
 	
 	return c
 }
