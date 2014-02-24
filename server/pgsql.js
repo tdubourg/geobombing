@@ -143,17 +143,26 @@ function autoScaleMap(leMap)
 function mapDataToJSon(mapData) 
 {
 	var map = common.CreateEmptyMap(++lastMapId, "mapName");
-    for (var i = 0; i < mapData.length; i++)
+	var nodes_dic = {}
+    for (var i = 0; i < mapData.length; i++) 
     {
     	var way = common.CreateEmptyWay("way" + i);
         for (var j = 0; j < mapData[i].length; j++)
     	{
-    		var id = lastNodeId++
-    		if (mapData[i][j] == null || mapData[i][j].length != 2) return null;
-        	var node = common.CreateNode(id,
-        		mapData[i][j][0], mapData[i][j][1]);
+    		var node, id
+    		if (nodes_dic[mapData[i][j]] == undefined)
+    		{
+    			id = lastNodeId++
+        		node = common.CreateNode(id, mapData[i][j][0], mapData[i][j][1]);
+        		nodes_dic[mapData[i][j]] = node;
+        	}
+        	else
+        	{
+        		node = nodes_dic[mapData[i][j]]
+        		id = node.id     		
+        	}
         	common.AddNodeToMap(map, node);
-        	common.AddNodeIdToWay(way, id);
+        	common.AddNodeIdToWay(way, node.id);
     	}
     	common.AddWayToMap(map, way);
     }
