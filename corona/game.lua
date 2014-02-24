@@ -28,24 +28,40 @@ function initGame()
 	for voisin,_ in pairs(nodeFr.arcs) do
 		nodeT=voisin
 	end
-	local arcP = currentMap:createArcPosByUID(nodeFr, nodeT,0.5)
-	player = Player.new( "Me",  0.02, 0,arcP)
+	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
+	player = Player.new( 0,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
 	others = {}
+	
 
 end
 
 function movePlayerById(id,arcP)
 	local exist = false
 	for _,other in ipairs(others) do
-		if (other:checkID(id)) then
+		if (other:checkID(id) == true) then
+			print("bouge")
 			other:setAR(arcP)
 			exist = true
 		end
+		print("bouge ??")
 	end
 	if (exist == false) then
+		print("bouge nouveau")
 		others[#others] = Player.new(id,0.02,0,arcP)
 	end
+end
+
+function update_player_position( pos_obj )
+	print ( "TOTO")
+	print (pos_obj.n1, pos_obj.n2, pos_obj.c)
+	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
+	print ('arcP returned is', arcP)
+	player:setAR(arcP)
+end
+
+function update_player_state( state_obj )
+	-- TODO
 end
 
 -- Called when the scene's view does not exist:
@@ -70,11 +86,20 @@ function scene:createScene( event )
 			-- player:refresh()
 			camera:lookAt(player:getPos())
 		end
-		net.net_handlers['pos'] = function ( json_obj )
-			--print ("Received pos from server: " .. json.encode(json_obj))
+		net.net_handlers[NETWORK_PLAYER_UPDATE_TYPE] = function ( json_obj )
+			-- print ("Received player update from server: " .. json.encode(json_obj))
 
-			local arcP = currentMap:createArcPosByUID(json_obj.data.n1, json_obj.data.n2,json_obj.data.c)
-			player:setAR(arcP)
+			if (json_obj.data ~= nil) then
+				-- There's some data to crunch
+
+				-- The position has to be updated
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
+					update_player_position(json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY])
+				end
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
+					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+				end
+			end
 		end
 		net.sendPosition()
 	else
@@ -118,26 +143,29 @@ local function moveObject(e)
 			--player:saveNewDestination(e)
 		else
 			local arcP = currentMap:getClosestPos(worldPos)
-			--arcP:initExplosion(1.0)
-			print(arcP.arc.end1.uid .."AAAAAAAAAAAAAAAAAAAA/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
-			if (arcP.progress<0) then
-				print (arcP.progress.." ERROR")
-			end
-			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
-				print("arcP 1 " .. arcP.arc.end1.uid)
-				print("arcP 2 " ..arcP.arc.end2.uid)
-				net.sendPathToServer(nil,arcP)
-			else
-				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
-				--print(from.uid .. "<--- from")			
-				player.nodeFrom=from
-			 	for _,nod in ipairs(nodes) do
-					print("aaa".. nod.uid)
+
+			if (arcP ~= nil) then 
+				-- test
+				--movePlayerById(1, arcP)
+
+				print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
+				if (arcP.progress<0) then
+					print (arcP.progress.." ERROR")
 				end
-				net.sendPathToServer(nodes,arcP)
-			
-				--player:goToAR(arcP)
-				--player:saveNewNodes(nodes)
+				if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
+					net.sendPathToServer(nil,arcP)
+				else
+					local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
+					--print(from.uid .. "<--- from")			
+					player.nodeFrom=from
+				 -- 	for _,nod in ipairs(nodes) do
+					-- 	print(" ".. nod.uid)
+					-- end
+					net.sendPathToServer(nodes,arcP)
+				
+					--player:goToAR(arcP)
+					--player:saveNewNodes(nodes)
+				end
 			end
 		end
 	end
