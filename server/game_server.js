@@ -17,19 +17,20 @@ function Connexion(gserver, stream, player) {
 	var that = this
 	
 	this.stream = stream
+	this.player = player
 	
 	// TODO: this seems useless since stream object equality can be used to identify clients
 	
 	 // Unique randomized id gen for security
 	do {
 		this.conId = Math.random();
-	} while ( !gserver.connexions.reduce (
+	} while (!gserver.connexions.reduce (
 		function(prev,curr) {
 			return prev && curr.conId != that.conId
 		}, true)
 	)
 	
-	gserver.playersByStream[stream] = player
+	//gserver.playersByStream[stream] = player
 	
 	gserver.connexions.push(this)
 }
@@ -39,7 +40,7 @@ function GameServer(game) {
 	
 	this.game = game
 	this.connexions = [] // FIXME NOT USED
-	this.playersByStream = {}
+	//this.playersByStream = {}
 	
 	//console.log(performance.now()	)
 
@@ -63,21 +64,10 @@ function GameServer(game) {
 	setInterval(function() {
 		//game.players.forEach(function(p) { })
 		//console.log(that.playersByStream)
-		
+		/*
 		for (var streamKey in that.playersByStream) {
 			//stream  playersByStream[stream]
 			var player = that.playersByStream[streamKey]
-			/*
-		 	//var position = utils.CreatePosition(player.currentArc.n1, player.currentArc.n2, player);
-			var content = 
-			{
-				"type": TYPEPOS, 
-				"data": player.getPosition()
-			};
-			var data = JSON.stringify(content);
-			stream.write(data + FRAME_SEPARATOR,
-				function() { console.log("PosData sent:\n" + data + "\n"); })
-			*/
 			
 			//console.log(player)
 			
@@ -86,7 +76,14 @@ function GameServer(game) {
 			//fa.sendPlayerPosition(player.stream, id, player.getPosition())
 			fa.sendPlayerUpdate(player.stream, id, player.getPosition()); // if position
 			
-		}
+		}*/
+		
+		that.connexions.forEach(function(con) {
+			
+			fa.sendPlayerUpdate(player.stream, con.player.id, player.getPosition()); // if position
+			
+		})
+		
 		
 	}, MOVE_REFRESH_PERIOD)
 1
