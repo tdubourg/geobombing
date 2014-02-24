@@ -29,7 +29,8 @@ function initGame()
 		nodeT=voisin
 	end
 	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
-	player = Player.new( 0,  0.02, 0,arcP)
+
+	player = Player.new( 0,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
 	others = {}
 	
@@ -50,6 +51,18 @@ function movePlayerById(id,arcP)
 		print("bouge nouveau")
 		others[#others] = Player.new(id,0.02,0,arcP)
 	end
+end
+
+function update_player_position( pos_obj )
+	print ( "TOTO")
+	print (pos_obj.n1, pos_obj.n2, pos_obj.c)
+	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
+	print ('arcP returned is', arcP)
+	player:setAR(arcP)
+end
+
+function update_player_state( state_obj )
+	-- TODO
 end
 
 -- Called when the scene's view does not exist:
@@ -74,11 +87,20 @@ function scene:createScene( event )
 			-- player:refresh()
 			camera:lookAt(player:getPos())
 		end
-		net.net_handlers['pos'] = function ( json_obj )
-			--print ("Received pos from server: " .. json.encode(json_obj))
+		net.net_handlers[NETWORK_PLAYER_UPDATE_TYPE] = function ( json_obj )
+			-- print ("Received player update from server: " .. json.encode(json_obj))
 
-			local arcP = currentMap:createArcPosByUID(json_obj.data.n1, json_obj.data.n2,json_obj.data.c)
-			player:setAR(arcP)
+			if (json_obj.data ~= nil) then
+				-- There's some data to crunch
+
+				-- The position has to be updated
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
+					update_player_position(json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY])
+				end
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
+					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+				end
+			end
 		end
 		net.sendPosition()
 	else
@@ -123,9 +145,8 @@ local function moveObject(e)
 			--player:saveNewDestination(e)
 		else
 			local arcP = currentMap:getClosestPos(worldPos)
-			if (arcP == nil) then 
 
-			else
+			if (arcP ~= nil) then 
 				-- test
 				--movePlayerById(1, arcP)
 
