@@ -2,6 +2,7 @@
 
 var g = require('./Game')
 var fa = require('./frame_action')
+var net = require('./network')
 
 
 exports.GameServer = GameServer

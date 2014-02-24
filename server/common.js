@@ -4,7 +4,7 @@
 var clMap = require("./Classes/clMap").clMap; 
 var clNode = require("./Classes/clNode").clNode;
 var clWay = require("./Classes/clWay").clWay; 
-var clPosition = require('./network').clPosition; 
+var clPosition = require("./Classes/clPosition").clPosition; 
 
 // -- Math
 

@@ -1,19 +1,8 @@
 "use strict"
 
-var netw = require('./network');
+var net = require('./network');
 var utils = require("./common");
-var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
 
-// Type from server to client
-var TYPEMAP = "map";
-
-// types update
-var TYPEPLAYERUPDATE = "pu";
-var TYPEPOS = "pos"; 
-var TYPEBOMB = "bomb";
-exports.TYPEPOS = TYPEPOS
-exports.TYPEBOMB = TYPEBOMB
-// end of type to client
 
 var db = require('./pgsql');
 var nb_instance_move = 0;
@@ -46,7 +35,7 @@ var sendmap_action = function (frame_data, stream)
 			"data": jsonMap
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log(conId)})
+		stream.write(data + net.FRAME_SEPARATOR, function () {console.log(conId)})
 	}
 	
 	function setInitialPosition()
@@ -83,13 +72,13 @@ var sendPlayerPosition = function (stream, id, pos) // player and other players
 	
 	var content = 
 	{
-		"type": TYPEPLAYERUPDATE, 
+		"type": net.TYPEPLAYERUPDATE, 
 		"id": id,
 		"data": pos
 	};
 	
 	var data = JSON.stringify(content);
-	stream.write(data + FRAME_SEPARATOR,function() {})
+	stream.write(data + net.FRAME_SEPARATOR,function() {})
 }
 exports.sendPlayerPosition = sendPlayerPosition
 
@@ -97,13 +86,13 @@ var sendPlayerUpdate = function (stream, id, data) // player and other players
 {	
 	var content = 
 	{
-		"type": TYPEPLAYERUPDATE, 
+		"type": net.TYPEPLAYERUPDATE, 
 		"id": id,
 		"data": data
 	};
 	
 	var data = JSON.stringify(content);
-	stream.write(data + FRAME_SEPARATOR,function() {console.log("player update:\n" + data)})
+	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("player update:\n" + data)})
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
@@ -128,15 +117,6 @@ var bomb_action = function (frame_data, stream)
 		var id = frame_data.id;
 		var pos = CreatePosition(0, 0, 0)
 		single_game_server.bombCommand(stream, id, pos) // send bomb
-		/*var content = 
-		{
-			"type": TYPEPLAYERUPDATE,
-			"id": id,
-			"bomb": true,
-			"data": pos
-		};
-		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log("BombData sent:\n" + data)})*/
 	}
 	else console.log("Error bomb msg from client.")
 }

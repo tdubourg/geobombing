@@ -11,18 +11,21 @@ var decode_frame = function (frame_string)
 	return decoded_frame;
 }
 
-///--- Network Classes---
+///--- Network Constants---
+var TYPEMAP = "map";
 
+var TYPEPLAYERUPDATE = "pu";
+var TYPEPOS = "pos"; 
+var TYPEBOMB = "bomb";
+var TYPEDEATH = "dead";
+var TYPEPOINTS = "points";
 
-//class Way
-var clPosition = function() 
-{
-    //Attributs    
-	this.n1 = 0;
-	this.n2 = 0;
-    this.c = -1; // coeficient [0-1] of position between node1 & node2
-};
-exports.clPosition = clPosition
+exports.TYPEMAP = TYPEMAP
+exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
+exports.TYPEPOS = TYPEPOS
+exports.TYPEBOMB = TYPEBOMB
+exports.TYPEDEATH = TYPEDEATH
+exports.TYPEPOINTS = TYPEPOINTS
 
 exports.FRAME_SEPARATOR = FRAME_SEPARATOR
 exports.decode_frame = decode_frame
