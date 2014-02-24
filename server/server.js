@@ -57,7 +57,9 @@ function start (port)
 			stream.end();
 		});
 
-		stream.addListener("error", function(err) {console.log("SERV: ", "An error occured on a connection: ", err)});
+		stream.addListener("error", function(err) {
+			console.log("SERV: ", "An error occured on a connection: ", err)
+		});
 	});
 
 	server.listen(port);
