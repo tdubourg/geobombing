@@ -13,14 +13,6 @@ var decode_frame = function (frame_string)
 
 ///--- Network Classes---
 
-//class Player
-var clPlayer = function() 
-{
-    //Attributs    
-	this.name = "player";
-	this.speed = 0.2;
-    this.nb_deaths = 0; 
-};
 
 //class Way
 var clPosition = function() 
@@ -30,8 +22,6 @@ var clPosition = function()
 	this.n2 = 0;
     this.c = -1; // coeficient [0-1] of position between node1 & node2
 };
-
-exports.clPlayer = clPlayer
 exports.clPosition = clPosition
 
 exports.FRAME_SEPARATOR = FRAME_SEPARATOR
