@@ -61,7 +61,10 @@ function _mrcv(connection)
 		--print ( "Received network data: " .. frameString)
 		local json_obj = json.decode(frameString)
 		if (json_obj ~= nil) then
-			net_handlers[json_obj.type](json_obj)
+			local handler = net_handlers[json_obj.type]
+			if (handler ~=nil) then
+				handler(json_obj)
+			end
 		end
 	end        
 end

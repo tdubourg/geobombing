@@ -7,6 +7,9 @@ EXPLOSION_DURATION = 1.5 -- in seconds
     JSON_FRAME_DATA = "data"
     -- Frame Types
     if (DEV_MODE) then
+      NETWORK_PLAYER_UPDATE_TYPE = "pu"
+      NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
+      NETWORK_PLAYER_UPDATE_STATE_KEY = "s"
       FRAMETYPE_MOVE = "move"
       FRAMETYPE_MAP = "map"
       FRAMETYPE_GPS = "gps"
@@ -15,6 +18,9 @@ EXPLOSION_DURATION = 1.5 -- in seconds
       JSON_MOVE_START_EDGE_POS = "start_edge_pos"
       JSON_MOVE_END_EDGE_POS = "end_edge_pos"
     else
+      NETWORK_PLAYER_UPDATE_TYPE = "pu"
+      NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
+      NETWORK_PLAYER_UPDATE_STATE_KEY = "s"
       FRAMETYPE_MOVE = "mv"
       FRAMETYPE_MAP = "mp"
       FRAMETYPE_GPS = "gps"
@@ -37,3 +43,10 @@ EXPLOSION_DURATION = 1.5 -- in seconds
   -- GPS data
     JSON_GPS_LATITUDE = "latitude"
     JSON_GPS_LONGITUDE = "longitude"
+
+-- DISPLAY
+  EXPLOSION_INTERVAL = 0.1
+
+
+-- GAMEPLAY
+  EXPLOSION_POWER = 3

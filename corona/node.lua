@@ -3,9 +3,9 @@ require "arc"
 require "camera"
 
 Node = {}                   -- Create a table to hold the class methods
-function Node:new(worldX, worldY, uid)  -- The constructor
+function Node:new(worldX, worldY, uid, map)  -- The constructor
   
-  local self = {uid=uid}
+  local self = {uid=uid, containingMap=map}
   self.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
   self.arcs = {}                                   -- K: destination node, V: corresponding arc
 
@@ -43,23 +43,37 @@ function Node:linkTo(node1)
   end
 end
 
--- WORK IN PROGRESS
-function Node:transmitExplosion(origin, power, posList, interval)
-  for node,arc in pairs(arcs) do
-    local dist = self.pos:dist(node.pos)
-    local transmitedPower = power*self:transmitionCoef(origin, node)
-    if transmitedPower > dist then
-      -- add points on whole arc
-      node:transmitExplosion(transmitedPower - dist)
-    else
-      -- add points on partial arc
+
+-- recursive call to transmit an explosion through the map
+-- origin : calling node, used for angle computation and transmition coef
+-- power : transmited power
+-- distanceInterval : distance between returned positions (distance, not ratio!)
+-- resultList : array of ArcPos containing the resulting positions where to draw explosion sprites
+function Node:transmitExplosion(origin, power, distanceInterval, resultArray)
+  for otherNode,arc in pairs(self.arcs) do
+    if otherNode ~= origin then             -- do not transmit back to origin
+      local transmitedPower = power*self:transmitionCoef(origin, otherNode)
+
+      local APfrom = self.containingMap:createArcPos(self, otherNode, 0.0)
+      local APto = nil
+      if transmitedPower > arc.len then     -- add points on whole arc and transmit
+        APto = self.containingMap:createArcPos(self, otherNode, 1.0)
+        otherNode:transmitExplosion(self, transmitedPower - arc.len, distanceInterval, resultArray)
+      else                               -- add points on partial arc
+        APto = self.containingMap:createArcPos(self, otherNode, transmitedPower/arc.len)
+      end
+
+      local newPositions = ArcPos.PosListBetween(APfrom, APto, distanceInterval)
+      array_insert(resultArray, newPositions)
     end
   end
 end
 
 function Node:transmitionCoef(fromNode, toNode)
-  local v1 = (Vector2D:Sub(self.pos, fromNode)):normalize()
-  local v2 = (Vector2D:Sub(toNode, self.pos)):normalize()
+  local v1 = Vector2D:Sub(self.pos, fromNode.pos)
+  local v2 = Vector2D:Sub(toNode.pos, self.pos)
+  v1:normalize()
+  v2:normalize()
 
   local dot = v1:dot(v2)
   return (dot+1)*0.5    -- 0..1
