@@ -9,6 +9,34 @@ displayMainGroup = display.newGroup( )
 net = require "network2"
 loc = require "location"
 print( loc )
+
+
+local Sound = require("lib.ecusson.Sound")
+local Sprite = require("lib.ecusson.Sprite")
+local PerformanceWidget = require("lib.ecusson.PerformanceWidget")
+
+-----------------------------------------------------------------------------------------
+-- Preload spritesheets
+-----------------------------------------------------------------------------------------
+
+Sprite.setup{
+	imagePath = "runtimedata/sprites/",
+	datapath = "runtimedata.sprites.",
+	animationData = require("config.Sprites").sheets
+}
+
+Sprite.loadSheet("sprites")
+
+-----------------------------------------------------------------------------------------
+-- Setup sounds
+-----------------------------------------------------------------------------------------
+
+Sound.setup{
+	soundsPath = "runtimedata/audio/",
+	soundsData = require("config.Sounds")
+}
+
+
 -- load scenetemplate.lua
 storyboard.gotoScene( "menu" )
 
