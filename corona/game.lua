@@ -88,6 +88,7 @@ local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
+		camera:lookAt(player:getPos())
 	end
 end
 local trans
