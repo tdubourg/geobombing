@@ -40,17 +40,18 @@ local Player = {}
 -- PUBLIC FUNCTIONS
 -------------------------------------------------
 
-function Player.new( pName, pSpeed, pNbDeath,arcP)   -- constructor
+function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	local self = utils.extend(Player)
     print ( "Creating player... " )
     --Player name / speed / number of death
-    self.name = pName or "Unnamed"
+    self.name = pId or 0
     self.speed = pSpeed or 0.2
     self.nbDeath = pNDeath or 0
 
     --Player current state : FROZEN / WALKING / DEAD
     self.currentState = PLAYER_FROZEN_STATE 
 
+  self.arcPCurrent = arcP
     --Player Sprite
     self.pos = Vector2D:new(0, 0)
     print ("worldToScreen:", camera:worldToScreen(self.pos).x, camera:worldToScreen(self.pos).y)
@@ -71,7 +72,7 @@ function Player.new( pName, pSpeed, pNbDeath,arcP)   -- constructor
     --     self.currentArcRatio=1
     -- end
 
-    self.arcPCurrent = arcP
+  
     --Player current destination
     -- self.arcPDest = nil
     -- self.toX= self.pos.x
@@ -94,10 +95,13 @@ end
 
 function Player:checkID(id )
     if (self.name == id) then
+        print ("ici" .. true)
         return true
     else
+        print("ici false2")
         return false
     end
+    print("ici false")
     return false
 end
 

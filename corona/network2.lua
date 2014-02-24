@@ -177,9 +177,9 @@ function sendPathToServer( nodes, arcP )
 			net_nodes[#net_nodes+1] = v.uid
 		end
 
-		for _,nod in ipairs(net_nodes) do
-			print("chemin" .. nod)
-		end
+		-- for _,nod in ipairs(net_nodes) do
+			-- print("chemin" .. nod)
+		-- end
 
 		if (arc.end1.uid == arcP.arc.end1.uid and arc.end2.uid == arcP.arc.end2.uid) then
 			if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
@@ -187,13 +187,13 @@ function sendPathToServer( nodes, arcP )
 			--net_nodes[#net_nodes+1] = arcP.arc.end2.uid
 			--end
 			ratioEnd =1- arcP.progress
-			print ("ratioooooo" .. ratioEnd)
+			-- print ("ratioooooo" .. ratioEnd)
 			elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
 			--if (#net_nodes>1) then
 			--net_nodes[#net_nodes+1] = arcP.arc.end1.uid
 			--end
 			ratioEnd = arcP.progress
-			print ("ratioooooo 1-" .. ratioEnd)
+			-- print ("ratioooooo 1-" .. ratioEnd)
 
 			else
 				print("error in sendPathToServer")
@@ -204,22 +204,22 @@ function sendPathToServer( nodes, arcP )
 				net_nodes[#net_nodes+1] = arcP.arc.end2.uid
 			--end
 				ratioEnd =arcP.progress
-				print ("ratioooooo" .. ratioEnd)
+				-- print ("ratioooooo" .. ratioEnd)
 			elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
 			--if (#net_nodes>1) then
 				net_nodes[#net_nodes+1] = arcP.arc.end1.uid
 			--end
 				ratioEnd = 1- arcP.progress
-				print ("ratioooooo 1-" .. ratioEnd)
+				-- print ("ratioooooo 1-" .. ratioEnd)
 
 			else
 				print("error in sendPathToServer")
 			end
 		end
 
-		for _,nod in ipairs(net_nodes) do
-					print("chemin apres" .. nod)
-					end
+		-- for _,nod in ipairs(net_nodes) do
+		-- 			print("chemin apres" .. nod)
+		-- 			end
 		to_send[JSON_MOVE_NODES] = net_nodes
 		to_send[JSON_MOVE_START_EDGE_POS] = ratio
 		to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
