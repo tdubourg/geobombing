@@ -44,6 +44,15 @@ function initGame()
 	-- end
 end
 
+function update_player_position( pos_obj )
+	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
+	player:setAR(arcP)
+end
+
+function update_player_state( state_obj )
+	-- TODO
+end
+
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 	local group = self.view
@@ -66,11 +75,20 @@ function scene:createScene( event )
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
-		net.net_handlers['pos'] = function ( json_obj )
+		net.net_handlers[NETWORK_PLAYER_UPDATE_TYPE] = function ( json_obj )
 			--print ("Received pos from server: " .. json.encode(json_obj))
 
-			local arcP = currentMap:createArcPosByUID(json_obj.data.n1, json_obj.data.n2,json_obj.data.c)
-			player:setAR(arcP)
+			if (json_obj.data ~= nil) then
+				-- There's some data to crunch
+
+				-- The position has to be updated
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
+					update_player_position(json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY])
+				end
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
+					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+				end
+			end
 		end
 		net.sendPosition()
 	else
