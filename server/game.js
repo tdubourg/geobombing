@@ -112,8 +112,8 @@ function Player(game,stream) {
 	//this.currentArcPos = null
 	this.currentArc = null
 	this.currentArcDist = null
-	//this.targetArcDist = null
-	this.nextNode = null
+	this.targetArcDist = null
+	//this.nextNode = null
 }
 
 function Game(map) {
@@ -129,7 +129,7 @@ function BombAction() {
 var delta = 0.0001
 Player.prototype.update = function (period) {
 	//console.log("Updating "+this)
-	
+	/*
 	// this was for node-to-node navigation:
 	if (this.nextNode != null) {
 		var distToWalk = this.speed*period
@@ -164,8 +164,8 @@ Player.prototype.update = function (period) {
 			}
 		}
 	}
+	*/
 	
-	/*
 	// this is for arc coeff navigation:
 	// TODO
 	if (this.targetArcDist != null) {
@@ -174,13 +174,36 @@ Player.prototype.update = function (period) {
 		//console.log(period)
 		
 		while (distToWalk > delta) {
-			var distToNode = this.currentArc.length-this.currentArcDist
+			//var distToNode = this.currentArc.length-this.currentArcDist
+			//var distToNode = this.targetArcDist-this.currentArcDist
+			var distToNode = this.currentPath.length == 0?
+				this.targetArcDist-this.currentArcDist
+			:	this.currentArc.length-this.currentArcDist
+			
 			if (distToWalk < distToNode) {
 				this.currentArcDist += distToWalk
 				distToWalk = 0
 			} else {
 				distToWalk -= distToNode
 				//var currNode = this.currentPath.shift()
+				
+				
+				if (this.currentPath.length > 0) {
+					
+					var currNode = this.currentArc.n2
+					var nextNode = this.currentPath.shift()
+					
+					var newCurrentArc = currNode.arcToId(nextNode.id)
+					if (newCurrentArc)
+						this.currentArc = newCurrentArc
+					else
+						console.log("[Game Model Error]: couldn't find a path from node",
+							currNode.id, "to node", this.currentPath[0].id)
+					this.currentArcDist = 0
+					
+				} else return;
+				
+				/*
 				var currNode = this.nextNode
 				this.nextNode = this.currentPath.shift()
 				
@@ -198,10 +221,16 @@ Player.prototype.update = function (period) {
 					this.currentArcDist = 0 //this.currentArc.length
 				} else return;
 				//this.currentArcDist = 0
+				
+				*/
+				
+				
+				
+				
 			}
 		}
 	}
-	*/
+	
 }
 
 Player.prototype.getPosition = function () {
@@ -224,6 +253,7 @@ Player.prototype.setPosition = function (position) {
 
 Player.prototype.move = function (nodeIds, endCoeff) {
 	var firstNodeId = nodeIds.shift()
+	/*
 	//var nextNode
 	//console.log(this.currentArc.n1.id, " - ", firstNodeId)
 	//console.log(nodeIds)
@@ -243,6 +273,29 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	for (var i = 0; i < nodeIds.length; i++)
 		nodesRest.push(this.game.map.getNode(nodeIds[i]))
 	this.currentPath = nodesRest
+	*/
+	
+	
+	if (this.currentArc.n1.id == firstNodeId) {
+		this.currentArc = this.currentArc.n2.arcToId(firstNodeId)
+		this.currentArcDist = this.currentArc.length - this.currentArcDist
+		//this.targetArcDist = endCoeff*this.currentArc.length
+	}
+	else if (this.currentArc.n2.id == firstNodeId) {
+		//this.nextNode = this.currentArc.n2
+		//TODO//
+	}
+	else console.log("[Game Model Error]: Unknown move ")
+	//console.log("mvTo:",this.nextNode)
+	
+	this.targetArcDist = endCoeff*this.currentArc.length
+	
+	var nodesRest = []
+	for (var i = 0; i < nodeIds.length; i++)
+		nodesRest.push(this.game.map.getNode(nodeIds[i]))
+	this.currentPath = nodesRest
+	
+	
 }
 
 Game.prototype.update = function (period) {
