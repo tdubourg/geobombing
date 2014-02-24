@@ -45,6 +45,7 @@ function start (port)
 				var frame = buffer.substr(0, pos)
 				buffer = buffer.substr(pos + FRAME_SEPARATOR.length, buffer.length) //* If the second parameter is >= the maximum possible length substr can return
 				var frame_data = decode(frame); // returns type (map, gps, move, bomb...)
+				//if (debug) console.log(frame_data)
 				frame_action(frame_data, stream);
 			};
 			if (debug) console.log("SERV: ", "Ending the client stream data receiver function") 
