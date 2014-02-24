@@ -141,74 +141,90 @@ end
 --   table.insert(_msgsendtable,data)
 -- end
  
-
- 
-
-function sendPathToServer(from, nodes, arcP )
+function sendPathToServer( nodes, arcP )
 	if (nodes == nil) then
-		return
-	end
-	local arc, ratio = player.currentArc, player.currentArcRatio
-	local ratioEnd =0
-	local to_send = {}
-	local net_nodes ={}
-	 if (arc.end1.uid == nodes[1].uid) then
-	-- 	net_nodes = {arc.end2.uid}
-	 	ratio=1-ratio
-	 else
-	-- 	net_nodes =  {arc.end1.uid}
-	 end
-	for i,v in ipairs(nodes) do
-		net_nodes[#net_nodes+1] = v.uid
-	end
-
-	for _,nod in ipairs(net_nodes) do
-		print("chemin" .. nod)
-	end
-
-	if (arc.end1.uid == arcP.arc.end1.uid and arc.end2.uid == arcP.arc.end2.uid) then
-		if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
-		--if (#net_nodes>1) then
-		--net_nodes[#net_nodes+1] = arcP.arc.end2.uid
-		--end
-		ratioEnd =1- arcP.progress
-		print ("ratioooooo" .. ratioEnd)
-		elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
-		--if (#net_nodes>1) then
-		--net_nodes[#net_nodes+1] = arcP.arc.end1.uid
-		--end
-		ratioEnd = arcP.progress
-		print ("ratioooooo 1-" .. ratioEnd)
-
+		print ("here")
+		local arc =player.arcPCurrent.arc
+		local ratio = player.arcPCurrent.progress
+		local ratioEnd =arcP.progress
+		local to_send = {}
+		local net_nodes ={}
+		if (arcP.progress >= ratio) then
+			net_nodes={arc.end2.uid}
 		else
-			print("error in sendPathToServer")
+			net_nodes={arc.end1.uid}
+			ratioEnd=1-ratioEnd
 		end
+	
+		to_send[JSON_MOVE_NODES] = net_nodes
+		to_send[JSON_MOVE_START_EDGE_POS] = ratio
+		to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
+		sendSerialized(to_send, FRAMETYPE_MOVE)
+		
 	else
-	 	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
-		--if (#net_nodes>1) then
-			net_nodes[#net_nodes+1] = arcP.arc.end2.uid
-		--end
-			ratioEnd =arcP.progress
+		local arc = player.arcPCurrent.arc
+		local ratio = player.arcPCurrent.progress
+		local ratioEnd =0
+		local to_send = {}
+		local net_nodes ={}
+		 if (arc.end1.uid == nodes[1].uid) then
+		-- 	net_nodes = {arc.end2.uid}
+		 	ratio=1-ratio
+		 else
+		-- 	net_nodes =  {arc.end1.uid}
+		 end
+		for i,v in ipairs(nodes) do
+			net_nodes[#net_nodes+1] = v.uid
+		end
+
+		for _,nod in ipairs(net_nodes) do
+			print("chemin" .. nod)
+		end
+
+		if (arc.end1.uid == arcP.arc.end1.uid and arc.end2.uid == arcP.arc.end2.uid) then
+			if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+			--if (#net_nodes>1) then
+			--net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+			--end
+			ratioEnd =1- arcP.progress
 			print ("ratioooooo" .. ratioEnd)
-		elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
-		--if (#net_nodes>1) then
-			net_nodes[#net_nodes+1] = arcP.arc.end1.uid
-		--end
-			ratioEnd = 1- arcP.progress
+			elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+			--if (#net_nodes>1) then
+			--net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+			--end
+			ratioEnd = arcP.progress
 			print ("ratioooooo 1-" .. ratioEnd)
 
+			else
+				print("error in sendPathToServer")
+			end
 		else
-			print("error in sendPathToServer")
-		end
-	end
+		 	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+			--if (#net_nodes>1) then
+				net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+			--end
+				ratioEnd =arcP.progress
+				print ("ratioooooo" .. ratioEnd)
+			elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+			--if (#net_nodes>1) then
+				net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+			--end
+				ratioEnd = 1- arcP.progress
+				print ("ratioooooo 1-" .. ratioEnd)
 
-	for _,nod in ipairs(net_nodes) do
-				print("chemin apres" .. nod)
-				end
-	to_send[JSON_MOVE_NODES] = net_nodes
-	to_send[JSON_MOVE_START_EDGE_POS] = ratio
-	to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
-	sendSerialized(to_send, FRAMETYPE_MOVE)
+			else
+				print("error in sendPathToServer")
+			end
+		end
+
+		for _,nod in ipairs(net_nodes) do
+					print("chemin apres" .. nod)
+					end
+		to_send[JSON_MOVE_NODES] = net_nodes
+		to_send[JSON_MOVE_START_EDGE_POS] = ratio
+		to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
+		sendSerialized(to_send, FRAMETYPE_MOVE)
+	end
 end
 
 return
