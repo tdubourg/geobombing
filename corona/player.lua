@@ -44,7 +44,7 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	local self = utils.extend(Player)
     print ( "Creating player... " )
     --Player name / speed / number of death
-    self.name = pId or 0
+    self.id = pId or 0
     self.speed = pSpeed or 0.2
     self.nbDeath = pNDeath or 0
 
@@ -93,17 +93,6 @@ function Player:getPos(  )
     return self.pos
 end
 
-function Player:checkID(id )
-    if (self.name == id) then
-        print ("ici" .. true)
-        return true
-    else
-        print("ici false2")
-        return false
-    end
-    print("ici false")
-    return false
-end
 
 -- function Player:saveNewNodes(nodes)
 --     self.nodes=nodes

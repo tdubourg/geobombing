@@ -28,7 +28,7 @@ function initGame()
 	for voisin,_ in pairs(nodeFr.arcs) do
 		nodeT=voisin
 	end
-	local arcP = currentMap:createArcPosByUID(nodeFr, nodeT,0.5)
+	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
 	player = Player.new( 0,  0.02, 0,arcP)
 
 	others = {}
@@ -38,8 +38,8 @@ end
 
 function movePlayerById(id,arcP)
 	local exist = false
-	for _,other in ipairs(others) do
-		if (other:checkID(id) == true) then
+	for _,other in pairs(others) do
+		if (other.id == id) then
 			print("bouge")
 			other:setAR(arcP)
 			exist = true
@@ -96,6 +96,7 @@ local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
+
 		camera:lookAt(player:getPos())
 	end
 end
