@@ -136,7 +136,7 @@ local function moveObject(e)
 			
 			player.nodeFrom=from
 			 for _,nod in ipairs(nodes) do
-				print(nod.uid)
+				print("aaa".. nod.uid)
 				end
 
 			net.sendPathToServer(from,nodes,arcP)
