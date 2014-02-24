@@ -122,7 +122,10 @@ local function moveObject(e)
 			else
 
 			local arcP = currentMap:getClosestPos(worldPos)
-			print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
+			print(arcP.arc.end1.uid .."AAAAAAAAAAAAAAAAAAAA/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
+			if (arcP.progress<0) then
+				print (arcP.progress.." ERROR")
+			end
 			--player.arcPDest = arcP
 
 			--local nodes = currentMap:findPath(from, node)

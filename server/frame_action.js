@@ -41,7 +41,7 @@ var sendmap_action = function (frame_data, stream)
 			"data": jsonMap
 		};
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + FRAME_SEPARATOR, function () {console.log("MapData sent:\n" + data)})
+		stream.write(data + FRAME_SEPARATOR, function () {/*console.log("MapData sent:\n" + data)*/})
 	}
 
 	function sendInitialPosition()

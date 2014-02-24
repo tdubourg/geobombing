@@ -58,7 +58,7 @@ function _mrcv(connection)
 	local frameString, status = receive_until(FRAME_SEPARATOR)
 
 	if frameString ~= nil then
-		print ( "Received network data: " .. frameString)
+		--print ( "Received network data: " .. frameString)
 		local json_obj = json.decode(frameString)
 		if (json_obj ~= nil) then
 			net_handlers[json_obj.type](json_obj)
@@ -161,10 +161,14 @@ function sendPathToServer(from, nodes, arcP )
 	end
 
 	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+		if (#net_nodes>1) then
 		net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+		end
 		ratioEnd =arcP.progress
-elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+	elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+		if (#net_nodes>1) then
 		net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+		end
 		ratioEnd = 1- arcP.progress
 
 	else
