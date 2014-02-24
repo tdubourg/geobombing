@@ -149,36 +149,54 @@ function sendPathToServer(from, nodes, arcP )
 	local ratioEnd =0
 	local to_send = {}
 	local net_nodes ={}
-	-- if (arc.end1.uid == nodes[1].uid) then
+	 if (arc.end1.uid == nodes[1].uid) then
 	-- 	net_nodes = {arc.end2.uid}
-	-- 	ratio=1-ratio
-	-- else
+	 	ratio=1-ratio
+	 else
 	-- 	net_nodes =  {arc.end1.uid}
-	-- end
-	--local net_nodes = {from.uid}
+	 end
 	for i,v in ipairs(nodes) do
 		net_nodes[#net_nodes+1] = v.uid
 	end
 
-	 for _,nod in ipairs(net_nodes) do
-				print("chemin" .. nod)
-				end
+	for _,nod in ipairs(net_nodes) do
+		print("chemin" .. nod)
+	end
 
-	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
-		if (#net_nodes>1) then
-		net_nodes[#net_nodes+1] = arcP.arc.end2.uid
-		end
-		ratioEnd =arcP.progress
+	if (arc.end1.uid == arcP.arc.end1.uid and arc.end2.uid == arcP.arc.end2.uid) then
+		if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+		--if (#net_nodes>1) then
+		--net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+		--end
+		ratioEnd =1- arcP.progress
 		print ("ratioooooo" .. ratioEnd)
-	elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
-		if (#net_nodes>1) then
-		net_nodes[#net_nodes+1] = arcP.arc.end1.uid
-		end
-		ratioEnd = 1- arcP.progress
+		elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+		--if (#net_nodes>1) then
+		--net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+		--end
+		ratioEnd = arcP.progress
 		print ("ratioooooo 1-" .. ratioEnd)
 
+		else
+			print("error in sendPathToServer")
+		end
 	else
-		print("error in sendPathToServer")
+	 	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+		--if (#net_nodes>1) then
+			net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+		--end
+			ratioEnd =arcP.progress
+			print ("ratioooooo" .. ratioEnd)
+		elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+		--if (#net_nodes>1) then
+			net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+		--end
+			ratioEnd = 1- arcP.progress
+			print ("ratioooooo 1-" .. ratioEnd)
+
+		else
+			print("error in sendPathToServer")
+		end
 	end
 
 	for _,nod in ipairs(net_nodes) do
@@ -186,7 +204,7 @@ function sendPathToServer(from, nodes, arcP )
 				end
 	to_send[JSON_MOVE_NODES] = net_nodes
 	to_send[JSON_MOVE_START_EDGE_POS] = ratio
-	to_send[JSON_MOVE_END_EDGE_POS] = arcP.progress
+	to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
 	sendSerialized(to_send, FRAMETYPE_MOVE)
 end
 

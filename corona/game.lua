@@ -67,7 +67,7 @@ function scene:createScene( event )
 			camera:lookAt(player:getPos())
 		end
 		net.net_handlers['pos'] = function ( json_obj )
-			print ("Received pos from server: " .. json.encode(json_obj))
+			--print ("Received pos from server: " .. json.encode(json_obj))
 
 			local arcP = currentMap:createArcPosByUID(json_obj.data.n1, json_obj.data.n2,json_obj.data.c)
 			player:setAR(arcP)
