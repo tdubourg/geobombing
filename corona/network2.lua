@@ -62,9 +62,9 @@ function _mrcv(connection)
 		local json_obj = json.decode(frameString)
 		if (json_obj ~= nil) then
 			local handler = net_handlers[json_obj.type]
-			if (handler ~=nil) {
+			if (handler ~=nil) then
 				handler(json_obj)
-			}
+			end
 		end
 	end        
 end
