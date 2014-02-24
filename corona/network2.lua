@@ -140,13 +140,20 @@ end
 
  
 
-function sendPathToServer( nodes )
+function sendPathToServer(from, nodes )
 	if (nodes == nil) then
 		return
 	end
 	local arc, ratio = player.currentArc, player.currentArcRatio
 	local to_send = {}
-	local net_nodes = {arc.end1.uid}
+	local net_nodes =nil
+	if (arc.end1.uid == nodes[1].uid) then
+		net_nodes = {arc.end2.uid}
+		ratio=1-ratio
+	else
+		net_nodes =  {arc.end1.uid}
+	end
+	--local net_nodes = {from.uid}
 	for i,v in ipairs(nodes) do
 		net_nodes[#net_nodes+1] = v.uid
 	end

@@ -16,8 +16,10 @@ exports.flatten = flatten
 Array.prototype.thismap = function(f) {
 	var args = []
 	for(var i = 1; i < arguments.length; i++) {
-		args[i] = arguments[i]
+		//args[i] = arguments[i]
+		args.push(arguments[i])
 	}
+	//console.log(args)
 	this.forEach(function(e) { f.apply(e, args) })
 }
 

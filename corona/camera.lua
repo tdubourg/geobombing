@@ -9,14 +9,14 @@ camera = nil  -- global / singleton
 
 Camera = {}                   -- Create a table to hold the class methods
 function Camera:new()  -- The constructor
-  local object = {}
-  object.listeners = {}    -- set of managed objects, in keys
-  object.cameraPos = Vector2D:new(0,0)
-  object.zoomXY = Vector2D:new(1,1)
-  object.invZoomXY = Vector2D:new(1,1)
+  local self = {}
+  self.listeners = {}    -- set of managed selfs, in keys
+  self.cameraPos = Vector2D:new(0,0)
+  self.zoomXY = Vector2D:new(1,1)
+  self.invZoomXY = Vector2D:new(1,1)
 
-  setmetatable(object, { __index = Camera })  -- Inheritance
-  return object
+  setmetatable(self, { __index = Camera })  -- Inheritance
+  return self
 end
 
 function Camera:lookAtXY(wX, wY)
