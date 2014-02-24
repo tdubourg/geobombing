@@ -29,21 +29,25 @@ function initGame()
 		nodeT=voisin
 	end
 	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
-	player = Player.new( "Me",  0.02, 0,arcP)
+	player = Player.new( 0,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
 	others = {}
+	
 
 end
 
 function movePlayerById(id,arcP)
 	local exist = false
 	for _,other in ipairs(others) do
-		if (other:checkID(id)) then
+		if (other:checkID(id) == true) then
+			print("bouge")
 			other:setAR(arcP)
 			exist = true
 		end
+		print("bouge ??")
 	end
 	if (exist == false) then
+		print("bouge nouveau")
 		others[#others] = Player.new(id,0.02,0,arcP)
 	end
 end
@@ -139,25 +143,30 @@ local function moveObject(e)
 			--player:saveNewDestination(e)
 		else
 			local arcP = currentMap:getClosestPos(worldPos)
-			print(arcP.arc.end1.uid .."AAAAAAAAAAAAAAAAAAAA/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
-			if (arcP.progress<0) then
-				print (arcP.progress.." ERROR")
-			end
-			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
-				print("arcP 1 " .. arcP.arc.end1.uid)
-				print("arcP 2 " ..arcP.arc.end2.uid)
-				net.sendPathToServer(nil,arcP)
+			if (arcP == nil) then 
+
 			else
-				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
-				--print(from.uid .. "<--- from")			
-				player.nodeFrom=from
-			 	for _,nod in ipairs(nodes) do
-					print("aaa".. nod.uid)
+				-- test
+				--movePlayerById(1, arcP)
+
+				print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
+				if (arcP.progress<0) then
+					print (arcP.progress.." ERROR")
 				end
-				net.sendPathToServer(nodes,arcP)
-			
-				--player:goToAR(arcP)
-				--player:saveNewNodes(nodes)
+				if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
+					net.sendPathToServer(nil,arcP)
+				else
+					local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
+					--print(from.uid .. "<--- from")			
+					player.nodeFrom=from
+				 -- 	for _,nod in ipairs(nodes) do
+					-- 	print(" ".. nod.uid)
+					-- end
+					net.sendPathToServer(nodes,arcP)
+				
+					--player:goToAR(arcP)
+					--player:saveNewNodes(nodes)
+				end
 			end
 		end
 	end

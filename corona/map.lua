@@ -152,25 +152,16 @@ function Map:getClosestPos(v2pos)
     local distProj = vectPos:dot(vectDir)
     local distVectPos = Vector2D:Dist(v2pos,from)
 
-    -- local proj = Vector2D:Add(from,Vector2D:Mult(vectDir,distProj))
-    print("non ClosestP")
-      -- local arcPTemp = self:createArcPos(arc.end1, arc.end2,distProj/arc.len)
-      -- local proj = arcPTemp:getPosXY()
-      -- if (proj.x>=minX and proj.x<=maxX and proj.y>=minY and proj.y<=maxY) then
-         --Pythagore
-         if (distProj >=0 and distProj <=arc.len) then
-          local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
-          if (dist < min) then
-            min = dist
-           arcP = self:createArcPos(arc.end1, arc.end2,distProj/arc.len)
-           print("ClosestP")
-            end
-          end
-     end
+    
+    if (distProj >=0 and distProj <=arc.len) then
+        local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
+        if (dist < min) then
+          min = dist
+          arcP = self:createArcPos(arc.end1, arc.end2,distProj/arc.len)
+        end
+    end
+  end
 
-  -- toReturn[1]=best
-  -- toReturn[2]=ratio
-  -- print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ratio ="..toReturn[2])
   return arcP
 end
 
