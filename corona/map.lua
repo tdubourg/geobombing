@@ -1,4 +1,6 @@
 require "heap"
+require "arcPos"
+require "print_r"
 
 Map = {}
 function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
@@ -51,7 +53,7 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
         local node = self.nodesByUID[strUid]
         if (previousNode) then
           self.arcs[#(self.arcs)+1] =previousNode:linkTo(node)
-          print(j .. " / ")
+          print(previousNode.uid .. " / " .. node.uid)
         end
         previousNode = node
       end
@@ -68,18 +70,19 @@ else
   self.nodesByUID["6"]= Node:new(0.7,0.7, "6")
 
   self.arcs[1] = self.nodesByUID["1"]:linkTo(self.nodesByUID["2"])
-  self.arcs[2] = self.nodesByUID["2"]:linkTo(self.nodesByUID["3"])
-  self.arcs[3] = self.nodesByUID["3"]:linkTo(self.nodesByUID["4"])
-  self.arcs[4] = self.nodesByUID["4"]:linkTo(self.nodesByUID["1"])
-  self.arcs[5] = self.nodesByUID["5"]:linkTo(self.nodesByUID["2"])
-  self.arcs[6] = self.nodesByUID["6"]:linkTo(self.nodesByUID["2"])
-  self.arcs[7] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["2"]:linkTo(self.nodesByUID["3"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["3"]:linkTo(self.nodesByUID["4"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["4"]:linkTo(self.nodesByUID["1"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["5"]:linkTo(self.nodesByUID["2"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["6"]:linkTo(self.nodesByUID["2"])
+  self.arcs[#(self.arcs)+1] = self.nodesByUID["6"]:linkTo(self.nodesByUID["3"])
 end
 
   return self
 end
 
 function Map:getArc( node_from_uid, node_to_uid )
+    print(node_from_uid, node_to_uid)
   return self.nodesByUID[node_from_uid].arcs[self.nodesByUID[node_to_uid]]
 end
 
@@ -100,17 +103,40 @@ function Map:getClosestNode(v2pos)
   return best
 end
 
+-- returns nil if non existing arc
+function Map:createArcPos(n1, n2, ratio)
+  local arc = n1.arcs[n2]
+  if arc then
+    if arc.end1==n1 then
+      return ArcPos:new(arc, ratio)
+    else -- arc.end1==n2
+      return ArcPos:new(arc, 1-ratio)
+    end
+  end
+  return nil
+end
+
+-- returns nil if non existing arc
+function Map:createArcPosByUID(n1uid, n2uid, ratio)
+  local n1 = self.nodesByUID[n1uid]
+  local n2 = self.nodesByUID[n2uid]
+
+  if n1 and n2 then
+    return self:createArcPos(n1,n2,ratio)
+  end
+  return nil
+end
+
 function Map:getClosestPos(v2pos)
-  local toReturn={}
   local ratio =0
   local min = math.huge
   local best = nil
-  print ("La")
+  --print ("La")
   for _,arc in ipairs(self.arcs) do
     local from = arc.end1.pos
-    print (arc.end1.uid)
+    --print (arc.end1.uid)
     local to = arc.end2.pos
-    print (arc.end2.uid)
+    --print (arc.end2.uid)
     local vectDir = Vector2D:new(0,0)
     vectDir = Vector2D:Sub(to,from)
     vectDir:normalize()
@@ -120,25 +146,87 @@ function Map:getClosestPos(v2pos)
     --Pythagore
     local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
 
-    print (dist)
-    if dist < min then
+    --print (dist)
+    if (dist>0 and dist < min) then
       min = dist
       best = arc
       ratio = distProj/arc.len
     end
   end
-  print("Ici")
-  toReturn[1]=best
-  toReturn[2]=ratio
-  print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ration ="..toReturn[2])
-  return toReturn
+  local arcP = self:createArcPos(best.end1, best.end2, ratio)
+  -- --print("Ici")
+  -- toReturn[1]=best
+  -- toReturn[2]=ratio
+  -- print(toReturn[1].end1.uid .."  youhou "..toReturn[1].end2.uid .. " ratio ="..toReturn[2])
+  return arcP
 end
 
 
+-- WORK IN PROGRESS
+function Map:getExplosionPos(bombArcPos, bombPower, interval)
+  local posList = {} -- Vector2D list, world coordinates
+  local end1Power = bombPower - (bombArcPos:getPosXY()):dist(bombArcPos.end1)
+  local end2Power = bombPower - (bombArcPos:getPosXY()):dist(bombArcPos.end2)
+
+  if end1Power > 0 then
+    --bombArcPos.end1:recursiveCall(end1Power)
+  end
+  if end2Power > 0 then
+    --bombArcPos.end2:recursiveCall(end2Power)
+  end
+end
+
+-- OPTIM: replace open table & popSmalestValue() by a priority queue
+function Map:findPathArcs(arcPosFrom, arcPosTo)
+  local open = {}
+  local closed = {}
+  local precedence = {}
+
+  open[arcPosFrom.arc.end1] = Vector2D:Dist(arcPosFrom:getPosXY(), arcPosFrom.arc.end1.pos)
+  open[arcPosFrom.arc.end2] = Vector2D:Dist(arcPosFrom:getPosXY(), arcPosFrom.arc.end2.pos)
+
+  local currentNode = nil
+  local currentDist = 0
+
+  while next(open) ~= nil do   -- open not empty
+    currentNode, currentDist = popSmalestValue(open)
+    --inserting neighbours
+    closed[currentNode] = true
+
+    if currentNode == "TARGET" then
+      return rewindPathArcs(precedence)
+    end
+
+    for next,arc in pairs(currentNode.arcs) do
+      if closed[next] == nil then  -- not in closed list
+        local nextDist = open[next]
+        local newNextDist = currentDist + currentNode.pos:dist(next.pos)
+        if (not nextDist or newNextDist<nextDist) then
+          open[next] = newNextDist
+          precedence[next] = currentNode
+        end
+      end
+
+      -- fake node insertion regarding
+      if (arc == arcPosTo.arc) then
+        local newTargetDist = currentDist + Vector2D:Dist(arcPosTo:getPosXY(), currentNode.pos)
+        local targetDist = open["TARGET"]
+        if (not targetDist or newTargetDist < targetDist) then
+          open["TARGET"] = newTargetDist
+          precedence["TARGET"] = currentNode
+        end
+      end
+
+    end
+  end
+  return nil
+end
+
+-- OPTIM: replace open table & popSmalestValue() by a priority queue
 function Map:findPath(from, to)
   local open = {}
   local closed = {}
-  local precedence = { }
+  local precedence = {}
 
   open[from] = 0
 
@@ -157,8 +245,6 @@ function Map:findPath(from, to)
           open[next] = newNextDist
           precedence[next] = currentNode
         end
-        --adding to closed licensing.init( providerName )
-      else
       end
 
     end
@@ -169,6 +255,7 @@ function Map:findPath(from, to)
   return nil
 
 end
+
 
 function popSmalestValue(table)
   minV = math.huge
@@ -183,22 +270,6 @@ function popSmalestValue(table)
   return bestK,minV
 end
 
--- BACKUP
--- function rewindPath(precedence, to)
---     revPath = {}
-
---     local node = to
---     local prevNode = nil
-
---     repeat
---       revPath[#revPath+1] = node
---       prevNode = precedence[node]
---       node = prevNode
---     until prevNode == nil
-
---     return invertIndexedTable(revPath)
--- end
-
 
 function rewindPath(precedence, to)
     revPath = {}
@@ -207,14 +278,26 @@ function rewindPath(precedence, to)
     repeat
       revPath[#revPath+1] = node
       node = precedence[node]
-    until precedence[node] == nil --TODO : "until node == nil"  -> ajoute from dans le resultat, plus propre
+    until node == nil
+      
+    return invertIndexedTable(revPath)
+end
+
+function rewindPathArcs(precedence)
+    revPath = {}
+    local node = precedence["TARGET"]
+
+    repeat
+      revPath[#revPath+1] = node
+      node = precedence[node]
+    until node == nil
       
     return invertIndexedTable(revPath)
 end
 
 
 function invertIndexedTable ( tab )
-    local size = #tab
+    local size = #tab+1
     local newTable = {}
 
     for i,v in ipairs ( tab ) do
@@ -222,4 +305,15 @@ function invertIndexedTable ( tab )
     end
 
     return newTable
+end
+
+
+function Map:destroy()
+  for _,node in pairs(self.nodesByUID) do
+    node:destroy()
+  end
+
+    for _,arc in ipairs(self.arcs) do
+    arc:destroy()
+  end
 end

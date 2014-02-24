@@ -8,7 +8,7 @@ var FRAME_SEPARATOR = netw.FRAME_SEPARATOR;
 var decode = netw.decode_frame;
 var frame_actions = require('./frame_action').frame_actions;
 
-var debug = false;
+var debug = true;
 
 // tree which choose which action to perform
 var frame_action = function (frame_data, stream) 
@@ -45,6 +45,7 @@ function start (port)
 				var frame = buffer.substr(0, pos)
 				buffer = buffer.substr(pos + FRAME_SEPARATOR.length, buffer.length) //* If the second parameter is >= the maximum possible length substr can return
 				var frame_data = decode(frame); // returns type (map, gps, move, bomb...)
+				//if (debug) console.log(frame_data)
 				frame_action(frame_data, stream);
 			};
 			if (debug) console.log("SERV: ", "Ending the client stream data receiver function") 

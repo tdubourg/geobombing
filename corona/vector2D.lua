@@ -66,8 +66,8 @@ function Vector2D:dot(vec)
 end
  
 function Vector2D:dist(vec2)
-	dx = (vec2.x - self.x)
-	dy = (vec2.y - self.y)
+	local dx = (vec2.x - self.x)
+	local dy = (vec2.y - self.y)
 	return math.sqrt( dx*dx + dy*dy )
 end
  
@@ -131,9 +131,16 @@ function Vector2D:Div(vec, s)
 end
  
 function Vector2D:Dist(vec1, vec2)
-	dx = (vec2.x - vec1.x)
-	dy = (vec2.y - vec1.y)
+	local dx = (vec2.x - vec1.x)
+	local dy = (vec2.y - vec1.y)
 	return math.sqrt( dx*dx + dy*dy )
+end
+
+function Vector2D:Lerp(vec1, vec2, ratio)
+	local ratioComp = 1-ratio
+	local x = vec1.x * ratioComp + vec2.x * ratio
+	local y = vec1.y * ratioComp + vec2.y * ratio
+	return Vector2D:new(x,y)
 end
  
 return Vector2D
