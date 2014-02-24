@@ -99,8 +99,8 @@ function GameServer(game) {
 			//console.log(player)
 			
 			//console.log("Pos:", player.getPosition())
-
-			fa.sendPlayerPosition(player.stream, player.getPosition())
+			var id = 0;
+			fa.sendPlayerPosition(player.stream, id, player.getPosition())
 			
 		}
 		
@@ -118,7 +118,7 @@ GameServer.prototype.addPlayer = function(stream) {
 	return c
 }
 
-GameServer.prototype.moveCommand = function(stream, startCoeff/*FIXME NOT USED */, endCoeff, nodes) {
+GameServer.prototype.moveCommand = function(stream, endCoeff, nodes) {
 	//console.log(stream == this.connexions[0].stream)
 	//console.log(this.playersByStream[stream].id)
 	
@@ -127,6 +127,11 @@ GameServer.prototype.moveCommand = function(stream, startCoeff/*FIXME NOT USED *
 	console.log("Move com from",this.playersByStream[stream].name)
 	
 	this.playersByStream[stream].move(nodes, endCoeff)
+	
+}
+
+GameServer.prototype.bombCommand = function(stream, id, pos) {
+	//this.playersByStream[stream].//bomb(pos, id) // TODO Lionel :D
 	
 }
 
