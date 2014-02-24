@@ -57,15 +57,17 @@ function scene:createScene( event )
 	local result = net.connect_to_server("127.0.0.1", 3000)
 	
 	if result then
-
+		print ( "!!CONNECTED!!" )
 		net.net_handlers['map'] = function ( json_obj )
 			luaMap = json_obj[JSON_FRAME_DATA]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 			initGame()
+			player:refresh()
+			camera:lookAt(player:getPos())
 		end
 		net.net_handlers['pos'] = function ( json_obj )
-			print ("Received pos from server: " .. json.encode(json_obj))
+			--print ("Received pos from server: " .. json.encode(json_obj))
 
 			local arcP = currentMap:createArcPosByUID(json_obj.data.n1, json_obj.data.n2,json_obj.data.c)
 			player:setAR(arcP)
@@ -75,16 +77,18 @@ function scene:createScene( event )
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
 		initGame()
+		player:refresh()
+		camera:lookAt(player:getPos())
 	end
 
 	itemsManager = ItemsManager.new()
 end
+
 local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
-		player:refresh()
-		camera:lookAt(player.pos)
+		camera:lookAt(player:getPos())
 	end
 end
 local trans
@@ -137,7 +141,7 @@ local function moveObject(e)
 			
 			player.nodeFrom=from
 			 for _,nod in ipairs(nodes) do
-				print(nod.uid)
+				print("aaa".. nod.uid)
 				end
 
 			net.sendPathToServer(from,nodes,arcP)

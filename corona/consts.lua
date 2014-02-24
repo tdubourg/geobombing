@@ -1,4 +1,6 @@
 DEV_MODE = true
+EXPLOSION_DELAY = 3000 -- in ms
+EXPLOSION_DURATION = 1.5 -- in seconds
 -- JSON labels
   -- protocol
     JSON_FRAME_TYPE = "type"

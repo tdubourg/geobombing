@@ -262,8 +262,8 @@ end
 --  autoHide: If true, hide the sprite when the animation ends (default is false)
 --  autoDestroy: If true, destroys the sprite when the animation ends (default is false)
 --  hitTestable: If true, forces the display object to be hitTestable (cf Corona documentation) (default is false)
-function Class.create(options)
-	local self = utils.extend(Class)
+function Class:super(options)
+	-- local self = utils.extend(Class) -- will be created by the Super class
 
 	-- Initialize attributes
 	self.spriteSet = options.spriteSet
@@ -330,6 +330,10 @@ function Class.create(options)
 	return self
 end
 
+function Class.create( options )
+	return utils.extend(Class):super(options)
+end
+
 -- Destroy the sprite
 function Class:destroy()
 	self._displayObject:removeEventListener("sprite", self)
@@ -340,6 +344,7 @@ function Class:destroy()
 		attachment:destroy()
 	end
 
+	camera:removeListener(self)
 	Super.destroy(self)
 
 	self._displayObject:removeSelf()
