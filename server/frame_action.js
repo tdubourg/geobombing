@@ -9,8 +9,10 @@ var TYPEMAP = "map";
 
 // types update
 var TYPEPLAYERUPDATE = "pu";
-var TYPEPOS = "pos"; // current player position
+var TYPEPOS = "pos"; 
 var TYPEBOMB = "bomb";
+exports.TYPEPOS = TYPEPOS
+exports.TYPEBOMB = TYPEBOMB
 // end of type to client
 
 var db = require('./pgsql');
