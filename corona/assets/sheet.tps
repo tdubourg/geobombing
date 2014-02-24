@@ -70,7 +70,7 @@
         <key>dataFormat</key>
         <string>corona-imagesheet</string>
         <key>textureFileName</key>
-        <filename>../../../ecusson-master/game/runtimedata/sprites/sprites{v}.png</filename>
+        <filename>../runtimedata/sprites/sprites{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
