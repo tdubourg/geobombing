@@ -16,6 +16,8 @@ var MOVE_REFRESH_PERIOD = 50
 function Connexion(gserver, stream, player) {
 	var that = this
 	
+	console.log("Connecting player "+player.name)
+	
 	this.stream = stream
 	
 	// TODO: this seems useless since stream object equality can be used to identify clients
@@ -30,6 +32,18 @@ function Connexion(gserver, stream, player) {
 	)
 	
 	gserver.playersByStream[stream] = player
+	
+	function disco()
+	{
+		console.log("Disconnecting player "+player.name)
+		gserver.connexions.splice(gserver.connexions.indexOf(this), 1)
+		delete gserver.playersByStream[stream]
+	}
+	
+	stream.addListener("end", disco)
+	stream.addListener("error", function(err) {
+		disco()
+	})
 	
 	gserver.connexions.push(this)
 }
@@ -67,6 +81,9 @@ function GameServer(game) {
 		for (var streamKey in that.playersByStream) {
 			//stream  playersByStream[stream]
 			var player = that.playersByStream[streamKey]
+			
+			//console.log("send info",player.name)
+			
 			/*
 		 	//var position = utils.CreatePosition(player.currentArc.n1, player.currentArc.n2, player);
 			var content = 
@@ -106,6 +123,8 @@ GameServer.prototype.moveCommand = function(stream, startCoeff/*FIXME NOT USED *
 	//console.log(this.playersByStream[stream].id)
 	
 	//console.log(startCoeff, endCoeff, nodes)
+	
+	console.log("Move com from",this.playersByStream[stream].name)
 	
 	this.playersByStream[stream].move(nodes, endCoeff)
 	
