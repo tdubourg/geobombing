@@ -8,11 +8,10 @@ local function onBombBtnRelease()
 	print("BOMB")
 	btnBombClicked = true
 
-	print (itemsManager)
-	-- if (itemsManager ~= nil) then
-		local p = player:getPos()
-		itemsManager:newBomb(p.x, p.y)
-	-- end
+	--MERGE AVEC JULIE: récupérer directement player arcpos
+	-- 	local playerAP = player:getPos()
+	-- 	itemsManager:newBomb(p.x, p.y)
+	-- -- end
 
 	return true	-- indicates successful touch
 end
