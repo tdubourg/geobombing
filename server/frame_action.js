@@ -96,6 +96,7 @@ exports.sendBombUpdate = sendBombUpdate
 var move_action = function (frame_data, stream) 
 {
 	var endedge = parseFloat(frame_data.end_edge_pos);	
+	var key = frame_data.key;
 	single_game_server.moveCommand(stream, key, endedge, frame_data.nodes) // send new position
 }
 
