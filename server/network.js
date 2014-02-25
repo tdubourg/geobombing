@@ -15,6 +15,9 @@ var decode_frame = function (frame_string)
 var TYPEPLAYERINIT = "init" // new map, new list bomb (no positions)
 var TYPEMAP = "map"
 
+var TYPEGAMEEND = "end" // new map, new list bomb (no positions)
+var TYPERANKING = "ranking" // list points, winner
+
 var TYPEPLAYERUPDATE = "pu" // new position, new bomb?, new death?, new points
 var TYPEPOS = "pos" 
 var TYPEDEATH = "dead"
@@ -27,6 +30,9 @@ var TYPEBOMBTYPE = "btype" // 0 to ...
 
 exports.TYPEPLAYERINIT = TYPEPLAYERINIT
 exports.TYPEMAP = TYPEMAP
+
+exports.TYPEGAMEEND = TYPEGAMEEND
+exports.TYPERANKING = TYPERANKING
 
 exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
 exports.TYPEPOS = TYPEPOS
