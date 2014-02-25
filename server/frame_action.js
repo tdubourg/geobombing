@@ -116,11 +116,13 @@ var move_action = function (frame_data, stream)
 var bomb_action = function (frame_data, stream) 
 {
 	console.log("bomb_action:\n" + frame_data);
-	if (frame_data != null && frame_data.id != null)
+	if (frame_data != null && frame_data.pos != null
+		/*&& frame_data.key != null*/)
 	{
-		var id = frame_data.id;
-		var pos = CreatePosition(0, 0, 0)
-		single_game_server.bombCommand(stream, id, pos) // send bomb
+		var key = frame_data.key;
+		var pos = CreatePosition(frame_data.pos.n1, frame_data.pos.n2, 
+			frame_data.pos.c)
+		single_game_server.bombCommand(stream, key, pos) // send bomb
 	}
 	else console.log("Error bomb msg from client.")
 }
@@ -128,11 +130,10 @@ var bomb_action = function (frame_data, stream)
 
 // --- end updates ---
 
-
+//Types received from client
 var frame_actions = 
-{
-	//Type from client
-	"gps":  sendinit_action, // send map
+{	
+	"gps":  sendInit_action, 
 
 	// answer type update
 	"move": move_action,
