@@ -23,27 +23,11 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	//////////////////////////////////
 	
 	if (!conDB) 
-	{
-		// callback(null, autoScaleMap(
-		// 	[[[0, 0], [0, 50], [0, 100], [0, 150], [0, 200], [250, 250], [150, 250], [50, 250]],
-		// 	[[0, 0], [50, 200], [100, 200], [150, 200], [250, 250]]]));
-		// return;
-		
+	{	
 		var m = [[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
 			[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]
 		
-		/*
-		var c = 1
-		for (var i = 0; i < m.length; i++) {
-			for (var j = 0; j < m.length; j++) {
-				m[i][j][0] += Math.random()*c
-				m[i][j][1] += Math.random()*c
-			}
-		}
-		*/
-		
 		callback(null, autoScaleMap(m));
-		
 		return;
 	}
 	
@@ -159,11 +143,11 @@ function autoScaleMap(leMap)
 
 function mapDataToJSon(mapData) 
 {
-	var map = common.CreateEmptyMap(++lastMapId, "mapName");
+	var map = common.CreateEmptyMap(++lastMapId, "mapDummy");
 	var nodes_dic = {}
     for (var i = 0; i < mapData.length; i++) 
     {
-    	var way = common.CreateEmptyWay("way" + i);
+    	var way = common.CreateEmptyWay("Microsoft road " + i);
         for (var j = 0; j < mapData[i].length; j++)
     	{
     		var node
