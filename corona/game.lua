@@ -79,10 +79,11 @@ function scene:createScene( event )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
 			print "FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT"
 			print_r(json_obj)
-			local playerObj = others[tostring(json_obj.id)]
+			local strid = tostring(json_obj.data.id)
+			local playerObj = others[strid]
 			if playerObj then
 				playerObj:destroy()
-				others[json_obj.id] = nil
+				others[strid] = nil
 			end
 		end
 		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
