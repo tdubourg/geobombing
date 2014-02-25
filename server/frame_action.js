@@ -59,10 +59,25 @@ var sendInit_action = function (frame_data, stream)
 } // end send map
 
 
+function sendEnd(stream, game)
+{
+	var data = {}
+	data[net.TYPERANKING] = [["jo", 100]["lili", 0]] // palmares
+	var content =  
+	{
+		"type": net.TYPEGAMEEND, 
+		"data": data
+	}
+	
+	var data = JSON.stringify(content); // parsage JSON
+	stream.write(data + net.FRAME_SEPARATOR, function () { console.log(data) })
+}
+
+
 // --- updates ---
 
 
-var sendPlayerUpdate = function (stream, player) // player and other players
+var sendPlayerUpdate = function (framedata, stream, player) // player and other players
 {
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 
@@ -117,6 +132,7 @@ var bomb_action = function (frame_data, stream)
 
 // --- end updates ---
 
+
 //Types received from client
 var frame_actions = 
 {	
@@ -124,6 +140,6 @@ var frame_actions =
 
 	// answer type update
 	"move": move_action,
-	"bomb": bomb_action
+	"bomb": /*sendEnd//for testing*/bomb_action
 }
 exports.frame_actions = frame_actions
