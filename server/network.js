@@ -22,6 +22,7 @@ var TYPEPLAYERUPDATE = "pu" // new position, new bomb?, new death?, new points
 var TYPEPOS = "pos" 
 var TYPEDEATH = "dead"
 var TYPEPOINTS = "points"
+var TYPEGONE = "gone"
 
 var TYPEBOMBUPDATE = "bu"
 var TYPEBOMBID = "bid"
@@ -38,6 +39,7 @@ exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
 exports.TYPEPOS = TYPEPOS
 exports.TYPEDEATH = TYPEDEATH
 exports.TYPEPOINTS = TYPEPOINTS
+exports.TYPEGONE = TYPEGONE
 
 exports.TYPEBOMBUPDATE = TYPEBOMBUPDATE
 exports.TYPEBOMBID = TYPEBOMBID
