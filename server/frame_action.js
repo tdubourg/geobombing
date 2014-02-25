@@ -77,7 +77,7 @@ function sendEnd(stream, game)
 // --- updates ---
 
 
-var sendPlayerUpdate = function (framedata, stream, player) // player and other players
+var sendPlayerUpdate = function (stream, player) // player and other players
 {
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 

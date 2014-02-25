@@ -117,7 +117,8 @@ function Game(map) {
 	this.map = map
 	this.players = []
 	this.playersId = 0
-	this.bombs = {}
+	//this.bombs = {}
+	this.bombs = []
 }
 
 var bombNb = 0
@@ -127,7 +128,7 @@ function Bomb(player) { //, arc, coeff) {
 	this.time = -1000
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
-	player.game.bombs[this.id] = this
+	//player.game.bombs[this.id] = this
 	
 }
 /*
