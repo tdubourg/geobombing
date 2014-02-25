@@ -7,7 +7,6 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 		JSON_FRAME_DATA = "data"
 		-- Frame Types
 		if (DEV_MODE) then
-			 = "pu"
 			NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
 			NETWORK_PLAYER_UPDATE_STATE_KEY = "s"
 			NETWORK_INIT_MAP_KEY = "map"

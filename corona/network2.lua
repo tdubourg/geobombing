@@ -11,7 +11,7 @@ local FRAME_SEPARATOR = "\n"
 local NETWORK_DUMP = true
 local _msgsendtable = {} -- send message queue
 local net_handlers = {}
-local network_key = ""
+NETWORK_KEY = ""
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -128,7 +128,7 @@ function sendSerialized(obj, frameType)
 		local packet = {};
 		packet[JSON_FRAME_DATA] = obj
 		packet[JSON_FRAME_TYPE] = frameType
-		packet[JSON_FRAME_KEY] = network_key
+		packet[JSON_FRAME_KEY] = NETWORK_KEY
 		sendString(json.encode(packet))
 	end
 end
