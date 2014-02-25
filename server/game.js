@@ -76,8 +76,6 @@ function Map(jsonObj) {
 	jsonObj.mapListWay.forEach(function(w) {
 		//console.log(w)
 		for (var i = 0; i < w.wLstNdId.length-1; i++) {
-			
-			//n1 = this.getNode(w.wLstNdId[i]), n2 = this.getNode(w.wLstNdId[i+1])
 			var n1 = that.nodes[w.wLstNdId[i]], n2 = that.nodes[w.wLstNdId[i+1]]
 			that.nodes[n1.id].arcsTo[n2.id] = new Arc(n1, n2)
 			that.nodes[n2.id].arcsTo[n1.id] = new Arc(n2, n1)
@@ -94,18 +92,15 @@ var pids = 0
 //function Player(id, name) {
 function Player(game,stream) {
 	//console.log("CRE PLAY",game)
-	/*this.id = id
-	this.name = name*/
 	this.game = game
 	game.players.push(this)
 	this.stream = stream
 	this.id = ++pids
-	this.name = "Player_"+this.id
+	this.name = "Player_" + this.id
 	this.currentPath = []  // contains nextNode? -> NOT
 	this.speed = .3 //1E-3
 	this.connexion = null
 	
-	//this.currentArc = null
 	//this.currentArcPos = null
 	this.currentArc = null
 	this.currentArcDist = null
