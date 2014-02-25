@@ -15,13 +15,8 @@ var single_game_server = null
 // executed function according to client result
 var sendInit_action = function (frame_data, stream) 
 {
-	var lat = 0;
-	var lon = 0;
-
-	if (frame_data != null && frame_data.latitude != null) 
-		lat = parseFloat(frame_data.latitude);
-	if (frame_data != null && frame_data.longitude != null) 
-		lon = parseFloat(frame_data.longitude);
+	var lat = parseFloat(frame_data.latitude);
+	var lon = parseFloat(frame_data.longitude);
 	
 	function sendInit(jsonMap)
 	{
@@ -70,11 +65,11 @@ var sendInit_action = function (frame_data, stream)
 var sendPlayerUpdate = function (stream, id, pos) // player and other players
 {	
 	var data = {}
-	data[net.TYPEPOS] = pos // map
+	data[net.TYPEPOS] = pos 
+	data["id"] = id 
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE, 
-		"id": id,
 		"data": data
 	};
 	
@@ -87,7 +82,7 @@ var sendBombUpdate = function (stream, id, data) // player and other players
 {	
 	var content = 
 	{
-		"type": net.TYPEPLAYERUPDATE, 
+		"type": net.TYPEBOMBUPDATE, 
 		"id": id,
 		"data": data
 	};
@@ -95,30 +90,20 @@ var sendBombUpdate = function (stream, id, data) // player and other players
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("Bomb update sent")})
 }
-exports.sendPlayerUpdate = sendPlayerUpdate
+exports.sendBombUpdate = sendBombUpdate
 
 // receiving function 
 var move_action = function (frame_data, stream) 
 {
-	//decode frame
-	if (frame_data != null && frame_data.key != null && frame_data.end_edge_pos != null
-		&& frame_data.nodes != null && frame_data.nodes.length > 0) // minimum of two nodes for moving
-	{
-		var endedge = parseFloat(frame_data.end_edge_pos);	
-		single_game_server.moveCommand(stream, key, endedge, frame_data.nodes) // send new position
-	}
-	else console.log("Error move msg from client.")
+	var endedge = parseFloat(frame_data.end_edge_pos);	
+	single_game_server.moveCommand(stream, key, endedge, frame_data.nodes) // send new position
 }
 
 var bomb_action = function (frame_data, stream) 
 {
 	console.log("bomb_action:\n" + frame_data);
-	if (frame_data != null && frame_data.key != null)
-	{
-		var key = frame_data.key;
-		single_game_server.bombCommand(stream, key) // send bomb
-	}
-	else console.log("Error bomb msg from client.")
+	var key = frame_data.key;
+	single_game_server.bombCommand(stream, key) // send bomb
 }
 
 
