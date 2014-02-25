@@ -11,40 +11,40 @@ local cameraPos = nil
 
 
 local function initCamera()
-  cameraGroup = display.newGroup()
-  displayMainGroup:insert(cameraGroup)
-  --cameraGroup.anchorX = 0.5
-  --cameraGroup.anchorY = 0.5
+	cameraGroup = display.newGroup()
+	displayMainGroup:insert(cameraGroup)
+	--cameraGroup.anchorX = 0.5
+	--cameraGroup.anchorY = 0.5
 
-  w = display.contentWidth
-  h = display.contentHeight
-  centerOffset = Vector2D:new(w/2, h/2)
+	w = display.contentWidth
+	h = display.contentHeight
+	centerOffset = Vector2D:new(w/2, h/2)
 
-  lookAt(Vector2D:new(0,0))
+	lookAt(Vector2D:new(0,0))
 end
 
 function lookAt(v2WorldPos)
-  cameraPos = Vector2D:Sub(centerOffset, v2WorldPos)
-  cameraGroup.x = cameraPos.x
-  cameraGroup.y = cameraPos.y
+	cameraPos = Vector2D:Sub(centerOffset, v2WorldPos)
+	cameraGroup.x = cameraPos.x
+	cameraGroup.y = cameraPos.y
 end
 
 
 function screenToWorld(v2Pos)
-  return Vector2D:Sub(v2Pos, cameraPos)
+	return Vector2D:Sub(v2Pos, cameraPos)
 end
 
 function worldToScreen(v2Pos)
-  return Vector2D:Add(v2Pos, cameraPos)
+	return Vector2D:Add(v2Pos, cameraPos)
 end
 
 local exitCamera = function (  )
-    cameraGroup:removeSelf( )
+		cameraGroup:removeSelf( )
 end
 
 return {
-  initCamera = initCamera,
-  exitCamera = exitCamera
+	initCamera = initCamera,
+	exitCamera = exitCamera
 }
 -- function Camera:new()  -- The constructor
 --   local object = {}
