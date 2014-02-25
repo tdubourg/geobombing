@@ -22,6 +22,10 @@ function Node(id, x, y) {
 	this.arcsTo = {}
 }
 
+Node.prototype.toString = function () {
+	return "("+this.x+","+this.y+")"
+}
+
 // Returns null if there is no arc to the node from this node
 Node.prototype.arcToId = function (nodeId) {
 	if (this.arcsTo[nodeId]) return this.arcsTo[nodeId]
@@ -43,6 +47,10 @@ Arc.prototype.distFromTo = function (coeff, node) {
 	if (node === this.n1) return this.length*coeff
 	if (node === this.n2) return this.length*(1-coeff)
 	throw "Not a node of this arc"
+}
+
+Arc.prototype.toString = function () {
+	return "<"+this.n1+","+this.n2+">"
 }
 
 // Takes the same map object that will be converted
@@ -281,6 +289,8 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	for (var i = 0; i < nodeIds.length; i++)
 		nodesRest.push(this.game.map.getNode(nodeIds[i]))
 	this.currentPath = nodesRest
+	
+	console.log("Going to", this.currentArc)
 	
 }
 Player.prototype.bomb = function () {
