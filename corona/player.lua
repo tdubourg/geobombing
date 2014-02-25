@@ -90,6 +90,10 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
     return self
 end
 
+function Player:getArcPCurrent()
+    return self.arcPCurrent
+end
+
 function Player:getPos(  )
     return self.pos
 end

@@ -163,14 +163,11 @@ GameServer.prototype.moveCommand = function(conKey, endCoeff, nodes) {
 	
 }
 
-GameServer.prototype.bombCommand = function(stream, key, pos) { // FIXME key, pos??
-	//this.playersByStream[stream].//bomb(pos, id) // TODO Lionel :D
-	//this.connexions[streamKey(stream)].player.bomb(nodes, endCoeff)
+GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 	this.getPlayer(stream).bomb()
 }
 
 GameServer.prototype.setInitialPosition = function(stream, position) {
-	//this.playersByStream[stream].setPosition(position)
 	this.getPlayer(stream).setPosition(position)
 }
 
