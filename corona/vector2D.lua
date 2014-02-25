@@ -1,9 +1,9 @@
 Vector2D = {}
  
 function Vector2D:new(x, y)  
-  local object = { x = x, y = y }
-  setmetatable(object, { __index = Vector2D })  
-  return object
+	local object = { x = x, y = y }
+	setmetatable(object, { __index = Vector2D })  
+	return object
 end
  
 function Vector2D:copy()
