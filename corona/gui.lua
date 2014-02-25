@@ -3,11 +3,14 @@ local widget = require "widget"
 local gui_group = display.newGroup( )
 local bombBtn = nil
 btnBombClicked = false
+
+local net = require("network2")
+
 local function onBombBtnRelease()
 	
 	print("BOMB")
 	btnBombClicked = true
-
+	net.sendBombRequestToServer()
 	-- end
 
 	return true	-- indicates successful touch
