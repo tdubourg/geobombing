@@ -12,14 +12,15 @@ var decode_frame = function (frame_string)
 }
 
 ///--- Network Constants---
+var TYPEPLAYERINIT = "init"; // new map, new list bomb (no positions)
 var TYPEMAP = "map";
-
-var TYPEPLAYERUPDATE = "pu";
+var TYPEPLAYERUPDATE = "pu"; // new position, new bomb?, new death?, new points
 var TYPEPOS = "pos"; 
 var TYPEBOMB = "bomb";
 var TYPEDEATH = "dead";
 var TYPEPOINTS = "points";
 
+exports.TYPEPLAYERINIT = TYPEPLAYERINIT
 exports.TYPEMAP = TYPEMAP
 exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
 exports.TYPEPOS = TYPEPOS
