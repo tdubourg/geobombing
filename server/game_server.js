@@ -163,7 +163,7 @@ GameServer.prototype.moveCommand = function(conKey, endCoeff, nodes) {
 	
 }
 
-GameServer.prototype.bombCommand = function(stream, pos) { // FIXME pos??
+GameServer.prototype.bombCommand = function(stream, key, pos) { // FIXME key, pos??
 	//this.playersByStream[stream].//bomb(pos, id) // TODO Lionel :D
 	//this.connexions[streamKey(stream)].player.bomb(nodes, endCoeff)
 	this.getPlayer(stream).bomb()
