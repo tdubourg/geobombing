@@ -11,22 +11,32 @@ var decode_frame = function (frame_string)
 	return decoded_frame;
 }
 
-///--- Network Constants---
-var TYPEPLAYERINIT = "init"; // new map, new list bomb (no positions)
-var TYPEMAP = "map";
-var TYPEPLAYERUPDATE = "pu"; // new position, new bomb?, new death?, new points
-var TYPEPOS = "pos"; 
-var TYPEBOMB = "bomb";
-var TYPEDEATH = "dead";
-var TYPEPOINTS = "points";
+///--- Network Constants on Server---
+var TYPEPLAYERINIT = "init" // new map, new list bomb (no positions)
+var TYPEMAP = "map"
+
+var TYPEPLAYERUPDATE = "pu" // new position, new bomb?, new death?, new points
+var TYPEPOS = "pos" 
+var TYPEDEATH = "dead"
+var TYPEPOINTS = "points"
+
+var TYPEBOMBUPDATE = "bu"
+var TYPEBOMBID = "bid"
+var TYPEBOMBSTATE = "bs" // 0 = new, 1 = exploding
+var TYPEBOMBTYPE = "btype" // 0 to ...
 
 exports.TYPEPLAYERINIT = TYPEPLAYERINIT
 exports.TYPEMAP = TYPEMAP
+
 exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
 exports.TYPEPOS = TYPEPOS
-exports.TYPEBOMB = TYPEBOMB
 exports.TYPEDEATH = TYPEDEATH
 exports.TYPEPOINTS = TYPEPOINTS
+
+exports.TYPEBOMBUPDATE = TYPEBOMBUPDATE
+exports.TYPEBOMBID = TYPEBOMBID
+exports.TYPEBOMBSTATE = TYPEBOMBSTATE
+exports.TYPEBOMBTYPE = TYPEBOMBTYPE
 
 exports.FRAME_SEPARATOR = FRAME_SEPARATOR
 exports.decode_frame = decode_frame
