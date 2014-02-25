@@ -22,6 +22,8 @@ function streamKey(stream) {
 	return stream.id
 }
 
+var usedConKeys = []
+
 function Connexion(gserver, stream, player) {
 	var that = this
 	
@@ -33,28 +35,34 @@ function Connexion(gserver, stream, player) {
 		return null
 	}
 	
+	this.open = false
 	this.stream = stream
 	this.player = player
+	player.connexion = this
 	
 	// Unique randomized id gen for security
 	var cons = gserver.connexions
 	do {
 		this.conKey = Math.random().toString().substring(2);
-	} while (!Object.keys(cons).reduce (
+	//} while (!Object.keys(cons).reduce (
+	} while (!usedConKeys.reduce (
 		function(prev,currKey) {
-			return prev && cons[currKey].conKey != that.conKey
+			//return prev && cons[currKey].conKey != that.conKey
+			return prev && currKey != that.conKey
 		}, true)
 	)
 	stream.id = this.conKey
 	console.log("Generated key for "+player.name+":", this.conKey)
 	
-	gserver.connexions[streamKey(stream)] = this
+	gserver.connexions[streamKey(stream)/*==this.conKey*/] = this
+	usedConKeys.push(this.conKey)
 	
 	//gserver.playersByStream[stream] = player
 	
 	function disco()
 	{
 		console.log("Disconnecting player "+player.name)
+		that.open = false
 		delete gserver.connexions[streamKey(stream)]
 	}
 	
@@ -62,6 +70,8 @@ function Connexion(gserver, stream, player) {
 	stream.addListener("error", function(err) {
 		disco()
 	})
+	
+	this.open = true
 	
 	//gserver.connexions.push(this)
 }
@@ -99,9 +109,11 @@ function GameServer(game) {
 GameServer.prototype.addPlayer = function(stream) {
 	// TODO handle timeouts
 	
-	var c = new Connexion(this, stream, new g.Player(this.game, stream))
+	var p = new g.Player(this.game, stream)
 	
-	return c
+	var c = new Connexion(this, stream, p)
+	
+	return p
 }
 GameServer.prototype.getPlayer = function(stream) {
 	//return gserver.connexions.indexOf(con).player

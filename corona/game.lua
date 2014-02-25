@@ -63,7 +63,6 @@ function update_player_position(id, pos_obj )
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
 	--print ('arcP returned is', arcP)
 	movePlayerById(id, arcP)
-
 end
 
 function update_player_state( state_obj )
@@ -95,7 +94,7 @@ function scene:createScene( event )
 			camera:lookAt(player:getPos())
 		end
 		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-			--print ("Received player update from server: " .. json.encode(json_obj))
+			-- print ("Received player update from server: " .. json.encode(json_obj))
 
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
@@ -139,6 +138,7 @@ end
 
 local trans
 local function moveObject(e)
+	print "TAP HANDLER"
 	if(trans)then
 		transition.cancel(trans)
 	end
@@ -150,11 +150,7 @@ local function moveObject(e)
 		local worldPos = camera:screenToWorld(screenPos)
 		
 		local from = currentMap:getClosestNode(player.pos)	
-			
-		if (from == nil) then
-			--player:saveNewDestinationVect(node.pos)
-			print("no node near player")
-		else
+		
 			local arcP = currentMap:getClosestPos(worldPos)
 
 			if (arcP ~= nil) then 
@@ -177,22 +173,19 @@ local function moveObject(e)
 						else
 							player.nodeFrom=player.arcPCurrent.arc.end1
 						end
-					else
-						player.nodeFrom=from
-					end
+				else
+					player.nodeFrom=from
+				end
 
-					
-				 -- 	for _,nod in ipairs(nodes) do
-					-- 	print(" ".. nod.uid)
-					-- end
-					net.sendPathToServer(nodes,arcP)
-				
-					--player:saveNewNodes(nodes,arcP)
+
+
+				net.sendPathToServer(nodes,arcP)
+
+				--player:saveNewNodes(nodes,arcP)
 				end
 			else
 				print("arcP == nil") 
 			end
-		end
 	end
 end
 
