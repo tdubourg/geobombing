@@ -234,4 +234,8 @@ function Player:setAR(arcP)
     self.arcPCurrent = arcP
 end
 
+function Player:getCurrentStreetName()
+    return self.arcPCurrent.arc.streetName
+end
+
 return Player

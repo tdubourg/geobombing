@@ -2,9 +2,8 @@ require "camera"
 
 Arc = {}                   -- Create a table to hold the class methods
 
--- do not call this method, use Map:createArcPos() or Map:createArcPosByUID()
-function Arc:new(end1, end2)  -- The constructor
-	local self = {end1=end1, end2=end2}
+function Arc:new(end1, end2, streetName)
+	local self = {end1=end1, end2=end2, streetName=streetName}
 	self.len = end1.pos:dist(end2.pos)
 	self.pos = Vector2D:new((end1.pos.x + end2.pos.x)/2,(end1.pos.y + end2.pos.y)/2)
 

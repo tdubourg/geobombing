@@ -106,7 +106,7 @@ var sendPlayerRemove = function (stream, player) // player and other players
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("Bomb update sent")})
 }
-exports.sendBombUpdate = sendBombUpdate
+exports.sendPlayerRemove = sendPlayerRemove
 
 var sendBombUpdate = function (stream, bomb) // player and other players
 {
