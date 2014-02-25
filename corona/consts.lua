@@ -56,6 +56,7 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 		JSON_NODE_LIST = "mapListNode"
 		JSON_WAY_LIST = "mapListWay"
 		JSON_WAY_NODE_LIST = "wLstNdId"
+		JSON_WAY_NAME = "wName"
 
 		JSON_NODE_UID = "id"
 		JSON_NODE_X = "x"

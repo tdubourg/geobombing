@@ -139,8 +139,13 @@ local updateLoop = function( event )
 	-- OPTIM: pull au lieu de fetch
 	local name = player:getCurrentStreetName()
 	if name then
-		streetText = display.newText(name , 0, 0, native.systemFont, 32 )
-		streetText:setFillColor( 0, 1, 0 )
+		if streetText then
+			streetText:removeSelf()
+		end
+		streetText = display.newText(name , 0, 0, native.systemFont, 24 )
+		streetText.anchorX = 0
+		streetText.anchorY = 0
+		streetText:setFillColor( 0.5, 0, 0 )
 	end
 end
 
