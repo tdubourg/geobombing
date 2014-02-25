@@ -125,7 +125,7 @@ var bombNb = 0
 function Bomb(player) { //, arc, coeff) {
 	this.player = player
 	this.id = ++bombNb
-	this.time = -1000
+	this.time = -1
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
 	//player.game.bombs[this.id] = this
@@ -137,10 +137,13 @@ function BombAction() {
 }
 */
 
-Bomb.prototype.update = function (period) {
+Bomb.prototype.update = function (period, explodingBombs) {
+	//console.log("tick...")
+	if (this.time < 0 && this.time+period >= 0) {
+		explodingBombs.push(this)
+		console.log("BOOM!!")
+	}
 	this.time += period
-	//if (this.time > 0)
-		
 }
 
 var delta = 0.0001
@@ -251,18 +254,19 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 }
 Player.prototype.bomb = function () {
 	// TODO
+	var b = new Bomb(this)
 	
-	this.game.bombs.push(new Bomb(this))
+	this.game.bombs.push(b)
 	
-	
+	return b
 }
 
-Game.prototype.update = function (period) {
+Game.prototype.update = function (period, explodingBombs) {
 	//console.log(period)
 	
 	this.players.thismap(Player.prototype.update, period)
 	
-	this.bombs.thismap(Bomb.prototype.update, period)
+	this.bombs.thismap(Bomb.prototype.update, period, explodingBombs)
 	
 	
 }
