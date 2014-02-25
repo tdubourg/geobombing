@@ -1,6 +1,7 @@
 require "vector2D"
 require "arc"
 require "camera"
+require "math"
 
 Node = {}                   -- Create a table to hold the class methods
 function Node:new(worldX, worldY, uid, map)  -- The constructor
@@ -78,7 +79,7 @@ function Node:transmitionCoef(fromNode, toNode)
 	local dot = v1:dot(v2)
 	-- return (dot+1)*0.5    -- [-v1..v1] => [0..1]
 
-	dot = math.math.max( dot, 0 )
+	dot = math.max( dot, 0 )
 	return dot
 end
 
