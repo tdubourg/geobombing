@@ -24,8 +24,10 @@ function Camera:lookAtXY(wX, wY)
 end
 
 function Camera:lookAt(v2WorldPos)
-	self.cameraPos = v2WorldPos
-	self:updateManaged()
+	if self.cameraPos:distSquared(v2WorldPos) ~= 0 then     -- checks if an update is necessary
+		self.cameraPos = v2WorldPos
+		self:updateManaged()
+	end
 end
 
 function Camera:setZoomXY(zoomX, zoomY)
