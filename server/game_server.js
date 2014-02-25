@@ -14,14 +14,24 @@ var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
 
 function streamKey(stream) {
+	//console.log(stream)
+	/*
 	var a = stream.address()
 	return a.address+":"+a.port
+	*/
+	return stream.id
 }
 
 function Connexion(gserver, stream, player) {
 	var that = this
 	
-	console.log("Connecting player "+player.name)
+	console.log("Connecting player "+player.name)//+", key "+)
+	
+	if (!stream)
+	{
+		console.log("Error: stream is null, cannot connect")
+		return null
+	}
 	
 	this.stream = stream
 	this.player = player
@@ -34,12 +44,14 @@ function Connexion(gserver, stream, player) {
 	// Unique randomized id gen for security
 	var cons = gserver.connexions
 	do {
-		this.conKey = Math.random();
+		this.conKey = Math.random().toString().substring(2);
 	} while (!Object.keys(cons).reduce (
 		function(prev,currKey) {
 			return prev && cons[currKey].conKey != that.conKey
 		}, true)
 	)
+	stream.id = this.conKey
+	console.log("Generated key for "+player.name+":", this.conKey)
 	
 	gserver.connexions[streamKey(stream)] = this
 	
@@ -51,7 +63,7 @@ function Connexion(gserver, stream, player) {
 		//gserver.connexions.splice(gserver.connexions.indexOf(this), 1)
 		//delete gserver.playersByStream[stream]
 		//gserver.connexions.splice(gserver.connexions.indexOf(this), 1)
-		delete gserver.connexions[streamKey(this.stream)]//gserver.conByKey[this.conKey]
+		delete gserver.connexions[streamKey(stream)]//gserver.conByKey[this.conKey]
 	}
 	
 	stream.addListener("end", disco)
@@ -116,10 +128,10 @@ function GameServer(game) {
 		for (var conKey in that.connexions) 
 		{
 			var con = that.connexions[conKey]
-			var data = {}
-			data[net.TYPEPOS] = con.player.getPosition() 
-			data["id"] = con.player.id 
-			fa.sendPlayerUpdate(con.stream, data);
+			game.players.forEach(function (player) 
+			{
+				fa.sendPlayerUpdate(con.stream, player);
+			})
 		}
 		
 	}, MOVE_REFRESH_PERIOD)
