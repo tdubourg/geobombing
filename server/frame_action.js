@@ -96,7 +96,7 @@ exports.sendPlayerUpdate = sendPlayerUpdate
 var sendPlayerRemove = function (stream, player) // player and other players
 {	
 	var data = {}
-	data["id"] = player.id()
+	data["id"] = player.id
 	var content = 
 	{
 		"type": net.TYPEGONE, 
