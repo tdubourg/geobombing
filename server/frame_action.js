@@ -65,8 +65,8 @@ var sendInit_action = function (frame_data, stream)
 var sendPlayerUpdate = function (stream, id, pos) // player and other players
 {	
 	var data = {}
-	data[net.TYPEPOS] = pos 
-	data["id"] = id 
+	data[net.TYPEPOS] = player.getPosition() 
+	data["id"] = player.id
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE, 
