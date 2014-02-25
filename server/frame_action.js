@@ -125,7 +125,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
-		console.log("Bomb update sent ("+(bomb.time<0?1:0)+")")
+		//console.log("Bomb update sent ("+(bomb.time<0?1:0)+")")
 	})
 }
 exports.sendBombUpdate = sendBombUpdate
