@@ -62,8 +62,11 @@ var sendInit_action = function (frame_data, stream)
 // --- updates ---
 
 
-var sendPlayerUpdate = function (stream, data) // player and other players
-{	
+var sendPlayerUpdate = function (stream, player) // player and other players
+{
+	var data = {}
+	data[net.TYPEPOS] = player.getPosition() 
+	data["id"] = player.id
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE,
@@ -75,8 +78,13 @@ var sendPlayerUpdate = function (stream, data) // player and other players
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
-var sendBombUpdate = function (stream, data) // player and other players
+var sendBombUpdate = function (stream, bomb) // player and other players
 {	
+	var data = {}
+	data["id"] = 0 // player id
+	data[net.TYPEBOMBID] = 0 
+	data[net.TYPEBOMBSTATE] = 0 // 0 = new, 1 = explosion
+	data[net.TYPEBOMBTYPE] = 0 // strength or type of bomb
 	var content = 
 	{
 		"type": net.TYPEBOMBUPDATE, 
@@ -88,7 +96,9 @@ var sendBombUpdate = function (stream, data) // player and other players
 }
 exports.sendBombUpdate = sendBombUpdate
 
-// receiving function 
+
+// --- receiving function ---
+
 var move_action = function (frame_data, stream) 
 {
 	var endedge = parseFloat(frame_data.end_edge_pos);	
