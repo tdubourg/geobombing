@@ -69,7 +69,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	data["id"] = player.id
 	var content = 
 	{
-		"type": net.TYPEPLAYERUPDATE, 
+		"type": net.TYPEPLAYERUPDATE,
 		"data": data
 	};
 	
@@ -78,12 +78,11 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
-var sendBombUpdate = function (stream, id, data) // player and other players
+var sendBombUpdate = function (stream, data) // player and other players
 {	
 	var content = 
 	{
 		"type": net.TYPEBOMBUPDATE, 
-		"id": id,
 		"data": data
 	};
 	

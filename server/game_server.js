@@ -112,14 +112,12 @@ function GameServer(game) {
 			var player = that.playersByStream[streamKey]
 			
 			//console.log(player)
-			
-			//console.log("Pos:", player.getPosition())
 			var id = 0;
-			//fa.sendPlayerPosition(player.stream, id, player.getPosition())
 
 			var data = {};
 			data[fa.TYPEPOS] = player.getPosition()
-			fa.sendPlayerUpdate(player.stream, id, data) // if position
+			data["id"] = id
+			fa.sendPlayerUpdate(player.stream, data) // if position
 			
 		}*/
 		/*
@@ -127,9 +125,11 @@ function GameServer(game) {
 			fa.sendPlayerUpdate(player.stream, con.player.id, player.getPosition()); // if position
 		})
 		*/
-		for (var conKey in that.connexions) {
+		for (var conKey in that.connexions) 
+		{
 			var con = that.connexions[conKey]
-			game.players.forEach(function (player) {
+			game.players.forEach(function (player) 
+			{
 				fa.sendPlayerUpdate(con.stream, player);
 			})
 		}
@@ -149,7 +149,8 @@ GameServer.prototype.addPlayer = function(stream) {
 	
 	/*var data = {};
 	data[fa.TYPEPOS] = player.getPosition()
-	fa.sendPlayerUpdate(player.stream, id, data) // if position*/
+	data["id"] = 0
+	fa.sendPlayerUpdate(player.stream, data) // if position*/
 	
 	return c
 }
@@ -181,10 +182,11 @@ GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 	this.getPlayer(stream).bomb()
 
 	var data = {}
+	data["id"] = 0 // player id
 	data[net.TYPEBOMBID] = 0 
 	data[net.TYPEBOMBSTATE] = 0 // 0 = new, 1 = explosion
 	data[net.TYPEBOMBTYPE] = 0 // strength or type of bomb
-	fa.sendBombUpdate(stream, id, data)
+	fa.sendBombUpdate(stream, data)
 }
 
 GameServer.prototype.setInitialPosition = function(stream, position) {
