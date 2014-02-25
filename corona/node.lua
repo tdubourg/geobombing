@@ -76,7 +76,10 @@ function Node:transmitionCoef(fromNode, toNode)
 	v2:normalize()
 
 	local dot = v1:dot(v2)
-	return (dot+1)*0.5    -- 0..1
+	-- return (dot+1)*0.5    -- [-v1..v1] => [0..1]
+
+	dot = math.math.max( dot, 0 )
+	return dot
 end
 
 function Node:destroy()
