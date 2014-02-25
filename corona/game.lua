@@ -30,16 +30,18 @@ function initGame()
 	end
 	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
 
-	player = Player.new( 0,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
+	player = Player.new( "1",  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
-	others = {}
+	others = {player}
 	
 
 end
 
 function movePlayerById(id,arcP)
 	local exist = false
+	id = "" .. id
 	for _,other in pairs(others) do
+		print(other.id)
 		if (other.id == id) then
 			print("bouge")
 			other:setAR(arcP)
@@ -54,10 +56,10 @@ function movePlayerById(id,arcP)
 end
 
 function update_player_position(id, pos_obj )
-	print ( "TOTO")
-	print (pos_obj.n1, pos_obj.n2, pos_obj.c)
+	--print ( "TOTO")
+	--print (pos_obj.n1, pos_obj.n2, pos_obj.c)
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
-	print ('arcP returned is', arcP)
+	--print ('arcP returned is', arcP)
 	movePlayerById(id, arcP)
 end
 
@@ -90,17 +92,19 @@ function scene:createScene( event )
 			camera:lookAt(player:getPos())
 		end
 		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-			print ("Received player update from server: " .. json.encode(json_obj))
+			--print ("Received player update from server: " .. json.encode(json_obj))
 
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
 
 				-- The position has to be updated
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
+					print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 					)
+
 				end
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
 					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])

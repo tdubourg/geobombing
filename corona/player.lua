@@ -44,7 +44,7 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	local self = utils.extend(Player)
     print ( "Creating player... " )
     --Player name / speed / number of death
-    self.id = pId or 0
+    self.id = pId
     self.speed = pSpeed or 0.2
     self.nbDeath = pNDeath or 0
 
