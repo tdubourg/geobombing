@@ -269,4 +269,5 @@ return
 	, sendPosition = sendPosition
 	, sendPathToServer = sendPathToServer
 	, net_handlers = net_handlers
+	, sendBombRequestToServer = sendBombRequestToServer
 }
