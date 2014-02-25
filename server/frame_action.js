@@ -62,14 +62,11 @@ var sendInit_action = function (frame_data, stream)
 // --- updates ---
 
 
-var sendPlayerUpdate = function (stream, id, pos) // player and other players
+var sendPlayerUpdate = function (stream, data) // player and other players
 {	
-	var data = {}
-	data[net.TYPEPOS] = pos 
-	data["id"] = id 
 	var content = 
 	{
-		"type": net.TYPEPLAYERUPDATE, 
+		"type": net.TYPEPLAYERUPDATE,
 		"data": data
 	};
 	
@@ -78,12 +75,11 @@ var sendPlayerUpdate = function (stream, id, pos) // player and other players
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
-var sendBombUpdate = function (stream, id, data) // player and other players
+var sendBombUpdate = function (stream, data) // player and other players
 {	
 	var content = 
 	{
 		"type": net.TYPEBOMBUPDATE, 
-		"id": id,
 		"data": data
 	};
 	
