@@ -53,7 +53,7 @@ function movePlayerById(id,arcP)
 	print ( " -----------------------------")
 	if (exist == false) then
 		print("bouge nouveau")
-		others[#others] = Player.new(id,0.02,0,arcP)
+		others[#others+1] = Player.new(id,0.02,0,arcP)
 	end
 end
 
