@@ -117,17 +117,18 @@ function Game(map) {
 	this.map = map
 	this.players = []
 	this.playersId = 0
-	this.bombs = {}
+	//this.bombs = {}
+	this.bombs = []
 }
 
 var bombNb = 0
 function Bomb(player) { //, arc, coeff) {
 	this.player = player
 	this.id = ++bombNb
-	this.time = 1000
+	this.time = -1000
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
-	player.game.bombs[this.id] = this
+	//player.game.bombs[this.id] = this
 	
 }
 /*
@@ -135,6 +136,12 @@ function BombAction() {
 	
 }
 */
+
+Bomb.prototype.update = function (period) {
+	this.time += period
+	//if (this.time > 0)
+		
+}
 
 var delta = 0.0001
 Player.prototype.update = function (period) {
@@ -171,7 +178,7 @@ Player.prototype.update = function (period) {
 						this.currentArc = newCurrentArc
 					else
 						console.log("[Game Model Error]: couldn't find a path from node",
-							currNode.id, "to node", this.currentPath[0].id)
+							currNode.id, "to node", nextNode.id)
 					this.currentArcDist = 0
 					
 				} else {
@@ -254,6 +261,9 @@ Game.prototype.update = function (period) {
 	//console.log(period)
 	
 	this.players.thismap(Player.prototype.update, period)
+	
+	this.bombs.thismap(Bomb.prototype.update, period)
+	
 	
 }
 

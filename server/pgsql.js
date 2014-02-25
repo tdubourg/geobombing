@@ -28,10 +28,22 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 		// 	[[[0, 0], [0, 50], [0, 100], [0, 150], [0, 200], [250, 250], [150, 250], [50, 250]],
 		// 	[[0, 0], [50, 200], [100, 200], [150, 200], [250, 250]]]));
 		// return;
-
-		callback(null, autoScaleMap(
-			[[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
-			[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]));
+		
+		var m = [[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
+			[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]
+		
+		/*
+		var c = 1
+		for (var i = 0; i < m.length; i++) {
+			for (var j = 0; j < m.length; j++) {
+				m[i][j][0] += Math.random()*c
+				m[i][j][1] += Math.random()*c
+			}
+		}
+		*/
+		
+		callback(null, autoScaleMap(m));
+		
 		return;
 	}
 	
