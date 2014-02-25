@@ -138,15 +138,12 @@ local function moveObject(e)
 	else
 		local screenPos = Vector2D:new(e.x,e.y)
 		local worldPos = camera:screenToWorld(screenPos)
-		local node = currentMap:getClosestNode(worldPos)
+		
 		local from = currentMap:getClosestNode(player.pos)	
 			
-		if (from == node ) then
-			--player:saveNewDestination(e)
-		elseif (from == nil) then
+		if (from == nil) then
 			--player:saveNewDestinationVect(node.pos)
-		elseif (node == nil) then
-			--player:saveNewDestination(e)
+			print("no node near player")
 		else
 			local arcP = currentMap:getClosestPos(worldPos)
 
