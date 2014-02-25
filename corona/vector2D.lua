@@ -70,6 +70,12 @@ function Vector2D:dist(vec2)
 	local dy = (vec2.y - self.y)
 	return math.sqrt( dx*dx + dy*dy )
 end
+
+function Vector2D:distSquared(vec2)
+	local dx = (vec2.x - self.x)
+	local dy = (vec2.y - self.y)
+	return dx*dx + dy*dy
+end
  
 -- Class Methods
  
