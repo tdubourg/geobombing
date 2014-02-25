@@ -53,12 +53,12 @@ function movePlayerById(id,arcP)
 	end
 end
 
-function update_player_position( pos_obj )
+function update_player_position(id, pos_obj )
 	print ( "TOTO")
 	print (pos_obj.n1, pos_obj.n2, pos_obj.c)
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
 	print ('arcP returned is', arcP)
-	player:setAR(arcP)
+	movePlayerById(id, arcP)
 end
 
 function update_player_state( state_obj )
@@ -97,7 +97,10 @@ function scene:createScene( event )
 
 				-- The position has to be updated
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-					update_player_position(json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY])
+					update_player_position(
+						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
+						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+					)
 				end
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
 					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
