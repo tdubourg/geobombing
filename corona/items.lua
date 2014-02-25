@@ -18,9 +18,9 @@ function ItemsManager.new()	-- constructor
 	return self
 end
 
-function ItemsManager:newBomb( x, y )
-	local newBomb = Bomb.create({pos = {x= x, y= y}})
-	timer.performWithDelay(EXPLOSION_DELAY, function (  )
+function ItemsManager:newBomb( arcPos )
+	local newBomb = Bomb.create({arcPos = arcPos})
+	timer.performWithDelay(EXPLOSION_DELAY, function ()
 		newBomb:explode()			
 	end)
 	-- self.itemsDispGroup:insert(newBomb)
