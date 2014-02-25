@@ -15,7 +15,6 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			NETWORK_INIT_PLAYER_ID_KEY = "id"
 			FRAMETYPE_PLAYER_UPDATE = "pu"
 			FRAMETYPE_MOVE = "move"
-			FRAMETYPE_MAP = "map"
 			FRAMETYPE_GPS = "gps"
 			FRAMETYPE_BOMB = "bomb"
 			FRAMETYPE_INIT = "init"
@@ -26,6 +25,7 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			NETWORK_POS_N2 = "n2"
 			NETWORK_POS_C = "c"
 			JSON_FRAME_KEY = "key"
+			FRAMETYPE_PLAYER_DISCONNECT = "gone"
 		else
 			NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
 			NETWORK_PLAYER_UPDATE_STATE_KEY = "s"
@@ -36,13 +36,8 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			FRAMETYPE_PLAYER_UPDATE = "pu"
 			FRAMETYPE_INIT = "init"
 			FRAMETYPE_MOVE = "mv"
-			FRAMETYPE_MAP = "mp"
 			FRAMETYPE_GPS = "gps"
 			FRAMETYPE_BOMB = "bb"
-			FRAMETYPE_BOMB_UPDATE = "bid"
-			NETWORK_BOMB_UPDATE_ID_KEY = "bid"
-			NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
-			NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
 			JSON_MOVE_NODES = "n"
 			JSON_MOVE_START_EDGE_POS = "sep"
 			JSON_MOVE_END_EDGE_POS = "eep"
@@ -50,12 +45,19 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			NETWORK_POS_N2 = "n2"
 			NETWORK_POS_C = "c"
 			JSON_FRAME_KEY = "key"
+			FRAMETYPE_PLAYER_DISCONNECT = "gone"
 		end
+		FRAMETYPE_BOMB_UPDATE = "bu"
+		NETWORK_BOMB_UPDATE_ID_KEY = "bid"
+		NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
+		NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
+		NETWORK_BOMB_UPDATE_POS_KEY = "btype"
 	-- map data
 		JSON_MAP_NAME = "mapName"
 		JSON_NODE_LIST = "mapListNode"
 		JSON_WAY_LIST = "mapListWay"
 		JSON_WAY_NODE_LIST = "wLstNdId"
+		JSON_WAY_NAME = "wName"
 
 		JSON_NODE_UID = "id"
 		JSON_NODE_X = "x"
@@ -71,3 +73,8 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 
 -- GAMEPLAY
 	EXPLOSION_POWER = 3
+
+BOMB_DBG_MODE = false
+
+
+require("consts-local")

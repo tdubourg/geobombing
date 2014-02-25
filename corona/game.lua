@@ -33,28 +33,21 @@ function initGame(player_id)
 
 	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
-	others = {player}
+	others = {}
+	others[player_id] = player
 end
 
 function movePlayerById(id,arcP)
 	local exist = false
-	id = "" .. id
-	print ( "id asked is ", id)
-	print ( " -----------------------------")
-	for _,other in ipairs(others) do
-		print(other.id)
-		if (other.id == id) then
-			print("bouge")
-			other:setAR(arcP)
-			exist = true
-		end
-		print("bouge ??")
+	strid = "" .. id
+
+	local daPlayer = others[strid]
+	if (not daPlayer) then
+		daPlayer = Player.new(strid,0.02,0,arcP)
+		others[strid] = daPlayer
 	end
-	print ( " -----------------------------")
-	if (exist == false) then
-		print("bouge nouveau")
-		others[#others+1] = Player.new(id,0.02,0,arcP)
-	end
+
+	daPlayer:setAR(arcP)
 end
 
 function update_player_position(id, pos_obj )
@@ -83,6 +76,16 @@ function scene:createScene( event )
 
 	if result then
 		print ( "!!CONNECTED!!" )
+		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
+			print "FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT"
+			print_r(json_obj)
+			local strid = tostring(json_obj.data.id)
+			local playerObj = others[strid]
+			if playerObj then
+				playerObj:destroy()
+				others[strid] = nil
+			end
+		end
 		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
 			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
@@ -101,7 +104,7 @@ function scene:createScene( event )
 
 				-- The position has to be updated
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-					print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+					-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
@@ -125,7 +128,7 @@ function scene:createScene( event )
 	itemsManager = ItemsManager.new()
 end
 
-local myListener = function( event )
+local updateLoop = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
@@ -133,6 +136,19 @@ local myListener = function( event )
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
+	end
+
+	-- TODO: move this into GUI.lua
+	-- OPTIM: pull au lieu de fetch
+	local name = player:getCurrentStreetName()
+	if name then
+		if streetText then
+			streetText:removeSelf()
+		end
+		streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+		streetText.anchorX = 0
+		streetText.anchorY = 0
+		streetText:setFillColor( 0.7, 0, 0.3 )
 	end
 end
 
@@ -199,7 +215,7 @@ end
 function scene:enterScene( event )
 	local group = self.view
 	storyboard.returnTo = "menu"
-	Runtime:addEventListener( "enterFrame", myListener )
+	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener("tap", moveObject)	
 end
 
@@ -212,7 +228,7 @@ function scene:exitScene( event )
 	if (itemsManager ~= nil) then
 		itemsManager:destroy()
 	end
-	Runtime:removeEventListener( "enterFrame", myListener )
+	Runtime:removeEventListener( "enterFrame", updateLoop )
 	Runtime:removeEventListener("tap",moveObject)	
 end
 

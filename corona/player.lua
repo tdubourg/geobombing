@@ -42,85 +42,85 @@ local Player = {}
 
 function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	local self = utils.extend(Player)
-    print ( "Creating player... " )
-    --Player name / speed / number of death
-    self.id = pId
-    self.speed = pSpeed or 0.2
-    self.nbDeath = pNDeath or 0
+	print ( "Creating player... " )
+	--Player name / speed / number of death
+	self.id = pId
+	self.speed = pSpeed or 0.2
+	self.nbDeath = pNDeath or 0
 
-    --Player current state : FROZEN / WALKING / DEAD
-    self.currentState = PLAYER_FROZEN_STATE 
+	--Player current state : FROZEN / WALKING / DEAD
+	self.currentState = PLAYER_FROZEN_STATE 
 
   self.arcPCurrent = arcP
-    --Player Sprite
-    self.pos = Vector2D:new(0, 0)
-    print ("worldToScreen:", camera:worldToScreen(self.pos).x, camera:worldToScreen(self.pos).y)
-    self.sprite = CameraAwareSprite.create {
-        spriteSet = "bonhomme",
-        animation = "idle",
-        worldPosition = self.pos,
-        scale = 0.4,
-        position = camera:worldToScreen(self.pos),
-    }
+	--Player Sprite
+	self.pos = Vector2D:new(0, 0)
+	print ("worldToScreen:", camera:worldToScreen(self.pos).x, camera:worldToScreen(self.pos).y)
+	self.sprite = CameraAwareSprite.create {
+		spriteSet = "bonhomme",
+		animation = "idle",
+		worldPosition = self.pos,
+		scale = 0.4,
+		position = camera:worldToScreen(self.pos),
+	}
 
-    self.nodeFrom=self.arcPCurrent.arc.end1
-    self.nodeTo=self.arcPCurrent.arc.end2
-    self.currentArcRatio=self.arcPCurrent.progress
-    -- self.currentArc=nodeF.arcs[nodeT]
-    -- if(self.currentArc.end1==nodeF) then
-    --     self.currentArcRatio=0
-    -- else
-    --     self.currentArcRatio=1
-    -- end
+	self.nodeFrom=self.arcPCurrent.arc.end1
+	self.nodeTo=self.arcPCurrent.arc.end2
+	self.currentArcRatio=self.arcPCurrent.progress
+	-- self.currentArc=nodeF.arcs[nodeT]
+	-- if(self.currentArc.end1==nodeF) then
+	--     self.currentArcRatio=0
+	-- else
+	--     self.currentArcRatio=1
+	-- end
 
   
-    --Player current destination
-    self.arcPDest = nil
-    self.toX= self.pos.x
-    self.toY= self.pos.y
+	--Player current destination
+	self.arcPDest = nil
+	self.toX= self.pos.x
+	self.toY= self.pos.y
 
-    --nodes to go to the final destination
-    self.nodes= nil
-    self.nodesI=0
-    self.nodesMax=0
+	--nodes to go to the final destination
+	self.nodes= nil
+	self.nodesI=0
+	self.nodesMax=0
 
-    --???
-    self.objectType = objectType
+	--???
+	self.objectType = objectType
 
-    return self
+	return self
 end
 
 function Player:getArcPCurrent()
-    return self.arcPCurrent
+	return self.arcPCurrent
 end
 
 function Player:getPos(  )
-    return self.pos
+	return self.pos
 end
 
 
 function Player:saveNewNodes(nodes, arcP)
-    self.nodes=nodes
-    self.arcPDest=arcP
-    -- print( self.nodes[1].pos.x .. ", " .. self.nodes[1].pos.y .. " ." )
-    -- print( self.nodes[2].pos.x .. ", " .. self.nodes[2].pos.y .. " ." )
+	self.nodes=nodes
+	self.arcPDest=arcP
+	-- print( self.nodes[1].pos.x .. ", " .. self.nodes[1].pos.y .. " ." )
+	-- print( self.nodes[2].pos.x .. ", " .. self.nodes[2].pos.y .. " ." )
    -- self.saveNewDestination(self.nodes[1])
    if (nodes~=nil) then
-        self.nodesI=1
-        self.nodesMax=#nodes
-        -- print (self.nodesMax .." BOUH")
-        self.toX=self.nodes[1].pos.x
-        self.toY=self.nodes[1].pos.y
-        self.nodeTo=nodes[1]
-        print(self.nodeFrom.uid .. "to" .. self.nodeTo.uid)
+		self.nodesI=1
+		self.nodesMax=#nodes
+		-- print (self.nodesMax .." BOUH")
+		self.toX=self.nodes[1].pos.x
+		self.toY=self.nodes[1].pos.y
+		self.nodeTo=nodes[1]
+		print(self.nodeFrom.uid .. "to" .. self.nodeTo.uid)
    else
-        self.nodesI=0
-        self.nodesMax=0
-        if (arcP ~=nil) then
-             self:goToAR(arcP)
-        end
-        --self.nodeTo=nil
-    end
+		self.nodesI=0
+		self.nodesMax=0
+		if (arcP ~=nil) then
+			 self:goToAR(arcP)
+		end
+		--self.nodeTo=nil
+	end
 end
 
 -- function Player:saveNewDestination(e)
@@ -149,89 +149,97 @@ end
 
 function Player:refresh()
 
-    if(self.pos.x<= (self.toX+accepted_error) and self.pos.x>=(self.toX-accepted_error) and self.pos.y <=(self.toY+accepted_error) and  self.pos.y>=(self.toY-accepted_error)) then
-        self.currentState = PLAYER_FROZEN_STATE 
-        self.nodesI=self.nodesI+1
+	if(self.pos.x<= (self.toX+accepted_error) and self.pos.x>=(self.toX-accepted_error) and self.pos.y <=(self.toY+accepted_error) and  self.pos.y>=(self.toY-accepted_error)) then
+		self.currentState = PLAYER_FROZEN_STATE 
+		self.nodesI=self.nodesI+1
 
-        if (self.nodesI>self.nodesMax ) then
-            self.nodesI=0
-            self.nodesMax=0
-            if (self.arcPDest ~= nil) then
-                self:goToAR(self.arcPDest)
-            end
-            --print_r(self.pos)
-            --self.nodeFrom=self.nodeTo
-            --self.nodeTo=nil
+		if (self.nodesI>self.nodesMax ) then
+			self.nodesI=0
+			self.nodesMax=0
+			if (self.arcPDest ~= nil) then
+				self:goToAR(self.arcPDest)
+			end
+			--print_r(self.pos)
+			--self.nodeFrom=self.nodeTo
+			--self.nodeTo=nil
 
-            -- self.upCurrentArc(self.nodeFrom,self.nodeTo)
-        else
-            self.toX=self.nodes[self.nodesI].pos.x
-            self.toY=self.nodes[self.nodesI].pos.y
-            self.nodeFrom=self.nodes[self.nodesI-1]
-            self.nodeTo=self.nodes[self.nodesI]
-            --self.upCurrentArc(self.nodeFrom,self.nodeTo)
-            self:refresh()
-        end
-    else 
-        self.currentState = PLAYER_WALKING_STATE 
-        local to = Vector2D:new(self.toX, self.toY)
-        local vectDir = Vector2D:new(0,0)
-        vectDir = Vector2D:Sub(to,self.pos)
-        vectDir:normalize()
-        -- vecteur normalisé de la direction * la vitesse * delta temps
-        tempVectDir = Vector2D:Mult(vectDir, self.speed)
-        temp = Vector2D:Add(self.pos,tempVectDir)
-        vectDir:mult(self.speed)
-        self.pos:add(vectDir)
-        self:upCurrentArc(self.nodeFrom,self.nodeTo)
-        self.sprite:redraw()    
-    end
+			-- self.upCurrentArc(self.nodeFrom,self.nodeTo)
+		else
+			self.toX=self.nodes[self.nodesI].pos.x
+			self.toY=self.nodes[self.nodesI].pos.y
+			self.nodeFrom=self.nodes[self.nodesI-1]
+			self.nodeTo=self.nodes[self.nodesI]
+			--self.upCurrentArc(self.nodeFrom,self.nodeTo)
+			self:refresh()
+		end
+	else 
+		self.currentState = PLAYER_WALKING_STATE 
+		local to = Vector2D:new(self.toX, self.toY)
+		local vectDir = Vector2D:new(0,0)
+		vectDir = Vector2D:Sub(to,self.pos)
+		vectDir:normalize()
+		-- vecteur normalisé de la direction * la vitesse * delta temps
+		tempVectDir = Vector2D:Mult(vectDir, self.speed)
+		temp = Vector2D:Add(self.pos,tempVectDir)
+		vectDir:mult(self.speed)
+		self.pos:add(vectDir)
+		self:upCurrentArc(self.nodeFrom,self.nodeTo)
+		self.sprite:redraw()    
+	end
 end
 
 
 function Player:upCurrentArc(from, to)
-    if (from == nil) then
-        print ("from == nil")
-    elseif (to == nil) then
-        print ("to == nil")
-    elseif (from == to) then
-        print ("from == to") 
-        print (from.uid .."  à " .. to.uid)
-    elseif (from.arcs[to] == nil) then
-        print ("from.arc[to] == nil") 
-        print (from.uid .."  à " .. to.uid)
-    else 
-        local dist = Vector2D:Dist(from.pos,self.pos)
-        self.arcPCurrent.arc=from.arcs[to]
-        if(self.arcPCurrent.arc.end1==from) then
-            self.arcPCurrent.progress=(dist/self.arcPCurrent.arc.len)
-        else
-            self.arcPCurrent.progress=1-(dist/self.arcPCurrent.arc.len)
-        end
-        --print(from.uid.. " to " ..to.uid .." ratio " ..  self.currentArcRatio)
-    end
+	if (from == nil) then
+		print ("from == nil")
+	elseif (to == nil) then
+		print ("to == nil")
+	elseif (from == to) then
+		print ("from == to") 
+		print (from.uid .."  à " .. to.uid)
+	elseif (from.arcs[to] == nil) then
+		print ("from.arc[to] == nil") 
+		print (from.uid .."  à " .. to.uid)
+	else 
+		local dist = Vector2D:Dist(from.pos,self.pos)
+		self.arcPCurrent.arc=from.arcs[to]
+		if(self.arcPCurrent.arc.end1==from) then
+			self.arcPCurrent.progress=(dist/self.arcPCurrent.arc.len)
+		else
+			self.arcPCurrent.progress=1-(dist/self.arcPCurrent.arc.len)
+		end
+		--print(from.uid.. " to " ..to.uid .." ratio " ..  self.currentArcRatio)
+	end
 end
 
 function Player:goToAR(arcP)
 
-    local destination = arcP:getPosXY()
-    self.nodeFrom=arcP.arc.end1
-    self.nodeTo=arcP.arc.end2
-    self.toX=destination.x
-    self.toY=destination.y
-    self.arcPDest = nil
-    print("ICI")
-    
+	local destination = arcP:getPosXY()
+	self.nodeFrom=arcP.arc.end1
+	self.nodeTo=arcP.arc.end2
+	self.toX=destination.x
+	self.toY=destination.y
+	self.arcPDest = nil
+	print("ICI")
+	
 end
 
 function Player:setAR(arcP)
 
-    local destination = arcP:getPosXY()
-    self.toX=destination.x
-    self.toY=destination.y
-    self.pos=destination
-    self.sprite:setWorldPosition(self.pos)
-    self.arcPCurrent = arcP
+	local destination = arcP:getPosXY()
+	self.toX=destination.x
+	self.toY=destination.y
+	self.pos=destination
+	self.sprite:setWorldPosition(self.pos)
+	self.arcPCurrent = arcP
+end
+
+function Player:getCurrentStreetName()
+	return self.arcPCurrent.arc.streetName
+end
+
+function Player:destroy()
+	self.sprite:destroy()
 end
 
 return Player
