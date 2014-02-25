@@ -1,3 +1,5 @@
+require("utils")
+
 DEV_MODE = true
 EXPLOSION_DELAY = 3000 -- in ms
 EXPLOSION_DURATION = 1.5 -- in seconds
@@ -76,5 +78,5 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 
 BOMB_DBG_MODE = false
 
-
-require("consts-local")
+-- require("consts-local")
+silent_fail_require("consts-local")
