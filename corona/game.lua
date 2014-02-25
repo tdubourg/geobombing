@@ -19,7 +19,7 @@ local physics = require( "physics" )
 local playBtn
 player = nil -- global in order to be accessed from everywhere
 local bombBtn = nil
-local currentMap = nil
+currentMap = nil
 itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 

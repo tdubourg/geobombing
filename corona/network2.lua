@@ -120,7 +120,10 @@ function sendBombRequestToServer(  )
 end
 
 function receivedBombUpdate( network_data )
-	itemsManager:newBomb(network_data)
+	if (BOMB_DBG_MODE) then
+		print ( "Received bomb update")
+	end
+	itemsManager:bombUpdate(network_data.data)
 end
 
 function sendSerialized(obj, frameType)
@@ -261,6 +264,8 @@ function sendPathToServer( nodes, arcP )
 		sendSerialized(to_send, FRAMETYPE_MOVE)
 	end
 end
+
+net_handlers[FRAMETYPE_BOMB_UPDATE] = receivedBombUpdate
 
 return
 {
