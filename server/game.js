@@ -23,7 +23,8 @@ function Node(id, x, y) {
 }
 
 Node.prototype.toString = function () {
-	return "("+this.x+","+this.y+")"
+	//return "("+this.x+","+this.y+")"
+	return "(Node "+this.id+")"
 }
 
 // Returns null if there is no arc to the node from this node
@@ -190,6 +191,8 @@ Player.prototype.update = function (period) {
 		//var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
 		//console.log(period)
 		
+		console.log("Going to", this.currentArc+"")
+		
 		while (distToWalk > delta) {
 			//var distToNode = this.currentArc.length-this.currentArcDist
 			//var distToNode = this.targetArcDist-this.currentArcDist
@@ -290,7 +293,7 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 		nodesRest.push(this.game.map.getNode(nodeIds[i]))
 	this.currentPath = nodesRest
 	
-	console.log("Going to", this.currentArc)
+	//console.log("Going to", this.currentArc+"")
 	
 }
 Player.prototype.bomb = function () {
