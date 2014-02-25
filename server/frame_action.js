@@ -89,6 +89,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
+	//console.log("Sending player_update data to client:", data)
 	stream.write(data + net.FRAME_SEPARATOR,function() {})
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
@@ -111,10 +112,11 @@ exports.sendBombUpdate = sendBombUpdate
 var sendBombUpdate = function (stream, bomb) // player and other players
 {	
 	var data = {}
-	data["id"] = 0 // player id
-	data[net.TYPEBOMBID] = 0 
-	data[net.TYPEBOMBSTATE] = 0 // 0 = new, 1 = explosion
-	data[net.TYPEBOMBTYPE] = 0 // strength or type of bomb
+	data["id"] = bomb.player.id // player id
+	data[net.TYPEBOMBID] = bomb.id
+	//data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // 0 = new, 1 = explosion
+	data[net.TYPEBOMBSTATE] = bomb.time // time since explosion (>0: exploding)
+	data[net.TYPEBOMBTYPE] = 1 // strength or type of bomb
 	var content = 
 	{
 		"type": net.TYPEBOMBUPDATE, 
