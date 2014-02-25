@@ -143,35 +143,48 @@ end
  
 function sendPathToServer( nodes, arcP )
 	if (nodes == nil) then
+		--if there a movement on the same arc
+		--get the current arc (player.arcPCurrent.arc == arcP)
 		local arc =player.arcPCurrent.arc
+		--get the current ration (useless?)
 		local ratio = player.arcPCurrent.progress
+		--get the ratio of the final destination
 		local ratioEnd =arcP.progress
+
 		local to_send = {}
 		local net_nodes ={}
+		
+		-- we need the node that is the nearest to the final destination
+		-- on the arc
 		if (arcP.progress >= ratio) then
 			net_nodes={arc.end2.uid}
 		else
 			net_nodes={arc.end1.uid}
+			-- if the nearest is 1 we need to invert the ration
 			ratioEnd=1-ratioEnd
 		end
-	
+		--send infos
 		to_send[JSON_MOVE_NODES] = net_nodes
 		to_send[JSON_MOVE_START_EDGE_POS] = ratio
 		to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
 		sendSerialized(to_send, FRAMETYPE_MOVE)
 		
 	else
+		--if there is at least a node on which we need to go
+		--get the current arc 
 		local arc = player.arcPCurrent.arc
+		--get the current ration (useless?)
 		local ratio = player.arcPCurrent.progress
+		--get the ratio of the final destination
 		local ratioEnd =0
+
 		local to_send = {}
 		local net_nodes ={}
+		
 		 if (arc.end1.uid == nodes[1].uid) then
-		-- 	net_nodes = {arc.end2.uid}
 		 	ratio=1-ratio
-		 else
-		-- 	net_nodes =  {arc.end1.uid}
 		 end
+
 		for i,v in ipairs(nodes) do
 			net_nodes[#net_nodes+1] = v.uid
 		end
@@ -180,24 +193,25 @@ function sendPathToServer( nodes, arcP )
 			-- print("chemin" .. nod)
 		-- end
 
-		if (arc.end1.uid == arcP.arc.end1.uid and arc.end2.uid == arcP.arc.end2.uid) then
-			if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
-			--if (#net_nodes>1) then
-			--net_nodes[#net_nodes+1] = arcP.arc.end2.uid
-			--end
-			ratioEnd =1- arcP.progress
-			-- print ("ratioooooo" .. ratioEnd)
-			elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
-			--if (#net_nodes>1) then
-			--net_nodes[#net_nodes+1] = arcP.arc.end1.uid
-			--end
-			ratioEnd = arcP.progress
-			-- print ("ratioooooo 1-" .. ratioEnd)
+		-- if (arc.end1.uid == arcP.arc.end1.uid and arc.end2.uid == arcP.arc.end2.uid) then
+		-- 	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
+		-- 	--if (#net_nodes>1) then
+		-- 	--net_nodes[#net_nodes+1] = arcP.arc.end2.uid
+		-- 	--end
+		-- 	ratioEnd =1- arcP.progress
+		-- 	-- print ("ratioooooo" .. ratioEnd)
+		-- 	elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
+		-- 	--if (#net_nodes>1) then
+		-- 	--net_nodes[#net_nodes+1] = arcP.arc.end1.uid
+		-- 	--end
+		-- 	ratioEnd = arcP.progress
+		-- 	-- print ("ratioooooo 1-" .. ratioEnd)
 
-			else
-				print("error in sendPathToServer")
-			end
-		else
+		-- 	else
+		-- 		print("error in sendPathToServer")
+		-- 	end
+		-- else
+		-- Add the second node of the final destination's arc
 		 	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
 			--if (#net_nodes>1) then
 				net_nodes[#net_nodes+1] = arcP.arc.end2.uid
@@ -208,17 +222,20 @@ function sendPathToServer( nodes, arcP )
 			--if (#net_nodes>1) then
 				net_nodes[#net_nodes+1] = arcP.arc.end1.uid
 			--end
+			-- invert the ratio 
 				ratioEnd = 1- arcP.progress
 				-- print ("ratioooooo 1-" .. ratioEnd)
 
 			else
 				print("error in sendPathToServer")
 			end
-		end
+		-- end
 
 		-- for _,nod in ipairs(net_nodes) do
 		-- 			print("chemin apres" .. nod)
 		-- 			end
+
+		--Send infos
 		to_send[JSON_MOVE_NODES] = net_nodes
 		to_send[JSON_MOVE_START_EDGE_POS] = ratio
 		to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
