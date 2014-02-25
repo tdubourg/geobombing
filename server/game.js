@@ -120,10 +120,14 @@ function Game(map) {
 	this.map = map
 	this.players = []
 	this.playersId = 0
-	this.bombs = []
+	this.bombs = {}
 }
 
-function Bomb(arc) {
+var bombNb = 0
+function Bomb(gserver, arc, coeff) {
+	this.id = ++bombNb
+	this.time = 1000
+	gserver.bombs[this.id] = this
 	
 }
 
@@ -259,7 +263,6 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	this.currentPath = nodesRest
 	*/
 	
-	
 	if (this.currentArc.n1.id == firstNodeId) {
 		this.currentArc = this.currentArc.n2.arcToId(firstNodeId)
 		this.currentArcDist = this.currentArc.length - this.currentArcDist
@@ -279,10 +282,12 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 		nodesRest.push(this.game.map.getNode(nodeIds[i]))
 	this.currentPath = nodesRest
 	
-	
 }
 Player.prototype.bomb = function () {
 	// TODO
+	
+	
+	
 }
 
 Game.prototype.update = function (period) {
