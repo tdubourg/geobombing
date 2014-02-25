@@ -142,10 +142,10 @@ local updateLoop = function( event )
 		if streetText then
 			streetText:removeSelf()
 		end
-		streetText = display.newText(name , 0, 0, native.systemFont, 24 )
+		streetText = display.newText(name , 10, 10, native.systemFont, 24 )
 		streetText.anchorX = 0
 		streetText.anchorY = 0
-		streetText:setFillColor( 0.5, 0, 0 )
+		streetText:setFillColor( 0.7, 0, 0.3 )
 	end
 end
 
