@@ -17,6 +17,10 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			JSON_MOVE_NODES = "nodes"
 			JSON_MOVE_START_EDGE_POS = "start_edge_pos"
 			JSON_MOVE_END_EDGE_POS = "end_edge_pos"
+			NETWORK_POS_N1 = "n1"
+			NETWORK_POS_N2 = "n2"
+			NETWORK_POS_C = "c"
+			JSON_FRAME_KEY = "key"
 		else
 			NETWORK_PLAYER_UPDATE_TYPE = "pu"
 			NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
@@ -25,11 +29,18 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			FRAMETYPE_MAP = "mp"
 			FRAMETYPE_GPS = "gps"
 			FRAMETYPE_BOMB = "bb"
+			FRAMETYPE_BOMB_UPDATE = "bid"
+			NETWORK_BOMB_UPDATE_ID_KEY = "bid"
+			NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
+			NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
 			JSON_MOVE_NODES = "n"
 			JSON_MOVE_START_EDGE_POS = "sep"
 			JSON_MOVE_END_EDGE_POS = "eep"
+			NETWORK_POS_N1 = "n1"
+			NETWORK_POS_N2 = "n2"
+			NETWORK_POS_C = "c"
+			JSON_FRAME_KEY = "key"
 		end
-
 	-- map data
 		JSON_MAP_NAME = "mapName"
 		JSON_NODE_LIST = "mapListNode"
