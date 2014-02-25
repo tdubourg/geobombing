@@ -117,7 +117,7 @@ function scene:createScene( event )
 	else
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
-		initGame()
+		initGame("1")
 		player:refresh()
 		camera:lookAt(player:getPos())
 	end
