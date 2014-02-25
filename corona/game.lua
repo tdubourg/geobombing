@@ -139,45 +139,44 @@ local function moveObject(e)
 	else
 		local screenPos = Vector2D:new(e.x,e.y)
 		local worldPos = camera:screenToWorld(screenPos)
-		local node = currentMap:getClosestNode(worldPos)
+		
 		local from = currentMap:getClosestNode(player.pos)	
-			
+		
+			local arcP = currentMap:getClosestPos(worldPos)
 
-		local arcP = currentMap:getClosestPos(worldPos)
+			if (arcP ~= nil) then 
+				-- test
+				--movePlayerById(1, arcP)
 
-		if (arcP ~= nil) then 
-			-- test
-			--movePlayerById(1, arcP)
-
-			print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
-			if (arcP.progress<0) then
-				print (arcP.progress.." ERROR")
-			end
-			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
-				net.sendPathToServer(nil,arcP)
-				--player:saveNewNodes(nil,arcP)
-			else
-				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
-				--print(from.uid .. "<--- from")	
-				if (nodes[1] == from) then
-					if (player.arcPCurrent.arc.end1 == from) then
-						player.nodeFrom=player.arcPCurrent.arc.end2
-					else
-						player.nodeFrom=player.arcPCurrent.arc.end1
-					end
+				print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
+				if (arcP.progress<0) then
+					print (arcP.progress.." ERROR")
+				end
+				if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
+					net.sendPathToServer(nil,arcP)
+					--player:saveNewNodes(nil,arcP)
+				else
+					local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
+					--print(from.uid .. "<--- from")	
+					if (nodes[1] == from) then
+						if (player.arcPCurrent.arc.end1 == from) then
+							player.nodeFrom=player.arcPCurrent.arc.end2
+						else
+							player.nodeFrom=player.arcPCurrent.arc.end1
+						end
 				else
 					player.nodeFrom=from
 				end
 
-				
-			 -- 	for _,nod in ipairs(nodes) do
-				-- 	print(" ".. nod.uid)
-				-- end
+
+
 				net.sendPathToServer(nodes,arcP)
-			
+
 				--player:saveNewNodes(nodes,arcP)
+				end
+			else
+				print("arcP == nil") 
 			end
-		end
 	end
 end
 
