@@ -14,15 +14,18 @@ PATHS = {
 function ItemsManager.new()	-- constructor
 	local self = {}
 	setmetatable( self, ItemsManager )
+	self.bombs = {}
 	-- self.itemsDispGroup = display.newGroup( )
 	return self
 end
 
-function ItemsManager:newBomb( arcPos )
-	local newBomb = Bomb.create({arcPos = arcPos})
-	timer.performWithDelay(EXPLOSION_DELAY, function ()
-		newBomb:explode()			
-	end)
+function ItemsManager:newBomb( bomb_data )
+
+	local newBomb = Bomb.create(bomb_data)
+	self.bombs[newBomb.id] = newBomb
+	-- timer.performWithDelay(EXPLOSION_DELAY, function ()
+	-- 	newBomb:explode()			
+	-- end)
 	-- self.itemsDispGroup:insert(newBomb)
 end
 

@@ -23,10 +23,12 @@ function Bomb.create(options)
 
 	-- Initialize attributes
 	-- self.spawnPoint = options.spawnPoint
-	self.phase = "idle"
+	self.state = "idle"
 	self.time = 0.0
 	self.alive = true
 	self.arcPos = options.arcPos
+	self.id = options.id
+	self.type = options.type
 
 	print ("bomb options.arcPos", options.arcPos)
 
@@ -103,8 +105,8 @@ function Bomb:explode(options)
 end
 
 function Bomb:touch(event)
-	-- if self.phase == "alive" then
-	-- 	self.phase = "dying"
+	-- if self.state == "alive" then
+	-- 	self.state = "dying"
 
 		-- self.sprite:play("dead")
 
@@ -120,7 +122,7 @@ end
 -- Sprite event handler
 function Bomb:ecussonSprite(event)
 	-- Destroy object if the dying animation has ended
-	if event.phase == "ended" then
+	if event.state == "ended" then
 		self:destroy()
 	end
 end

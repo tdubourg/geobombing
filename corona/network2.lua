@@ -11,6 +11,7 @@ local FRAME_SEPARATOR = "\n"
 local NETWORK_DUMP = true
 local _msgsendtable = {} -- send message queue
 local net_handlers = {}
+local network_key = ""
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -81,6 +82,14 @@ function connect_to_server( ip, port )
 	end
 end
 
+function createNetworkPosObjFromArcPos( arcPos )
+	local s = {}
+	s[NETWORK_POS_N1] = arcPos.arc.end1
+	s[NETWORK_POS_N2] = arcPos.arc.end2
+	s[NETWORK_POS_C] = arcPos.progress
+	return s
+end
+
 
 function sendPosition()
 	if client ~= nil then
@@ -105,11 +114,21 @@ end
 -- 	return nil
 -- end
 
+function sendBombRequestToServer(  )
+	-- local pos = createNetworkPosObjFromArcPos(player:getArcPCurrent())
+	sendSerialized({}, FRAMETYPE_BOMB)
+end
+
+function receivedBombUpdate( network_data )
+	itemsManager:newBomb(network_data)
+end
+
 function sendSerialized(obj, frameType)
 	if client then
 		local packet = {};
 		packet[JSON_FRAME_DATA] = obj
 		packet[JSON_FRAME_TYPE] = frameType
+		packet[JSON_FRAME_KEY] = network_key
 		sendString(json.encode(packet))
 	end
 end
