@@ -103,6 +103,7 @@ function Player(game,stream) {
 	this.name = "Player_"+this.id
 	this.currentPath = []  // contains nextNode? -> NOT
 	this.speed = .3 //1E-3
+	this.connexion = null
 	
 	//this.currentArc = null
 	//this.currentArcPos = null
