@@ -80,7 +80,8 @@ function scene:createScene( event )
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
-			net.network_key = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
+			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
+			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
 			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
@@ -89,7 +90,7 @@ function scene:createScene( event )
 			camera:lookAt(player:getPos())
 		end
 		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-			-- print ("Received player update from server: " .. json.encode(json_obj))
+			print ("Received player update from server: " .. json.encode(json_obj))
 
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
