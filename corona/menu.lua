@@ -62,28 +62,28 @@ end
 
 local function onKeyEvent( event )
 
-   local phase = event.phase
-   local keyName = event.keyName
-   -- print( event.phase, event.keyName )
+	 local phase = event.phase
+	 local keyName = event.keyName
+	 -- print( event.phase, event.keyName )
 
-   if ( "back" == keyName and phase == "up" ) then
-      if ( storyboard.currentScene == "splash" ) then
-         native.requestExit()
-      else
-         if ( storyboard.isOverlay ) then
-            storyboard.hideOverlay()
-         else
-            local lastScene = storyboard.returnTo
-            print( "previous scene", lastScene )
-            if ( lastScene ) then
-               storyboard.gotoScene( lastScene, { effect="crossFade", time=500 } )
-            else
-               native.requestExit()
-            end
-         end
-      end
-   end
-   return false  -- We only return true for the keys the app is "overriding", false for the other ones
+	 if ( "back" == keyName and phase == "up" ) then
+			if ( storyboard.currentScene == "splash" ) then
+				 native.requestExit()
+			else
+				 if ( storyboard.isOverlay ) then
+						storyboard.hideOverlay()
+				 else
+						local lastScene = storyboard.returnTo
+						print( "previous scene", lastScene )
+						if ( lastScene ) then
+							 storyboard.gotoScene( lastScene, { effect="crossFade", time=500 } )
+						else
+							 native.requestExit()
+						end
+				 end
+			end
+	 end
+	 return false  -- We only return true for the keys the app is "overriding", false for the other ones
 end
 
 
@@ -104,8 +104,8 @@ end
 function scene:destroyScene( event )
 	local group = self.view
 
-    background:removeSelf()
-    background = nil
+		background:removeSelf()
+		background = nil
 	
 	if playBtn then
 		playBtn:removeSelf()	-- widgets must be manually removed
