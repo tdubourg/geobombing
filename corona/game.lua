@@ -39,20 +39,20 @@ end
 function movePlayerById(id,arcP)
 	local exist = false
 	id = "" .. id
-	print ( "id asked is ", id)
-	print ( " -----------------------------")
+	-- print ( "id asked is ", id)
+	-- print ( " -----------------------------")
 	for _,other in ipairs(others) do
-		print(other.id)
+		-- print(other.id)
 		if (other.id == id) then
-			print("bouge")
+			-- print("bouge")
 			other:setAR(arcP)
 			exist = true
 		end
-		print("bouge ??")
+		-- print("bouge ??")
 	end
-	print ( " -----------------------------")
+	-- print ( " -----------------------------")
 	if (exist == false) then
-		print("bouge nouveau")
+		-- print("bouge nouveau")
 		others[#others+1] = Player.new(id,0.02,0,arcP)
 	end
 end
@@ -101,7 +101,7 @@ function scene:createScene( event )
 
 				-- The position has to be updated
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-					print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+					-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
@@ -117,7 +117,7 @@ function scene:createScene( event )
 	else
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
-		initGame()
+		initGame("1")
 		player:refresh()
 		camera:lookAt(player:getPos())
 	end
@@ -125,7 +125,7 @@ function scene:createScene( event )
 	itemsManager = ItemsManager.new()
 end
 
-local myListener = function( event )
+local updateLoop = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
@@ -133,6 +133,14 @@ local myListener = function( event )
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
+	end
+
+	-- TODO: move this into GUI.lua
+	-- OPTIM: pull au lieu de fetch
+	local name = player:getCurrentStreetName()
+	if name then
+		streetText = display.newText(name , 0, 0, native.systemFont, 32 )
+		streetText:setFillColor( 0, 1, 0 )
 	end
 end
 
@@ -199,7 +207,7 @@ end
 function scene:enterScene( event )
 	local group = self.view
 	storyboard.returnTo = "menu"
-	Runtime:addEventListener( "enterFrame", myListener )
+	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener("tap", moveObject)	
 end
 
@@ -212,7 +220,7 @@ function scene:exitScene( event )
 	if (itemsManager ~= nil) then
 		itemsManager:destroy()
 	end
-	Runtime:removeEventListener( "enterFrame", myListener )
+	Runtime:removeEventListener( "enterFrame", updateLoop )
 	Runtime:removeEventListener("tap",moveObject)	
 end
 
