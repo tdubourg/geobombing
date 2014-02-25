@@ -13,7 +13,7 @@ var single_game_server = null
 
 
 // executed function according to client result
-var sendinit_action = function (frame_data, stream) 
+var sendInit_action = function (frame_data, stream) 
 {
 	var lat = 0;
 	var lon = 0;
