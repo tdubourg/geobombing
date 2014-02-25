@@ -23,13 +23,13 @@ var sendinit_action = function (frame_data, stream)
 	if (frame_data != null && frame_data.longitude != null) 
 		lon = parseFloat(frame_data.longitude);
 	
-	function sendMap(jsonMap)
+	function sendInit(jsonMap)
 	{	
 		var conId = single_game_server.addPlayer(stream).conId
 		//var jsonMap = db.mapDataToJSon(mapData)
 		var content =  
 		{
-			"type": net.TYPEMAP, 
+			"type": net.TYPEPLAYERINIT, 
 			"id": conId // kesako?!
 			//"key": 0, // 
 			//"data": jsonMap
@@ -52,12 +52,12 @@ var sendinit_action = function (frame_data, stream)
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 
-			sendMap(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
 		}); // lat, lon
 		else
 		{
-			sendMap(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
 		}
 } // end send map
