@@ -37,10 +37,6 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			FRAMETYPE_MOVE = "mv"
 			FRAMETYPE_GPS = "gps"
 			FRAMETYPE_BOMB = "bb"
-			FRAMETYPE_BOMB_UPDATE = "bid"
-			NETWORK_BOMB_UPDATE_ID_KEY = "bid"
-			NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
-			NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
 			JSON_MOVE_NODES = "n"
 			JSON_MOVE_START_EDGE_POS = "sep"
 			JSON_MOVE_END_EDGE_POS = "eep"
@@ -49,6 +45,11 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			NETWORK_POS_C = "c"
 			JSON_FRAME_KEY = "key"
 		end
+		FRAMETYPE_BOMB_UPDATE = "bu"
+		NETWORK_BOMB_UPDATE_ID_KEY = "bid"
+		NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
+		NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
+		NETWORK_BOMB_UPDATE_POS_KEY = "btype"
 	-- map data
 		JSON_MAP_NAME = "mapName"
 		JSON_NODE_LIST = "mapListNode"
@@ -69,3 +70,8 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 
 -- GAMEPLAY
 	EXPLOSION_POWER = 3
+
+BOMB_DBG_MODE = false
+
+
+require("consts.local")
