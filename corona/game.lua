@@ -101,7 +101,7 @@ function scene:createScene( event )
 
 				-- The position has to be updated
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-					print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+					-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
