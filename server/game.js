@@ -76,20 +76,7 @@ function Map(jsonObj) {
 	jsonObj.mapListWay.forEach(function(w) {
 		//console.log(w)
 		for (var i = 0; i < w.wLstNdId.length-1; i++) {
-			//that.arcs.push(new Arc(that.nb_arcs++, w.wName, w.wLstNdId[i], w.wLstNdId[i+1]))
-			/*
-			w.wLstNdId[i].arcsTo.push(new Arc(w.wLstNdId[i], w.wLstNdId[i+1]))
-			w.wLstNdId[i+1].arcsTo.push(new Arc(w.wLstNdId[i+1], w.wLstNdId[i]))
-			*/
-			//console.log(w)
-			/*
-			that.nodes[w.wLstNdId[i  ]].arcsTo.push(new Arc(w.wLstNdId[i], w.wLstNdId[i+1]))
-			that.nodes[w.wLstNdId[i+1]].arcsTo.push(new Arc(w.wLstNdId[i+1], w.wLstNdId[i]))
-			*/
-			/*
-			that.nodes[w.wLstNdId[i  ]].arcsTo[w.wLstNdId[i+1]] = new Arc(w.wLstNdId[i], w.wLstNdId[i+1])
-			that.nodes[w.wLstNdId[i+1]].arcsTo[w.wLstNdId[i  ]] = new Arc(w.wLstNdId[i+1], w.wLstNdId[i])
-			*/
+			
 			//n1 = this.getNode(w.wLstNdId[i]), n2 = this.getNode(w.wLstNdId[i+1])
 			var n1 = that.nodes[w.wLstNdId[i]], n2 = that.nodes[w.wLstNdId[i+1]]
 			that.nodes[n1.id].arcsTo[n2.id] = new Arc(n1, n2)
@@ -146,46 +133,7 @@ function BombAction() {
 
 var delta = 0.0001
 Player.prototype.update = function (period) {
-	//console.log("Updating "+this)
-	/*
-	// this was for node-to-node navigation:
-	if (this.nextNode != null) {
-		var distToWalk = this.speed*period
-		//var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
-		//console.log(period)
-		
-		while (distToWalk > delta) {
-			var distToNode = this.currentArc.length-this.currentArcDist
-			if (distToWalk < distToNode) {
-				this.currentArcDist += distToWalk
-				distToWalk = 0
-			} else {
-				distToWalk -= distToNode
-				//var currNode = this.currentPath.shift()
-				var currNode = this.nextNode
-				this.nextNode = this.currentPath.shift()
-				
-				if (currNode); // should always be true actually
-				else panick()
-				
-				if (this.nextNode) {
-					//var newCurrentArc = currNode.arcToId(this.currentPath[0].id)
-					var newCurrentArc = currNode.arcToId(this.nextNode.id)
-					if (newCurrentArc)
-						this.currentArc = newCurrentArc
-					else
-						console.log("[Game Model Error]: couldn't find a path from node",
-							currNode.id, "to node", this.currentPath[0].id)
-					this.currentArcDist = 0 //this.currentArc.length
-				} else return;
-				//this.currentArcDist = 0
-			}
-		}
-	}
-	*/
 	
-	// this is for arc coeff navigation:
-	// TODO
 	if (this.targetArcDist != null) {
 		var distToWalk = this.speed*period
 		//var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
@@ -241,8 +189,6 @@ Player.prototype.getPosition = function () {
 
 Player.prototype.setPosition = function (position) {
 	console.log("setpos",position)
-	//console.log(this.game.map.nodes)
-	//console.log(this.game.map.nodes[position.n1].arcsTo)
 	this.currentArc = this.game.map.nodes[position.n1].arcToId(position.n2)
 	if (!this.currentArc)
 		console.log("[Game Model Error]: couldn't set initial position with nodes ", position.n1, position.n2)
@@ -252,27 +198,6 @@ Player.prototype.setPosition = function (position) {
 
 Player.prototype.move = function (nodeIds, endCoeff) {
 	var firstNodeId = nodeIds.shift()
-	/*
-	//var nextNode
-	//console.log(this.currentArc.n1.id, " - ", firstNodeId)
-	//console.log(nodeIds)
-	if (this.currentArc.n1.id == firstNodeId) {
-		this.currentArc = this.currentArc.n2.arcToId(firstNodeId)
-		this.currentArcDist = this.currentArc.length - this.currentArcDist
-		this.nextNode = this.currentArc.n2
-		//TODO//this.targetArcDist = endCoeff*this.currentArc.length
-	}
-	else if (this.currentArc.n2.id == firstNodeId) {
-		this.nextNode = this.currentArc.n2
-		//TODO//
-	}
-	else console.log("[Game Model Error]: Unknown move ")
-	//console.log("mvTo:",this.nextNode)
-	var nodesRest = []
-	for (var i = 0; i < nodeIds.length; i++)
-		nodesRest.push(this.game.map.getNode(nodeIds[i]))
-	this.currentPath = nodesRest
-	*/
 	
 	if (this.currentArc.n1.id == firstNodeId) {
 		this.currentArc = this.currentArc.n2.arcToId(firstNodeId)
@@ -281,7 +206,6 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	}
 	else if (this.currentArc.n2.id == firstNodeId) {
 		//this.nextNode = this.currentArc.n2
-		//TODO//
 	}
 	else console.log("[Game Model Error]: Unknown move ")
 	//console.log("mvTo:",this.nextNode)
@@ -306,21 +230,9 @@ Player.prototype.bomb = function () {
 Game.prototype.update = function (period) {
 	//console.log(period)
 	
-	//console.log(Player.prototype.update)
-	//this.players.forEach()
-	//this.players.thismap(Player.prototype.update, [period])
 	this.players.thismap(Player.prototype.update, period)
 	
 }
-/*
-Game.prototype.addPlayer = function (stream) {
-	var id = ++this.playersId
-	//var p = new Player(id, "Player_"+id, stream)
-	var p = new Player(this)
-	this.players.push(p)
-	return p
-}
-*/
 
 
 
