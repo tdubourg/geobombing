@@ -180,13 +180,6 @@ GameServer.prototype.moveCommand = function(stream, conKey, endCoeff, nodes) {
 
 GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 	this.getPlayer(stream).bomb()
-
-	var data = {}
-	data["id"] = 0 // player id
-	data[net.TYPEBOMBID] = 0 
-	data[net.TYPEBOMBSTATE] = 0 // 0 = new, 1 = explosion
-	data[net.TYPEBOMBTYPE] = 0 // strength or type of bomb
-	fa.sendBombUpdate(stream, data)
 }
 
 GameServer.prototype.setInitialPosition = function(stream, position) {
