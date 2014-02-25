@@ -22,6 +22,8 @@ function streamKey(stream) {
 	return stream.id
 }
 
+var usedConKeys = []
+
 function Connexion(gserver, stream, player) {
 	var that = this
 	
@@ -40,15 +42,18 @@ function Connexion(gserver, stream, player) {
 	var cons = gserver.connexions
 	do {
 		this.conKey = Math.random().toString().substring(2);
-	} while (!Object.keys(cons).reduce (
+	//} while (!Object.keys(cons).reduce (
+	} while (!usedConKeys.reduce (
 		function(prev,currKey) {
-			return prev && cons[currKey].conKey != that.conKey
+			//return prev && cons[currKey].conKey != that.conKey
+			return prev && currKey != that.conKey
 		}, true)
 	)
 	stream.id = this.conKey
 	console.log("Generated key for "+player.name+":", this.conKey)
 	
-	gserver.connexions[streamKey(stream)] = this
+	gserver.connexions[streamKey(stream)/*==this.conKey*/] = this
+	usedConKeys.push(this.conKey)
 	
 	//gserver.playersByStream[stream] = player
 	

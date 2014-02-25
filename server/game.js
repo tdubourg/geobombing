@@ -120,16 +120,20 @@ function Game(map) {
 }
 
 var bombNb = 0
-function Bomb(gserver, arc, coeff) {
+function Bomb(player) { //, arc, coeff) {
+	this.player = player
 	this.id = ++bombNb
 	this.time = 1000
-	gserver.bombs[this.id] = this
+	this.arc = player.currentArc
+	this.arcDist = player.currentArcDist
+	player.game.bombs[this.id] = this
 	
 }
-
+/*
 function BombAction() {
 	
 }
+*/
 
 var delta = 0.0001
 Player.prototype.update = function (period) {
@@ -240,6 +244,7 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 Player.prototype.bomb = function () {
 	// TODO
 	
+	this.game.bombs.push(new Bomb(this))
 	
 	
 }
