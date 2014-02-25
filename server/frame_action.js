@@ -62,7 +62,7 @@ var sendInit_action = function (frame_data, stream)
 function sendEnd(stream, game)
 {
 	var data = {}
-	data[net.TYPERANKING] = [["jo", 100]["lili", 0]] // palmares
+	data[net.TYPERANKING] = {"jo":100, "lili":0} // palmares
 	var content =  
 	{
 		"type": net.TYPEGAMEEND, 
@@ -89,7 +89,6 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
-	//console.log("Sending player_update data to client:", data)
 	stream.write(data + net.FRAME_SEPARATOR,function() {})
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
@@ -165,7 +164,7 @@ var frame_actions =
 
 	// answer type update
 	"move": move_action,
-	"bomb": /*sendEnd//for testing*/bomb_action,
+	"bomb": bomb_action,
 	"quit": quit_action
 }
 exports.frame_actions = frame_actions
