@@ -23,23 +23,26 @@ local currentMap = nil
 itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 
-function initGame()
+function initGame(player_id)
+	player_id = "" .. player_id
 	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
 	for voisin,_ in pairs(nodeFr.arcs) do
 		nodeT=voisin
 	end
 	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
 
-	player = Player.new( 0,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
+	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
-	others = {}
-	
-
+	others = {player}
 end
 
 function movePlayerById(id,arcP)
 	local exist = false
-	for _,other in pairs(others) do
+	id = "" .. id
+	print ( "id asked is ", id)
+	print ( " -----------------------------")
+	for _,other in ipairs(others) do
+		print(other.id)
 		if (other.id == id) then
 			print("bouge")
 			other:setAR(arcP)
@@ -47,18 +50,19 @@ function movePlayerById(id,arcP)
 		end
 		print("bouge ??")
 	end
+	print ( " -----------------------------")
 	if (exist == false) then
 		print("bouge nouveau")
-		others[#others] = Player.new(id,0.02,0,arcP)
+		others[#others+1] = Player.new(id,0.02,0,arcP)
 	end
 end
 
-function update_player_position( pos_obj )
-	-- print ( "TOTO")
-	-- print (pos_obj.n1, pos_obj.n2, pos_obj.c)
+function update_player_position(id, pos_obj )
+	--print ( "TOTO")
+	--print (pos_obj.n1, pos_obj.n2, pos_obj.c)
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
-	-- print ('arcP returned is', arcP)
-	player:setAR(arcP)
+	--print ('arcP returned is', arcP)
+	movePlayerById(id, arcP)
 end
 
 function update_player_state( state_obj )
@@ -85,7 +89,7 @@ function scene:createScene( event )
 			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
-			initGame()
+			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
@@ -97,7 +101,12 @@ function scene:createScene( event )
 
 				-- The position has to be updated
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-					update_player_position(json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY])
+					print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+					update_player_position(
+						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
+						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+					)
+
 				end
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
 					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
