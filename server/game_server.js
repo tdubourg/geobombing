@@ -64,6 +64,10 @@ function Connexion(gserver, stream, player) {
 		console.log("Disconnecting player "+player.name)
 		that.open = false
 		delete gserver.connexions[streamKey(stream)]
+		player.remove()
+		gserver.notify(function(stream) {
+			fa.sendPlayerRemove(stream, player)
+		})
 	}
 	
 	stream.addListener("end", disco)
@@ -86,7 +90,14 @@ function GameServer(game) {
 	
 	setInterval(function() {
 		var time = Date.now()
-		game.update((time-lastTime)/1000)
+		var explodingBombs = []
+		game.update((time-lastTime)/1000, explodingBombs)
+		
+		explodingBombs.forEach(function (bomb) 
+		{
+			that.notifyBomb(bomb);
+		})
+		
 		lastTime = time
 	}, GAME_REFRESH_PERIOD)
 	
@@ -100,14 +111,33 @@ function GameServer(game) {
 			{
 				fa.sendPlayerUpdate(con.stream, player);
 			})
+			/*
 			game.bombs.forEach(function (bomb) 
 			{
 				fa.sendBombUpdate(con.stream, bomb);
 			})
+			*/
 		}
 		
 	}, MOVE_REFRESH_PERIOD)
 	
+}
+
+GameServer.prototype.notify = function(fct) {
+	for (var conKey in this.connexions) 
+	{
+		fct(this.connexions[conKey].stream)
+	}
+}
+
+GameServer.prototype.notifyBomb = function(bomb) {
+	//game.bombs.forEach(function (bomb)
+	for (var conKey in this.connexions) 
+	{
+		var con = this.connexions[conKey]
+		fa.sendBombUpdate(con.stream, bomb);
+	}
+	//console.log("Bomb:", bomb)
 }
 
 GameServer.prototype.addPlayer = function(stream) {
@@ -133,7 +163,12 @@ GameServer.prototype.moveCommand = function(stream, conKey, endCoeff, nodes) {
 }
 
 GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
-	this.getPlayer(stream).bomb()
+	var b = this.getPlayer(stream).bomb()
+	this.notifyBomb(b)
+}
+
+GameServer.prototype.quitCommand = function(stream, key) { // FIXME key?
+	//this.getPlayer(stream).quit() // todo complete, Lionel!
 }
 
 GameServer.prototype.setInitialPosition = function(stream, position) {
