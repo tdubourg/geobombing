@@ -137,35 +137,40 @@ function Map:getClosestPos(v2pos)
 	--print ("La")
 	for _,arc in ipairs(self.arcs) do
 		local from = arc.end1.pos
-		--print (arc.end1.uid)
 		local to = arc.end2.pos
-		--print (arc.end2.uid)
-		-- local minX = math.min(from.x,to.x)
-		-- local minY = math.min(from.y,to.y)
-		-- local maxX = math.max(from.x,to.x)
-		-- local maxY = math.max(from.y,to.y)
 
 		local vectDir = Vector2D:Sub(to,from)
 		vectDir:normalize()
 		local vectPos = Vector2D:Sub(v2pos,from)
 		local distProj = vectPos:dot(vectDir)
 		local distVectPos = Vector2D:Dist(v2pos,from)
-
 		
+		-- comparing projections
 		if (distProj >=0 and distProj <=arc.len) then
 				local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
 				if (dist < min) then
+					print "NEW"
 					min = dist
 					arcP = self:createArcPos(arc.end1, arc.end2,distProj/arc.len)
 				end
+				print "dist"
+				print (dist)
+		end
+	end
+
+	-- comparing points
+	for _,node in pairs(self.nodesByUID) do
+		local nodeDist = v2pos:dist(node.pos)
+		if nodeDist < min then
+			min = nodeDist
+			local anyNeighbor,_ = next(node.arcs)
+			arcP = self:createArcPos(node, anyNeighbor, 0)
 		end
 	end
 
 	return arcP
 end
 
-
--- WORK IN PROGRESS
 function Map:getExplosionPos(bombArcPos, bombPower, interval)
 	local posList = {} -- Vector2D list, world coordinates
 	local end1Power = bombPower - (bombArcPos:getPosXY()):dist(bombArcPos.end1)
@@ -281,42 +286,42 @@ function rewindPath(precedence, to)
 	repeat
 		revPath[#revPath+1] = node
 		node = precedence[node]
-		until node == nil
+	until node == nil
 
-			return invertIndexedTable(revPath)
-		end
+	return invertIndexedTable(revPath)
+end
 
-		function rewindPathArcs(precedence)
-			revPath = {}
-			local node = precedence["TARGET"]
+function rewindPathArcs(precedence)
+	revPath = {}
+	local node = precedence["TARGET"]
 
-			repeat
-				revPath[#revPath+1] = node
-				node = precedence[node]
-				until node == nil
+	repeat
+		revPath[#revPath+1] = node
+		node = precedence[node]
+	until node == nil
 
-					return invertIndexedTable(revPath)
-				end
-
-
-				function invertIndexedTable ( tab )
-					local size = #tab+1
-					local newTable = {}
-
-					for i,v in ipairs ( tab ) do
-						newTable[size-i] = v
-					end
-
-					return newTable
-				end
+	return invertIndexedTable(revPath)
+end
 
 
-				function Map:destroy()
-					for _,node in pairs(self.nodesByUID) do
-						node:destroy()
-					end
+function invertIndexedTable ( tab )
+	local size = #tab+1
+	local newTable = {}
 
-					for _,arc in ipairs(self.arcs) do
-						arc:destroy()
-					end
-				end
+	for i,v in ipairs ( tab ) do
+		newTable[size-i] = v
+	end
+
+	return newTable
+end
+
+
+function Map:destroy()
+	for _,node in pairs(self.nodesByUID) do
+		node:destroy()
+	end
+
+	for _,arc in ipairs(self.arcs) do
+		arc:destroy()
+	end
+end
