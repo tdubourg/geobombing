@@ -149,7 +149,7 @@ GameServer.prototype.getConByStream = function(stream) {
 }
 */
 
-GameServer.prototype.moveCommand = function(conKey, endCoeff, nodes) {
+GameServer.prototype.moveCommand = function(stream, conKey, endCoeff, nodes) {
 	//console.log(stream == this.connexions[0].stream)
 	//console.log(this.playersByStream[stream].id)
 	
@@ -165,6 +165,12 @@ GameServer.prototype.moveCommand = function(conKey, endCoeff, nodes) {
 
 GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 	this.getPlayer(stream).bomb()
+
+	var data = {}
+	data[net.TYPEBOMBID] = 0 
+	data[net.TYPEBOMBSTATE] = 0 // 0 = new, 1 = explosion
+	data[net.TYPEBOMBTYPE] = 0 // strength or type of bomb
+	fa.sendBombUpdate(stream, id, data)
 }
 
 GameServer.prototype.setInitialPosition = function(stream, position) {

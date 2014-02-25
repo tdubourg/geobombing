@@ -83,6 +83,20 @@ var sendPlayerUpdate = function (stream, id, pos) // player and other players
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
+var sendBombUpdate = function (stream, id, data) // player and other players
+{	
+	var content = 
+	{
+		"type": net.TYPEPLAYERUPDATE, 
+		"id": id,
+		"data": data
+	};
+	
+	var data = JSON.stringify(content);
+	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("Bomb update sent")})
+}
+exports.sendPlayerUpdate = sendPlayerUpdate
+
 // receiving function 
 var move_action = function (frame_data, stream) 
 {
