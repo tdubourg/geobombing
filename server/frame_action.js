@@ -26,17 +26,17 @@ var sendInit_action = function (frame_data, stream)
 	function sendInit(jsonMap)
 	{
 		var conKey = single_game_server.addPlayer(stream).conKey
-		//var jsonMap = db.mapDataToJSon(mapData)
 		var id = 0
+		var data = {}
+		data[net.TYPEMAP] = jsonMap // map
 		var content =  
 		{
 			"type": net.TYPEPLAYERINIT, 
-			"id": id // kesako?!
-			//"key": 0, // 
-			//"data": jsonMap
+			"id": id, // donner l'id pour le donner à tous les joueurs
+			"key": conKey, // secret ID (unique sending)
+			"data": data
 		}
-		content["key"] = conKey // secret ID
-		content[net.TYPEMAP] = jsonMap // secret ID
+		
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + net.FRAME_SEPARATOR, function () { console.log(conKey) })
 	}
@@ -67,7 +67,7 @@ var sendInit_action = function (frame_data, stream)
 // --- updates ---
 
 
-var sendPlayerPosition = function (stream, id, pos) // player and other players
+/*var sendPlayerPosition = function (stream, id, pos) // player and other players
 {
 	// IDs are string on client side
 	pos.n1 = pos.n1.toString()
@@ -83,7 +83,7 @@ var sendPlayerPosition = function (stream, id, pos) // player and other players
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {})
 }
-exports.sendPlayerPosition = sendPlayerPosition
+exports.sendPlayerPosition = sendPlayerPosition*/
 
 var sendPlayerUpdate = function (stream, id, data) // player and other players
 {	
@@ -95,9 +95,7 @@ var sendPlayerUpdate = function (stream, id, data) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
-	stream.write(data + net.FRAME_SEPARATOR,function() {
-		//console.log("player update:\n" + data)
-	})
+	stream.write(data + net.FRAME_SEPARATOR,function() {})
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
@@ -105,11 +103,11 @@ exports.sendPlayerUpdate = sendPlayerUpdate
 var move_action = function (frame_data, stream) 
 {
 	//decode frame
-	if (frame_data != null && frame_data.end_edge_pos != null
+	if (frame_data != null && frame_data.key != null && frame_data.end_edge_pos != null
 		&& frame_data.nodes != null && frame_data.nodes.length > 0) // minimum of two nodes for moving
 	{
 		var endedge = parseFloat(frame_data.end_edge_pos);	
-		single_game_server.moveCommand(stream, endedge, frame_data.nodes) // send new position
+		single_game_server.moveCommand(stream, key, endedge, frame_data.nodes) // send new position
 	}
 	else console.log("Error move msg from client.")
 }
@@ -117,13 +115,10 @@ var move_action = function (frame_data, stream)
 var bomb_action = function (frame_data, stream) 
 {
 	console.log("bomb_action:\n" + frame_data);
-	if (frame_data != null && frame_data.pos != null
-		/*&& frame_data.key != null*/)
+	if (frame_data != null && frame_data.key != null)
 	{
 		var key = frame_data.key;
-		var pos = CreatePosition(frame_data.pos.n1, frame_data.pos.n2, 
-			frame_data.pos.c)
-		single_game_server.bombCommand(stream, key, pos) // send bomb
+		single_game_server.bombCommand(stream, key) // send bomb
 	}
 	else console.log("Error bomb msg from client.")
 }
