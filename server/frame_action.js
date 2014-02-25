@@ -20,11 +20,11 @@ var sendInit_action = function (frame_data, stream)
 	
 	function sendInit(jsonMap)
 	{
-		var conKey = single_game_server.addPlayer(stream).conKey
-		var id = 0
+		//var conKey = single_game_server.addPlayer(stream).conKey
+		var player = single_game_server.addPlayer(stream)
 		var data = {}
-		data["id"] = id // id
-		data["key"] = conKey // key
+		data["id"] = player.id // id
+		data["key"] = player.connexion.conKey // key
 		data[net.TYPEMAP] = jsonMap // map
 		var content =  
 		{
