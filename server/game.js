@@ -281,6 +281,9 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	
 	
 }
+Player.prototype.bomb = function () {
+	// TODO
+}
 
 Game.prototype.update = function (period) {
 	//console.log(period)
