@@ -24,20 +24,20 @@ var sendinit_action = function (frame_data, stream)
 		lon = parseFloat(frame_data.longitude);
 	
 	function sendMap(jsonMap)
-	{	
-		var conId = single_game_server.addPlayer(stream).conId
+	{
+		var conKey = single_game_server.addPlayer(stream).conKey
 		//var jsonMap = db.mapDataToJSon(mapData)
 		var content =  
 		{
-			"type": net.TYPEMAP, 
+			"type": net.TYPEPLAYERINIT, 
 			"id": conId // kesako?!
 			//"key": 0, // 
 			//"data": jsonMap
 		}
-		content["key"] = 0 // secret ID
+		content["key"] = conKey // secret ID
 		content[net.TYPEMAP] = jsonMap // secret ID
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + net.FRAME_SEPARATOR, function () {console.log(conId)})
+		stream.write(data + net.FRAME_SEPARATOR, function () { console.log(conKey) })
 	}
 	
 	function setInitialPosition()
@@ -52,12 +52,12 @@ var sendinit_action = function (frame_data, stream)
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 
-			sendMap(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
 		}); // lat, lon
 		else
 		{
-			sendMap(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
 		}
 } // end send map
@@ -94,7 +94,9 @@ var sendPlayerUpdate = function (stream, id, data) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
-	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("player update:\n" + data)})
+	stream.write(data + net.FRAME_SEPARATOR,function() {
+		//console.log("player update:\n" + data)
+	})
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
