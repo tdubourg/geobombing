@@ -94,13 +94,28 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
-var sendBombUpdate = function (stream, bomb) // player and other players
+var sendPlayerRemove = function (stream, player) // player and other players
 {	
+	var data = {}
+	data["id"] = player.getPosition() // player id
+	var content = 
+	{
+		"type": net.TYPEGONE, 
+		"data": data
+	};
+	
+	var data = JSON.stringify(content);
+	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("Bomb update sent")})
+}
+exports.sendPlayerRemove = sendPlayerRemove
+
+var sendBombUpdate = function (stream, bomb) // player and other players
+{
 	var data = {}
 	data["id"] = bomb.player.id // player id
 	data[net.TYPEBOMBID] = bomb.id
-	//data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // 0 = new, 1 = explosion
-	data[net.TYPEBOMBSTATE] = bomb.time // time since explosion (>0: exploding)
+	data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // 0 = new, 1 = explosion
+	//data[net.TYPEBOMBSTATE] = bomb.time // time since explosion (>0: exploding)
 	data[net.TYPEBOMBTYPE] = 1 // strength or type of bomb
 	var content = 
 	{
@@ -109,7 +124,9 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
-	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("Bomb update sent")})
+	stream.write(data + net.FRAME_SEPARATOR,function() {
+		console.log("Bomb update sent ("+(bomb.time<0?1:0)+")")
+	})
 }
 exports.sendBombUpdate = sendBombUpdate
 
@@ -130,6 +147,13 @@ var bomb_action = function (frame_data, stream)
 	single_game_server.bombCommand(stream, key) // send bomb
 }
 
+var quit_action = function (frame_data, stream) 
+{
+	console.log("quit_action:\n" + frame_data);
+	var key = frame_data.key;
+	single_game_server.quitCommand(stream, key) // remove player from game
+}
+
 
 // --- end updates ---
 
@@ -141,6 +165,7 @@ var frame_actions =
 
 	// answer type update
 	"move": move_action,
-	"bomb": /*sendEnd//for testing*/bomb_action
+	"bomb": /*sendEnd//for testing*/bomb_action,
+	"quit": quit_action
 }
 exports.frame_actions = frame_actions
