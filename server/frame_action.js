@@ -38,7 +38,7 @@ var sendInit_action = function (frame_data, stream)
 		}
 		
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + net.FRAME_SEPARATOR, function () { console.log(conKey) })
+		stream.write(data + net.FRAME_SEPARATOR, function () { console.log(data) })
 	}
 	
 	function setInitialPosition()
@@ -85,8 +85,10 @@ var sendInit_action = function (frame_data, stream)
 }
 exports.sendPlayerPosition = sendPlayerPosition*/
 
-var sendPlayerUpdate = function (stream, id, data) // player and other players
+var sendPlayerUpdate = function (stream, id, pos) // player and other players
 {	
+	var data = {}
+	data[net.TYPEPOS] = pos // map
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE, 
