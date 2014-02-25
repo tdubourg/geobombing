@@ -3,7 +3,6 @@
 var net = require('./network');
 var utils = require("./common");
 
-
 var db = require('./pgsql');
 var nb_instance_move = 0;
 
@@ -14,7 +13,7 @@ var single_game_server = null
 
 
 // executed function according to client result
-var sendmap_action = function (frame_data, stream) 
+var sendinit_action = function (frame_data, stream) 
 {
 	var lat = 0;
 	var lon = 0;
@@ -31,9 +30,12 @@ var sendmap_action = function (frame_data, stream)
 		var content =  
 		{
 			"type": net.TYPEMAP, 
-			"id": conId, // kesako?!
-			"data": jsonMap
-		};
+			"id": conId // kesako?!
+			//"key": 0, // 
+			//"data": jsonMap
+		}
+		content["key"] = 0 // secret ID
+		content[net.TYPEMAP] = jsonMap // secret ID
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + net.FRAME_SEPARATOR, function () {console.log(conId)})
 	}
@@ -128,7 +130,7 @@ var bomb_action = function (frame_data, stream)
 var frame_actions = 
 {
 	//Type from client
-	"gps":  sendmap_action, // reponse function to localise
+	"gps":  sendinit_action, // send map
 
 	// answer type update
 	"move": move_action,
