@@ -100,6 +100,10 @@ function GameServer(game) {
 			{
 				fa.sendPlayerUpdate(con.stream, player);
 			})
+			game.bombs.forEach(function (bomb) 
+			{
+				fa.sendBombUpdate(con.stream, bomb);
+			})
 		}
 		
 	}, MOVE_REFRESH_PERIOD)
