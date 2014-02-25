@@ -16,6 +16,10 @@ function ArcPos:getPosXY()
 	return self.posXY
 end
 
+function ArcPos.createFromNetworkPosObj( map, network_pos_obj )
+	local arcpos = map:createArcPosByUID(network_pos_obj.n1, network_pos_obj.n2, network_pos_obj.c)
+	return arcpos
+end
 
 function ArcPos:initExplosion(power)
 	drawPosList = {}
@@ -73,3 +77,5 @@ function ArcPos.PosListBetween(arcPosFrom, arcPosTo, distanceInterval)
 		return result
 	end
 end
+
+return ArcPos
