@@ -26,6 +26,7 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			NETWORK_POS_N2 = "n2"
 			NETWORK_POS_C = "c"
 			JSON_FRAME_KEY = "key"
+			FRAMETYPE_PLAYER_DISCONNECT = "gone"
 		else
 			NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
 			NETWORK_PLAYER_UPDATE_STATE_KEY = "s"
@@ -50,6 +51,7 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			NETWORK_POS_N2 = "n2"
 			NETWORK_POS_C = "c"
 			JSON_FRAME_KEY = "key"
+			FRAMETYPE_PLAYER_DISCONNECT = "gone"
 		end
 	-- map data
 		JSON_MAP_NAME = "mapName"
