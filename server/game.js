@@ -139,6 +139,8 @@ function BombAction() {
 
 Bomb.prototype.update = function (period) {
 	this.time += period
+	//if (this.time > 0)
+		
 }
 
 var delta = 0.0001
