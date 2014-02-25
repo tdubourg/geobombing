@@ -77,4 +77,4 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 BOMB_DBG_MODE = false
 
 
-require("consts.local")
+require("consts-local")
