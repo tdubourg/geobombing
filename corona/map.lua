@@ -1,4 +1,3 @@
-require "heap"
 require "arcPos"
 require "print_r"
 
