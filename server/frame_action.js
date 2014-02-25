@@ -145,7 +145,7 @@ var bomb_action = function (frame_data, stream)
 	single_game_server.bombCommand(stream, key) // send bomb
 }
 
-var quit_action = function (frame_data, stream) 
+var quit_action = function (frame_data, stream) // not used atm
 {
 	console.log("quit_action:\n" + frame_data);
 	var key = frame_data.key;
