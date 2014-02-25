@@ -143,7 +143,6 @@ end
  
 function sendPathToServer( nodes, arcP )
 	if (nodes == nil) then
-		print ("here")
 		local arc =player.arcPCurrent.arc
 		local ratio = player.arcPCurrent.progress
 		local ratioEnd =arcP.progress

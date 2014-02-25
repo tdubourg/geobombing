@@ -84,7 +84,7 @@ function scene:createScene( event )
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 			initGame()
-			-- player:refresh()
+			player:refresh()
 			camera:lookAt(player:getPos())
 		end
 		net.net_handlers[NETWORK_PLAYER_UPDATE_TYPE] = function ( json_obj )
@@ -107,7 +107,7 @@ function scene:createScene( event )
 		print ("Could no connect to server")
 		currentMap = Map:new(nil)
 		initGame()
-		-- player:refresh()
+		player:refresh()
 		camera:lookAt(player:getPos())
 	end
 
@@ -118,7 +118,7 @@ local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
-
+		player:refresh()
 		camera:lookAt(player:getPos())
 	end
 end
@@ -156,17 +156,27 @@ local function moveObject(e)
 				end
 				if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
 					net.sendPathToServer(nil,arcP)
+					--player:saveNewNodes(nil,arcP)
 				else
 					local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
-					--print(from.uid .. "<--- from")			
-					player.nodeFrom=from
+					--print(from.uid .. "<--- from")	
+					if (nodes[1] == from) then
+						if (player.arcPCurrent.arc.end1 == from) then
+							player.nodeFrom=player.arcPCurrent.arc.end2
+						else
+							player.nodeFrom=player.arcPCurrent.arc.end1
+						end
+					else
+						player.nodeFrom=from
+					end
+
+					
 				 -- 	for _,nod in ipairs(nodes) do
 					-- 	print(" ".. nod.uid)
 					-- end
 					net.sendPathToServer(nodes,arcP)
 				
-					--player:goToAR(arcP)
-					--player:saveNewNodes(nodes)
+					--player:saveNewNodes(nodes,arcP)
 				end
 			end
 		end
