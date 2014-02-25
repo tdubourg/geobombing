@@ -156,6 +156,10 @@ GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 	this.notifyBomb(b)
 }
 
+GameServer.prototype.quitCommand = function(stream, key) { // FIXME key?
+	//this.getPlayer(stream).quit() // todo complete, Lionel!
+}
+
 GameServer.prototype.setInitialPosition = function(stream, position) {
 	this.getPlayer(stream).setPosition(position)
 }
