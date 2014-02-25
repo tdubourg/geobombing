@@ -35,9 +35,9 @@ function Node:redraw()
 end
 
 -- creates an Arc if necessary and link everything
-function Node:linkTo(node1)
+function Node:linkTo(node1, wayName)
 	if self.arcs[node1] == nil then
-		local newArc = Arc:new(self, node1)
+		local newArc = Arc:new(self, node1, wayName)
 		self.arcs[node1] = newArc
 		node1.arcs[self] = newArc
 		return newArc

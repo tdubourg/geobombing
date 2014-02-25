@@ -33,28 +33,21 @@ function initGame(player_id)
 
 	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
-	others = {player}
+	others = {}
+	others[player_id] = player
 end
 
 function movePlayerById(id,arcP)
 	local exist = false
-	id = "" .. id
-	-- print ( "id asked is ", id)
-	-- print ( " -----------------------------")
-	for _,other in ipairs(others) do
-		-- print(other.id)
-		if (other.id == id) then
-			-- print("bouge")
-			other:setAR(arcP)
-			exist = true
-		end
-		-- print("bouge ??")
+	strid = "" .. id
+
+	local daPlayer = others[strid]
+	if (not daPlayer) then
+		daPlayer = Player.new(strid,0.02,0,arcP)
+		others[strid] = daPlayer
 	end
-	-- print ( " -----------------------------")
-	if (exist == false) then
-		-- print("bouge nouveau")
-		others[#others+1] = Player.new(id,0.02,0,arcP)
-	end
+
+	daPlayer:setAR(arcP)
 end
 
 function update_player_position(id, pos_obj )
@@ -83,6 +76,15 @@ function scene:createScene( event )
 
 	if result then
 		print ( "!!CONNECTED!!" )
+		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
+			print "FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT"
+			print_r(json_obj)
+			local playerObj = others[tostring(json_obj.id)]
+			if playerObj then
+				playerObj:destroy()
+				others[json_obj.id] = nil
+			end
+		end
 		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
 			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
@@ -139,8 +141,13 @@ local updateLoop = function( event )
 	-- OPTIM: pull au lieu de fetch
 	local name = player:getCurrentStreetName()
 	if name then
-		streetText = display.newText(name , 0, 0, native.systemFont, 32 )
-		streetText:setFillColor( 0, 1, 0 )
+		if streetText then
+			streetText:removeSelf()
+		end
+		streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+		streetText.anchorX = 0
+		streetText.anchorY = 0
+		streetText:setFillColor( 0.7, 0, 0.3 )
 	end
 end
 

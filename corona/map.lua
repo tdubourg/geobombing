@@ -45,13 +45,14 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
 
 		-- load arcs
 		for i,way in ipairs(ways) do
+			local wayName = way[JSON_WAY_NAME]
 			local nodeList = way[JSON_WAY_NODE_LIST]
 			local previousNode = nil
 			for j,nodeID in ipairs(nodeList) do
 				local strUid = tostring(nodeID)
 				local node = self.nodesByUID[strUid]
 				if (previousNode) then
-					self.arcs[#(self.arcs)+1] =previousNode:linkTo(node)
+					self.arcs[#(self.arcs)+1] =previousNode:linkTo(node, wayName)
 					print(previousNode.uid .. " / " .. node.uid)
 				end
 				previousNode = node
@@ -149,12 +150,9 @@ function Map:getClosestPos(v2pos)
 		if (distProj >=0 and distProj <=arc.len) then
 				local dist = math.sqrt(distVectPos* distVectPos - distProj * distProj)
 				if (dist < min) then
-					print "NEW"
 					min = dist
 					arcP = self:createArcPos(arc.end1, arc.end2,distProj/arc.len)
 				end
-				print "dist"
-				print (dist)
 		end
 	end
 
