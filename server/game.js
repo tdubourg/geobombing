@@ -9,6 +9,10 @@ exports.Game = Game
 var u = require("./util")
 var com = require("./common")
 
+var BOMB_TIMER = 2 // seconds
+var BOMB_PROPAG_TIME = 1
+
+
 function panick(str) {
 	console.log("[Game Model Error]: "+(str? str: "unspecified"))
 }
@@ -33,14 +37,19 @@ Node.prototype.arcToId = function (nodeId) {
 	else return null
 }
 
+var idNb = 0
+
 function Arc(/*id, name,*/ n1, n2) {
 	//this.id = id
 	//this.name = name
 	//console.log(">>>>>",n1,n1.x)
 	this.length = com.dist(n1,n2)
 	this.nodes = [this.n1 = n1, this.n2 = n2]
+	this.id = idNb++
+	/*
 	this.walls = []
 	this.bombs = []
+	*/
 	//this.arcs[id] = this
 }
 
@@ -48,6 +57,10 @@ Arc.prototype.distFromTo = function (coeff, node) {
 	if (node === this.n1) return this.length*coeff
 	if (node === this.n2) return this.length*(1-coeff)
 	throw "Not a node of this arc"
+}
+
+Arc.prototype.getOpposite = function () {
+	return this.n2.arcToId(this.n1.id)
 }
 
 Arc.prototype.toString = function () {
@@ -125,7 +138,7 @@ var bombNb = 0
 function Bomb(player) { //, arc, coeff) {
 	this.player = player
 	this.id = ++bombNb
-	this.time = -1
+	this.time = -BOMB_TIMER
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
 	//player.game.bombs[this.id] = this
@@ -142,8 +155,53 @@ Bomb.prototype.update = function (period, explodingBombs) {
 	if (this.time < 0 && this.time+period >= 0) {
 		explodingBombs.push(this)
 		console.log("BOOM!!")
+		this.explode()
 	}
 	this.time += period
+	if (this.time > BOMB_PROPAG_TIME) {
+		this.remove()
+	}
+}
+
+Bomb.prototype.explode = function () {
+	var game = this.player.game
+	var playersOnArc = {}
+	/*
+	function addPlayerOn(player, arc, dist) {
+		if (!playersOnArc[arc.id])
+			playersOnArc[arc.id] = []
+		playersOnArc[arc.id].push({p:player, d:dist})
+	}
+	game.players.forEach(function(p) {
+		addPlayerOn(p, p.currentArc, p.currentArcDist)
+		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
+	})
+	function rec (startDist, distToCover, prevNode, arc) {
+		arc.n1.arcsTo.forEach(function(a) {
+			if (a.n2.id != prevNode.id) {
+				
+				playersOnArc[arc.id].forEach(function(pd) {
+					//if (p.currentArcDist)
+					if (startDist <= pd.d && pd.d <= distToCover)
+						pd.p.die()
+				})
+				
+				rec()
+			}
+		})
+	}
+	var curArc = this.arc
+	////////////////////////////
+	var power = 3 // TODO adjust to real value
+	////////////////////////////
+	rec(this.arcDist, power curArc.n1, curArc)
+	rec(curArc.length-this.arcDist, power, curArc.n2, curArc.n2.arcToId(curArc.n1.id))
+	*/
+}
+
+Bomb.prototype.remove = function () {
+	var bs = this.player.game.bombs
+	bs.splice(bs.indexOf(this),1)
 }
 
 var delta = 0.0001
@@ -193,6 +251,12 @@ Player.prototype.update = function (period) {
 		}
 	}
 	
+}
+
+Player.prototype.die = function () {
+	/////////
+	this.remove() // TODO really make the player die
+	/////////
 }
 
 Player.prototype.remove = function () {
