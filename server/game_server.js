@@ -30,16 +30,17 @@ function Connexion(gserver, stream, player) {
 	
 	// TODO: this seems useless since stream object equality can be used to identify clients
 	
-	/*
-	 // Unique randomized id gen for security
+	
+	// Unique randomized id gen for security
+	var cons = gserver.connexions
 	do {
 		this.conKey = Math.random();
-	} while (!gserver.connexions.reduce (
-		function(prev,curr) {
-			return prev && curr.conKey != that.conKey
+	} while (!Object.keys(cons).reduce (
+		function(prev,currKey) {
+			return prev && cons[currKey].conKey != that.conKey
 		}, true)
 	)
-	*/
+	
 	gserver.connexions[streamKey(stream)] = this
 	
 	//gserver.playersByStream[stream] = player
@@ -109,13 +110,15 @@ function GameServer(game) {
 			fa.sendPlayerUpdate(player.stream, id, data) // if position
 			
 		}*/
-		
+		/*
 		that.connexions.forEach(function(con) {
-			
 			fa.sendPlayerUpdate(player.stream, con.player.id, player.getPosition()); // if position
-			
 		})
-		
+		*/
+		for (var conKey in that.connexions) {
+			var con = that.connexions[conKey]
+			fa.sendPlayerUpdate(con.stream, con.player.id, con.player.getPosition());
+		}
 		
 	}, MOVE_REFRESH_PERIOD)
 	
@@ -160,15 +163,15 @@ GameServer.prototype.moveCommand = function(conKey, endCoeff, nodes) {
 	
 }
 
-GameServer.prototype.bombCommand = function(stream, pos) {
+GameServer.prototype.bombCommand = function(stream, pos) { // FIXME pos??
 	//this.playersByStream[stream].//bomb(pos, id) // TODO Lionel :D
 	//this.connexions[streamKey(stream)].player.bomb(nodes, endCoeff)
-	this.getPlayer(stream).bomb(nodes, endCoeff)
+	this.getPlayer(stream).bomb()
 }
 
-GameServer.prototype.setInitialPosition = function(conKey, position) {
+GameServer.prototype.setInitialPosition = function(stream, position) {
 	//this.playersByStream[stream].setPosition(position)
-	
+	this.getPlayer(stream).setPosition(position)
 }
 
 
