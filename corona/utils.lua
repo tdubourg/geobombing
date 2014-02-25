@@ -40,3 +40,11 @@ function array_insert(receivingArray, insertedArray)
 	end
 	return receivingArray
 end
+
+function silent_fail_require(module_name)
+    local function requiref(module_name)
+        require(module_name)
+    end
+    local res = pcall(requiref,module_name)
+    return res
+end
