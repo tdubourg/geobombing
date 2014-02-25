@@ -64,6 +64,10 @@ function Connexion(gserver, stream, player) {
 		console.log("Disconnecting player "+player.name)
 		that.open = false
 		delete gserver.connexions[streamKey(stream)]
+		player.remove()
+		gserver.notify(function(stream) {
+			fa.sendPlayerRemove(stream, player)
+		})
 	}
 	
 	stream.addListener("end", disco)
@@ -117,6 +121,13 @@ function GameServer(game) {
 		
 	}, MOVE_REFRESH_PERIOD)
 	
+}
+
+GameServer.prototype.notify = function(fct) {
+	for (var conKey in this.connexions) 
+	{
+		fct(this.connexions[conKey].stream)
+	}
 }
 
 GameServer.prototype.notifyBomb = function(bomb) {

@@ -195,6 +195,10 @@ Player.prototype.update = function (period) {
 	
 }
 
+Player.prototype.remove = function () {
+	this.game.players.splice(this.game.players.indexOf(this),1)
+}
+
 Player.prototype.getPosition = function () {
 	return com.CreatePosition(
 		this.currentArc.n1.id,
