@@ -8,7 +8,6 @@ local function onBombBtnRelease()
 	print("BOMB")
 	btnBombClicked = true
 
-		itemsManager:newBomb(player.arcPCurrent)
 	-- end
 
 	return true	-- indicates successful touch
