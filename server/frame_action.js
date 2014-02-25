@@ -23,14 +23,15 @@ var sendInit_action = function (frame_data, stream)
 	if (frame_data != null && frame_data.longitude != null) 
 		lon = parseFloat(frame_data.longitude);
 	
-	function sendMap(jsonMap)
+	function sendInit(jsonMap)
 	{
 		var conKey = single_game_server.addPlayer(stream).conKey
 		//var jsonMap = db.mapDataToJSon(mapData)
+		var id = 0
 		var content =  
 		{
 			"type": net.TYPEPLAYERINIT, 
-			"id": conId // kesako?!
+			"id": id // kesako?!
 			//"key": 0, // 
 			//"data": jsonMap
 		}
