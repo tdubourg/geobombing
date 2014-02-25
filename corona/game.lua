@@ -23,24 +23,25 @@ local currentMap = nil
 itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 
-function initGame()
+function initGame(player_id)
+	player_id = "" .. player_id
 	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
 	for voisin,_ in pairs(nodeFr.arcs) do
 		nodeT=voisin
 	end
 	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
 
-	player = Player.new( "1",  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
+	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
 	others = {player}
-	
-
 end
 
 function movePlayerById(id,arcP)
 	local exist = false
 	id = "" .. id
-	for _,other in pairs(others) do
+	print ( "id asked is ", id)
+	print ( " -----------------------------")
+	for _,other in ipairs(others) do
 		print(other.id)
 		if (other.id == id) then
 			print("bouge")
@@ -49,6 +50,7 @@ function movePlayerById(id,arcP)
 		end
 		print("bouge ??")
 	end
+	print ( " -----------------------------")
 	if (exist == false) then
 		print("bouge nouveau")
 		others[#others] = Player.new(id,0.02,0,arcP)
@@ -88,7 +90,7 @@ function scene:createScene( event )
 			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
-			initGame()
+			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
