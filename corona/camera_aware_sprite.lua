@@ -18,11 +18,12 @@ local CameraAwareSprite = utils.extend(Super)
 -- Create the environment
 function CameraAwareSprite.create(options)
 	local self = utils.extend(CameraAwareSprite) -- just an instanciation
-	self.worldPosition = options.worldPosition
 	self.name = options.spriteSet
 	-- print ("CameraAwareSprite.create", self.name, "self.worldPosition", self.worldPosition.x, self.worldPosition.y)
 	Super.super(self, options)
 	camera:addListener(self)
+
+	self:setWorldPosition(options.worldPosition)
 	return self
 end
 
