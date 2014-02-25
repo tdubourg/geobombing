@@ -9,8 +9,8 @@ exports.Game = Game
 var u = require("./util")
 var com = require("./common")
 
-function panick() {
-	console.log("[Game Model Error]: ??")
+function panick(str) {
+	console.log("[Game Model Error]: "+(str? str: "unspecified"))
 }
 
 function Node(id, x, y) {
@@ -139,7 +139,7 @@ Player.prototype.update = function (period) {
 		//var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
 		//console.log(period)
 		
-		console.log("Going to", this.currentArc+"")
+		//console.log("Going to", this.currentArc+"", this.targetArcDist+"/"+this.currentArc.length)
 		
 		while (distToWalk > delta) {
 			//var distToNode = this.currentArc.length-this.currentArcDist
@@ -207,15 +207,32 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	else if (this.currentArc.n2.id == firstNodeId) {
 		//this.nextNode = this.currentArc.n2
 	}
-	else console.log("[Game Model Error]: Unknown move ")
+	//else console.log("[Game Model Error]: Unknown move ")
+	else panick("Unknown move")
 	//console.log("mvTo:",this.nextNode)
 	
-	this.targetArcDist = endCoeff*this.currentArc.length
 	
 	var nodesRest = []
 	for (var i = 0; i < nodeIds.length; i++)
 		nodesRest.push(this.game.map.getNode(nodeIds[i]))
 	this.currentPath = nodesRest
+	
+	var nodesRest2 = nodesRest.slice()
+	var arc = this.currentArc
+	while(nodesRest2.length > 0)
+	{
+		var node = nodesRest2.shift()
+		//console.log("Next node: "+node)
+		arc = arc.n2.arcToId(node.id)
+		if (!arc) {
+			this.targetArcDist = 0
+			panick("Invalid move: no way to node "+node)
+			return
+		}
+	}
+	//console.log("Ending at: "+arc)
+	this.targetArcDist = endCoeff*arc.length
+	
 	
 	//console.log("Going to", this.currentArc+"")
 	
