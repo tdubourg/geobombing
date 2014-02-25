@@ -89,6 +89,8 @@ function Map(jsonObj) {
 	jsonObj.mapListWay.forEach(function(w) {
 		//console.log(w)
 		for (var i = 0; i < w.wLstNdId.length-1; i++) {
+			
+			//n1 = this.getNode(w.wLstNdId[i]), n2 = this.getNode(w.wLstNdId[i+1])
 			var n1 = that.nodes[w.wLstNdId[i]], n2 = that.nodes[w.wLstNdId[i+1]]
 			that.nodes[n1.id].arcsTo[n2.id] = new Arc(n1, n2)
 			that.nodes[n2.id].arcsTo[n1.id] = new Arc(n2, n1)
@@ -105,15 +107,18 @@ var pids = 0
 //function Player(id, name) {
 function Player(game,stream) {
 	//console.log("CRE PLAY",game)
+	/*this.id = id
+	this.name = name*/
 	this.game = game
 	game.players.push(this)
 	this.stream = stream
 	this.id = ++pids
-	this.name = "Player_" + this.id
+	this.name = "Player_"+this.id
 	this.currentPath = []  // contains nextNode? -> NOT
 	this.speed = .3 //1E-3
 	this.connexion = null
 	
+	//this.currentArc = null
 	//this.currentArcPos = null
 	this.currentArc = null
 	this.currentArcDist = null
@@ -147,18 +152,24 @@ function BombAction() {
 
 Bomb.prototype.update = function (period, explodingBombs) {
 	//console.log("tick...")
-	if (this.time < 0 && this.time+period >= 0) {
+	if (this.time < 0 && this.time+period >= 0)
+	{
 		explodingBombs.push(this)
 		console.log("BOOM!!")
-		this.explode()
 	}
 	this.time += period
-	if (this.time > BOMB_PROPAG_TIME) {
+	
+	if (this.time > BOMB_PROPAG_TIME)
+	{
 		this.remove()
+	}
+	else if (this.time > 0)
+	{
+		this.explode_propagate(this.time/BOMB_PROPAG_TIME)
 	}
 }
 
-Bomb.prototype.explode = function () {
+Bomb.prototype.explode_propagate = function (coeff) {
 	var game = this.player.game
 	var playersOnArc = {}
 	/*
@@ -189,6 +200,9 @@ Bomb.prototype.explode = function () {
 	////////////////////////////
 	var power = 3 // TODO adjust to real value
 	////////////////////////////
+	
+	power *= coeff
+	
 	rec(this.arcDist, power curArc.n1, curArc)
 	rec(curArc.length-this.arcDist, power, curArc.n2, curArc.n2.arcToId(curArc.n1.id))
 	*/
@@ -197,6 +211,13 @@ Bomb.prototype.explode = function () {
 Bomb.prototype.remove = function () {
 	var bs = this.player.game.bombs
 	bs.splice(bs.indexOf(this),1)
+}
+
+Bomb.prototype.getPosition = function () {
+	return com.CreatePosition(
+		this.arc.n1.id,
+		this.arc.n2.id,
+		this.arcDist/this.arc.length);
 }
 
 var delta = 0.0001
