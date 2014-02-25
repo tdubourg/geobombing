@@ -129,7 +129,9 @@ function GameServer(game) {
 		*/
 		for (var conKey in that.connexions) {
 			var con = that.connexions[conKey]
-			fa.sendPlayerUpdate(con.stream, con.player.id, con.player.getPosition());
+			game.players.forEach(function (player) {
+				fa.sendPlayerUpdate(con.stream, player);
+			})
 		}
 		
 	}, MOVE_REFRESH_PERIOD)
