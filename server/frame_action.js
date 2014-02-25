@@ -26,12 +26,11 @@ var sendmap_action = function (frame_data, stream)
 	
 	function sendMap(jsonMap)
 	{	
-		var conId = single_game_server.addPlayer(stream).conId
+		var conKey = single_game_server.addPlayer(stream).conId
 		//var jsonMap = db.mapDataToJSon(mapData)
 		var content =  
 		{
 			"type": net.TYPEMAP, 
-			"id": conId, // kesako?!
 			"data": jsonMap
 		};
 		var data = JSON.stringify(content); // parsage JSON

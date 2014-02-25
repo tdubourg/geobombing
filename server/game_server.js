@@ -13,6 +13,10 @@ exports.Connexion = Connexion
 var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
 
+function streamKey(stream) {
+	var a = stream.address()
+	return a.address+":"+a.port
+}
 
 function Connexion(gserver, stream, player) {
 	var that = this
@@ -22,24 +26,31 @@ function Connexion(gserver, stream, player) {
 	this.stream = stream
 	this.player = player
 	
+	//console.log(streamKey(stream))
+	
 	// TODO: this seems useless since stream object equality can be used to identify clients
 	
+	/*
 	 // Unique randomized id gen for security
 	do {
-		this.conId = Math.random();
+		this.conKey = Math.random();
 	} while (!gserver.connexions.reduce (
 		function(prev,curr) {
-			return prev && curr.conId != that.conId
+			return prev && curr.conKey != that.conKey
 		}, true)
 	)
+	*/
+	gserver.connexions[streamKey(stream)] = this
 	
 	//gserver.playersByStream[stream] = player
 	
 	function disco()
 	{
 		console.log("Disconnecting player "+player.name)
-		gserver.connexions.splice(gserver.connexions.indexOf(this), 1)
-		delete gserver.playersByStream[stream]
+		//gserver.connexions.splice(gserver.connexions.indexOf(this), 1)
+		//delete gserver.playersByStream[stream]
+		//gserver.connexions.splice(gserver.connexions.indexOf(this), 1)
+		delete gserver.connexions[streamKey(this.stream)]//gserver.conByKey[this.conKey]
 	}
 	
 	stream.addListener("end", disco)
@@ -47,15 +58,18 @@ function Connexion(gserver, stream, player) {
 		disco()
 	})
 	
-	gserver.connexions.push(this)
+	//gserver.connexions.push(this)
 }
 
 function GameServer(game) {
 	var that = this
 	
 	this.game = game
-	this.connexions = [] // FIXME NOT USED
+	//this.connexions = [] // FIXME NOT USED
 	//this.playersByStream = {}
+	//this.conByStream = {}
+	//this.conByKey = {}
+	this.connexions = {}
 	
 	//console.log(performance.now()	)
 
@@ -110,36 +124,51 @@ function GameServer(game) {
 GameServer.prototype.addPlayer = function(stream) {
 	// TODO handle timeouts
 	
+	//console.log(stream.toString())
+	
 	var c = new Connexion(this, stream, new g.Player(this.game, stream))
 	//this.connexions.push(c)
 	//game.addPlayer(c)
-
-			/*var data = {};
-			data[fa.TYPEPOS] = player.getPosition()
-			fa.sendPlayerUpdate(player.stream, id, data) // if position*/
+	
+	/*var data = {};
+	data[fa.TYPEPOS] = player.getPosition()
+	fa.sendPlayerUpdate(player.stream, id, data) // if position*/
 	
 	return c
 }
+GameServer.prototype.getPlayer = function(stream) {
+	//return gserver.connexions.indexOf(con).player
+	return this.connexions[streamKey(stream)].player
+}
+/*
+GameServer.prototype.getConByStream = function(stream) {
+	return gserver.connexions.indexOf(con).player
+}
+*/
 
-GameServer.prototype.moveCommand = function(stream, endCoeff, nodes) {
+GameServer.prototype.moveCommand = function(conKey, endCoeff, nodes) {
 	//console.log(stream == this.connexions[0].stream)
 	//console.log(this.playersByStream[stream].id)
 	
 	//console.log(startCoeff, endCoeff, nodes)
 	
-	console.log("Move com from",this.playersByStream[stream].name)
+	console.log("Move com from", this.getPlayer(stream).name)//this.playersByStream[stream].name)
 	
-	this.playersByStream[stream].move(nodes, endCoeff)
+	//this.playersByStream[stream].move(nodes, endCoeff)
+	//this.connexions[streamKey(stream)].player.move(nodes, endCoeff)
+	this.getPlayer(stream).move(nodes, endCoeff)
 	
 }
 
-GameServer.prototype.bombCommand = function(stream, id, pos) {
+GameServer.prototype.bombCommand = function(stream, pos) {
 	//this.playersByStream[stream].//bomb(pos, id) // TODO Lionel :D
-	
+	//this.connexions[streamKey(stream)].player.bomb(nodes, endCoeff)
+	this.getPlayer(stream).bomb(nodes, endCoeff)
 }
 
-GameServer.prototype.setInitialPosition = function(stream, position) {
-	this.playersByStream[stream].setPosition(position)
+GameServer.prototype.setInitialPosition = function(conKey, position) {
+	//this.playersByStream[stream].setPosition(position)
+	
 }
 
 
