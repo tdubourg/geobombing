@@ -35,8 +35,10 @@ function Connexion(gserver, stream, player) {
 		return null
 	}
 	
+	this.open = false
 	this.stream = stream
 	this.player = player
+	player.connexion = this
 	
 	// Unique randomized id gen for security
 	var cons = gserver.connexions
@@ -60,6 +62,7 @@ function Connexion(gserver, stream, player) {
 	function disco()
 	{
 		console.log("Disconnecting player "+player.name)
+		that.open = false
 		delete gserver.connexions[streamKey(stream)]
 	}
 	
@@ -67,6 +70,8 @@ function Connexion(gserver, stream, player) {
 	stream.addListener("error", function(err) {
 		disco()
 	})
+	
+	this.open = true
 	
 	//gserver.connexions.push(this)
 }
@@ -104,9 +109,11 @@ function GameServer(game) {
 GameServer.prototype.addPlayer = function(stream) {
 	// TODO handle timeouts
 	
-	var c = new Connexion(this, stream, new g.Player(this.game, stream))
+	var p = new g.Player(this.game, stream)
 	
-	return c
+	var c = new Connexion(this, stream, p)
+	
+	return p
 }
 GameServer.prototype.getPlayer = function(stream) {
 	//return gserver.connexions.indexOf(con).player
