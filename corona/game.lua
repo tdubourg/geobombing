@@ -141,10 +141,7 @@ local function moveObject(e)
 		
 		local from = currentMap:getClosestNode(player.pos)	
 			
-		if (from == nil) then
-			--player:saveNewDestinationVect(node.pos)
-			print("no node near player")
-		else
+		
 			local arcP = currentMap:getClosestPos(worldPos)
 
 			if (arcP ~= nil) then 
@@ -182,7 +179,7 @@ local function moveObject(e)
 			else
 				print("arcP == nil") 
 			end
-		end
+		
 	end
 end
 
