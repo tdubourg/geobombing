@@ -125,7 +125,7 @@ function scene:createScene( event )
 	itemsManager = ItemsManager.new()
 end
 
-local myListener = function( event )
+local updateLoop = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
@@ -133,6 +133,14 @@ local myListener = function( event )
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
+	end
+
+	-- TODO: move this into GUI.lua
+	-- OPTIM: pull au lieu de fetch
+	local name = player:getCurrentStreetName()
+	if name then
+		streetText = display.newText(name , 0, 0, native.systemFont, 32 )
+		streetText:setFillColor( 0, 1, 0 )
 	end
 end
 
@@ -199,7 +207,7 @@ end
 function scene:enterScene( event )
 	local group = self.view
 	storyboard.returnTo = "menu"
-	Runtime:addEventListener( "enterFrame", myListener )
+	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener("tap", moveObject)	
 end
 
@@ -212,7 +220,7 @@ function scene:exitScene( event )
 	if (itemsManager ~= nil) then
 		itemsManager:destroy()
 	end
-	Runtime:removeEventListener( "enterFrame", myListener )
+	Runtime:removeEventListener( "enterFrame", updateLoop )
 	Runtime:removeEventListener("tap",moveObject)	
 end
 
