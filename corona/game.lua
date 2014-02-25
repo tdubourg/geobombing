@@ -39,20 +39,20 @@ end
 function movePlayerById(id,arcP)
 	local exist = false
 	id = "" .. id
-	print ( "id asked is ", id)
-	print ( " -----------------------------")
+	-- print ( "id asked is ", id)
+	-- print ( " -----------------------------")
 	for _,other in ipairs(others) do
-		print(other.id)
+		-- print(other.id)
 		if (other.id == id) then
-			print("bouge")
+			-- print("bouge")
 			other:setAR(arcP)
 			exist = true
 		end
-		print("bouge ??")
+		-- print("bouge ??")
 	end
-	print ( " -----------------------------")
+	-- print ( " -----------------------------")
 	if (exist == false) then
-		print("bouge nouveau")
+		-- print("bouge nouveau")
 		others[#others+1] = Player.new(id,0.02,0,arcP)
 	end
 end
