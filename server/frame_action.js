@@ -89,6 +89,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
+	console.log("Sending player_update data to client:", data)
 	stream.write(data + net.FRAME_SEPARATOR,function() {})
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
