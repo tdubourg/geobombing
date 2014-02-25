@@ -54,10 +54,10 @@ function movePlayerById(id,arcP)
 end
 
 function update_player_position( pos_obj )
-	print ( "TOTO")
-	print (pos_obj.n1, pos_obj.n2, pos_obj.c)
+	--print ( "TOTO")
+	--print (pos_obj.n1, pos_obj.n2, pos_obj.c)
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
-	print ('arcP returned is', arcP)
+	--print ('arcP returned is', arcP)
 	player:setAR(arcP)
 end
 
@@ -90,7 +90,7 @@ function scene:createScene( event )
 			camera:lookAt(player:getPos())
 		end
 		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-			print ("Received player update from server: " .. json.encode(json_obj))
+			--print ("Received player update from server: " .. json.encode(json_obj))
 
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
@@ -179,6 +179,8 @@ local function moveObject(e)
 				
 					--player:saveNewNodes(nodes,arcP)
 				end
+			else
+				print("arcP == nil") 
 			end
 		end
 	end
