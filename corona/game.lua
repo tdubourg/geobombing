@@ -79,8 +79,8 @@ function scene:createScene( event )
 
 	if result then
 		print ( "!!CONNECTED!!" )
-		net.net_handlers['map'] = function ( json_obj )
-			luaMap = json_obj[JSON_FRAME_DATA]
+		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
+			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 			initGame()
