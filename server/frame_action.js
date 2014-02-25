@@ -28,12 +28,12 @@ var sendInit_action = function (frame_data, stream)
 		var conKey = single_game_server.addPlayer(stream).conKey
 		var id = 0
 		var data = {}
+		data["id"] = id // id
+		data["key"] = conKey // key
 		data[net.TYPEMAP] = jsonMap // map
 		var content =  
 		{
 			"type": net.TYPEPLAYERINIT, 
-			"id": id, // donner l'id pour le donner à tous les joueurs
-			"key": conKey, // secret ID (unique sending)
 			"data": data
 		}
 		
@@ -66,24 +66,6 @@ var sendInit_action = function (frame_data, stream)
 
 // --- updates ---
 
-
-/*var sendPlayerPosition = function (stream, id, pos) // player and other players
-{
-	// IDs are string on client side
-	pos.n1 = pos.n1.toString()
-	pos.n2 = pos.n2.toString()
-	
-	var content = 
-	{
-		"type": net.TYPEPLAYERUPDATE, 
-		"id": id,
-		"data": pos
-	};
-	
-	var data = JSON.stringify(content);
-	stream.write(data + net.FRAME_SEPARATOR,function() {})
-}
-exports.sendPlayerPosition = sendPlayerPosition*/
 
 var sendPlayerUpdate = function (stream, id, pos) // player and other players
 {	
