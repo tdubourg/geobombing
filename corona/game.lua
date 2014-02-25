@@ -118,8 +118,10 @@ local myListener = function( event )
 	if (btnBombClicked) then
 		btnBombClicked = false
 	else
-		player:refresh()
-		camera:lookAt(player:getPos())
+		if (player ~=nil) then 
+			player:refresh()
+			camera:lookAt(player:getPos())
+		end
 	end
 end
 
