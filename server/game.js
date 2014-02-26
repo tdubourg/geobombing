@@ -332,11 +332,13 @@ Player.prototype.update = function (period) {
 }
 
 Player.prototype.die = function () {
-	console.log("Player",this.name,"died in horrible pain!!")
-	this.dead = true
-	/////////
-	//this.remove() // TODO really make the player die
-	/////////
+	if (!this.dead) {
+		console.log("Player",this.name,"died in horrible pain!!")
+		this.dead = true
+		/////////
+		//this.remove() // TODO really make the player die
+		/////////
+	}
 }
 
 Player.prototype.remove = function () {
