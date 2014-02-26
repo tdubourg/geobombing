@@ -23,20 +23,6 @@ currentMap = nil
 itemsManager = nil
 local gui = require ("gui") -- has to be required after globals definition
 
-function initGame(player_id)
-	player_id = "" .. player_id
-	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
-	for voisin,_ in pairs(nodeFr.arcs) do
-		nodeT=voisin
-	end
-	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
-
-	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
-
-	others = {}
-	others[player_id] = player
-end
-
 function movePlayerById(id,arcP)
 	local exist = false
 	strid = "" .. id
@@ -64,75 +50,7 @@ end
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
-	local group = self.view
-	displayMainGroup:insert(group)
-	camera = Camera:new()
-	camera:setZoomXY(200,200)
-	camera:lookAtXY(0,0)	
-	gui.initGUI()
-	
-	-- connect to server
-	print "create scene"
-	local result = net.connect_to_server("127.0.0.1", 3000)
 
-	if result then
-		print ( "!!CONNECTED!!" )
-		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
-			print_r(json_obj)
-			local strid = tostring(json_obj.data.id)
-			local playerObj = others[strid]
-			if playerObj then
-				playerObj:destroy()
-				others[strid] = nil
-			end
-		end
-		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
-			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
-			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
-			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
-			if (currentMap) then currentMap:destroy() end
-			currentMap = Map:new(luaMap)
-			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
-			player:refresh()
-			camera:lookAt(player:getPos())
-		end
-		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-			-- print ("Received player update from server: " .. json.encode(json_obj))
-
-			if (json_obj.data ~= nil) then
-				-- There's some data to crunch
-
-				-- The position has to be updated
-				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-					-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
-					update_player_position(
-						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
-						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-					)
-
-				end
-				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
-					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
-				end
-			end
-
-			--handling self death
-			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
-				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
-					storyboard.gotoScene("menu" , { effect="crossFade", time=500 } )
-				end
-			end
-		end
-		net.sendPosition()
-	else
-		print ("Could no connect to server")
-		currentMap = Map:new(nil)
-		initGame("1")
-		player:refresh()
-		camera:lookAt(player:getPos())
-	end
-
-	itemsManager = ItemsManager.new()
 end
 
 local updateLoop = function( event )
@@ -220,6 +138,22 @@ local function moveObject(e)
 	end
 end
 
+function initGame(player_id)
+	player_id = "" .. player_id
+	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
+	for voisin,_ in pairs(nodeFr.arcs) do
+		nodeT=voisin
+	end
+	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
+
+	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
+
+	others = {}
+	others[player_id] = player
+	Runtime:addEventListener( "enterFrame", updateLoop )
+	Runtime:addEventListener("tap", moveObject)	
+end
+
 -- local function myTapListener( event )
 
 --     --code executed when the button is tapped
@@ -230,8 +164,77 @@ end
 function scene:enterScene( event )
 	local group = self.view
 	storyboard.returnTo = "menu"
-	Runtime:addEventListener( "enterFrame", updateLoop )
-	Runtime:addEventListener("tap", moveObject)	
+
+
+	local group = self.view
+	displayMainGroup:insert(group)
+	camera = Camera:new()
+	camera:setZoomXY(200,200)
+	camera:lookAtXY(0,0)	
+	gui.initGUI()
+	
+	-- connect to server
+	print "create scene"
+	local result = net.connect_to_server("127.0.0.1", 3000)
+
+	if result then
+		print ( "!!CONNECTED!!" )
+		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
+			print_r(json_obj)
+			local strid = tostring(json_obj.data.id)
+			local playerObj = others[strid]
+			if playerObj then
+				playerObj:destroy()
+				others[strid] = nil
+			end
+		end
+		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
+			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
+			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
+			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
+			if (currentMap) then currentMap:destroy() end
+			currentMap = Map:new(luaMap)
+			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
+			player:refresh()
+			camera:lookAt(player:getPos())
+		end
+		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
+			-- print ("Received player update from server: " .. json.encode(json_obj))
+
+			if (json_obj.data ~= nil) then
+				-- There's some data to crunch
+
+				-- The position has to be updated
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
+					-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+					update_player_position(
+						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
+						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+					)
+
+				end
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
+					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+				end
+			end
+
+			--handling self death
+			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
+				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
+					storyboard.gotoScene("menu" , { effect="crossFade", time=500 } )
+				end
+			end
+		end
+		net.sendPosition()
+	else
+		print ("Could no connect to server")
+		currentMap = Map:new(nil)
+		initGame("1")
+		player:refresh()
+		camera:lookAt(player:getPos())
+	end
+
+	itemsManager = ItemsManager.new()
 end
 
 
@@ -263,13 +266,14 @@ function scene:exitScene( event )
 		itemsManager:destroy()
 	end
 
+	group:removeSelf( )
+
 end
 
 
 -- Called prior to the removal of scene's "view" (display group)
 function scene:destroyScene( event )
 	local group = self.view
-	group:removeSelf( )
 	-----------------------------------------------------------------------------
 	
 	--	INSERT code here (e.g. remove listeners, widgets, save state, etc.)
