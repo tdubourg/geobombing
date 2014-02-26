@@ -152,6 +152,7 @@ function Bomb(player) { //, arc, coeff) {
 	this.time = -BOMB_TIMER
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
+	this.power = 1
 	//player.game.bombs[this.id] = this
 	
 }
@@ -255,7 +256,8 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	}
 	var curArc = this.arc
 	////////////////////////////
-	var power = 1 // 3 // TODO adjust to real value
+	//var power = 1 // 3 // TODO adjust to real value
+	var power = this.power
 	////////////////////////////
 	
 	power *= coeff
@@ -333,7 +335,7 @@ Player.prototype.die = function () {
 	console.log("Player",this.name,"died in horrible pain!!")
 	this.dead = true
 	/////////
-	this.remove() // TODO really make the player die
+	//this.remove() // TODO really make the player die
 	/////////
 }
 
@@ -358,6 +360,8 @@ Player.prototype.setPosition = function (position) {
 }
 
 Player.prototype.move = function (nodeIds, endCoeff) {
+	if (this.dead) return
+	
 	var firstNodeId = nodeIds.shift()
 	
 	if (this.currentArc.n1.id == firstNodeId) {
@@ -399,7 +403,8 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	
 }
 Player.prototype.bomb = function () {
-	// TODO
+	if (this.dead) return
+	
 	var b = new Bomb(this)
 	
 	this.game.bombs.push(b)

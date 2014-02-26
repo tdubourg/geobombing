@@ -63,6 +63,7 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 		NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
 		NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
 		NETWORK_BOMB_UPDATE_POS_KEY = "pos"
+		NETWORK_BOMB_UPDATE_POWER_KEY = "rad"
 	-- map data
 		JSON_MAP_NAME = "mapName"
 		JSON_NODE_LIST = "mapListNode"
@@ -83,7 +84,6 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 
 
 -- GAMEPLAY
-	EXPLOSION_POWER = 3
 
 BOMB_DBG_MODE = false
 

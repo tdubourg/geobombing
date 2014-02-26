@@ -172,7 +172,7 @@ exports.mapDataToJSon = mapDataToJSon
 function getInitialPosition() {
 	var position;
 	position = common.CreatePosition(0, 0, 0);
-	if (!conDB) 
+	//if (!conDB) 
 	{
 		position = common.CreatePosition(1, 2, 0.5);
 	}

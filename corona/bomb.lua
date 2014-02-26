@@ -29,6 +29,7 @@ function Bomb.create(options)
 	self.arcPos = options.arcPos
 	self.id = options.id
 	self.type = options.type
+	self.power = options.power
 
 	print ("bomb options.arcPos", options.arcPos)
 
@@ -84,12 +85,10 @@ function Bomb:ecussonEnterFrame(options)
 end
 
 function Bomb:explode(options)
-	local explosionPoints = self.arcPos:initExplosion(EXPLOSION_POWER)
+	local explosionPoints = self.arcPos:initExplosion(self.power)
 
 	self.expSprites = {}
 	for _,ap in ipairs(explosionPoints) do
-		print "explosion point"
-		print_r(ap:getPosXY())
 		local newSprite = CameraAwareSprite.create {
 												spriteSet = "bomb",
 												animation = "explode",
