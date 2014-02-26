@@ -11,6 +11,7 @@ local FRAME_SEPARATOR = "\n"
 local NETWORK_DUMP = true
 local _msgsendtable = {} -- send message queue
 local net_handlers = {}
+local mrcvTimer = nil
 NETWORK_KEY = ""
 
 function test_network()
@@ -76,11 +77,22 @@ function connect_to_server( ip, port )
 		return false
 	else
 		--setup timers to handle update and receive
-		timer.performWithDelay(1, function() _mrcv(client) end, 0)
+		mrcvTimer = timer.performWithDelay(1, function() _mrcv(client) end, 0)
 		-- timer.performWithDelay(1,function() _msend(conn) end,0)
 		return client
 	end
 end
+
+function disconnect()
+	if client then
+		client:close()
+	end
+
+	if mrcvTimer then
+		timer.cancel(mrcvTimer)
+	end
+end
+
 
 function createNetworkPosObjFromArcPos( arcPos )
 	local s = {}
@@ -281,4 +293,5 @@ return
 	, sendPathToServer = sendPathToServer
 	, net_handlers = net_handlers
 	, sendBombRequestToServer = sendBombRequestToServer
+	, disconnect = disconnect
 }
