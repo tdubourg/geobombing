@@ -73,7 +73,8 @@ function scene:createScene( event )
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
-	camera:setZoomXY(200,200)
+	--camera:setZoomXY(200,200)
+	camera:setZoomXY(2000,2000)
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 	
@@ -103,7 +104,6 @@ function scene:createScene( event )
 		end
 		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
 			-- print ("Received player update from server: " .. json.encode(json_obj))
-			print_r(json_obj)
 
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
@@ -203,17 +203,20 @@ local function moveObject(e)
 					--player:saveNewNodes(nil,arcP)
 				else
 					local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
-					--print(from.uid .. "<--- from")	
-					if (nodes[1] == from) then
-						if (player.arcPCurrent.arc.end1 == from) then
-							player.nodeFrom=player.arcPCurrent.arc.end2
+					if (nodes == nil) then -- FIXME!
+						print "WHAT?! WTF?"
+					else
+						--print(from.uid .. "<--- from")	
+						if (nodes[1] == from) then
+							if (player.arcPCurrent.arc.end1 == from) then
+								player.nodeFrom=player.arcPCurrent.arc.end2
+							else
+								player.nodeFrom=player.arcPCurrent.arc.end1
+							end
 						else
-							player.nodeFrom=player.arcPCurrent.arc.end1
+							player.nodeFrom=from
 						end
-				else
-					player.nodeFrom=from
-				end
-
+					end
 
 
 				net.sendPathToServer(nodes,arcP)
