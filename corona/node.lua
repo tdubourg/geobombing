@@ -6,7 +6,7 @@ require "math"
 Node = {}                   -- Create a table to hold the class methods
 function Node:new(worldX, worldY, uid, map)  -- The constructor
 	
-	local self = {uid=uid, containingMap=map}
+	local self = {uid=uid, map=map}
 	self.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
 	self.arcs = {}                                   -- K: destination node, V: corresponding arc
 
@@ -56,13 +56,13 @@ function Node:transmitExplosion(origin, power, distanceInterval, resultArray)
 		if otherNode ~= origin then             -- do not transmit back to origin
 			local transmitedPower = power*self:transmitionCoef(origin, otherNode)
 
-			local APfrom = self.containingMap:createArcPos(self, otherNode, 0.0)
+			local APfrom = self.map:createArcPos(self, otherNode, 0.0)
 			local APto = nil
 			if transmitedPower > arc.len then     -- add points on whole arc and transmit
-				APto = self.containingMap:createArcPos(self, otherNode, 1.0)
+				APto = self.map:createArcPos(self, otherNode, 1.0)
 				otherNode:transmitExplosion(self, transmitedPower - arc.len, distanceInterval, resultArray)
 			else                               -- add points on partial arc
-				APto = self.containingMap:createArcPos(self, otherNode, transmitedPower/arc.len)
+				APto = self.map:createArcPos(self, otherNode, transmitedPower/arc.len)
 			end
 
 			local newPositions = ArcPos.PosListBetween(APfrom, APto, distanceInterval)
