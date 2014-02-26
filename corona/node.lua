@@ -87,7 +87,6 @@ end
 function Node:destroy()
 	camera:removeListener(self)
 	if self.drawable then
-		print "destroy node drawable"
 		self.drawable:removeSelf()
 		self.drawable = nil
 	end
