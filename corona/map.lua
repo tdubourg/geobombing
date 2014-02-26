@@ -3,6 +3,7 @@ require "print_r"
 
 Map = {}
 function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
+	print "Map:new()"
 	local self = {}
 	self.nodesByUID = {}
 	self.arcs ={}
