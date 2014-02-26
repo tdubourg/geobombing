@@ -11,6 +11,7 @@ var g = require('./Game')
 var gs = require('./game_server')
 var single_game_server = null
 
+exports.getServer = function() { return single_game_server }
 
 // executed function according to client result
 var sendInit_action = function (frame_data, stream) 
@@ -116,7 +117,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	data[net.TYPEBOMBID] = bomb.id
 	data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // time since explosion (>0: exploding)
 	data[net.TYPEBOMBTYPE] = 1 // strength or type of bomb
-	var content = 
+	var content =
 	{
 		"type": net.TYPEBOMBUPDATE, 
 		"data": data
@@ -125,6 +126,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
 		//console.log("Bomb update sent ("+(bomb.time<0?1:0)+")")
+		//console.log(bomb.arc.toString(), bomb.arcDist)
 	})
 }
 exports.sendBombUpdate = sendBombUpdate
