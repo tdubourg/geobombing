@@ -52,7 +52,7 @@ var sendInit_action = function (frame_data, stream)
 			{
 				console.log("fin de la partie")
 				//sendEnd(stream, null)
-			}, 30000); // after 30s
+			}, 20000); // after 30s
 
 			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
