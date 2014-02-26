@@ -85,8 +85,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	data[net.TYPEID] = player.id
 	if (player.dead)
 	{ 
-		data[net.TYPEDEAD] = player.dead 
-		console.log(JSON.stringify(data))
+		data[net.TYPEDEAD] = player.dead
 	}
 	var content = 
 	{
@@ -95,7 +94,9 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
-	stream.write(data + net.FRAME_SEPARATOR,function() {})
+	stream.write(data + net.FRAME_SEPARATOR,function() {
+		//console.log("Send updt", stream.address().address)
+	})
 }
 exports.sendPlayerUpdate = sendPlayerUpdate
 
