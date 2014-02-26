@@ -2,8 +2,8 @@ require "camera"
 
 Arc = {}                   -- Create a table to hold the class methods
 
-function Arc:new(end1, end2, streetName)
-	local self = {end1=end1, end2=end2, streetName=streetName}
+function Arc:new(end1, end2, streetName, map)
+	local self = {end1=end1, end2=end2, streetName=streetName, map=map}
 	self.len = end1.pos:dist(end2.pos)
 	self.pos = Vector2D:new((end1.pos.x + end2.pos.x)/2,(end1.pos.y + end2.pos.y)/2)
 
@@ -12,6 +12,8 @@ function Arc:new(end1, end2, streetName)
 	self.drawable = display.newLine(end1.pos.x, end1.pos.y, end2.pos.x, end2.pos.y )
 	self.drawable.strokeWidth = 2
 	self.drawable:setStrokeColor( 255, 255, 255 )
+
+	map.mapGroup:insert(self.drawable)
 
 	camera:addListener(self)
 
