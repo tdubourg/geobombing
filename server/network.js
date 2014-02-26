@@ -27,6 +27,7 @@ var TYPEGONE = "gone"
 
 var TYPEBOMBUPDATE = "bu"
 var TYPEBOMBID = "bid"
+var TYPERADIUS = "rad" // power
 var TYPEBOMBSTATE = "bs" // 0 = new, 1 = exploding
 var TYPEBOMBTYPE = "btype" // 0 to ...
 
@@ -47,6 +48,7 @@ exports.TYPEGONE = TYPEGONE
 exports.TYPEBOMBUPDATE = TYPEBOMBUPDATE
 exports.TYPEBOMBID = TYPEBOMBID
 exports.TYPEBOMBSTATE = TYPEBOMBSTATE
+exports.TYPERADIUS = TYPERADIUS
 exports.TYPEBOMBTYPE = TYPEBOMBTYPE
 
 exports.FRAME_SEPARATOR = FRAME_SEPARATOR

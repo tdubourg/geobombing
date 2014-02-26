@@ -61,13 +61,17 @@ function Connexion(gserver, stream, player) {
 	
 	function disco()
 	{
-		console.log("Disconnecting player " + player.name)
-		that.open = false
-		delete gserver.connexions[streamKey(stream)]
-		player.remove()
-		gserver.notify(function(stream) {
-			fa.sendPlayerRemove(stream, player)
-		})
+		if (that.open) {
+			console.log("Disconnecting player "+player.name)
+			that.open = false
+			delete gserver.connexions[streamKey(stream)]
+			player.remove()
+			gserver.notify(function(stream) {
+				fa.sendPlayerRemove(stream, player)
+			})
+		} else {
+			console.log("Player "+player.name+" is already disconnected")
+		}
 	}
 	
 	stream.addListener("end", disco)
