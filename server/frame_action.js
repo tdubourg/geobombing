@@ -10,6 +10,7 @@ var g = require('./Game')
 //var single_game_instance/*: g.Game */ = null
 var gs = require('./game_server')
 var single_game_server = null
+var nb_before_dead = 0; // todo delete test for death
 
 
 // executed function according to client result
@@ -79,10 +80,18 @@ function sendEnd(stream, game)
 
 var sendPlayerUpdate = function (stream, player) // player and other players
 {
+	nb_before_dead++ 
+	if (nb_before_dead > 100)
+	{
+		player.dead = true
+		console.log(nb_before_dead)
+		nb_before_dead = 0
+	} 
+
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 
 	data[net.TYPEID] = player.id
-	data[net.TYPEDEATH] = player.dead
+	if (player.dead) data[net.TYPEDEAD] = player.dead
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE,
