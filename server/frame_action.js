@@ -121,6 +121,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	data[net.TYPEPOS] = bomb.getPosition()
 	data[net.TYPEBOMBID] = bomb.id
 	data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // time since explosion (>0: exploding)
+	data[net.TYPERADIUS] = bomb.power // area touched
 	data[net.TYPEBOMBTYPE] = 1 // strength or type of bomb
 	var content =
 	{
