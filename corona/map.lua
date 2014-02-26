@@ -6,6 +6,8 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
 	local self = {}
 	self.nodesByUID = {}
 	self.arcs ={}
+	self.mapGroup = display.newGroup( )
+
 	self.latMin = math.huge
 	self.lonMin = math.huge
 	self.latMax = -math.huge
@@ -315,8 +317,10 @@ end
 
 
 function Map:destroy()
+	print "map:destroy()"
 	for _,node in pairs(self.nodesByUID) do
 		node:destroy()
+		print "delnode"
 	end
 
 	for _,arc in ipairs(self.arcs) do
