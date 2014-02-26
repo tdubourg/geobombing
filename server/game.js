@@ -152,6 +152,7 @@ function Bomb(player) { //, arc, coeff) {
 	this.time = -BOMB_TIMER
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
+	this.power = 1
 	//player.game.bombs[this.id] = this
 	
 }
@@ -255,7 +256,8 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	}
 	var curArc = this.arc
 	////////////////////////////
-	var power = 1 // 3 // TODO adjust to real value
+	//var power = 1 // 3 // TODO adjust to real value
+	var power = this.power
 	////////////////////////////
 	
 	power *= coeff
