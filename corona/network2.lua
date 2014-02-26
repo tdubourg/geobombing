@@ -138,6 +138,11 @@ function receivedBombUpdate( network_data )
 	itemsManager:bombUpdate(network_data.data)
 end
 
+function receivedGameEnd( network_data )
+	print ( "Received game end")
+	--itemsManager:gameEnd(network_data.data) -- todo
+end
+
 function sendSerialized(obj, frameType)
 	if client then
 		local packet = {};
@@ -278,6 +283,7 @@ function sendPathToServer( nodes, arcP )
 end
 
 net_handlers[FRAMETYPE_BOMB_UPDATE] = receivedBombUpdate
+net_handlers[FRAMETYPE_GAME_END] = receivedGameEnd
 
 return
 {

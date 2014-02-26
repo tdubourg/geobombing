@@ -12,6 +12,7 @@ var gs = require('./game_server')
 var single_game_server = null
 var nb_before_dead = 0; // todo delete test for death
 
+exports.getServer = function() { return single_game_server }
 
 // executed function according to client result
 var sendInit_action = function (frame_data, stream) 
@@ -48,6 +49,11 @@ var sendInit_action = function (frame_data, stream)
 		{
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
+			setTimeout(function() // durée session //todo delete after sprint2
+			{
+				console.log("fin de la partie")
+				//sendEnd(stream, null)
+			}, 20000); // after 30s
 
 			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
@@ -57,7 +63,7 @@ var sendInit_action = function (frame_data, stream)
 			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
 		}
-} // end send map
+} // end sendInit_action
 
 
 function sendEnd(stream, game)
@@ -126,7 +132,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	data[net.TYPEBOMBID] = bomb.id
 	data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // time since explosion (>0: exploding)
 	data[net.TYPEBOMBTYPE] = 1 // strength or type of bomb
-	var content = 
+	var content =
 	{
 		"type": net.TYPEBOMBUPDATE, 
 		"data": data
@@ -135,6 +141,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
 		//console.log("Bomb update sent ("+(bomb.time<0?1:0)+")")
+		//console.log(bomb.arc.toString(), bomb.arcDist)
 	})
 }
 exports.sendBombUpdate = sendBombUpdate
