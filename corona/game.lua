@@ -77,7 +77,6 @@ function scene:createScene( event )
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
-			print "FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT FRAMETYPE_PLAYER_DISCONNECT"
 			print_r(json_obj)
 			local strid = tostring(json_obj.data.id)
 			local playerObj = others[strid]
@@ -113,6 +112,13 @@ function scene:createScene( event )
 				end
 				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
 					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+				end
+			end
+
+			--handling self death
+			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
+				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
+					storyboard.gotoScene("menu" , { effect="crossFade", time=500 } )
 				end
 			end
 		end
