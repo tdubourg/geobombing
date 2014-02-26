@@ -38,7 +38,7 @@ function receive_until(end_separator)
 	-- print (start, _end)
 	while start == nil do
 		-- print (start, _end)
-		local chunk = client:receive(1)
+		local chunk = client:receive(4)
 		if (chunk == nil) then
 			break
 		end
@@ -103,7 +103,7 @@ function createNetworkPosObjFromArcPos( arcPos )
 end
 
 
-function sendPosition()
+function sendGPSPosition()
 	if client ~= nil then
 		location.enable_location()
 		packet = {}
@@ -289,7 +289,7 @@ return
 {
 	  connect_to_server = connect_to_server
 	, sendSerialized = sendSerialized
-	, sendPosition = sendPosition
+	, sendGPSPosition = sendGPSPosition
 	, sendPathToServer = sendPathToServer
 	, net_handlers = net_handlers
 	, sendBombRequestToServer = sendBombRequestToServer
