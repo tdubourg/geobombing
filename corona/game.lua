@@ -72,6 +72,7 @@ function scene:createScene( event )
 	gui.initGUI()
 	
 	-- connect to server
+	print "create scene"
 	local result = net.connect_to_server("127.0.0.1", 3000)
 
 	if result then
