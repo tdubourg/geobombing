@@ -333,7 +333,7 @@ Player.prototype.die = function () {
 	console.log("Player",this.name,"died in horrible pain!!")
 	this.dead = true
 	/////////
-	this.remove() // TODO really make the player die
+	//this.remove() // TODO really make the player die
 	/////////
 }
 
@@ -358,6 +358,8 @@ Player.prototype.setPosition = function (position) {
 }
 
 Player.prototype.move = function (nodeIds, endCoeff) {
+	if (this.dead) return
+	
 	var firstNodeId = nodeIds.shift()
 	
 	if (this.currentArc.n1.id == firstNodeId) {
@@ -399,7 +401,8 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	
 }
 Player.prototype.bomb = function () {
-	// TODO
+	if (this.dead) return
+	
 	var b = new Bomb(this)
 	
 	this.game.bombs.push(b)
