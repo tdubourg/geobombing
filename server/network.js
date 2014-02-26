@@ -17,9 +17,11 @@ var TYPEMAP = "map"
 var TYPEGAMEEND = "end" // new map, new list bomb (no positions)
 var TYPERANKING = "ranking" // tab of players, and points
 
-var TYPEPLAYERUPDATE = "pu" // new position, new bomb?, new death?, new points
+var TYPEPLAYERUPDATE = "pu" // new position, new death?, new points
+var TYPEID = "id"
+var TYPEKEY = "key"
 var TYPEPOS = "pos" 
-var TYPEDEATH = "dead"
+var TYPEDEAD = "dead"
 var TYPEPOINTS = "points"
 var TYPEGONE = "gone"
 
@@ -35,8 +37,10 @@ exports.TYPEGAMEEND = TYPEGAMEEND
 exports.TYPERANKING = TYPERANKING
 
 exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
+exports.TYPEID = TYPEID
+exports.TYPEKEY = TYPEKEY
 exports.TYPEPOS = TYPEPOS
-exports.TYPEDEATH = TYPEDEATH
+exports.TYPEDEAD = TYPEDEAD
 exports.TYPEPOINTS = TYPEPOINTS
 exports.TYPEGONE = TYPEGONE
 

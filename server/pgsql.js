@@ -156,10 +156,10 @@ function mapDataToJSon(mapData)
     			var id = lastNodeId++
         		node = common.CreateNode(id, mapData[i][j][0], mapData[i][j][1]);
         		nodes_dic[mapData[i][j]] = node;
+        		common.AddNodeToMap(map, node);
         	}
         	else node = nodes_dic[mapData[i][j]]  		
-        	
-        	common.AddNodeToMap(map, node);
+        	       	
         	common.AddNodeIdToWay(way, node.id);
     	}
     	common.AddWayToMap(map, way);

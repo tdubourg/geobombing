@@ -2,7 +2,7 @@ require( "consts" )
 
 local Bomb = {}
 
-local utils = require("lib.ecusson.utils")
+local utils = require("lib.ecusson.Utils")
 local vec2 = require("lib.ecusson.math.vec2")
 local CameraAwareSprite = require("camera_aware_sprite")
 local Sound = require("lib.ecusson.Sound")
