@@ -10,9 +10,10 @@ var u = require("./util")
 var com = require("./common")
 var fa = require("./frame_action")
 
-var PLAYER_SPEED = .5
-var BOMB_TIMER = 2 // seconds
+var PLAYER_SPEED = .1 //.5
+var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
+var BOMB_POWER = .2
 
 var debug_bombes = false
 
@@ -152,7 +153,8 @@ function Bomb(player) { //, arc, coeff) {
 	this.time = -BOMB_TIMER
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
-	this.power = 1
+	//this.power = 1
+	this.power = BOMB_POWER
 	//player.game.bombs[this.id] = this
 	
 }
