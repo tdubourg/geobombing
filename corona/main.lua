@@ -8,12 +8,25 @@ local storyboard = require "storyboard"
 displayMainGroup = display.newGroup( )
 net = require "network2"
 loc = require "location"
+consts = require "consts"
 print( loc )
 
 
 local Sound = require("lib.ecusson.Sound")
 local Sprite = require("lib.ecusson.Sprite")
 local PerformanceWidget = require("lib.ecusson.PerformanceWidget")
+
+
+-----------------------------------------------------------------------------------------
+-- Start Logger
+-----------------------------------------------------------------------------------------
+
+local Logger = require("lib.ecusson.Logger")
+logger = Logger.create{
+	bugReportMail = "ecusson@yopmail.com",
+	bugReportName = "log.txt",
+	screenshotName = "screenshot.jpeg"
+}
 
 -----------------------------------------------------------------------------------------
 -- Preload spritesheets

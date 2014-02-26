@@ -1,3 +1,5 @@
+local json = require "json"
+
 -- table.indexOf( array, object ) returns the index
 -- of object in array. Returns 'nil' if not in array.
 table.indexOf = function( t, object )
@@ -39,4 +41,23 @@ function array_insert(receivingArray, insertedArray)
 		receivingArray[#receivingArray+1] = v
 	end
 	return receivingArray
+end
+
+function silent_fail_require(module_name)
+    local function requiref(module_name)
+        require(module_name)
+    end
+    local res = pcall(requiref,module_name)
+    return res
+end
+
+function dbg( mode, things )
+	if (mode) then
+		for _,v in pairs(things) do
+			if (type(v) == "table") then
+				v = json.encode(v)
+			end
+			io.write( v, "\t")
+		end
+	end
 end

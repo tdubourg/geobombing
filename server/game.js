@@ -9,6 +9,10 @@ exports.Game = Game
 var u = require("./util")
 var com = require("./common")
 
+var BOMB_TIMER = 2 // seconds
+var BOMB_PROPAG_TIME = 1
+
+
 function panick(str) {
 	console.log("[Game Model Error]: "+(str? str: "unspecified"))
 }
@@ -33,14 +37,19 @@ Node.prototype.arcToId = function (nodeId) {
 	else return null
 }
 
+var idNb = 0
+
 function Arc(/*id, name,*/ n1, n2) {
 	//this.id = id
 	//this.name = name
 	//console.log(">>>>>",n1,n1.x)
 	this.length = com.dist(n1,n2)
 	this.nodes = [this.n1 = n1, this.n2 = n2]
+	this.id = idNb++
+	/*
 	this.walls = []
 	this.bombs = []
+	*/
 	//this.arcs[id] = this
 }
 
@@ -48,6 +57,10 @@ Arc.prototype.distFromTo = function (coeff, node) {
 	if (node === this.n1) return this.length*coeff
 	if (node === this.n2) return this.length*(1-coeff)
 	throw "Not a node of this arc"
+}
+
+Arc.prototype.getOpposite = function () {
+	return this.n2.arcToId(this.n1.id)
 }
 
 Arc.prototype.toString = function () {
@@ -76,6 +89,8 @@ function Map(jsonObj) {
 	jsonObj.mapListWay.forEach(function(w) {
 		//console.log(w)
 		for (var i = 0; i < w.wLstNdId.length-1; i++) {
+			
+			//n1 = this.getNode(w.wLstNdId[i]), n2 = this.getNode(w.wLstNdId[i+1])
 			var n1 = that.nodes[w.wLstNdId[i]], n2 = that.nodes[w.wLstNdId[i+1]]
 			that.nodes[n1.id].arcsTo[n2.id] = new Arc(n1, n2)
 			that.nodes[n2.id].arcsTo[n1.id] = new Arc(n2, n1)
@@ -92,15 +107,18 @@ var pids = 0
 //function Player(id, name) {
 function Player(game,stream) {
 	//console.log("CRE PLAY",game)
+	/*this.id = id
+	this.name = name*/
 	this.game = game
 	game.players.push(this)
 	this.stream = stream
 	this.id = ++pids
-	this.name = "Player_" + this.id
+	this.name = "Player_"+this.id
 	this.currentPath = []  // contains nextNode? -> NOT
 	this.speed = .3 //1E-3
 	this.connexion = null
 	
+	//this.currentArc = null
 	//this.currentArcPos = null
 	this.currentArc = null
 	this.currentArcDist = null
@@ -120,7 +138,7 @@ var bombNb = 0
 function Bomb(player) { //, arc, coeff) {
 	this.player = player
 	this.id = ++bombNb
-	this.time = -1
+	this.time = -BOMB_TIMER
 	this.arc = player.currentArc
 	this.arcDist = player.currentArcDist
 	//player.game.bombs[this.id] = this
@@ -134,11 +152,72 @@ function BombAction() {
 
 Bomb.prototype.update = function (period, explodingBombs) {
 	//console.log("tick...")
-	if (this.time < 0 && this.time+period >= 0) {
+	if (this.time < 0 && this.time+period >= 0)
+	{
 		explodingBombs.push(this)
 		console.log("BOOM!!")
 	}
 	this.time += period
+	
+	if (this.time > BOMB_PROPAG_TIME)
+	{
+		this.remove()
+	}
+	else if (this.time > 0)
+	{
+		this.explode_propagate(this.time/BOMB_PROPAG_TIME)
+	}
+}
+
+Bomb.prototype.explode_propagate = function (coeff) {
+	var game = this.player.game
+	var playersOnArc = {}
+	/*
+	function addPlayerOn(player, arc, dist) {
+		if (!playersOnArc[arc.id])
+			playersOnArc[arc.id] = []
+		playersOnArc[arc.id].push({p:player, d:dist})
+	}
+	game.players.forEach(function(p) {
+		addPlayerOn(p, p.currentArc, p.currentArcDist)
+		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
+	})
+	function rec (startDist, distToCover, prevNode, arc) {
+		arc.n1.arcsTo.forEach(function(a) {
+			if (a.n2.id != prevNode.id) {
+				
+				playersOnArc[arc.id].forEach(function(pd) {
+					//if (p.currentArcDist)
+					if (startDist <= pd.d && pd.d <= distToCover)
+						pd.p.die()
+				})
+				
+				rec()
+			}
+		})
+	}
+	var curArc = this.arc
+	////////////////////////////
+	var power = 3 // TODO adjust to real value
+	////////////////////////////
+	
+	power *= coeff
+	
+	rec(this.arcDist, power curArc.n1, curArc)
+	rec(curArc.length-this.arcDist, power, curArc.n2, curArc.n2.arcToId(curArc.n1.id))
+	*/
+}
+
+Bomb.prototype.remove = function () {
+	var bs = this.player.game.bombs
+	bs.splice(bs.indexOf(this),1)
+}
+
+Bomb.prototype.getPosition = function () {
+	return com.CreatePosition(
+		this.arc.n1.id,
+		this.arc.n2.id,
+		this.arcDist/this.arc.length);
 }
 
 var delta = 0.0001
@@ -188,6 +267,12 @@ Player.prototype.update = function (period) {
 		}
 	}
 	
+}
+
+Player.prototype.die = function () {
+	/////////
+	this.remove() // TODO really make the player die
+	/////////
 }
 
 Player.prototype.remove = function () {

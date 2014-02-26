@@ -23,8 +23,8 @@ function Bomb.create(options)
 
 	-- Initialize attributes
 	-- self.spawnPoint = options.spawnPoint
-	self.state = "idle"
-	self.time = 0.0
+	self.state = options.state
+	self.time = 0
 	self.alive = true
 	self.arcPos = options.arcPos
 	self.id = options.id
@@ -102,6 +102,17 @@ function Bomb:explode(options)
 	timer.performWithDelay(EXPLOSION_DURATION*1000, function ( ) -- converting from seconds to ms
 		self:destroy()
 	end)
+end
+
+function Bomb:update( bdata )
+	self.state = bdata.state
+	self.type = bdata
+	self:setArcPos(bdata.arcPos)
+end
+
+function Bomb:setArcPos( arcPos )
+	self.arcPos = arcPos
+	self.sprite:setWorldPosition(arcPos:getPosXY())
 end
 
 function Bomb:touch(event)
