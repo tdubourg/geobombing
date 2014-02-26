@@ -64,6 +64,11 @@ end
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
+
+	-- display a background image
+	local background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
+	-- background:setReferencePoint( display.TopLeftReferencePoint )
+	background.x, background.y = display.contentCenterX, display.contentCenterY
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
@@ -78,7 +83,6 @@ function scene:createScene( event )
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
-			print_r(json_obj)
 			local strid = tostring(json_obj.data.id)
 			local playerObj = others[strid]
 			if playerObj then

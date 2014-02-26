@@ -89,8 +89,6 @@ function Bomb:explode(options)
 
 	self.expSprites = {}
 	for _,ap in ipairs(explosionPoints) do
-		print "explosion point"
-		print_r(ap:getPosXY())
 		local newSprite = CameraAwareSprite.create {
 												spriteSet = "bomb",
 												animation = "explode",
