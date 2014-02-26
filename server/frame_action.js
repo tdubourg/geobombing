@@ -83,7 +83,11 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 
 	data[net.TYPEID] = player.id
-	if (player.dead) data[net.TYPEDEAD] = player.dead
+	if (player.dead)
+	{ 
+		data[net.TYPEDEAD] = player.dead 
+		console.log(JSON.stringify(data))
+	}
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE,
