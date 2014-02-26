@@ -10,6 +10,7 @@ var g = require('./Game')
 //var single_game_instance/*: g.Game */ = null
 var gs = require('./game_server')
 var single_game_server = null
+var nb_before_dead = 0; // todo delete test for death
 
 
 // executed function according to client result
@@ -23,8 +24,8 @@ var sendInit_action = function (frame_data, stream)
 		//var conKey = single_game_server.addPlayer(stream).conKey
 		var player = single_game_server.addPlayer(stream)
 		var data = {}
-		data["id"] = player.id // id
-		data["key"] = player.connexion.conKey // key
+		data[net.TYPEID] = player.id // id
+		data[net.TYPEKEY] = player.connexion.conKey // key
 		data[net.TYPEMAP] = jsonMap // map
 		var content =  
 		{
@@ -79,10 +80,18 @@ function sendEnd(stream, game)
 
 var sendPlayerUpdate = function (stream, player) // player and other players
 {
+	nb_before_dead++ 
+	if (nb_before_dead > 100)
+	{
+		player.dead = true
+		console.log(nb_before_dead)
+		nb_before_dead = 0
+	} 
+
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 
 	data[net.TYPEID] = player.id
-	data[net.TYPEDEATH] = player.dead
+	if (player.dead) data[net.TYPEDEAD] = player.dead
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE,
@@ -97,7 +106,7 @@ exports.sendPlayerUpdate = sendPlayerUpdate
 var sendPlayerRemove = function (stream, player) // player and other players
 {	
 	var data = {}
-	data["id"] = player.id
+	data[net.TYPEID] = player.id
 	var content = 
 	{
 		"type": net.TYPEGONE, 
@@ -112,8 +121,8 @@ exports.sendPlayerRemove = sendPlayerRemove
 var sendBombUpdate = function (stream, bomb) // player and other players
 {
 	var data = {}
-	data["id"] = bomb.player.id // player id
-	data["pos"] = bomb.getPosition()
+	data[net.TYPEID] = bomb.player.id // player id
+	data[net.TYPEPOS] = bomb.getPosition()
 	data[net.TYPEBOMBID] = bomb.id
 	data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // time since explosion (>0: exploding)
 	data[net.TYPEBOMBTYPE] = 1 // strength or type of bomb
