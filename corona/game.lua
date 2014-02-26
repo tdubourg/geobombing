@@ -78,7 +78,6 @@ function scene:createScene( event )
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
-			print_r(json_obj)
 			local strid = tostring(json_obj.data.id)
 			local playerObj = others[strid]
 			if playerObj then
