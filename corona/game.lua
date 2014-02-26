@@ -21,6 +21,7 @@ player = nil -- global in order to be accessed from everywhere
 local bombBtn = nil
 currentMap = nil
 itemsManager = nil
+background = nil
 local gui = require ("gui") -- has to be required after globals definition
 
 function initGame(player_id)
@@ -66,7 +67,7 @@ end
 function scene:createScene( event )
 
 	-- display a background image
-	local background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
+	background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
 	-- background:setReferencePoint( display.TopLeftReferencePoint )
 	background.x, background.y = display.contentCenterX, display.contentCenterY
 	local group = self.view
@@ -257,6 +258,10 @@ function scene:exitScene( event )
 
 	if streetText then
 		streetText:removeSelf()
+	end
+
+	if background then
+		background:removeSelf( )
 	end
 
 	for id,player in pairs(others) do
