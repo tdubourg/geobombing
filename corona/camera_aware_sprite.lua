@@ -2,7 +2,7 @@ require( "consts" )
 
 local CameraAwareSprite = {}
 
-local utils = require("lib.ecusson.utils")
+local utils = require("lib.ecusson.Utils")
 local vec2 = require("lib.ecusson.math.vec2")
 require "camera"
 local Sprite = require("lib.ecusson.Sprite")

@@ -8,10 +8,13 @@ exports.Game = Game
 
 var u = require("./util")
 var com = require("./common")
+var fa = require("./frame_action")
 
+var PLAYER_SPEED = .5
 var BOMB_TIMER = 2 // seconds
 var BOMB_PROPAG_TIME = 1
 
+var debug_bombes = false
 
 function panick(str) {
 	console.log("[Game Model Error]: "+(str? str: "unspecified"))
@@ -43,9 +46,10 @@ function Arc(/*id, name,*/ n1, n2) {
 	//this.id = id
 	//this.name = name
 	//console.log(">>>>>",n1,n1.x)
-	this.length = com.dist(n1,n2)
-	this.nodes = [this.n1 = n1, this.n2 = n2]
 	this.id = idNb++
+	this.nodes = [this.n1 = n1, this.n2 = n2]
+	this.length = com.dist(n1,n2)
+	this.angle = Math.atan2(this.n2.y - this.n1.y, this.n2.x - this.n1.x)
 	/*
 	this.walls = []
 	this.bombs = []
@@ -57,6 +61,12 @@ Arc.prototype.distFromTo = function (coeff, node) {
 	if (node === this.n1) return this.length*coeff
 	if (node === this.n2) return this.length*(1-coeff)
 	throw "Not a node of this arc"
+}
+
+// angle formed by n1, n2, node
+Arc.prototype.angleWith = function (node) {
+	//return Math.atan2(this.n2.y - this.n1.y,)
+	return (this.angle - this.n2.arcToId(node.id).angle)%(2*Math.PI)
 }
 
 Arc.prototype.getOpposite = function () {
@@ -115,8 +125,9 @@ function Player(game,stream) {
 	this.id = ++pids
 	this.name = "Player_"+this.id
 	this.currentPath = []  // contains nextNode? -> NOT
-	this.speed = .3 //1E-3
+	this.speed = PLAYER_SPEED //.3 //1E-3
 	this.connexion = null
+	this.dead = false
 	
 	//this.currentArc = null
 	//this.currentArcPos = null
@@ -156,6 +167,7 @@ Bomb.prototype.update = function (period, explodingBombs) {
 	{
 		explodingBombs.push(this)
 		console.log("BOOM!!")
+		this.explode_propagate(1)
 	}
 	this.time += period
 	
@@ -165,14 +177,30 @@ Bomb.prototype.update = function (period, explodingBombs) {
 	}
 	else if (this.time > 0)
 	{
-		this.explode_propagate(this.time/BOMB_PROPAG_TIME)
+		//this.explode_propagate(this.time/BOMB_PROPAG_TIME)
+	}
+}
+
+function DEBUG_fillWithBombs(game, player, arc, from, to) {
+	//console.log(from, to, "/"+arc.length)
+	for (var i = from; i < to; i+=.2) {
+		if (i <= arc.length) {
+			var b = new Bomb(player)
+			b.arc = arc
+			b.arcDist = i
+			//console.log(i)
+			//console.log(b.arc.toString(), b.arcDist)
+			fa.getServer().notifyBomb(b)
+		}
 	}
 }
 
 Bomb.prototype.explode_propagate = function (coeff) {
 	var game = this.player.game
+	var player = this.player
 	var playersOnArc = {}
-	/*
+	var visitedArc = {}
+	
 	function addPlayerOn(player, arc, dist) {
 		if (!playersOnArc[arc.id])
 			playersOnArc[arc.id] = []
@@ -183,29 +211,61 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
 	})
 	function rec (startDist, distToCover, prevNode, arc) {
-		arc.n1.arcsTo.forEach(function(a) {
-			if (a.n2.id != prevNode.id) {
-				
-				playersOnArc[arc.id].forEach(function(pd) {
-					//if (p.currentArcDist)
-					if (startDist <= pd.d && pd.d <= distToCover)
-						pd.p.die()
-				})
-				
-				rec()
-			}
+		
+		if (visitedArc[arc.id]) return
+		visitedArc[arc.id] = true
+		visitedArc[arc.getOpposite().id] = true
+		
+		if (debug_bombes)
+			DEBUG_fillWithBombs(game, player, arc, startDist, distToCover)
+		
+		// Test kills:
+		
+		if (playersOnArc[arc.id])
+		playersOnArc[arc.id].forEach(function(pd) {
+			if (startDist <= pd.d && pd.d <= distToCover)
+				pd.p.die()
 		})
+		
+		// Propagate:
+		
+		var newDistToCover = distToCover-(arc.length-startDist)
+		
+		if (newDistToCover > 0)
+		{
+			//arc.n2.arcsTo.forEach(function(a) {
+			for (var k in arc.n2.arcsTo)
+			{
+				var newArc = arc.n2.arcsTo[k]
+				//console.log("> "+a)
+				var angle = arc.angleWith(newArc.n2)
+				
+				if (!visitedArc[newArc.id]
+					&& angle > -Math.PI/2 && angle < Math.PI/2
+				) {
+					//console.log("ang: "+angle)
+					//console.log(">> "+a)
+						
+					rec(0, newDistToCover*Math.cos(angle), arc.n2, newArc)
+				}
+				
+			}
+		}
+		
 	}
 	var curArc = this.arc
 	////////////////////////////
-	var power = 3 // TODO adjust to real value
+	var power = 1 // 3 // TODO adjust to real value
 	////////////////////////////
 	
 	power *= coeff
 	
-	rec(this.arcDist, power curArc.n1, curArc)
-	rec(curArc.length-this.arcDist, power, curArc.n2, curArc.n2.arcToId(curArc.n1.id))
-	*/
+	rec(this.arcDist, this.arcDist+power, curArc.n1, curArc)
+	visitedArc[curArc.getOpposite().id] = false
+	//rec(curArc.length-this.arcDist, power, curArc.n2, curArc.n2.arcToId(curArc.n1.id))
+	var d = curArc.length-this.arcDist
+	rec(d, d+power, curArc.n2, curArc.getOpposite())
+	
 }
 
 Bomb.prototype.remove = function () {
@@ -270,6 +330,8 @@ Player.prototype.update = function (period) {
 }
 
 Player.prototype.die = function () {
+	console.log("Player",this.name,"died in horrible pain!!")
+	this.dead = true
 	/////////
 	this.remove() // TODO really make the player die
 	/////////
