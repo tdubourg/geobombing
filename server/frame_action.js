@@ -48,6 +48,11 @@ var sendInit_action = function (frame_data, stream)
 		{
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
+			setTimeout(function() // durée session //todo delete after sprint2
+			{
+				console.log("fin de la partie")
+				//sendEnd(stream, null)
+			}, 30000); // after 30s
 
 			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
@@ -57,7 +62,7 @@ var sendInit_action = function (frame_data, stream)
 			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
 		}
-} // end send map
+} // end sendInit_action
 
 
 function sendEnd(stream, game)
