@@ -64,6 +64,11 @@ end
 
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
+
+	-- display a background image
+	local background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
+	-- background:setReferencePoint( display.TopLeftReferencePoint )
+	background.x, background.y = display.contentCenterX, display.contentCenterY
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()

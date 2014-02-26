@@ -13,9 +13,11 @@ function Node:new(worldX, worldY, uid, map)  -- The constructor
 	self.drawable = display.newGroup()
 	map.mapGroup:insert(self.drawable)
 
-	display.newCircle(self.drawable, self.pos.x, self.pos.y, 7 )
-	local text = display.newText(self.drawable, uid, self.pos.x, self.pos.y, native.systemFont, 16 )
-	text:setFillColor( 0, 0, 1 )
+	local circle =display.newCircle(self.drawable, self.pos.x, self.pos.y, 3 )
+	circle:setFillColor( 0.5, 0.5, 0.5 )
+
+	-- local text = display.newText(self.drawable, uid, self.pos.x, self.pos.y, native.systemFont, 16 )
+	-- text:setFillColor( 0, 0, 1 )
 
 	camera:addListener(self)
 

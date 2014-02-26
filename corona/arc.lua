@@ -10,8 +10,8 @@ function Arc:new(end1, end2, streetName)
 	--TODO : display groupS
 
 	self.drawable = display.newLine(end1.pos.x, end1.pos.y, end2.pos.x, end2.pos.y )
-	self.drawable.strokeWidth = 2
-	self.drawable:setStrokeColor( 255, 255, 255 )
+	self.drawable.strokeWidth = 7
+	self.drawable:setStrokeColor(200, 200, 200)
 
 	camera:addListener(self)
 
@@ -25,8 +25,9 @@ function Arc:redraw()
 	local newPos2 = camera:worldToScreen(self.end2.pos)
 	self.drawable:removeSelf()
 	self.drawable = display.newLine(newPos1.x, newPos1.y, newPos2.x, newPos2.y )
-	self.drawable.strokeWidth = 2
-	self.drawable:setStrokeColor( 255, 255, 255 )
+	self.drawable.strokeWidth = 7
+	self.drawable:setStrokeColor(200, 200, 200)
+
 end
 
 
