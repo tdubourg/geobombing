@@ -116,11 +116,8 @@ function scene:createScene( event )
 			end
 
 			--handling self death
-			print "A"
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
-				print "B"
 				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
-					print "C"
 					storyboard.gotoScene("menu" , { effect="crossFade", time=500 } )
 				end
 			end

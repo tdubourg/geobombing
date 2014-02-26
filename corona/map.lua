@@ -317,10 +317,8 @@ end
 
 
 function Map:destroy()
-	print "map:destroy()"
 	for _,node in pairs(self.nodesByUID) do
 		node:destroy()
-		print "delnode"
 	end
 
 	for _,arc in ipairs(self.arcs) do
