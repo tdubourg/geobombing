@@ -49,6 +49,11 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			JSON_FRAME_KEY = "key"
 			FRAMETYPE_PLAYER_DISCONNECT = "gone"
 		end
+
+		FRAMETYPE_GAME_END = "end"
+		NETWORK_GAME_RANKING = "ranking"
+
+	--bomb data
 		FRAMETYPE_BOMB_UPDATE = "bu"
 		NETWORK_BOMB_UPDATE_ID_KEY = "bid"
 		NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
