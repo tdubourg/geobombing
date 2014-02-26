@@ -83,7 +83,6 @@ function scene:createScene( event )
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
-			print_r(json_obj)
 			local strid = tostring(json_obj.data.id)
 			local playerObj = others[strid]
 			if playerObj then
@@ -103,6 +102,7 @@ function scene:createScene( event )
 		end
 		net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
 			-- print ("Received player update from server: " .. json.encode(json_obj))
+			print_r(json_obj)
 
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch

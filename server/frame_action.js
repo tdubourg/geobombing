@@ -83,7 +83,11 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 
 	data[net.TYPEID] = player.id
-	if (player.dead) data[net.TYPEDEAD] = player.dead
+	if (player.dead)
+	{ 
+		data[net.TYPEDEAD] = player.dead 
+		console.log(JSON.stringify(data))
+	}
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE,
@@ -117,6 +121,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	data[net.TYPEPOS] = bomb.getPosition()
 	data[net.TYPEBOMBID] = bomb.id
 	data[net.TYPEBOMBSTATE] = bomb.time<0?1:0 // time since explosion (>0: exploding)
+	data[net.TYPERADIUS] = bomb.power // area touched
 	data[net.TYPEBOMBTYPE] = 1 // strength or type of bomb
 	var content =
 	{
