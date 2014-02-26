@@ -1,6 +1,6 @@
 require "camera"
 require "vector2D"
-local utils = require("lib.ecusson.utils")
+local utils = require("lib.ecusson.Utils")
 local CameraAwareSprite = require("camera_aware_sprite")
 require "print_r"
 require "arcPos"
