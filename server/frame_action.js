@@ -10,7 +10,6 @@ var g = require('./Game')
 //var single_game_instance/*: g.Game */ = null
 var gs = require('./game_server')
 var single_game_server = null
-var nb_before_dead = 0; // todo delete test for death
 
 exports.getServer = function() { return single_game_server }
 
@@ -49,11 +48,6 @@ var sendInit_action = function (frame_data, stream)
 		{
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
-			setTimeout(function() // durée session //todo delete after sprint2
-			{
-				console.log("fin de la partie")
-				//sendEnd(stream, null)
-			}, 20000); // after 30s
 
 			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
@@ -79,21 +73,13 @@ function sendEnd(stream, game)
 	var data = JSON.stringify(content); // parsage JSON
 	stream.write(data + net.FRAME_SEPARATOR, function () { console.log(data) })
 }
+exports.sendEnd = sendEnd
 
 
 // --- updates ---
 
-
 var sendPlayerUpdate = function (stream, player) // player and other players
 {
-	nb_before_dead++ 
-	if (nb_before_dead > 100)
-	{
-		player.dead = true
-		console.log(nb_before_dead)
-		nb_before_dead = 0
-	} 
-
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 
 	data[net.TYPEID] = player.id

@@ -17,7 +17,7 @@ function streamKey(stream) {
 	//console.log(stream)
 	/*
 	var a = stream.address()
-	return a.address+":"+a.port
+	return a.address+":" + a.port
 	*/
 	return stream.id
 }
@@ -27,7 +27,7 @@ var usedConKeys = []
 function Connexion(gserver, stream, player) {
 	var that = this
 	
-	console.log("Connecting player "+player.name)//+", key "+)
+	console.log("Connecting player " + player.name)//+", key "+)
 	
 	if (!stream)
 	{
@@ -52,7 +52,7 @@ function Connexion(gserver, stream, player) {
 		}, true)
 	)
 	stream.id = this.conKey
-	console.log("Generated key for "+player.name+":", this.conKey)
+	console.log("Generated key for " + player.name + ":", this.conKey)
 	
 	gserver.connexions[streamKey(stream)/*==this.conKey*/] = this
 	usedConKeys.push(this.conKey)
@@ -61,7 +61,7 @@ function Connexion(gserver, stream, player) {
 	
 	function disco()
 	{
-		console.log("Disconnecting player "+player.name)
+		console.log("Disconnecting player " + player.name)
 		that.open = false
 		delete gserver.connexions[streamKey(stream)]
 		player.remove()
@@ -111,15 +111,23 @@ function GameServer(game) {
 			{
 				fa.sendPlayerUpdate(con.stream, player);
 			})
-			/*
-			game.bombs.forEach(function (bomb) 
-			{
-				fa.sendBombUpdate(con.stream, bomb);
-			})
-			*/
 		}
 		
 	}, MOVE_REFRESH_PERIOD)
+
+	setTimeout(function() // durée session //todo delete after sprint2
+	{
+		console.log("fin de la partie")
+		for (var conKey in that.connexions) 
+		{
+			var con = that.connexions[conKey]
+			game.players.forEach(function (player) 
+			{
+				fa.sendEnd(con.stream, null)
+			})
+		}
+		
+	}, 20000); // after 20s
 	
 }
 
@@ -167,7 +175,7 @@ GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 	this.notifyBomb(b)
 }
 
-GameServer.prototype.quitCommand = function(stream, key) { // FIXME key?
+GameServer.prototype.quitCommand = function(stream, key) { // not used atm
 	//this.getPlayer(stream).quit() // todo complete, Lionel!
 }
 
