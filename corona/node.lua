@@ -10,7 +10,8 @@ function Node:new(worldX, worldY, uid, map)  -- The constructor
 	self.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
 	self.arcs = {}                                   -- K: destination node, V: corresponding arc
 
-	self.drawable = display.newGroup( )
+	self.drawable = display.newGroup()
+	map.mapGroup:insert(self.drawable)
 
 	display.newCircle(self.drawable, self.pos.x, self.pos.y, 7 )
 	local text = display.newText(self.drawable, uid, self.pos.x, self.pos.y, native.systemFont, 16 )
@@ -86,6 +87,7 @@ end
 function Node:destroy()
 	camera:removeListener(self)
 	if self.drawable then
+		print "destroy node drawable"
 		self.drawable:removeSelf()
 		self.drawable = nil
 	end

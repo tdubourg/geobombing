@@ -239,6 +239,7 @@ function Player:getCurrentStreetName()
 end
 
 function Player:destroy()
+	print "player:destroy()"
 	self.sprite:destroy()
 end
 

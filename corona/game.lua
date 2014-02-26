@@ -116,8 +116,11 @@ function scene:createScene( event )
 			end
 
 			--handling self death
+			print "A"
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
+				print "B"
 				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
+					print "C"
 					storyboard.gotoScene("menu" , { effect="crossFade", time=500 } )
 				end
 			end
@@ -148,13 +151,21 @@ local updateLoop = function( event )
 	-- OPTIM: pull au lieu de fetch
 	local name = player:getCurrentStreetName()
 	if name then
-		if streetText then
-			streetText:removeSelf()
+		-- if streetText then
+		-- 	streetText:removeSelf()
+		-- end
+		-- streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+		-- streetText.anchorX = 0
+		-- streetText.anchorY = 0
+		-- streetText:setFillColor( 0.7, 0, 0.3 )
+
+		if not streetText then
+			streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+			streetText.anchorX = 0
+			streetText.anchorY = 0
+			streetText:setFillColor( 0.7, 0, 0.3 )
 		end
-		streetText = display.newText(name , 10, 10, native.systemFont, 24 )
-		streetText.anchorX = 0
-		streetText.anchorY = 0
-		streetText:setFillColor( 0.7, 0, 0.3 )
+		streetText.text = name
 	end
 end
 
@@ -228,14 +239,32 @@ end
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
+	net.disconnect()
+
+	Runtime:removeEventListener( "enterFrame", updateLoop )
+	Runtime:removeEventListener("tap",moveObject)	
+
+	net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = nil
+	net.net_handlers[FRAMETYPE_INIT] = nil
+	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = nil
+
 	local group = self.view
 	gui.exitGUI()
-	camera.exitCamera()
+	currentMap:destroy()
+
+	if streetText then
+		streetText:removeSelf()
+	end
+
+	for id,player in pairs(others) do
+		player:destroy()
+		others[id] = nil
+	end
+
 	if (itemsManager ~= nil) then
 		itemsManager:destroy()
 	end
-	Runtime:removeEventListener( "enterFrame", updateLoop )
-	Runtime:removeEventListener("tap",moveObject)	
+
 end
 
 
