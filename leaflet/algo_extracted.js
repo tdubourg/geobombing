@@ -44,9 +44,9 @@ var Map = {
 		}/*, this.options)*/);
 	},
 
-	hey: function () {
-		var zoom = 13
-		var lat=parseFloat(document.getElementById("lat").value), long=parseFloat(document.getElementById("long").value)
+	tileSize: 256,
+
+	compute_grid_of_urls: function (zoom, lat, long) {		
 		var center = [lat, long]
 
 		var viewHalf = this.getSize()._divideBy(2);
@@ -57,15 +57,36 @@ var Map = {
 		var topLeftPoint = _initialTopLeftPoint;
 		console.log("this.getSize", this.getSize())
 		var bounds = new L.Bounds(topLeftPoint, topLeftPoint.add(this.getSize()));
+		this.last_bounds = bounds // TODO: Remove that when we remove html_demo(), eventually
 		console.log("bounds", bounds.min.x, bounds.min.y)
 
-		var tileSize = 256;
-
 		var tileBounds = L.bounds(
-		        bounds.min.divideBy(tileSize)._floor(),
-		        bounds.max.divideBy(tileSize)._floor());
+		        bounds.min.divideBy(this.tileSize)._floor(),
+		        bounds.max.divideBy(this.tileSize)._floor());
 
 		console.log("tileBounds", tileBounds.min.x, tileBounds.min.y)
+
+		console.log("##############################exported_bounds#####################", tileBounds)
+		var i,j,point
+		var grid = []
+		for (j = tileBounds.min.y; j < tileBounds.max.y + 1; j++) {
+			var grid_line = []
+			for (i = tileBounds.min.x; i < tileBounds.max.x + 1; i++) {
+				point = new L.Point(i, j);
+				point.z = zoom
+				grid_line.push(this.getTileUrl(point))
+			}
+			grid.push(grid_line)
+		}
+		this.last_grid_of_urls = grid
+		return this.last_grid_of_urls
+	},
+
+	html_demo: function () {
+		var zoom = parseInt(document.getElementById("zoom").value)
+		var lat=parseFloat(document.getElementById("lat").value), long=parseFloat(document.getElementById("long").value)
+
+		this.compute_grid_of_urls(zoom, lat, long)
 
 		var d = document.getElementById("map2")
 		d.innerHTML = ""
@@ -74,46 +95,40 @@ var Map = {
 			c.parentNode.removeChild(c)
 		};
 
-		console.log("##############################exported_bounds#####################", tileBounds)
-		var i,j,point
-		for (j = tileBounds.min.y; j < tileBounds.max.y + 1; j++) {
-			for (i = tileBounds.min.x; i < tileBounds.max.x + 1; i++) {
-				point = new L.Point(i, j);
-				point.z = zoom
-
+		for (var i = 0; i < this.last_grid_of_urls.length; i++) {
+			for (var j = 0; j < this.last_grid_of_urls[i].length; j++) {
 				var img = document.createElement("img")
-				img.src = this.getTileUrl(point)
+				img.src = this.last_grid_of_urls[i][j]
 				img.width = 256
 				img.height = 256
 				img.style.border="1px solid black"
 				img.style.margin="none"
 				img.style.padding="none"
 				d.appendChild(img)
-			}
+			};
 			d.appendChild(document.createElement("br"))
-		}
+		};
 
-		var ratioY = (bounds.min.y - tileBounds.min.y*tileSize)
-		var ratioX = (bounds.min.x - tileBounds.min.x*tileSize)
+		var delta = this.last_bounds.min.divideBy(this.tileSize)._subtract(this.last_bounds.min.divideBy(this.tileSize)._floor())
+		var deltaY = delta.y
+		var deltaX = delta.x
 
-		console.log(bounds.min.divideBy(tileSize))
-		console.log(bounds.min.divideBy(tileSize)._floor())
-		console.log(bounds.min.divideBy(tileSize)._subtract(bounds.min.divideBy(tileSize)._floor()))
-		console.log("dx, dy", (bounds.min.x - tileBounds.min.x*tileSize), (bounds.min.y - tileBounds.min.y*tileSize))
-		console.log("rx, ry", ratioX, ratioY)
+		// console.log(this.last_bounds.min.divideBy(this.tileSize))
+		// console.log(this.last_bounds.min.divideBy(this.tileSize)._floor())
+		// console.log(this.last_bounds.min.divideBy(this.tileSize)._subtract(this.last_bounds.min.divideBy(this.tileSize)._floor()))
+		// console.log("dx, dy", (this.last_bounds.min.x - tileBounds.min.x*this.tileSize), (this.last_bounds.min.y - tileBounds.min.y*this.tileSize))
+		console.log("rx, ry", deltaX, deltaY)
 		var e = document.createElement("div")
 		e.id="calin"
 		e.style.border = "2px solid red"
 		e.style.position = "absolute"
 		e.style.height = this.clientHeight + "px"
 		e.style.width = this.clientWidth + "px"
-		var left = (tileBounds.max.y - tileBounds.min.y + 1) - this.clientWidth/tileSize
-		var top = (tileBounds.max.x - tileBounds.min.x + 1) - this.clientHeight/tileSize
-		console.log(tileSize/2)
-		console.log("top=", top)
-		console.log("left=", left)
-		e.style.left = ratioX + "px"
-		e.style.top = ratioY + "px"
+		console.log(this.tileSize/2)
+		// console.log("top=", top)
+		// console.log("left=", left)
+		e.style.left = deltaX*this.tileSize + "px"
+		e.style.top = deltaY*this.tileSize + "px"
 		e.style.background = "red"
 		e.style.opacity = "0.3"
 		console.log(e)
