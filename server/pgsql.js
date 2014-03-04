@@ -2,11 +2,12 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap; 
 var common = require("./common");
-var conDB = true;
+var conDB = false;
 var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1;
 var lastNodeId = 1;
 var u = require("./util")
+var t = require("./tiles")
 
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
@@ -166,7 +167,7 @@ function mapDataToJSon(mapData)
     }
     return map
 }
-exports.mapDataToJSon = mapDataToJSon
+
 
 
 function getInitialPosition() {
@@ -178,38 +179,24 @@ function getInitialPosition() {
 	}
     return position;
 }
-exports.getInitialPosition = getInitialPosition
 
 
-function fullMapAccordingToLocation(latitude, longitude, callback) {
-	//var s = 0.0001
-	//var s = 0.003
+
+function fullMapAccordingToLocation(latitude, longitude, callback) 
+{
 	var s = 0.01
-	
-	// TODO use latitude, longitude
-	//getMapFromPGSQL(41.9205551, 8.7361006, s, s, function(err,listString)
+	var z = 12	
 	getMapFromPGSQL(latitude, longitude, s, s, function(err,mapData)
-	//getMapFromPGSQL(latitude, longitude, s, s, function(err,rez) 
 	{
-		/*
-		// construct map struture using common functions
-		var map = common.CreateEmptyMap(++lastMapId, "mapName");
-	    for (var i = 0; i < listString.length; i++) 
-	    {
-	    	var way = common.CreateEmptyWay("way" + i);
-	        for (var j = 0; j < listString[i].length; j++) 
-	    	{
-	    		if (listString[i][j] == null || listString[i][j].length != 2) return null;
-	        	var node = common.CreateNode(++lastNodeId,
-	        		listString[i][j][0],listString[i][j][1]);
-	        	common.AddNodeToMap(map, node);
-	        	common.AddNodeIdToWay(way, lastNodeId);
-	    	}
-	    	common.AddWayToMap(map, way);
-	    }
-	    */
-		//callback({jsonMap: map, mapData: listString})
-		callback(mapData)
+		callback(mapData, position, getMapTiles(latitude, longitude, z))
 	});
 }
+
+function getMapTiles(latitude, longitude, zoom) 
+{
+	return t.compute_grid_of_urls(zoom, latitude, longitude)
+}
+
+exports.mapDataToJSon = mapDataToJSon
+exports.getInitialPosition = getInitialPosition
 exports.fullMapAccordingToLocation = fullMapAccordingToLocation
