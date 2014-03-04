@@ -19,7 +19,7 @@ var sendInit_action = function (frame_data, stream)
 	var lat = parseFloat(frame_data.latitude);
 	var lon = parseFloat(frame_data.longitude);
 	
-	function sendInit(jsonMap)
+	function sendInit(jsonMap, tiles)
 	{
 		//var conKey = single_game_server.addPlayer(stream).conKey
 		var player = single_game_server.addPlayer(stream)
@@ -27,6 +27,7 @@ var sendInit_action = function (frame_data, stream)
 		data[net.TYPEID] = player.id // id
 		data[net.TYPEKEY] = player.connexion.conKey // key
 		data[net.TYPEMAP] = jsonMap // map
+		data[net.TYPETILES] = tiles // map
 		var content =  
 		{
 			"type": net.TYPEPLAYERINIT, 
@@ -34,7 +35,7 @@ var sendInit_action = function (frame_data, stream)
 		}
 		
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + net.FRAME_SEPARATOR, function () { console.log(data) })
+		stream.write(data + net.FRAME_SEPARATOR, function () { console.log(data); console.log(tiles) })
 	}
 	
 	function setInitialPosition()
@@ -44,12 +45,12 @@ var sendInit_action = function (frame_data, stream)
 	}
 	
 	if (single_game_server == null) db.fullMapAccordingToLocation(lat, lon, 
-		function (mapData, position)
+		function (mapData, position, tiles)
 		{
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 
-			sendInit(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj, tiles);
 			setInitialPosition();
 		}); // lat, lon
 		else

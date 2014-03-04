@@ -13,6 +13,7 @@ var decode_frame = function (frame_string)
 ///--- Network Constants on Server---
 var TYPEPLAYERINIT = "init" // new map, new list bomb (no positions)
 var TYPEMAP = "map"
+var TYPETILES = "tiles"
 
 var TYPEGAMEEND = "end" // new map, new list bomb (no positions)
 var TYPERANKING = "ranking" // tab of players, and points
@@ -33,6 +34,7 @@ var TYPEBOMBTYPE = "btype" // 0 to ...
 
 exports.TYPEPLAYERINIT = TYPEPLAYERINIT
 exports.TYPEMAP = TYPEMAP
+exports.TYPETILES = TYPETILES
 
 exports.TYPEGAMEEND = TYPEGAMEEND
 exports.TYPERANKING = TYPERANKING
