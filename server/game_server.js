@@ -1,6 +1,6 @@
 "use strict"
 
-var g = require('./Game')
+var g = require('./game')
 var fa = require('./frame_action')
 var net = require('./network')
 
