@@ -6,7 +6,7 @@ var utils = require("./common");
 var db = require('./pgsql');
 var nb_instance_move = 0;
 
-var g = require('./Game')
+var g = require('./game')
 //var single_game_instance/*: g.Game */ = null
 var gs = require('./game_server')
 var single_game_server = null
