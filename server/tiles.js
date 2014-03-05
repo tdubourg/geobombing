@@ -1,4 +1,5 @@
 // From algo_extracted.js (openstreetmap)
+//var L = require("./leaflet");
 
 var template = function (str, data) {
 	return str.replace(/\{ *([\w_]+) *\}/g, function (str, key) {
@@ -14,7 +15,7 @@ var template = function (str, data) {
 
 var MapTiles = 
 {
-	crs: 0,//L.CRS.EPSG3857,
+	crs: L.CRS.EPSG3857,
 	clientWidth: 512,
 	clientHeight: 512,
 	_url: "http://tdvps.fr.nf:8080/osm_tiles/{z}/{x}/{y}.png",
@@ -86,3 +87,4 @@ var MapTiles =
 	},
 }
 exports.MapTiles = MapTiles
+exports.compute_grid_of_urls = MapTiles.compute_grid_of_urls

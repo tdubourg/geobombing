@@ -213,7 +213,7 @@ function scene:enterScene( event )
 	
 	-- connect to server
 	print "create scene"
-	local result = net.connect_to_server("192.168.43.119", 3000)
+	local result = net.connect_to_server("127.0.0.1", 3000)
 
 	if result then
 		print ( "!!CONNECTED!!" )
