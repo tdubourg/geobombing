@@ -7,7 +7,7 @@ var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1;
 var lastNodeId = 1;
 var u = require("./util")
-var t = require("./tiles")
+//var t = require("./tiles")
 
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
@@ -188,13 +188,13 @@ function fullMapAccordingToLocation(latitude, longitude, callback)
 	var z = 12	
 	getMapFromPGSQL(latitude, longitude, s, s, function(err,mapData)
 	{
-		callback(mapData, position, getMapTiles(latitude, longitude, z))
+		callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, z))
 	});
 }
 
 function getMapTiles(latitude, longitude, zoom) 
 {
-	return t.compute_grid_of_urls(zoom, latitude, longitude)
+	return ["not", "yet", "tiles"]//t.compute_grid_of_urls(zoom, latitude, longitude)
 }
 
 exports.mapDataToJSon = mapDataToJSon
