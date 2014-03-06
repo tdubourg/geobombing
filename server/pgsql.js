@@ -3,7 +3,7 @@
 var clMap = require("./Classes/clMap").clMap
 var common = require("./common")
 var conDB = false
-var qh = conDB? require('./query_helper'): null // for generic query
+var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1
 var lastNodeId = 1
 var u = require("./util")

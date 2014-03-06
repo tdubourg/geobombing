@@ -1,5 +1,5 @@
 // From algo_extracted.js (openstreetmap)
-//var L = require("./leaflet");
+var L = require("./leaflet");
 
 var template = function (str, data) {
 	return str.replace(/\{ *([\w_]+) *\}/g, function (str, key) {
