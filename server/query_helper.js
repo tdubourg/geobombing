@@ -3,7 +3,7 @@
 var pg = require('pg');
 //var conString = "postgres://postgres:quepasa@localhost/postgres" // todo modify
 var fs = require('fs')
-var conString = fs.readSync("db_constring.local")
+var conString = fs.readFileSync("db_constring.local").toString()
 
 var client = new pg.Client(conString)
 
