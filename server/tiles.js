@@ -50,7 +50,11 @@ var MapTiles =
 
 	tileSize: 256,
 
-	compute_grid_of_urls: function (zoom, lat, long) {		
+	compute_grid_of_urls: function (zoom, lat, long) 
+	{		
+		console.log("zoom:", zoom)
+		console.log("zoom:", lat)
+		console.log("zoom:", long)
 		var center = [lat, long]
 
 		var viewHalf = this.getSize()._divideBy(2);
