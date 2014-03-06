@@ -2,3 +2,4 @@ node_modules/
 nodeJS.exe
 Corona Simulator.lnk
 geobombing.lnk
+db_constring.local.js
