@@ -1,5 +1,5 @@
 // From algo_extracted.js (openstreetmap)
-var L = require("./leaflet");
+var L = require("./leaflet_node");
 
 var template = function (str, data) {
 	return str.replace(/\{ *([\w_]+) *\}/g, function (str, key) {
@@ -88,3 +88,6 @@ var MapTiles =
 }
 exports.MapTiles = MapTiles
 exports.compute_grid_of_urls = MapTiles.compute_grid_of_urls
+
+//Uncomment to have an example of use of MapTiles with some GPS coordinates close to the LyonTech campus
+//console.log(MapTiles.compute_grid_of_urls(13, 45.780911, 4.878820))
