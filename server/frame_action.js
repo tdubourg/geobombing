@@ -27,7 +27,7 @@ var sendInit_action = function (frame_data, stream)
 		data[net.TYPEID] = player.id // id
 		data[net.TYPEKEY] = player.connexion.conKey // key
 		data[net.TYPEMAP] = jsonMap // map
-		data[net.TYPETILES] = tiles // map
+		data[net.TYPETILES] = tiles // maptiles
 		var content =  
 		{
 			"type": net.TYPEPLAYERINIT, 
