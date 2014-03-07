@@ -194,7 +194,7 @@ function fullMapAccordingToLocation(latitude, longitude, callback)
 
 function getMapTiles(latitude, longitude, zoom) 
 {
-	return t.compute_grid_of_urls(zoom, latitude, longitude)
+	return t.MapTiles.compute_grid_of_urls(zoom, latitude, longitude)
 }
 
 exports.mapDataToJSon = mapDataToJSon
