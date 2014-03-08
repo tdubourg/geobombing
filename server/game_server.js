@@ -11,7 +11,7 @@ exports.Connexion = Connexion
 
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
-var MOVE_REFRESH_PERIOD = 150
+var MOVE_REFRESH_PERIOD = 50
 
 function streamKey(stream) {
 	//console.log(stream)

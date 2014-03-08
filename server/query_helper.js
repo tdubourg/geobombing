@@ -1,9 +1,13 @@
 "use strict"
 
 var pg = require('pg');
-//var conString = "postgres://postgres:quepasa@localhost/postgres" // todo modify
 var fs = require('fs')
-var conString = fs.readFileSync("db_constring.local").toString()
+
+var local_serv = false
+
+var conString = local_serv?
+	"postgres://postgres:quepasa@localhost/rhonealpes"
+:	fs.readFileSync("db_constring.local").toString()
 
 var client = new pg.Client(conString)
 
