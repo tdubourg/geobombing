@@ -1,18 +1,21 @@
 "use strict"
 
+exports.GameServer = GameServer
+exports.Connexion = Connexion
+
 var g = require('./game')
 var fa = require('./frame_action')
 var net = require('./network')
 
-
-exports.GameServer = GameServer
-exports.Connexion = Connexion
-
-
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
-var session = false
+
+var SESSION_LENGHT = 10 // in seconds
+var PALMARES_SHOW_TIME = 3 // in seconds
+var session_time_remaining = SESSION_LENGHT
+exports.session_time_remaining = session_time_remaining
+var session = true
 
 function streamKey(stream) {
 	//console.log(stream)
@@ -120,19 +123,37 @@ function GameServer(game) {
 		
 	}, MOVE_REFRESH_PERIOD)
 
-	if (session) setTimeout(function() // durée session //todo delete after sprint2
-	{
-		console.log("fin de la partie")
-		for (var conKey in that.connexions) 
+	// SESSIONS
+	if (session)
+	{ 
+		setInterval(function() 
+		{ 
+
+		session_time_remaining--;
+		console.log("session_time_remaining: ", session_time_remaining)
+		if (session_time_remaining <= 0)
 		{
-			var con = that.connexions[conKey]
-			game.players.forEach(function (player) 
+			console.log("fin de la partie")
+
+			// calculates palmares
+			game.players.sort(function(p1, p2){return p2.points-p1.points});
+			for (var conKey in that.connexions) 
 			{
-				fa.sendEnd(con.stream, null)
-			})
+				var con = that.connexions[conKey]
+				game.players.forEach(function (player) 
+				{
+					fa.sendEnd(con.stream, game.players)
+				})
+			}
+			if (session_time_remaining <= -PALMARES_SHOW_TIME)
+			{ 
+				session_time_remaining = SESSION_LENGHT
+				console.log("nouvelle partie")
+			}
 		}
-		
-	}, 20000); // after 20s
+	
+		}, 1000) // refresh counter each second
+	}
 	
 }
 
@@ -156,21 +177,17 @@ GameServer.prototype.notifyBomb = function(bomb) {
 GameServer.prototype.addPlayer = function(stream) {
 	// TODO handle timeouts
 	
-	var p = new g.Player(this.game, stream)
-	
+	var p = new g.Player(this.game, stream)	
 	var c = new Connexion(this, stream, p)
-	
 	return p
 }
 GameServer.prototype.getPlayer = function(stream) {
-	//return gserver.connexions.indexOf(con).player
 	return this.connexions[streamKey(stream)].player
 }
 
 GameServer.prototype.moveCommand = function(stream, conKey, endCoeff, nodes) {
 	
-	console.log("Move com from", this.getPlayer(stream).name)//this.playersByStream[stream].name)
-	
+	console.log("Move com from", this.getPlayer(stream).name)	
 	this.getPlayer(stream).move(nodes, endCoeff)
 	
 }
@@ -181,6 +198,7 @@ GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 }
 
 GameServer.prototype.quitCommand = function(stream, key) { // not used atm
+	console.log("player gone")
 	//this.getPlayer(stream).quit() // todo complete, Lionel!
 }
 
