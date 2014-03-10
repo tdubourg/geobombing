@@ -117,7 +117,7 @@ function GameServer(game) {
 			var con = that.connexions[conKey]
 			game.players.forEach(function (player) 
 			{
-				fa.sendPlayerUpdate(con.stream, player, session_time_remaining);
+				fa.sendPlayerUpdate(con.stream, player);
 			})
 		}
 		
@@ -164,14 +164,13 @@ GameServer.prototype.notify = function(fct) {
 	}
 }
 
-GameServer.prototype.notifyBomb = function(bomb) {
-	//game.bombs.forEach(function (bomb)
+GameServer.prototype.notifyBomb = function(bomb) 
+{
 	for (var conKey in this.connexions) 
 	{
 		var con = this.connexions[conKey]
 		fa.sendBombUpdate(con.stream, bomb);
 	}
-	//console.log("Bomb:", bomb)
 }
 
 GameServer.prototype.addPlayer = function(stream) {
