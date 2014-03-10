@@ -87,7 +87,7 @@ var MapTiles =
 			grid.push(grid_line)
 		}
 		this.last_grid_of_urls = grid
-		return this.last_grid_of_urls
+		return {'grid': this.last_grid_of_urls, 'topLeftPoint': {'x': topLeftPoint.x, 'y': topLeftPoint.y}}
 	},
 }
 exports.MapTiles = MapTiles
