@@ -38,7 +38,7 @@ function receive_until(end_separator)
 	-- print (start, _end)
 	while start == nil do
 		-- print (start, _end)
-		local chunk = client:receive(4)
+		local chunk = client:receive(1)
 		if (chunk == nil) then
 			break
 		end
