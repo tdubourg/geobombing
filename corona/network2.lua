@@ -8,7 +8,7 @@ require "arcPos"
 
 local client = nil
 local FRAME_SEPARATOR = "\n"
-local NETWORK_DUMP = true
+local NETWORK_DUMP = false
 local _msgsendtable = {} -- send message queue
 local net_handlers = {}
 local mrcvTimer = nil
@@ -149,7 +149,7 @@ function receivedBombUpdate( network_data )
 	end
 	itemsManager:bombUpdate(network_data.data)
 end
-
+dbg(Y,{})
 function receivedGameEnd( network_data )
 	print ( "Received game end")
 	--itemsManager:gameEnd(network_data.data) -- todo
@@ -169,8 +169,8 @@ function sendString(data)
 	if client ~= nil then
 		client:send(data .. FRAME_SEPARATOR)
 		if NETWORK_DUMP then
-			--print "NETWORK DUMP - OUT"
-			--print(data)
+			print "NETWORK DUMP - OUT"
+			print(data)
 		end
 	end
 end

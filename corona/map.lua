@@ -3,11 +3,11 @@ require "print_r"
 
 Map = {}
 function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
-	print "Map:new()"
 	local self = {}
 	self.nodesByUID = {}
 	self.arcs ={}
 	self.mapGroup = display.newGroup( )
+	roadLayer:insert(self.mapGroup)
 
 	self.latMin = math.huge
 	self.lonMin = math.huge
