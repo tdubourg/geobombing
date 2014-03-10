@@ -30,6 +30,7 @@ local timeText
 local scoreDText
 local scoreKText
 local scoreGroup 
+local isDead = false
 
 function movePlayerById(id,arcP)
 	local exist = false
@@ -75,12 +76,7 @@ function removeScoreDisplay()
 	time = gameTime
 	timerId = timer.performWithDelay( 1000, updateTime , -1 )
 end
-
-
-function updateTime()
-	if (time <= 0) then
-		time = gameTime
-
+function displayScore() 
 	scoreGroup = display.newGroup()
 
 		--local alert = native.showAlert( "Scores!", "Nombre de morts : ".. player.nbDeath .. "\n Nombre de tués : " .. player.nbKill, { "OK" }, onComplete )
@@ -105,8 +101,15 @@ function updateTime()
 				end
 			end
 		end
-		timer.cancel( timerId )
+		
 		timer.performWithDelay( 5000, removeScoreDisplay , 1 )
+end
+
+function updateTime()
+	if (time <= 0) then
+		time = gameTime
+		timer.cancel( timerId )
+	
 	else
 		time = time - 1
 	end
@@ -282,7 +285,17 @@ function initGame(player_id)
 		--handling self death
 		if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
 			if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
-				storyboard.gotoScene("menu" , { effect="crossFade", time=500 } )
+				-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
+				if (isDead == false) then
+				print("MOOOOOOOOOOORT")
+				player.nbDeath = player.nbDeath + 1
+				scoreDText.text = "-"..player.nbDeath
+				print(player.nbDeath)
+				isDead = true
+			end
+				
+			else
+				playerUpD(player.id)
 			end
 		end
 	end
