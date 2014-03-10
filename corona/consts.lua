@@ -5,8 +5,8 @@ EXPLOSION_DELAY = 3000 -- in ms
 EXPLOSION_DURATION = 1.5 -- in seconds
 -- JSON labels
 	-- protocol
-		JSON_FRAME_TYPE = "type"
-		JSON_FRAME_DATA = "data"
+	JSON_FRAME_TYPE = "type"
+	JSON_FRAME_DATA = "data"
 		-- Frame Types
 		if (DEV_MODE) then
 			NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
@@ -54,33 +54,41 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			FRAMETYPE_PLAYER_DISCONNECT = "gone"
 		end
 
-		FRAMETYPE_GAME_END = "end"
-		NETWORK_GAME_RANKING = "ranking"
+	-- ranking
+	FRAMETYPE_GAME_END = "end"
+	NETWORK_GAME_RANKING = "ranking"
+	NETWORK_RANKING_ID= "id"
+	NETWORK_RANKING_NB_DEATH ="pdeads"
+	NETWORK_RANKING_NB_KILL = "pkills"
+	NETWORK_RANKING_POINTS= "ppoints"
 
+	-- time remaining
+	NETWORK_TIME = "time"
+	
 	--bomb data
-		FRAMETYPE_BOMB_UPDATE = "bu"
-		NETWORK_BOMB_UPDATE_ID_KEY = "bid"
-		NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
-		NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
-		NETWORK_BOMB_UPDATE_POS_KEY = "pos"
-		NETWORK_BOMB_UPDATE_POWER_KEY = "rad"
+	FRAMETYPE_BOMB_UPDATE = "bu"
+	NETWORK_BOMB_UPDATE_ID_KEY = "bid"
+	NETWORK_BOMB_UPDATE_STATE_KEY = "bs"
+	NETWORK_BOMB_UPDATE_TYPE_KEY = "btype"
+	NETWORK_BOMB_UPDATE_POS_KEY = "pos"
+	NETWORK_BOMB_UPDATE_POWER_KEY = "rad"
 	-- map data
-		JSON_MAP_NAME = "mapName"
-		JSON_NODE_LIST = "mapListNode"
-		JSON_WAY_LIST = "mapListWay"
-		JSON_WAY_NODE_LIST = "wLstNdId"
-		JSON_WAY_NAME = "wName"
+	JSON_MAP_NAME = "mapName"
+	JSON_NODE_LIST = "mapListNode"
+	JSON_WAY_LIST = "mapListWay"
+	JSON_WAY_NODE_LIST = "wLstNdId"
+	JSON_WAY_NAME = "wName"
 
-		JSON_NODE_UID = "id"
-		JSON_NODE_X = "x"
-		JSON_NODE_Y = "y"
+	JSON_NODE_UID = "id"
+	JSON_NODE_X = "x"
+	JSON_NODE_Y = "y"
 
 	-- GPS data
-		JSON_GPS_LATITUDE = "latitude"
-		JSON_GPS_LONGITUDE = "longitude"
+	JSON_GPS_LATITUDE = "latitude"
+	JSON_GPS_LONGITUDE = "longitude"
 
 -- DISPLAY
-	EXPLOSION_INTERVAL = 0.02
+EXPLOSION_INTERVAL = 0.02
 
 
 -- GAMEPLAY
