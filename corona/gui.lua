@@ -7,17 +7,19 @@ btnBombClicked = false
 local net = require("network2")
 
 local function onBombBtnRelease()
-	
-	print("BOMB")
-	btnBombClicked = true
-	net.sendBombRequestToServer()
-	-- end
+	if(not rankOn ) then
+		print("BOMB")
+		btnBombClicked = true
+		net.sendBombRequestToServer()
+	end
 
 	return true	-- indicates successful touch
 end
 
 local function onBombBtnDown()
-	print "BOMBDOWN"
+	if (not rankOn ) then
+		print "BOMBDOWN"
+	end
 	return true	-- indicates successful touch, to avoid other layers to grab the tap event as well
 end
 
