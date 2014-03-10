@@ -39,7 +39,7 @@ var MapTiles =
 		return this._size.clone();
 	},
 	getTileUrl: function (tilePoint) {
-		console.log("Loading tile with point", tilePoint.z, tilePoint.x, tilePoint.y)
+		//console.log("Loading tile with point", tilePoint.z, tilePoint.x, tilePoint.y)
 		return template(this._url, /*L.extend(*/{
 			// s: this._getSubdomain(tilePoint),
 			z: tilePoint.z,
@@ -52,20 +52,15 @@ var MapTiles =
 
 	compute_grid_of_urls: function (zoom, lat, long) 
 	{		
-		console.log("zoom:", zoom)
-		console.log("zoom:", lat)
-		console.log("zoom:", long)
 		var center = [lat, long]
-
 		var viewHalf = this.getSize()._divideBy(2);
 		// TODO round on display, not calculation to increase precision?
 		var _initialTopLeftPoint = this.project(center, zoom)._subtract(viewHalf);
 		console.log("_initialTopLeftPoint", _initialTopLeftPoint)
 
 		var topLeftPoint = _initialTopLeftPoint;
-		console.log("this.getSize", this.getSize())
+		//console.log("this.getSize", this.getSize())
 		var bounds = new L.Bounds(topLeftPoint, topLeftPoint.add(this.getSize()));
-		//this.last_bounds = bounds // TODO: Remove that when we remove html_demo(), eventually
 		console.log("bounds", bounds.min.x, bounds.min.y)
 
 		var tileBounds = L.bounds(
@@ -86,7 +81,7 @@ var MapTiles =
 			grid.push(grid_line)
 		}
 		this.last_grid_of_urls = grid
-		return this.last_grid_of_urls
+		return {'grid': this.last_grid_of_urls, 'topLeftPoint': {'x': topLeftPoint.x, 'y': topLeftPoint.y}}
 	},
 }
 exports.MapTiles = MapTiles
