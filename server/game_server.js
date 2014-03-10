@@ -12,7 +12,11 @@ exports.Connexion = Connexion
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
-var session = false
+var SESSION_LENGHT = 10 // in seconds
+var PALMARES_SHOW_TIME = 3 // in seconds
+var session_time_remaining = SESSION_LENGHT
+exports.session_time_remaining = session_time_remaining
+var session = true
 
 function streamKey(stream) {
 	//console.log(stream)
@@ -120,19 +124,34 @@ function GameServer(game) {
 		
 	}, MOVE_REFRESH_PERIOD)
 
-	if (session) setTimeout(function() // durée session //todo delete after sprint2
-	{
-		console.log("fin de la partie")
-		for (var conKey in that.connexions) 
+	// SESSIONS
+	if (session)
+	{ 
+		setInterval(function() 
+		{ 
+
+		session_time_remaining--;
+		//console.log("session_time_remaining: ", session_time_remaining)
+		if (session_time_remaining <= 0)
 		{
-			var con = that.connexions[conKey]
-			game.players.forEach(function (player) 
+			console.log("fin de la partie")
+			for (var conKey in that.connexions) 
 			{
-				fa.sendEnd(con.stream, null)
-			})
+				var con = that.connexions[conKey]
+				game.players.forEach(function (player) 
+				{
+					fa.sendEnd(con.stream, null)
+				})
+			}
+			if (session_time_remaining <= -PALMARES_SHOW_TIME)
+			{ 
+				session_time_remaining = SESSION_LENGHT
+				console.log("nouvelle partie")
+			}
 		}
-		
-	}, 20000); // after 20s
+	
+		}, 1000) // refresh counter each second
+	}
 	
 }
 
@@ -181,6 +200,7 @@ GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 }
 
 GameServer.prototype.quitCommand = function(stream, key) { // not used atm
+	onsole.log("player gone")
 	//this.getPlayer(stream).quit() // todo complete, Lionel!
 }
 

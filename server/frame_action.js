@@ -19,15 +19,16 @@ var sendInit_action = function (frame_data, stream)
 	var lat = parseFloat(frame_data.latitude);
 	var lon = parseFloat(frame_data.longitude);
 	
-	function sendInit(jsonMap, tiles)
+	function sendInit(jsonMap, time_remaining, tiles)
 	{
 		//var conKey = single_game_server.addPlayer(stream).conKey
 		var player = single_game_server.addPlayer(stream)
 		var data = {}
 		data[net.TYPEID] = player.id // id
 		data[net.TYPEKEY] = player.connexion.conKey // key
+		data[net.TYPETIMEREMAINING] = time_remaining // time before end of game 
 		data[net.TYPEMAP] = jsonMap // map
-		data[net.TYPETILES] = tiles // maptiles
+		if (tiles != null) data[net.TYPETILES] = tiles // maptiles
 		var content =  
 		{
 			"type": net.TYPEPLAYERINIT, 
@@ -36,8 +37,8 @@ var sendInit_action = function (frame_data, stream)
 		
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + net.FRAME_SEPARATOR, function () {
-			//console.log(data)
-			console.log(tiles)
+			console.log("sendInit(tiles): ", tiles)
+			console.log("sendInit(time_remaining): ", time_remaining)
 		})
 	}
 	
@@ -53,12 +54,12 @@ var sendInit_action = function (frame_data, stream)
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 
-			sendInit(single_game_server.game.map.jsonObj, tiles);
+			sendInit(single_game_server.game.map.jsonObj, gs.session_time_remaining,  tiles);
 			setInitialPosition();
 		}); // lat, lon
 		else
 		{
-			sendInit(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj, gs.session_time_remaining);
 			setInitialPosition();
 		}
 } // end sendInit_action
