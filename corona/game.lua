@@ -31,6 +31,7 @@ local scoreDText
 local scoreKText
 local scoreGroup 
 local isDead = false
+local rankOn = false
 
 function movePlayerById(id,arcP)
 	local exist = false
@@ -72,44 +73,22 @@ function playerUpK(id)
 end
 
 function removeScoreDisplay()
+	rankOn = false
 	scoreGroup:removeSelf()
 	time = gameTime
 	timerId = timer.performWithDelay( 1000, updateTime , -1 )
+	Runtime:addEventListener("tap",moveObject)	
 end
-function displayScore() 
-	scoreGroup = display.newGroup()
 
-		--local alert = native.showAlert( "Scores!", "Nombre de morts : ".. player.nbDeath .. "\n Nombre de tués : " .. player.nbKill, { "OK" }, onComplete )
-		local scoreDisplay = display.newRect( display.contentCenterX, display.contentCenterY, display.contentWidth-20, display.contentHeight-20 )
-		scoreDisplay.alpha = 0.5
-			scoreGroup:insert( scoreDisplay)
-			local i = 0
-		for id,pl in pairs(others) do
-			if (((i+20)<scoreDisplay.contentHeight) or (id == player.id)) then
-				local plScore = display.newText(id.. " : -".. pl.nbDeath.." / +".. pl.nbKill, 0, 0, native.systemFont, 16*2)
-				scoreGroup:insert( plScore)
-				plScore.xScale = 0.5
-				plScore.yScale = 0.5
-				-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
-				plScore.x =  scoreDisplay.contentWidth/ 2;
-				plScore.y =  i+20;
-				if (id == player.id) then
-					plScore.text = "Moi : -".. pl.nbDeath.." / +".. pl.nbKill
-					plScore:setFillColor(0, 0, 1 )
-				else
-					plScore:setFillColor(0, 1, 0 )
-				end
-			end
-		end
-		
-		timer.performWithDelay( 5000, removeScoreDisplay , 1 )
+function displayScore(tableScore) 
+	
 end
 
 function updateTime()
 	if (time <= 0) then
 		time = gameTime
 		timer.cancel( timerId )
-	
+
 	else
 		time = time - 1
 	end
@@ -124,6 +103,7 @@ function showScore()
 	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
 	timeText.x =  display.contentWidth/ 2;
 	timeText.y =  display.contentHeight - 20;
+	timeText: setFillColor( 0,0,0 )
 
 	scoreDText = display.newText("-"..player.nbDeath, 0, 0, native.systemFont, 16*2)
 	scoreDText.xScale = 0.5
@@ -139,7 +119,7 @@ function showScore()
 	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
 	scoreKText.x =  90 -- display.contentWidth- 20--display.contentWidth;
 	scoreKText.y =  display.contentHeight - 20
-		scoreKText:setFillColor( 0, 1, 0 )
+	scoreKText:setFillColor( 0, 1, 0 )
 end
 
 function update_player_position(id, pos_obj )
@@ -164,36 +144,36 @@ local updateLoop = function( event )
 		btnBombClicked = false
 	else
 		if (player ~=nil) then 
-			
+
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
 	end
 
-	-- TODO: move this into GUI.lua
-	-- OPTIM: pull au lieu de fetch
-	local name = player:getCurrentStreetName()
-	if name then
-		-- if streetText then
-		-- 	streetText:removeSelf()
-		-- end
-		-- streetText = display.newText(name , 10, 10, native.systemFont, 24 )
-		-- streetText.anchorX = 0
-		-- streetText.anchorY = 0
-		-- streetText:setFillColor( 0.7, 0, 0.3 )
+		-- TODO: move this into GUI.lua
+		-- OPTIM: pull au lieu de fetch
+		local name = player:getCurrentStreetName()
+		if name then
+			-- if streetText then
+			-- 	streetText:removeSelf()
+			-- end
+			-- streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+			-- streetText.anchorX = 0
+			-- streetText.anchorY = 0
+			-- streetText:setFillColor( 0.7, 0, 0.3 )
 
-		if not streetText then
-			streetText = display.newText(name , 10, 10, native.systemFont, 24 )
-			streetText.anchorX = 0
-			streetText.anchorY = 0
-			streetText:setFillColor( 0.7, 0, 0.3 )
-		end
-		streetText.text = name
+			if not streetText then
+				streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+				streetText.anchorX = 0
+				streetText.anchorY = 0
+				streetText:setFillColor( 0.7, 0, 0.3 )
+			end
+			streetText.text = name
 	end
 end
 
 local trans
-local function moveObject(e)
+function moveObject(e)
 	print "TAP HANDLER"
 	if(trans)then
 		transition.cancel(trans)
@@ -218,7 +198,7 @@ local function moveObject(e)
 				print (arcP.progress.." ERROR")
 			end
 			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
-				net.sendPathToServer(nil,arcP)
+			net.sendPathToServer(nil,arcP)
 				--player:saveNewNodes(nil,arcP)
 			else
 				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
@@ -228,24 +208,24 @@ local function moveObject(e)
 					--print(from.uid .. "<--- from")	
 					if (nodes[1] == from) then
 						if (player.arcPCurrent.arc.end1 == from) then
-							player.nodeFrom=player.arcPCurrent.arc.end2
-						else
-							player.nodeFrom=player.arcPCurrent.arc.end1
-						end
+						player.nodeFrom=player.arcPCurrent.arc.end2
 					else
-						player.nodeFrom=from
+						player.nodeFrom=player.arcPCurrent.arc.end1
 					end
+				else
+					player.nodeFrom=from
 				end
+			end
 
 
 			net.sendPathToServer(nodes,arcP)
 
 			--player:saveNewNodes(nodes,arcP)
-			end
-		else
-			print("arcP == nil") 
 		end
+	else
+		print("arcP == nil") 
 	end
+end
 end
 
 function initGame(player_id)
@@ -274,7 +254,7 @@ function initGame(player_id)
 				update_player_position(
 					json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 					json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-				)
+					)
 			end
 
 			if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
@@ -287,12 +267,12 @@ function initGame(player_id)
 			if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
 				-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
 				if (isDead == false) then
-				print("MOOOOOOOOOOORT")
-				player.nbDeath = player.nbDeath + 1
-				scoreDText.text = "-"..player.nbDeath
-				print(player.nbDeath)
-				isDead = true
-			end
+					print("MOOOOOOOOOOORT")
+					player.nbDeath = player.nbDeath + 1
+					scoreDText.text = "-"..player.nbDeath
+					print(player.nbDeath)
+					isDead = true
+				end
 				
 			else
 				playerUpD(player.id)
@@ -300,10 +280,58 @@ function initGame(player_id)
 		end
 	end
 
-	showScore()
-	Runtime:addEventListener( "enterFrame", updateLoop )
-	Runtime:addEventListener("tap", moveObject)	
-	timerId = timer.performWithDelay( 1000, updateTime , -1 )
+	net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
+	print ("Received player update from server: " .. json.encode(json_obj))
+
+		if (json_obj.data ~= nil) then 	
+
+			-- Show the ranking
+			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
+				rankOn = true
+				Runtime:removeEventListener("tap",moveObject)	
+				scoreGroup = display.newGroup()
+				local scoreDisplay = display.newRect( display.contentCenterX, display.contentCenterY, display.contentWidth-20, display.contentHeight-20 )
+				scoreDisplay.alpha = 0.5
+				scoreGroup:insert( scoreDisplay)
+
+				local int = 20
+				
+				for i,j in pairs (json_obj.data[NETWORK_GAME_RANKING]) do
+					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID])
+					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH])
+					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL])
+					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS])
+					
+					if (((int)<scoreDisplay.contentHeight) or (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id)) then
+						local plScore = display.newText(i.. " : -".. json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH].." / +".. json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL].. " total : "..json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS] , 0, 0, native.systemFont, 16*2)
+						scoreGroup:insert( plScore)
+						plScore.xScale = 0.5
+						plScore.yScale = 0.5
+						plScore.x =  scoreDisplay.contentWidth/ 2;
+						plScore.y =  int;
+						if (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id) then
+							plScore:setFillColor(0, 0, 1 )
+						else
+							plScore:setFillColor(0, 0, 0 )
+						end
+						int = int +20
+					end
+				end
+
+				timer.performWithDelay( 3000, removeScoreDisplay , 1 )
+			end
+			player.nbDeath = 0
+			player.nbKill = 0
+
+
+		end
+	end
+		showScore()
+		Runtime:addEventListener( "enterFrame", updateLoop )
+		Runtime:addEventListener("tap", moveObject)	
+		timerId = timer.performWithDelay( 1000, updateTime , -1 )
+
+	
 end
 
 -- local function myTapListener( event )
@@ -336,33 +364,41 @@ function scene:enterScene( event )
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
-			local strid = tostring(json_obj.data.id)
-			local playerObj = others[strid]
-			if playerObj then
-				playerObj:destroy()
-				others[strid] = nil
-			end
+		local strid = tostring(json_obj.data.id)
+		local playerObj = others[strid]
+		if playerObj then
+			playerObj:destroy()
+			others[strid] = nil
 		end
-		net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
-			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
-			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
-			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
-			if (currentMap) then currentMap:destroy() end
-			currentMap = Map:new(luaMap)
-			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
-			player:refresh()
-			camera:lookAt(player:getPos())
+	end
+	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
+	if (json_obj.data ~= nil) then
+		if (json_obj.data[NETWORK_TIME] ~= nil) then
+			print(json_obj.data[NETWORK_TIME])
+			gameTime =json_obj.data[NETWORK_TIME]
+			time = json_obj.data[NETWORK_TIME]
 		end
-		net.sendGPSPosition()
-	else
-		print ("Could no connect to server")
-		currentMap = Map:new(nil)
-		initGame("1")
-		player:refresh()
-		camera:lookAt(player:getPos())
 	end
 
-	itemsManager = ItemsManager.new()
+	NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
+	print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
+	luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
+	if (currentMap) then currentMap:destroy() end
+	currentMap = Map:new(luaMap)
+	initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
+	player:refresh()
+	camera:lookAt(player:getPos())
+end
+net.sendGPSPosition()
+else
+	print ("Could no connect to server")
+	currentMap = Map:new(nil)
+	initGame("1")
+	player:refresh()
+	camera:lookAt(player:getPos())
+end
+
+itemsManager = ItemsManager.new()
 end
 
 
@@ -376,6 +412,7 @@ function scene:exitScene( event )
 	net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = nil
 	net.net_handlers[FRAMETYPE_INIT] = nil
 	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = nil
+	net.net_handlers[FRAMETYPE_GAME_END] = nil
 
 	local group = self.view
 	gui.exitGUI()
