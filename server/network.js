@@ -22,6 +22,10 @@ var TYPETILES = "tiles"
 
 var TYPEGAMEEND = "end" // new map, new list bomb (no positions)
 var TYPERANKING = "ranking" // tab of players, and points
+var TYPEPLAYERNAME = "pname" // names of each player
+var TYPEPLAYERDEADS = "pdeads" // number of deaths of the player
+var TYPEPLAYERKILLS = "pkills" // number of people killed by the player
+var TYPEPLAYERPOINTS = "ppoints" // number of points of the player
 
 var TYPEPLAYERUPDATE = "pu" // new position, new death?, new points
 var TYPEID = "id"
@@ -44,6 +48,10 @@ exports.TYPETILES = TYPETILES
 
 exports.TYPEGAMEEND = TYPEGAMEEND
 exports.TYPERANKING = TYPERANKING
+exports.TYPEPLAYERNAME = TYPEPLAYERNAME
+exports.TYPEPLAYERDEADS = TYPEPLAYERDEADS
+exports.TYPEPLAYERKILLS = TYPEPLAYERKILLS
+exports.TYPEPLAYERPOINTS = TYPEPLAYERPOINTS
 
 exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
 exports.TYPEID = TYPEID
