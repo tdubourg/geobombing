@@ -59,5 +59,6 @@ function dbg( mode, things )
 			end
 			io.write( v, "\t")
 		end
+		io.write("\n")
 	end
 end
