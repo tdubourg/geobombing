@@ -25,7 +25,7 @@ itemsManager = nil
 background = nil
 local gui = require ("gui") -- has to be required after globals definition
 local timerId = nil
-local gameTime = 300
+local gameTime = 10
 local time = gameTime
 local timeText
 local scoreDText
@@ -76,8 +76,8 @@ end
 function removeScoreDisplay()
 	rankOn = false
 	scoreGroup:removeSelf()
-	time = gameTime
-	timerId = timer.performWithDelay( 1000, updateTime , -1 )
+	--time = gameTime
+	--timerId = timer.performWithDelay( 1000, updateTime , -1 )
 	Runtime:addEventListener("tap",moveObject)	
 end
 
@@ -141,15 +141,15 @@ function scene:createScene( event )
 end
 
 local updateLoop = function( event )
-	if (btnBombClicked) then
-		btnBombClicked = false
-	else
-		if (player ~=nil) then 
+if (btnBombClicked) then
+	btnBombClicked = false
+else
+	if (player ~=nil) then 
 
-			player:refresh()
-			camera:lookAt(player:getPos())
-		end
+		player:refresh()
+		camera:lookAt(player:getPos())
 	end
+end
 
 		-- TODO: move this into GUI.lua
 		-- OPTIM: pull au lieu de fetch
@@ -170,27 +170,27 @@ local updateLoop = function( event )
 				streetText:setFillColor( 0.7, 0, 0.3 )
 			end
 			streetText.text = name
-	end
-end
-
-local trans
-function moveObject(e)
-	print "TAP HANDLER"
-	if(trans)then
-		transition.cancel(trans)
+		end
 	end
 
-	if (btnBombClicked) then
-		btnBombClicked = false
-	else
-		local screenPos = Vector2D:new(e.x,e.y)
-		local worldPos = camera:screenToWorld(screenPos)
-		
-		local from = currentMap:getClosestNode(player.pos)	
-		
-		local arcP = currentMap:getClosestPos(worldPos)
+	local trans
+	function moveObject(e)
+		print "TAP HANDLER"
+		if(trans)then
+			transition.cancel(trans)
+		end
 
-		if (arcP ~= nil) then 
+		if (btnBombClicked) then
+			btnBombClicked = false
+		else
+			local screenPos = Vector2D:new(e.x,e.y)
+			local worldPos = camera:screenToWorld(screenPos)
+
+			local from = currentMap:getClosestNode(player.pos)	
+
+			local arcP = currentMap:getClosestPos(worldPos)
+
+			if (arcP ~= nil) then 
 			-- test
 			--movePlayerById(1, arcP)
 
@@ -244,13 +244,16 @@ function initGame(player_id)
 	others[player_id] = player
 
 	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-		-- print ("Received player update from server: " .. json.encode(json_obj))
+
+	isDead = false
+	if (not rankOn) then
+				-- print ("Received player update from server: " .. json.encode(json_obj))
 
 		if (json_obj.data ~= nil) then
 			-- There's some data to crunch
 			local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 			local NETWORK_PLAYER_UPDATE_STATE_KEY = json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY]
-			
+					
 			-- The position has to be updated
 			if (pos ~= nil) then
 				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
@@ -267,30 +270,36 @@ function initGame(player_id)
 			if (state ~= nil) then
 				update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
 			end
-		end
-
-		--handling self death
-		if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
-			if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
-				-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
-				if (isDead == false) then
-					print("MOOOOOOOOOOORT")
-					player.nbDeath = player.nbDeath + 1
-					scoreDText.text = "-"..player.nbDeath
-					print(player.nbDeath)
-					isDead = true
-				end
-				
-			else
-				playerUpD(player.id)
+			if (json_obj.data[NETWORK_TIME] ~= nil) then
+				time = json_obj.data[NETWORK_TIME]
 			end
+				--handling self death
+			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
+				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
+					-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
+					if (isDead == false) then
+						print("MOOOOOOOOOOORT")
+						player.nbDeath = player.nbDeath + 1
+						scoreDText.text = "-"..player.nbDeath
+						print(player.nbDeath)
+						isDead = true
+					end
+
+				else
+					playerUpD(player.id)
+				end
+			end
+			
 		end
+
+
 	end
+end
 
-	net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
-	print ("Received player update from server: " .. json.encode(json_obj))
+net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
+print ("Received player update from server: " .. json.encode(json_obj))
 
-		if (json_obj.data ~= nil) then 	
+if (json_obj.data ~= nil) then 	
 
 			-- Show the ranking
 			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
@@ -301,7 +310,7 @@ function initGame(player_id)
 				scoreDisplay.alpha = 0.5
 				scoreGroup:insert( scoreDisplay)
 
-				local int = 20
+				local int = 50
 				
 				for i,j in pairs (json_obj.data[NETWORK_GAME_RANKING]) do
 					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID])
@@ -321,25 +330,27 @@ function initGame(player_id)
 						else
 							plScore:setFillColor(0, 0, 0 )
 						end
-						int = int +20
+						int = int +30
 					end
 				end
 
 				timer.performWithDelay( 3000, removeScoreDisplay , 1 )
 			end
 			player.nbDeath = 0
+			scoreDText.text = "-"..player.nbDeath
 			player.nbKill = 0
+			scoreKText.text = " / +"..player.nbKill
 
 
 		end
 	end
-		showScore()
-		Runtime:addEventListener( "enterFrame", updateLoop )
-		Runtime:addEventListener("tap", moveObject)	
-		timerId = timer.performWithDelay( 1000, updateTime , -1 )
+	showScore()
+	Runtime:addEventListener( "enterFrame", updateLoop )
+	Runtime:addEventListener("tap", moveObject)	
+		--timerId = timer.performWithDelay( 1000, updateTime , -1 )
 
-	
-end
+
+	end
 
 -- local function myTapListener( event )
 
@@ -385,7 +396,7 @@ function scene:enterScene( event )
 	if (json_obj.data ~= nil) then
 		if (json_obj.data[NETWORK_TIME] ~= nil) then
 			print(json_obj.data[NETWORK_TIME])
-			gameTime =json_obj.data[NETWORK_TIME]
+			gameTime =10
 			time = json_obj.data[NETWORK_TIME]
 		end
 	end
