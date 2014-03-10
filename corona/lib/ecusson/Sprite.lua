@@ -286,6 +286,7 @@ function Class:super(options)
 	-- Insert back group before the sprite so it's below it
 	self.group:insert(self.backAttachmentsGroup)
 
+
 	-- Create Corona sprite
 	local spriteSetDefinition = sets[options.spriteSet]
 	if not spriteSetDefinition then
@@ -348,8 +349,8 @@ function Class:destroy()
 	Super.destroy(self)
 
 	self._displayObject:removeSelf()
-	self.attachmentsGroup:removeSelf()
-	self.backAttachmentsGroup:removeSelf()
+	--self.attachmentsGroup:removeSelf()
+	--self.backAttachmentsGroup:removeSelf()
 	self.group:removeSelf()
 
 	utils.deleteObject(self)
