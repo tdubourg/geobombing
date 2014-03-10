@@ -2,7 +2,7 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap
 var common = require("./common")
-var conDB = false
+var conDB = true
 var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1
 var lastNodeId = 1
@@ -18,8 +18,9 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	//////////////////////////////////
 	// FIXME !! (méthode agile)
 	//latitude = 4.8730; longitude = 45.7816
-	latitude = 45.7816; longitude = 4.8730
+	//latitude = 45.7816; longitude = 4.8730
 	//latitude = 41.9205551; longitude = 8.7361006
+	latitude = 45.7836925; longitude = 4.8714986
 	
 	//////////////////////////////////
 	
@@ -32,10 +33,10 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 		return;
 	}
 	
-	console.log("Loading map from: " + latitude + ", " + hauteur)
+	console.log("Loading map from: " + latitude + ", " + longitude)
 	
 	var query = "	\n\
-		SELECT ST_asText(ST_GeometryN(r.geom,1))	\n\
+		SELECT ST_asText(ST_GeometryN(r.geom,1)), r.name	\n\
 		from roads as r,				\n\
 			ST_MakeBox2D (				\n\
 				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\n\
@@ -62,6 +63,7 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 		var SHIFTX = 0, SHIFTY = 0, COEFF = 1
 		
 		var roads = []
+		var road_names = []
 		rez.rows.forEach(function (r) {
 			var pts = []
 			r.st_astext.replace("LINESTRING(","").replace(")","").split(",").forEach(function(e) {
@@ -69,8 +71,10 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 				pts.push( [parseFloat((coords[0]-SHIFTX)*COEFF), parseFloat((coords[1]-SHIFTY)*COEFF)] )
 			})
 			roads.push(pts)
+			road_names.push(r.name)
 		})
-		//console.log(roads)
+		roads.roadNames = road_names
+		//console.log(rez)
 		console.log("Number of roads loaded: " + roads.length)
 		
 		callback(err, autoScaleMap(trimMap(roads, latitude, longitude, hauteur, largeur)));
@@ -148,7 +152,8 @@ function mapDataToJSon(mapData)
 	var nodes_dic = {}
     for (var i = 0; i < mapData.length; i++) 
     {
-    	var way = common.CreateEmptyWay("Microsoft road " + i);
+    	//var way = common.CreateEmptyWay("Microsoft road " + i);
+    	var way = common.CreateEmptyWay(mapData.roadNames[i]);
         for (var j = 0; j < mapData[i].length; j++)
     	{
     		var node
@@ -186,7 +191,7 @@ function fullMapAccordingToLocation(latitude, longitude, callback)
 {
 	var s = 0.01
 	var z = 12	
-	getMapFromPGSQL(latitude, longitude, s, s, function(err,mapData)
+	getMapFromPGSQL(latitude, longitude, s, s, function(err,mapData,roadNames)
 	{
 		callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, z))
 	});

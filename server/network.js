@@ -5,8 +5,12 @@ var FRAME_SEPARATOR = "\n"
 var decode_frame = function (frame_string) 
 {
 	var decoded_frame;
-	try{decoded_frame = JSON.parse(frame_string);} // deserialization JSON
-	catch (e){decoded_frame = {type: "unknown", data: frame_string};}
+	try {
+		decoded_frame = JSON.parse(frame_string); // deserialization JSON
+	} catch (e) {
+		console.error("Error parsing JSON for frame:", frame_string)
+		decoded_frame = {type: "unknown", data: frame_string};
+	}
 	return decoded_frame;
 }
 
