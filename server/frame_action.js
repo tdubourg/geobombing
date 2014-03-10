@@ -72,11 +72,13 @@ function sendEnd(stream, game)
 	//todo change palmares
 	data[net.TYPERANKING] = {}
 	data[net.TYPERANKING]["jo"] = {}
+	data[net.TYPERANKING]["jo"][net.TYPEID] = 52
 	data[net.TYPERANKING]["jo"][net.TYPEPLAYERDEADS] = 1
 	data[net.TYPERANKING]["jo"][net.TYPEPLAYERKILLS] = 5
 	data[net.TYPERANKING]["jo"][net.TYPEPLAYERPOINTS] = 4
 
 	data[net.TYPERANKING]["lili"] = {}
+	data[net.TYPERANKING]["jo"][net.TYPEID] = 47
 	data[net.TYPERANKING]["lili"][net.TYPEPLAYERDEADS] = 3
 	data[net.TYPERANKING]["lili"][net.TYPEPLAYERKILLS] = 2
 	data[net.TYPERANKING]["lili"][net.TYPEPLAYERPOINTS] = 1
