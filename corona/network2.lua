@@ -26,38 +26,50 @@ function test_network()
 	client:send("Bonjour!\n")
 	local response_packet = ""
 
-	response_packet = receive_until("\n")
+	response_packet = receive_line() -- receive_until("\n")
 	client:close()
 
 	--print ("Serveur answered:", response_packet)
 -- load scenetemplate.lua
 end
 
+function receive_line()
+	return client:receive() -- with no parameter = receive a line
+end
+
 function receive_until(end_separator)
+	dbg(NETW_DBG_MODE, {"Entering receive_until"})
 	local start, _end = net_buffer:find(end_separator)
+	dbg(NETW_DBG_MODE, {"(net_buffer) start=", start, "_end=", _end})
 	-- print (start, _end)
 	while start == nil do
 		-- print (start, _end)
-		local chunk = client:receive(20)
+		local chunk = client:receive(25)
+		dbg(NETW_DBG_MODE, {"chunk=", chunk})
 		if (chunk == nil) then
 			break
 		end
+		-- Note: doing the find() on chunk for optimization (chunk is much smaller than net_buffer)
+		-- as here we just want to know whether there's a end_separator or not
+		start, _end = chunk:find(end_separator)
+		dbg(NETW_DBG_MODE, {"(chunk) start=", start, "_end=", _end})
 		net_buffer = net_buffer .. chunk
-		start, _end = net_buffer:find(end_separator)
 	end
-	-- if NETWORK_DUMP then
-	-- 		print "NETWORK DUMP - IN"
-	-- 		print(net_buffer)
-	-- end
-	if (net_buffer == "") then
+	-- Then re-doing the find here, to have the right value
+	start, _end = net_buffer:find(end_separator)
+	dbg(NETW_DBG_MODE, {"(net_buffer) start=", start, "_end=", _end})
+	if (start == nil) then
 		return nil
 	end
-	return net_buffer
+	local curr_frame = string.sub(net_buffer, 1, start)
+	net_buffer = string.sub(net_buffer, _end+1)
+	dbg(NETW_DUMP_MODE, {"curr_frame=", curr_frame, "net_buffer=", net_buffer})
+	return curr_frame
 end
 
 function _mrcv(connection)
 	connection:settimeout(0)
-	local frameString, status = receive_until(FRAME_SEPARATOR)
+	local frameString, status = receive_line()-- receive_until(FRAME_SEPARATOR)
 
 	if frameString ~= nil then
 		--print ( "Received network data: " .. frameString)
