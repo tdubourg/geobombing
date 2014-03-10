@@ -7,6 +7,10 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 	-- protocol
 	JSON_FRAME_TYPE = "type"
 	JSON_FRAME_DATA = "data"
+	NETW_INIT_GRID_BOUNDS_SMTLP = 'sessionMapTopLeftPoint'
+	NETW_INIT_GRID_BOUNDS_SMBRP = 'sessionMapBottomRightPoint'
+	NETW_INIT_GRID_BOUNDS_TTLP = 'tilesTopLeftPoint'
+	NETW_INIT_GRID_BOUNDS_TBRP = 'tilesBottomRightPoint'
 		-- Frame Types
 		if (DEV_MODE) then
 			NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
