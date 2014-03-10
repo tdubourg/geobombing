@@ -14,6 +14,7 @@ require "vector2D"
 require "map"
 require "items"
 require "print_r"
+require "tile"
 local json = require "json"
 local physics = require( "physics" )
 local playBtn
@@ -283,6 +284,8 @@ function scene:enterScene( event )
 	local group = self.view
 	storyboard.returnTo = "menu"
 
+	local tile = Tile:new()
+
 	-- display a background image
 	background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
 	-- background:setReferencePoint( display.TopLeftReferencePoint )
@@ -290,8 +293,8 @@ function scene:enterScene( event )
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
-	--camera:setZoomXY(200,200)
-	camera:setZoomXY(2000,2000)
+	camera:setZoomXY(200,200)				--debug zoom
+	-- camera:setZoomXY(2000,2000)	--city zoom
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 	
