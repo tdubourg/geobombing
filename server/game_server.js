@@ -4,14 +4,10 @@ var g = require('./game')
 var fa = require('./frame_action')
 var net = require('./network')
 
-
-exports.GameServer = GameServer
-exports.Connexion = Connexion
-
-
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
+
 var SESSION_LENGHT = 10 // in seconds
 var PALMARES_SHOW_TIME = 3 // in seconds
 var session_time_remaining = SESSION_LENGHT
@@ -200,7 +196,7 @@ GameServer.prototype.bombCommand = function(stream, key) { // FIXME key?
 }
 
 GameServer.prototype.quitCommand = function(stream, key) { // not used atm
-	onsole.log("player gone")
+	console.log("player gone")
 	//this.getPlayer(stream).quit() // todo complete, Lionel!
 }
 
@@ -209,3 +205,5 @@ GameServer.prototype.setInitialPosition = function(stream, position) {
 }
 
 
+exports.GameServer = GameServer
+exports.Connexion = Connexion
