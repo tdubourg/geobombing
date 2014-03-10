@@ -86,6 +86,8 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 -- GAMEPLAY
 
 BOMB_DBG_MODE = false
+NETW_DBG_MODE = false
+NETW_DUMP_MODE = false
 
 -- require("consts-local")
 silent_fail_require("consts-local")
