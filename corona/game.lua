@@ -14,6 +14,7 @@ require "vector2D"
 require "map"
 require "items"
 require "print_r"
+require "tile"
 local json = require "json"
 local physics = require( "physics" )
 local playBtn
@@ -346,14 +347,14 @@ function scene:enterScene( event )
 	storyboard.returnTo = "menu"
 
 	-- display a background image
-	background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
-	-- background:setReferencePoint( display.TopLeftReferencePoint )
-	background.x, background.y = display.contentCenterX, display.contentCenterY
+	--background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
+	--background.x, background.y = display.contentCenterX, display.contentCenterY
+	
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
-	--camera:setZoomXY(200,200)
-	camera:setZoomXY(2000,2000)
+	camera:setZoomXY(200,200)				--debug zoom
+	-- camera:setZoomXY(2000,2000)	--city zoom
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 	
@@ -380,6 +381,7 @@ function scene:enterScene( event )
 		end
 	end
 
+
 	NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
 	print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
 	luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
@@ -399,6 +401,8 @@ else
 end
 
 itemsManager = ItemsManager.new()
+local testtilz = Tile:new("http://tdvps.fr.nf:8080/osm_tiles/16/33657/23369.png")
+
 end
 
 
