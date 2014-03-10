@@ -142,6 +142,7 @@ var sendPlayerRemove = function (stream, player) // player and other players
 
 var sendBombUpdate = function (stream, bomb) // player and other players
 {
+	if (bomb == null) console.log("Error: Unknown Bomb")
 	var data = {}
 	data[net.TYPEID] = bomb.player.id // player id
 	data[net.TYPEPOS] = bomb.getPosition()
@@ -157,8 +158,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
-		//console.log("Bomb update sent ("+(bomb.time<0?1:0)+")")
-		//console.log(bomb.arc.toString(), bomb.arcDist)
+		console.log("radius: ", content.data[net.TYPERADIUS])
 	})
 }
 
