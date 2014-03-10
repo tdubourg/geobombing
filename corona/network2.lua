@@ -8,11 +8,12 @@ require "arcPos"
 
 local client = nil
 local FRAME_SEPARATOR = "\n"
-local NETWORK_DUMP = true
+local NETWORK_DUMP = false
 local _msgsendtable = {} -- send message queue
 local net_handlers = {}
 local mrcvTimer = nil
 NETWORK_KEY = ""
+local net_buffer = ""
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -25,39 +26,50 @@ function test_network()
 	client:send("Bonjour!\n")
 	local response_packet = ""
 
-	response_packet = receive_until("\n")
+	response_packet = receive_line() -- receive_until("\n")
 	client:close()
 
 	--print ("Serveur answered:", response_packet)
 -- load scenetemplate.lua
 end
 
+function receive_line()
+	return client:receive() -- with no parameter = receive a line
+end
+
 function receive_until(end_separator)
-	local str = ""
-	local start, _end = str:find(end_separator)
+	dbg(NETW_DBG_MODE, {"Entering receive_until"})
+	local start, _end = net_buffer:find(end_separator)
+	dbg(NETW_DBG_MODE, {"(net_buffer) start=", start, "_end=", _end})
 	-- print (start, _end)
 	while start == nil do
 		-- print (start, _end)
-		local chunk = client:receive(1)
+		local chunk = client:receive(25)
+		dbg(NETW_DBG_MODE, {"chunk=", chunk})
 		if (chunk == nil) then
 			break
 		end
-		str = str .. chunk
-		start, _end = str:find(end_separator)
+		-- Note: doing the find() on chunk for optimization (chunk is much smaller than net_buffer)
+		-- as here we just want to know whether there's a end_separator or not
+		start, _end = chunk:find(end_separator)
+		dbg(NETW_DBG_MODE, {"(chunk) start=", start, "_end=", _end})
+		net_buffer = net_buffer .. chunk
 	end
-	-- if NETWORK_DUMP then
-	-- 		print "NETWORK DUMP - IN"
-	-- 		print(str)
-	-- end
-	if (str == "") then
+	-- Then re-doing the find here, to have the right value
+	start, _end = net_buffer:find(end_separator)
+	dbg(NETW_DBG_MODE, {"(net_buffer) start=", start, "_end=", _end})
+	if (start == nil) then
 		return nil
 	end
-	return str
+	local curr_frame = string.sub(net_buffer, 1, start)
+	net_buffer = string.sub(net_buffer, _end+1)
+	dbg(NETW_DUMP_MODE, {"curr_frame=", curr_frame, "net_buffer=", net_buffer})
+	return curr_frame
 end
 
 function _mrcv(connection)
 	connection:settimeout(0)
-	local frameString, status = receive_until(FRAME_SEPARATOR)
+	local frameString, status = receive_line()-- receive_until(FRAME_SEPARATOR)
 
 	if frameString ~= nil then
 		--print ( "Received network data: " .. frameString)
@@ -137,7 +149,7 @@ function receivedBombUpdate( network_data )
 	end
 	itemsManager:bombUpdate(network_data.data)
 end
-
+dbg(Y,{})
 function receivedGameEnd( network_data )
 	print ( "Received game end")
 	--itemsManager:gameEnd(network_data.data) -- todo
@@ -157,8 +169,8 @@ function sendString(data)
 	if client ~= nil then
 		client:send(data .. FRAME_SEPARATOR)
 		if NETWORK_DUMP then
-			--print "NETWORK DUMP - OUT"
-			--print(data)
+			print "NETWORK DUMP - OUT"
+			print(data)
 		end
 	end
 end
