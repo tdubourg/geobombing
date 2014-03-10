@@ -35,7 +35,10 @@ var sendInit_action = function (frame_data, stream)
 		}
 		
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + net.FRAME_SEPARATOR, function () { console.log(data); console.log(tiles) })
+		stream.write(data + net.FRAME_SEPARATOR, function () {
+			//console.log(data)
+			console.log(tiles)
+		})
 	}
 	
 	function setInitialPosition()
