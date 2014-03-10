@@ -8,7 +8,7 @@ var lastMapId = 1
 var lastNodeId = 1
 var u = require("./util")
 var t = require("./tiles")
-
+var consts = require("./constants")
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	// from now on "hauteur" refers to hauteur/2 :-P
@@ -40,12 +40,21 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	}
 	
 	console.log("Loading map from: " + latitude + ", " + longitude)
+
+	var topLeft = {'lat': latitude-hauteur, 'lng': longitude-largeur}
+	var bottomRight = {'lat': latitude+hauteur, 'lng': longitude+largeur}
+
+	t.MapTiles.setGPSWindow(
+		topLeft,
+		bottomRight,
+		consts.ZOOM_OF_GPS_MAP_SESSION
+	)
 	
 	var query = "	\n\
 		SELECT ST_asText(ST_GeometryN(r.the_geom,1)), r.name	\n\
 		from shp_roads as r,				\n\
 			ST_MakeBox2D (				\n\
-				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\n\
+				ST_Point("+topLeft.lng+", "+topLeft.lat+"), ST_Point("+bottomRight.lng+", "+bottomRight.lat+")	\n\
 			) as box					\n\
 		WHERE ST_Intersects(r.the_geom, box) and exists (	\n\
 		  select r						\n\
@@ -205,17 +214,20 @@ function getInitialPosition() {
 
 function fullMapAccordingToLocation(latitude, longitude, callback) 
 {
-	var s = 0.01
-	var z = 12	
-	getMapFromPGSQL(latitude, longitude, s, s, function(err, mapData, roadNames)
-	{
-		callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, z))
-	});
+	getMapFromPGSQL(
+		latitude,
+		longitude,
+		consts.HEIGHT_OF_GPS_MAP_SESSION,
+		consts.WIDTH_OF_GPS_MAP_SESSION,
+		function(err, mapData, roadNames) {
+			callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, consts.ZOOM_OF_GPS_MAP_SESSION))
+		}
+	);
 }
 
 function getMapTiles(latitude, longitude, zoom) 
 {
-	return t.MapTiles.compute_grid_of_urls(zoom, latitude, longitude)
+	return t.MapTiles.compute_grid_of_urls(latitude, longitude)
 }
 
 exports.mapDataToJSon = mapDataToJSon
