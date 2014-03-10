@@ -248,17 +248,23 @@ function initGame(player_id)
 
 		if (json_obj.data ~= nil) then
 			-- There's some data to crunch
-
+			local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+			local NETWORK_PLAYER_UPDATE_STATE_KEY = json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY]
+			
 			-- The position has to be updated
-			if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-				-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
-				update_player_position(
-					json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
-					json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-					)
+			if (pos ~= nil) then
+				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
+				-- If we do not want to discard it...
+				if (t >= now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS or state == nil) then				
+					-- Then take it into account!
+					update_player_position(
+						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
+						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+						)
+				end
 			end
 
-			if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
+			if (state ~= nil) then
 				update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
 			end
 		end
@@ -353,8 +359,11 @@ function scene:enterScene( event )
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
-	camera:setZoomXY(200,200)				--debug zoom
-	-- camera:setZoomXY(2000,2000)	--city zoom
+	if (DEBUG_ZOOM) then
+		camera:setZoomXY(200,200)				--debug zoom
+	else
+		camera:setZoomXY(2000,2000)	--city zoom
+	end
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 	

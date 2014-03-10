@@ -1,4 +1,5 @@
 local json = require "json"
+local socket = require "socket"
 
 -- table.indexOf( array, object ) returns the index
 -- of object in array. Returns 'nil' if not in array.
@@ -61,4 +62,10 @@ function dbg( mode, things )
 		end
 		io.write("\n")
 	end
+end
+
+-- Returns the timestamp in milliseconds 
+-- That is to say the number of milliseconds since the 01/01/1970
+function now()
+	return socket.gettime()*1000
 end
