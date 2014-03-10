@@ -24,7 +24,7 @@ itemsManager = nil
 background = nil
 local gui = require ("gui") -- has to be required after globals definition
 local timerId = nil
-local gameTime = 300
+local gameTime = 10
 local time = gameTime
 local timeText
 local scoreDText
@@ -75,8 +75,8 @@ end
 function removeScoreDisplay()
 	rankOn = false
 	scoreGroup:removeSelf()
-	time = gameTime
-	timerId = timer.performWithDelay( 1000, updateTime , -1 )
+	--time = gameTime
+	--timerId = timer.performWithDelay( 1000, updateTime , -1 )
 	Runtime:addEventListener("tap",moveObject)	
 end
 
@@ -243,39 +243,47 @@ function initGame(player_id)
 	others[player_id] = player
 
 	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-		-- print ("Received player update from server: " .. json.encode(json_obj))
+		isDead = false
+		if (rankOn == true) then
+			-- print ("Received player update from server: " .. json.encode(json_obj))
 
-		if (json_obj.data ~= nil) then
-			-- There's some data to crunch
+			if (json_obj.data ~= nil) then
+				-- There's some data to crunch
 
-			-- The position has to be updated
-			if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-				-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
-				update_player_position(
-					json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
-					json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-					)
-			end
-
-			if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
-				update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
-			end
-		end
-
-		--handling self death
-		if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
-			if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
-				-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
-				if (isDead == false) then
-					print("MOOOOOOOOOOORT")
-					player.nbDeath = player.nbDeath + 1
-					scoreDText.text = "-"..player.nbDeath
-					print(player.nbDeath)
-					isDead = true
+				-- The position has to be updated
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
+					-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+					update_player_position(
+						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
+						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+						)
 				end
-				
-			else
-				playerUpD(player.id)
+
+				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
+					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+				end
+			end
+
+			if (json_obj.data[NETWORK_TIME] ~= nil) then
+				time = json_obj.data[NETWORK_TIME]
+			end
+	end
+
+			--handling self death
+			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
+				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
+					-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
+					if (isDead == false) then
+						print("MOOOOOOOOOOORT")
+						player.nbDeath = player.nbDeath + 1
+						scoreDText.text = "-"..player.nbDeath
+						print(player.nbDeath)
+						isDead = true
+					end
+					
+				else
+					playerUpD(player.id)
+				end
 			end
 		end
 	end
@@ -294,7 +302,7 @@ function initGame(player_id)
 				scoreDisplay.alpha = 0.5
 				scoreGroup:insert( scoreDisplay)
 
-				local int = 20
+				local int = 50
 				
 				for i,j in pairs (json_obj.data[NETWORK_GAME_RANKING]) do
 					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID])
@@ -314,14 +322,16 @@ function initGame(player_id)
 						else
 							plScore:setFillColor(0, 0, 0 )
 						end
-						int = int +20
+						int = int +30
 					end
 				end
 
 				timer.performWithDelay( 3000, removeScoreDisplay , 1 )
 			end
 			player.nbDeath = 0
+			scoreDText.text = "-"..player.nbDeath
 			player.nbKill = 0
+			scoreKText.text = " / +"..player.nbKill
 
 
 		end
@@ -329,7 +339,7 @@ function initGame(player_id)
 		showScore()
 		Runtime:addEventListener( "enterFrame", updateLoop )
 		Runtime:addEventListener("tap", moveObject)	
-		timerId = timer.performWithDelay( 1000, updateTime , -1 )
+		--timerId = timer.performWithDelay( 1000, updateTime , -1 )
 
 	
 end
@@ -375,7 +385,7 @@ function scene:enterScene( event )
 	if (json_obj.data ~= nil) then
 		if (json_obj.data[NETWORK_TIME] ~= nil) then
 			print(json_obj.data[NETWORK_TIME])
-			gameTime =json_obj.data[NETWORK_TIME]
+			gameTime =10
 			time = json_obj.data[NETWORK_TIME]
 		end
 	end
