@@ -11,8 +11,6 @@ var g = require('./game')
 var gs = require('./game_server')
 var single_game_server = null
 
-var t = require("./tiles")
-
 exports.getServer = function() { return single_game_server }
 
 // executed function according to client result
