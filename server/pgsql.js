@@ -8,7 +8,7 @@ var lastMapId = 1
 var lastNodeId = 1
 var u = require("./util")
 var t = require("./tiles")
-
+var consts = require("./constants")
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	// from now on "hauteur" refers to hauteur/2 :-P
@@ -205,12 +205,15 @@ function getInitialPosition() {
 
 function fullMapAccordingToLocation(latitude, longitude, callback) 
 {
-	var s = 0.01
-	var z = 12	
-	getMapFromPGSQL(latitude, longitude, s, s, function(err, mapData, roadNames)
-	{
-		callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, z))
-	});
+	getMapFromPGSQL(
+		latitude,
+		longitude,
+		consts.HEIGHT_OF_GPS_MAP_SESSION,
+		consts.WIDTH_OF_GPS_MAP_SESSION,
+		function(err, mapData, roadNames) {
+			callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, consts.ZOOM_OF_GPS_MAP_SESSION))
+		}
+	);
 }
 
 function getMapTiles(latitude, longitude, zoom) 
