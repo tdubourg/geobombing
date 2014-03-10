@@ -17,6 +17,7 @@ var decode_frame = function (frame_string)
 ///--- Network Constants on Server---
 var TYPEPLAYERINIT = "init" // new map, new list bomb (no positions)
 var TYPEMAP = "map"
+var TYPETIMEREMAINING = "time"
 var TYPETILES = "tiles"
 
 var TYPEGAMEEND = "end" // new map, new list bomb (no positions)
@@ -38,6 +39,7 @@ var TYPEBOMBTYPE = "btype" // 0 to ...
 
 exports.TYPEPLAYERINIT = TYPEPLAYERINIT
 exports.TYPEMAP = TYPEMAP
+exports.TYPETIMEREMAINING = TYPETIMEREMAINING
 exports.TYPETILES = TYPETILES
 
 exports.TYPEGAMEEND = TYPEGAMEEND
