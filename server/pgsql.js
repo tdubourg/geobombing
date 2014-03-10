@@ -2,7 +2,7 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap
 var common = require("./common")
-var conDB = false
+var conDB = true
 var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1
 var lastNodeId = 1
@@ -28,8 +28,12 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	{	
 		var m = [[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
 			[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]
-
-			m.roadNames = ["Microsoft road", "Apple road"]
+		
+		m.roadNames = ["Microsoft road", "Apple road"]
+		
+		// Useless, ceinture-bretelle
+		m.shiftX = m.shiftY = 0
+		m.scale = 1
 		
 		callback(null, autoScaleMap(m));
 		return;
@@ -38,16 +42,16 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	console.log("Loading map from: " + latitude + ", " + longitude)
 	
 	var query = "	\n\
-		SELECT ST_asText(ST_GeometryN(r.geom,1)), r.name	\n\
-		from roads as r,				\n\
+		SELECT ST_asText(ST_GeometryN(r.the_geom,1)), r.name	\n\
+		from shp_roads as r,				\n\
 			ST_MakeBox2D (				\n\
 				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\n\
 			) as box					\n\
-		WHERE ST_Intersects(r.geom, box) and exists (	\n\
+		WHERE ST_Intersects(r.the_geom, box) and exists (	\n\
 		  select r						\n\
 		  from (						\n\
 		    select pp.geom as p			\n\
-		    from ST_DumpPoints(r.geom) as pp	\n\
+		    from ST_DumpPoints(r.the_geom) as pp	\n\
 		  ) as foo						\n\
 		  where ST_Contains (			\n\
 		    box, p						\n\
@@ -106,7 +110,7 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 			j--
 		}
 	}
-	console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
+	//console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
 	return leMap
 }
 
@@ -145,6 +149,10 @@ function autoScaleMap(leMap)
 		})
 	})
 	
+	leMap.shiftX = shiftX
+	leMap.shiftY = shiftY
+	leMap.scale = coeff
+	
 	return leMap
 }
 
@@ -167,11 +175,17 @@ function mapDataToJSon(mapData)
         		common.AddNodeToMap(map, node);
         	}
         	else node = nodes_dic[mapData[i][j]]  		
-        	       	
+        	
         	common.AddNodeIdToWay(way, node.id);
     	}
     	common.AddWayToMap(map, way);
     }
+    map.shiftX = mapData.shiftX
+    map.shiftY = mapData.shiftY
+    map.scale  = mapData.scale
+    
+    console.log("Map scale:",mapData.scale,"shifts:",mapData.shiftX,mapData.shiftY)
+    
     return map
 }
 

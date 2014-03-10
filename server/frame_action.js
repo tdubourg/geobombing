@@ -19,15 +19,16 @@ var sendInit_action = function (frame_data, stream)
 	var lat = parseFloat(frame_data.latitude);
 	var lon = parseFloat(frame_data.longitude);
 	
-	function sendInit(jsonMap, tiles)
+	function sendInit(jsonMap, time_remaining, tiles)
 	{
 		//var conKey = single_game_server.addPlayer(stream).conKey
 		var player = single_game_server.addPlayer(stream)
 		var data = {}
 		data[net.TYPEID] = player.id // id
 		data[net.TYPEKEY] = player.connexion.conKey // key
+		data[net.TYPETIMEREMAINING] = time_remaining // time before end of game 
 		data[net.TYPEMAP] = jsonMap // map
-		data[net.TYPETILES] = tiles // maptiles
+		if (tiles != null) data[net.TYPETILES] = tiles // maptiles
 		var content =  
 		{
 			"type": net.TYPEPLAYERINIT, 
@@ -36,8 +37,9 @@ var sendInit_action = function (frame_data, stream)
 		
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + net.FRAME_SEPARATOR, function () {
-			//console.log(data)
-			console.log(tiles)
+			//console.log("sendInit(data): ", data)
+			//console.log("sendInit(tiles): ", content.data.tiles)
+			console.log("sendInit(time_remaining): ", content.data.time)
 		})
 	}
 	
@@ -53,21 +55,31 @@ var sendInit_action = function (frame_data, stream)
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 
-			sendInit(single_game_server.game.map.jsonObj, tiles);
+			sendInit(single_game_server.game.map.jsonObj, gs.session_time_remaining,  tiles);
 			setInitialPosition();
 		}); // lat, lon
 		else
 		{
-			sendInit(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj, gs.session_time_remaining);
 			setInitialPosition();
 		}
 } // end sendInit_action
 
 
-function sendEnd(stream, game)
+function sendEnd(stream, players)
 {
 	var data = {}
-	data[net.TYPERANKING] = {"jo":100, "lili":0} // palmares
+	data[net.TYPERANKING] = {}
+	players.forEach(function (player) 
+	{
+		data[net.TYPERANKING][player.name] = {}
+		data[net.TYPERANKING][player.name][net.TYPEID] = player.id
+		data[net.TYPERANKING][player.name][net.TYPEPLAYERDEADS] = player.deads
+		data[net.TYPERANKING][player.name][net.TYPEPLAYERKILLS] = player.kills
+		data[net.TYPERANKING][player.name][net.TYPEPLAYERPOINTS] = player.points
+
+	}) 
+
 	var content =  
 	{
 		"type": net.TYPEGAMEEND, 

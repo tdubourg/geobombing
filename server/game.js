@@ -17,6 +17,8 @@ var BOMB_POWER = .2
 
 var debug_bombes = false
 
+/// MAP //////////////////////
+
 function panick(str) {
 	console.log("[Game Model Error]: "+(str? str: "unspecified"))
 }
@@ -113,10 +115,12 @@ Map.prototype.getNode = function (nid) {
 	return this.nodes[nid]
 }
 
+
+/// PLAYERS /////////////////////////
+
+
 var pids = 0
-//function Player(id, name, stream) {
-//function Player(id, name) {
-function Player(game,stream) {
+function Player(game, stream) {
 	//console.log("CRE PLAY",game)
 	/*this.id = id
 	this.name = name*/
@@ -124,13 +128,17 @@ function Player(game,stream) {
 	game.players.push(this)
 	this.stream = stream
 	this.id = ++pids
-	this.name = "Player_"+this.id
+	this.name = "Player_" + this.id
 	this.currentPath = []  // contains nextNode? -> NOT
 	this.speed = PLAYER_SPEED //.3 //1E-3
 	this.connexion = null
 	this.dead = false
-	
-	//this.currentArc = null
+
+	// for ranking
+	this.deads = 0
+	this.kills = 0
+	this.points = 0
+
 	//this.currentArcPos = null
 	this.currentArc = null
 	this.currentArcDist = null
@@ -142,7 +150,6 @@ function Game(map) {
 	this.map = map
 	this.players = []
 	this.playersId = 0
-	//this.bombs = {}
 	this.bombs = []
 }
 
@@ -158,11 +165,18 @@ function Bomb(player) { //, arc, coeff) {
 	//player.game.bombs[this.id] = this
 	
 }
-/*
-function BombAction() {
-	
+
+Player.prototype.KillPlayer = function (player_killed) // can be called or himself (kamikaze)
+{
+	player_killed.deads++
+	if (player_killed != this)
+	{	
+		player_killed.points -= 5
+		this.points += 10
+		this.kills++
+	}
 }
-*/
+
 
 Bomb.prototype.update = function (period, explodingBombs) {
 	//console.log("tick...")
@@ -207,12 +221,15 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	function addPlayerOn(player, arc, dist) {
 		if (!playersOnArc[arc.id])
 			playersOnArc[arc.id] = []
+
 		playersOnArc[arc.id].push({p:player, d:dist})
 	}
+
 	game.players.forEach(function(p) {
 		addPlayerOn(p, p.currentArc, p.currentArcDist)
 		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
 	})
+
 	function rec (startDist, distToCover, prevNode, arc) {
 		
 		if (visitedArc[arc.id]) return
@@ -402,28 +419,22 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	//console.log("Ending at: "+arc)
 	this.targetArcDist = endCoeff*arc.length
 	
-	
 	//console.log("Going to", this.currentArc+"")
-	
 }
-Player.prototype.bomb = function () {
+
+Player.prototype.bomb = function () 
+{
 	if (this.dead) return
 	
 	var b = new Bomb(this)
-	
 	this.game.bombs.push(b)
-	
 	return b
 }
 
-Game.prototype.update = function (period, explodingBombs) {
-	//console.log(period)
-	
-	this.players.thismap(Player.prototype.update, period)
-	
+Game.prototype.update = function (period, explodingBombs) 
+{
+	this.players.thismap(Player.prototype.update, period)	
 	this.bombs.thismap(Bomb.prototype.update, period, explodingBombs)
-	
-	
 }
 
 
