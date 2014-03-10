@@ -37,8 +37,9 @@ var sendInit_action = function (frame_data, stream)
 		
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + net.FRAME_SEPARATOR, function () {
-			console.log("sendInit(tiles): ", tiles)
-			console.log("sendInit(time_remaining): ", time_remaining)
+			//console.log("sendInit(data): ", data)
+			//console.log("sendInit(tiles): ", content.data.tiles)
+			console.log("sendInit(time_remaining): ", content.data.time)
 		})
 	}
 	
@@ -65,23 +66,19 @@ var sendInit_action = function (frame_data, stream)
 } // end sendInit_action
 
 
-function sendEnd(stream, game)
+function sendEnd(stream, players)
 {
 	var data = {}
-
-	//todo change palmares
 	data[net.TYPERANKING] = {}
-	data[net.TYPERANKING]["jo"] = {}
-	data[net.TYPERANKING]["jo"][net.TYPEID] = 52
-	data[net.TYPERANKING]["jo"][net.TYPEPLAYERDEADS] = 1
-	data[net.TYPERANKING]["jo"][net.TYPEPLAYERKILLS] = 5
-	data[net.TYPERANKING]["jo"][net.TYPEPLAYERPOINTS] = 4
+	players.forEach(function (player) 
+	{
+		data[net.TYPERANKING][player.name] = {}
+		data[net.TYPERANKING][player.name][net.TYPEID] = player.id
+		data[net.TYPERANKING][player.name][net.TYPEPLAYERDEADS] = player.deads
+		data[net.TYPERANKING][player.name][net.TYPEPLAYERKILLS] = player.kills
+		data[net.TYPERANKING][player.name][net.TYPEPLAYERPOINTS] = player.points
 
-	data[net.TYPERANKING]["lili"] = {}
-	data[net.TYPERANKING]["jo"][net.TYPEID] = 47
-	data[net.TYPERANKING]["lili"][net.TYPEPLAYERDEADS] = 3
-	data[net.TYPERANKING]["lili"][net.TYPEPLAYERKILLS] = 2
-	data[net.TYPERANKING]["lili"][net.TYPEPLAYERPOINTS] = 1
+	}) 
 
 	var content =  
 	{
