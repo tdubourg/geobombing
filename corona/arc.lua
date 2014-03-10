@@ -29,7 +29,7 @@ function Arc:redraw()
 	self.drawable = display.newLine(newPos1.x, newPos1.y, newPos2.x, newPos2.y )
 	self.drawable.strokeWidth = 7
 	self.drawable:setStrokeColor(200, 200, 200)
-
+	self.map.mapGroup:insert(self.drawable)
 end
 
 

@@ -62,6 +62,7 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 		worldPosition = self.pos,
 		scale = 0.4,
 		position = camera:worldToScreen(self.pos),
+		group = playerLayer,
 	}
 
 	self.nodeFrom=self.arcPCurrent.arc.end1

@@ -284,12 +284,10 @@ function scene:enterScene( event )
 	local group = self.view
 	storyboard.returnTo = "menu"
 
-	local tile = Tile:new()
-
 	-- display a background image
-	background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
-	-- background:setReferencePoint( display.TopLeftReferencePoint )
-	background.x, background.y = display.contentCenterX, display.contentCenterY
+	--background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
+	--background.x, background.y = display.contentCenterX, display.contentCenterY
+	
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
@@ -332,6 +330,9 @@ function scene:enterScene( event )
 	end
 
 	itemsManager = ItemsManager.new()
+
+
+	local testtilz = Tile:new("http://tdvps.fr.nf:8080/osm_tiles/16/33657/23369.png")
 end
 
 
