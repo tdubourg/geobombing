@@ -19,14 +19,14 @@ var sendInit_action = function (frame_data, stream)
 	var lat = parseFloat(frame_data.latitude);
 	var lon = parseFloat(frame_data.longitude);
 	
-	function sendInit(jsonMap, time_remaining, tiles)
+	function sendInit(jsonMap, tiles)
 	{
 		//var conKey = single_game_server.addPlayer(stream).conKey
 		var player = single_game_server.addPlayer(stream)
 		var data = {}
 		data[net.TYPEID] = player.id // id
 		data[net.TYPEKEY] = player.connexion.conKey // key
-		data[net.TYPETIMEREMAINING] = time_remaining // time before end of game 
+		data[net.TYPETIMEREMAINING] = gs.time_remaining // time before end of game 
 		data[net.TYPEMAP] = jsonMap // map
 		if (tiles != null) data[net.TYPETILES] = tiles // maptiles
 		var content =  
@@ -55,12 +55,12 @@ var sendInit_action = function (frame_data, stream)
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
 
-			sendInit(single_game_server.game.map.jsonObj, gs.session_time_remaining,  tiles);
+			sendInit(single_game_server.game.map.jsonObj,  tiles);
 			setInitialPosition();
 		}); // lat, lon
 		else
 		{
-			sendInit(single_game_server.game.map.jsonObj, gs.session_time_remaining);
+			sendInit(single_game_server.game.map.jsonObj);
 			setInitialPosition();
 		}
 } // end sendInit_action
@@ -77,8 +77,19 @@ function sendEnd(stream, players)
 		data[net.TYPERANKING][player.name][net.TYPEPLAYERDEADS] = player.deads
 		data[net.TYPERANKING][player.name][net.TYPEPLAYERKILLS] = player.kills
 		data[net.TYPERANKING][player.name][net.TYPEPLAYERPOINTS] = player.points
-
 	}) 
+
+	data[net.TYPERANKING]["jo la fritte"] = {}
+		data[net.TYPERANKING]["jo la fritte"][net.TYPEID] = 52
+		data[net.TYPERANKING]["jo la fritte"][net.TYPEPLAYERDEADS] = 553
+		data[net.TYPERANKING]["jo la fritte"][net.TYPEPLAYERKILLS] = 54
+		data[net.TYPERANKING]["jo la fritte"][net.TYPEPLAYERPOINTS] = 78546
+
+	data[net.TYPERANKING]["tonton gaston"] = {}
+		data[net.TYPERANKING]["tonton gaston"][net.TYPEID] = 45
+		data[net.TYPERANKING]["tonton gaston"][net.TYPEPLAYERDEADS] = 56
+		data[net.TYPERANKING]["tonton gaston"][net.TYPEPLAYERKILLS] = 87
+		data[net.TYPERANKING]["tonton gaston"][net.TYPEPLAYERPOINTS] = 6546
 
 	var content =  
 	{
@@ -89,7 +100,7 @@ function sendEnd(stream, players)
 	var data = JSON.stringify(content); // parsage JSON
 	stream.write(data + net.FRAME_SEPARATOR, function () { console.log(data) })
 }
-exports.sendEnd = sendEnd
+
 
 
 // --- updates ---
@@ -99,10 +110,10 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	var data = {}
 	data[net.TYPEPOS] = player.getPosition() 
 	data[net.TYPEID] = player.id
-	if (player.dead)
-	{ 
-		data[net.TYPEDEAD] = player.dead
-	}
+	data[net.TYPETIMESTAMP] = Date.now() // for discard playerUpdatePosition
+	data[net.TYPETIMEREMAINING] = gs.time_remaining // time before end of game 
+	if (player.dead) { data[net.TYPEDEAD] = player.dead }
+
 	var content = 
 	{
 		"type": net.TYPEPLAYERUPDATE,
@@ -114,7 +125,6 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 		//console.log("Send updt", stream.address().address)
 	})
 }
-exports.sendPlayerUpdate = sendPlayerUpdate
 
 var sendPlayerRemove = function (stream, player) // player and other players
 {	
@@ -129,7 +139,6 @@ var sendPlayerRemove = function (stream, player) // player and other players
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {console.log("Bomb update sent")})
 }
-exports.sendPlayerRemove = sendPlayerRemove
 
 var sendBombUpdate = function (stream, bomb) // player and other players
 {
@@ -152,7 +161,6 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 		//console.log(bomb.arc.toString(), bomb.arcDist)
 	})
 }
-exports.sendBombUpdate = sendBombUpdate
 
 
 // --- receiving function ---
@@ -192,4 +200,10 @@ var frame_actions =
 	"bomb": bomb_action,
 	"quit": quit_action
 }
+
+
+exports.sendEnd = sendEnd
+exports.sendPlayerUpdate = sendPlayerUpdate
+exports.sendPlayerRemove = sendPlayerRemove
+exports.sendBombUpdate = sendBombUpdate
 exports.frame_actions = frame_actions

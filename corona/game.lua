@@ -14,6 +14,7 @@ require "vector2D"
 require "map"
 require "items"
 require "print_r"
+require "tile"
 local json = require "json"
 local physics = require( "physics" )
 local playBtn
@@ -140,15 +141,15 @@ function scene:createScene( event )
 end
 
 local updateLoop = function( event )
-	if (btnBombClicked) then
-		btnBombClicked = false
-	else
-		if (player ~=nil) then 
+if (btnBombClicked) then
+	btnBombClicked = false
+else
+	if (player ~=nil) then 
 
-			player:refresh()
-			camera:lookAt(player:getPos())
-		end
+		player:refresh()
+		camera:lookAt(player:getPos())
 	end
+end
 
 		-- TODO: move this into GUI.lua
 		-- OPTIM: pull au lieu de fetch
@@ -169,27 +170,27 @@ local updateLoop = function( event )
 				streetText:setFillColor( 0.7, 0, 0.3 )
 			end
 			streetText.text = name
-	end
-end
-
-local trans
-function moveObject(e)
-	print "TAP HANDLER"
-	if(trans)then
-		transition.cancel(trans)
+		end
 	end
 
-	if (btnBombClicked) then
-		btnBombClicked = false
-	else
-		local screenPos = Vector2D:new(e.x,e.y)
-		local worldPos = camera:screenToWorld(screenPos)
-		
-		local from = currentMap:getClosestNode(player.pos)	
-		
-		local arcP = currentMap:getClosestPos(worldPos)
+	local trans
+	function moveObject(e)
+		print "TAP HANDLER"
+		if(trans)then
+			transition.cancel(trans)
+		end
 
-		if (arcP ~= nil) then 
+		if (btnBombClicked) then
+			btnBombClicked = false
+		else
+			local screenPos = Vector2D:new(e.x,e.y)
+			local worldPos = camera:screenToWorld(screenPos)
+
+			local from = currentMap:getClosestNode(player.pos)	
+
+			local arcP = currentMap:getClosestPos(worldPos)
+
+			if (arcP ~= nil) then 
 			-- test
 			--movePlayerById(1, arcP)
 
@@ -243,33 +244,36 @@ function initGame(player_id)
 	others[player_id] = player
 
 	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
-		isDead = false
-		if (rankOn == true) then
-			-- print ("Received player update from server: " .. json.encode(json_obj))
 
-			if (json_obj.data ~= nil) then
-				-- There's some data to crunch
+	isDead = false
+	if (not rankOn) then
+				-- print ("Received player update from server: " .. json.encode(json_obj))
 
-				-- The position has to be updated
-				if (json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY] ~= nil) then
-					-- print(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+		if (json_obj.data ~= nil) then
+			-- There's some data to crunch
+			local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+			local NETWORK_PLAYER_UPDATE_STATE_KEY = json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY]
+					
+			-- The position has to be updated
+			if (pos ~= nil) then
+				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
+				-- If we do not want to discard it...
+				if (t >= now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS or state == nil) then				
+					-- Then take it into account!
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 						)
 				end
-
-				if (json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY] ~= nil) then
-					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
-				end
 			end
 
+			if (state ~= nil) then
+				update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+			end
 			if (json_obj.data[NETWORK_TIME] ~= nil) then
 				time = json_obj.data[NETWORK_TIME]
 			end
-	end
-
-			--handling self death
+				--handling self death
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
 				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
 					-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
@@ -280,18 +284,22 @@ function initGame(player_id)
 						print(player.nbDeath)
 						isDead = true
 					end
-					
+
 				else
 					playerUpD(player.id)
 				end
 			end
+			
 		end
+
+
 	end
+end
 
-	net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
-	print ("Received player update from server: " .. json.encode(json_obj))
+net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
+print ("Received player update from server: " .. json.encode(json_obj))
 
-		if (json_obj.data ~= nil) then 	
+if (json_obj.data ~= nil) then 	
 
 			-- Show the ranking
 			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
@@ -336,13 +344,13 @@ function initGame(player_id)
 
 		end
 	end
-		showScore()
-		Runtime:addEventListener( "enterFrame", updateLoop )
-		Runtime:addEventListener("tap", moveObject)	
+	showScore()
+	Runtime:addEventListener( "enterFrame", updateLoop )
+	Runtime:addEventListener("tap", moveObject)	
 		--timerId = timer.performWithDelay( 1000, updateTime , -1 )
 
-	
-end
+
+	end
 
 -- local function myTapListener( event )
 
@@ -356,14 +364,17 @@ function scene:enterScene( event )
 	storyboard.returnTo = "menu"
 
 	-- display a background image
-	background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
-	-- background:setReferencePoint( display.TopLeftReferencePoint )
-	background.x, background.y = display.contentCenterX, display.contentCenterY
+	--background = display.newImageRect( "images/background.png",display.contentWidth, display.contentHeight)
+	--background.x, background.y = display.contentCenterX, display.contentCenterY
+	
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
-	--camera:setZoomXY(200,200)
-	camera:setZoomXY(2000,2000)
+	if (DEBUG_ZOOM) then
+		camera:setZoomXY(200,200)				--debug zoom
+	else
+		camera:setZoomXY(2000,2000)	--city zoom
+	end
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 	
@@ -390,6 +401,7 @@ function scene:enterScene( event )
 		end
 	end
 
+
 	NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
 	print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
 	luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
@@ -409,6 +421,8 @@ else
 end
 
 itemsManager = ItemsManager.new()
+local testtilz = Tile:new("http://tdvps.fr.nf:8080/osm_tiles/16/33657/23369.png")
+
 end
 
 
