@@ -65,8 +65,8 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 	NETWORK_RANKING_POINTS= "ppoints"
 
 	-- time remaining
-	NETWORK_TIME = "time"
-	
+	NETWORK_TIME = "tr"
+
 	--bomb data
 	FRAMETYPE_BOMB_UPDATE = "bu"
 	NETWORK_BOMB_UPDATE_ID_KEY = "bid"
