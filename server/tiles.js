@@ -72,8 +72,7 @@ var MapTiles =
 		        bounds.min.divideBy(this.tileSize)._floor(),
 		        bounds.max.divideBy(this.tileSize)._floor());
 
-		console.log("tileBounds", tileBounds.min.x, tileBounds.min.y)
-
+		//console.log("tileBounds", tileBounds.min.x, tileBounds.min.y)
 		console.log("##############################exported_bounds#####################", tileBounds)
 		var i,j,point
 		var grid = []
@@ -92,5 +91,3 @@ var MapTiles =
 }
 exports.MapTiles = MapTiles
 
-//Uncomment to have an example of use of MapTiles with some GPS coordinates close to the LyonTech campus
-//console.log(MapTiles.compute_grid_of_urls(13, 45.780911, 4.878820))
