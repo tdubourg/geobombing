@@ -106,7 +106,7 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 			j--
 		}
 	}
-	console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
+	//console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
 	return leMap
 }
 
