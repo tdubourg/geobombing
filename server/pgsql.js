@@ -2,12 +2,12 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap
 var common = require("./common")
-var conDB = true
+var conDB = false
 var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1
 var lastNodeId = 1
 var u = require("./util")
-//var t = require("./tiles")
+var t = require("./tiles")
 
 
 function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
@@ -28,6 +28,8 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	{	
 		var m = [[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
 			[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]
+
+			m.roadNames = ["Microsoft road", "Apple road"]
 		
 		callback(null, autoScaleMap(m));
 		return;
@@ -152,8 +154,8 @@ function mapDataToJSon(mapData)
 	var nodes_dic = {}
     for (var i = 0; i < mapData.length; i++) 
     {
-    	//var way = common.CreateEmptyWay("Microsoft road " + i);
-    	var way = common.CreateEmptyWay(mapData.roadNames[i]);
+    	var wayName = (mapData.roadNames[i] == null)?"Road " + i: mapData.roadNames[i]
+    	var way = common.CreateEmptyWay(wayName);
         for (var j = 0; j < mapData[i].length; j++)
     	{
     		var node
@@ -191,7 +193,7 @@ function fullMapAccordingToLocation(latitude, longitude, callback)
 {
 	var s = 0.01
 	var z = 12	
-	getMapFromPGSQL(latitude, longitude, s, s, function(err,mapData,roadNames)
+	getMapFromPGSQL(latitude, longitude, s, s, function(err, mapData, roadNames)
 	{
 		callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, z))
 	});
@@ -199,7 +201,7 @@ function fullMapAccordingToLocation(latitude, longitude, callback)
 
 function getMapTiles(latitude, longitude, zoom) 
 {
-	return ["not", "yet", "tiles"]//t.compute_grid_of_urls(zoom, latitude, longitude)
+	return t.MapTiles.compute_grid_of_urls(zoom, latitude, longitude)
 }
 
 exports.mapDataToJSon = mapDataToJSon

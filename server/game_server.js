@@ -12,6 +12,7 @@ exports.Connexion = Connexion
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
+var session = false
 
 function streamKey(stream) {
 	//console.log(stream)
@@ -119,7 +120,7 @@ function GameServer(game) {
 		
 	}, MOVE_REFRESH_PERIOD)
 
-	setTimeout(function() // durée session //todo delete after sprint2
+	if (session) setTimeout(function() // durée session //todo delete after sprint2
 	{
 		console.log("fin de la partie")
 		for (var conKey in that.connexions) 
