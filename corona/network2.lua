@@ -13,6 +13,7 @@ local _msgsendtable = {} -- send message queue
 local net_handlers = {}
 local mrcvTimer = nil
 NETWORK_KEY = ""
+local net_buffer = ""
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -33,26 +34,25 @@ function test_network()
 end
 
 function receive_until(end_separator)
-	local str = ""
-	local start, _end = str:find(end_separator)
+	local start, _end = net_buffer:find(end_separator)
 	-- print (start, _end)
 	while start == nil do
 		-- print (start, _end)
-		local chunk = client:receive(4)
+		local chunk = client:receive(20)
 		if (chunk == nil) then
 			break
 		end
-		str = str .. chunk
-		start, _end = str:find(end_separator)
+		net_buffer = net_buffer .. chunk
+		start, _end = net_buffer:find(end_separator)
 	end
 	-- if NETWORK_DUMP then
 	-- 		print "NETWORK DUMP - IN"
-	-- 		print(str)
+	-- 		print(net_buffer)
 	-- end
-	if (str == "") then
+	if (net_buffer == "") then
 		return nil
 	end
-	return str
+	return net_buffer
 end
 
 function _mrcv(connection)
