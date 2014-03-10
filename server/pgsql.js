@@ -36,16 +36,16 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	console.log("Loading map from: " + latitude + ", " + longitude)
 	
 	var query = "	\n\
-		SELECT ST_asText(ST_GeometryN(r.geom,1)), r.name	\n\
-		from roads as r,				\n\
+		SELECT ST_asText(ST_GeometryN(r.the_geom,1)), r.name	\n\
+		from shp_roads as r,				\n\
 			ST_MakeBox2D (				\n\
 				ST_Point("+(longitude-largeur)+", "+(latitude-hauteur)+"), ST_Point("+(longitude+largeur)+", "+(latitude+hauteur)+")	\n\
 			) as box					\n\
-		WHERE ST_Intersects(r.geom, box) and exists (	\n\
+		WHERE ST_Intersects(r.the_geom, box) and exists (	\n\
 		  select r						\n\
 		  from (						\n\
 		    select pp.geom as p			\n\
-		    from ST_DumpPoints(r.geom) as pp	\n\
+		    from ST_DumpPoints(r.the_geom) as pp	\n\
 		  ) as foo						\n\
 		  where ST_Contains (			\n\
 		    box, p						\n\
