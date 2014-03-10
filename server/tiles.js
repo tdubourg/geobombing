@@ -1,3 +1,4 @@
+"use strict"
 // From algo_extracted.js (openstreetmap)
 var L = require("./leaflet_node");
 
@@ -28,16 +29,6 @@ var MapTiles =
 		zoom = zoom === undefined ? this._zoom : zoom;
 		return this.crs.pointToLatLng(L.point(point), zoom);
 	},
-	getSize: function () {
-		if (!this._size || this._sizeChanged) {
-			this._size = new L.Point(
-				this.clientWidth,
-				this.clientHeight);
-
-			this._sizeChanged = false;
-		}
-		return this._size.clone();
-	},
 	getTileUrl: function (tilePoint) {
 		//console.log("Loading tile with point", tilePoint.z, tilePoint.x, tilePoint.y)
 		return template(this._url, /*L.extend(*/{
@@ -48,19 +39,19 @@ var MapTiles =
 		}/*, this.options)*/);
 	},
 
+	setGPSWindow: function (gps_top_left, gps_bottom_right, zoom) {
+		this.zoom = zoom + 6 // TODO CHANGE THAT AS SOON AS THE ZOOM VALUE IS FIXED
+		gps_top_left = L.latLng(gps_top_left.lat, gps_top_left.lng)
+		gps_bottom_right = L.latLng(gps_bottom_right.lat, gps_bottom_right.lng)
+		this.topLeftPoint = this.project(gps_top_left, this.zoom)
+		this.bottomRightPoint = this.project(gps_bottom_right, this.zoom)
+	},
+
 	tileSize: 256,
 
-	compute_grid_of_urls: function (zoom, lat, long) 
+	compute_grid_of_urls: function (lat, long) 
 	{		
-		var center = [lat, long]
-		var viewHalf = this.getSize()._divideBy(2);
-		// TODO round on display, not calculation to increase precision?
-		var _initialTopLeftPoint = this.project(center, zoom)._subtract(viewHalf);
-		console.log("_initialTopLeftPoint", _initialTopLeftPoint)
-
-		var topLeftPoint = _initialTopLeftPoint;
-		//console.log("this.getSize", this.getSize())
-		var bounds = new L.Bounds(topLeftPoint, topLeftPoint.add(this.getSize()));
+		var bounds = new L.Bounds(this.topLeftPoint, this.bottomRightPoint);
 		console.log("bounds", bounds.min.x, bounds.min.y)
 
 		var tileBounds = L.bounds(
@@ -75,13 +66,21 @@ var MapTiles =
 			var grid_line = []
 			for (i = tileBounds.min.x; i < tileBounds.max.x + 1; i++) {
 				point = new L.Point(i, j);
-				point.z = zoom
+				point.z = this.zoom
 				grid_line.push(this.getTileUrl(point))
 			}
 			grid.push(grid_line)
 		}
 		this.last_grid_of_urls = grid
-		return {'grid': this.last_grid_of_urls, 'topLeftPoint': {'x': topLeftPoint.x, 'y': topLeftPoint.y}}
+		var result = {
+			'grid': this.last_grid_of_urls,
+			'sessionMapTopLeftPoint': {'x': this.topLeftPoint.x, 'y': this.topLeftPoint.y},
+			'sessionMapBottomRightPoint': {'x': this.bottomRightPoint.x, 'y': this.bottomRightPoint.y},
+			'tilesTopLeftPoint': {'x': tileBounds.min.x * this.tileSize, 'y': tileBounds.min.y * this.tileSize},
+			'tilesBottomRightPoint': {'x': (tileBounds.max.x + 1) * this.tileSize, 'y': (tileBounds.max.y + 1) * this.tileSize}
+		}
+		console.log(result) // TODO: Remove that when debug is done :) 
+		return result
 	},
 }
 exports.MapTiles = MapTiles
