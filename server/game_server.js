@@ -131,7 +131,7 @@ function GameServer(game) {
 		{ 
 
 		session_time_remaining--;
-		//console.log("session_time_remaining: ", session_time_remaining)
+		console.log("session_time_remaining: ", session_time_remaining)
 		if (session_time_remaining <= 0)
 		{
 			console.log("fin de la partie")
