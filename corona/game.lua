@@ -29,6 +29,7 @@ local time = gameTime
 local timeText
 local scoreDText
 local scoreKText
+local scoreGroup 
 
 function movePlayerById(id,arcP)
 	local exist = false
@@ -69,23 +70,43 @@ function playerUpK(id)
 	daPlayer.nbKill = daPlayer.nbKill +1
 end
 
-local function onComplete( event )
-
-	local action = event.action
-	if "clicked" == event.action then
-    	if 1 == event.index then
-
-    	end
+function removeScoreDisplay()
+	scoreGroup:removeSelf()
+	time = gameTime
+	timerId = timer.performWithDelay( 1000, updateTime , -1 )
 end
-
-end
-
 
 
 function updateTime()
 	if (time <= 0) then
 		time = gameTime
-		local alert = native.showAlert( "Scores!", "Nombre de morts : ".. player.nbDeath .. "\n Nombre de tués : " .. player.nbKill, { "OK" }, onComplete )
+
+	scoreGroup = display.newGroup()
+
+		--local alert = native.showAlert( "Scores!", "Nombre de morts : ".. player.nbDeath .. "\n Nombre de tués : " .. player.nbKill, { "OK" }, onComplete )
+		local scoreDisplay = display.newRect( display.contentCenterX, display.contentCenterY, display.contentWidth-20, display.contentHeight-20 )
+		scoreDisplay.alpha = 0.5
+			scoreGroup:insert( scoreDisplay)
+			local i = 0
+		for id,pl in pairs(others) do
+			if (((i+20)<scoreDisplay.contentHeight) or (id == player.id)) then
+				local plScore = display.newText(id.. " : -".. pl.nbDeath.." / +".. pl.nbKill, 0, 0, native.systemFont, 16*2)
+				scoreGroup:insert( plScore)
+				plScore.xScale = 0.5
+				plScore.yScale = 0.5
+				-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
+				plScore.x =  scoreDisplay.contentWidth/ 2;
+				plScore.y =  i+20;
+				if (id == player.id) then
+					plScore.text = "Moi : -".. pl.nbDeath.." / +".. pl.nbKill
+					plScore:setFillColor(0, 0, 1 )
+				else
+					plScore:setFillColor(0, 1, 0 )
+				end
+			end
+		end
+		timer.cancel( timerId )
+		timer.performWithDelay( 5000, removeScoreDisplay , 1 )
 	else
 		time = time - 1
 	end
@@ -269,7 +290,7 @@ function initGame(player_id)
 	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener("tap", moveObject)	
-	timer.performWithDelay( 1000, updateTime , -1 )
+	timerId = timer.performWithDelay( 1000, updateTime , -1 )
 end
 
 -- local function myTapListener( event )
