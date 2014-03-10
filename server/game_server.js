@@ -1,5 +1,8 @@
 "use strict"
 
+exports.GameServer = GameServer
+exports.Connexion = Connexion
+
 var g = require('./game')
 var fa = require('./frame_action')
 var net = require('./network')
@@ -131,12 +134,15 @@ function GameServer(game) {
 		if (session_time_remaining <= 0)
 		{
 			console.log("fin de la partie")
+
+			// calculates palmares
+			game.players.sort(function(p1, p2){return p2.points-p1.points});
 			for (var conKey in that.connexions) 
 			{
 				var con = that.connexions[conKey]
 				game.players.forEach(function (player) 
 				{
-					fa.sendEnd(con.stream, null)
+					fa.sendEnd(con.stream, game.players)
 				})
 			}
 			if (session_time_remaining <= -PALMARES_SHOW_TIME)
@@ -171,21 +177,17 @@ GameServer.prototype.notifyBomb = function(bomb) {
 GameServer.prototype.addPlayer = function(stream) {
 	// TODO handle timeouts
 	
-	var p = new g.Player(this.game, stream)
-	
+	var p = new g.Player(this.game, stream)	
 	var c = new Connexion(this, stream, p)
-	
 	return p
 }
 GameServer.prototype.getPlayer = function(stream) {
-	//return gserver.connexions.indexOf(con).player
 	return this.connexions[streamKey(stream)].player
 }
 
 GameServer.prototype.moveCommand = function(stream, conKey, endCoeff, nodes) {
 	
-	console.log("Move com from", this.getPlayer(stream).name)//this.playersByStream[stream].name)
-	
+	console.log("Move com from", this.getPlayer(stream).name)	
 	this.getPlayer(stream).move(nodes, endCoeff)
 	
 }
@@ -205,5 +207,3 @@ GameServer.prototype.setInitialPosition = function(stream, position) {
 }
 
 
-exports.GameServer = GameServer
-exports.Connexion = Connexion
