@@ -252,8 +252,8 @@ function initGame(player_id)
 		if (json_obj.data ~= nil) then
 			-- There's some data to crunch
 			local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-			local NETWORK_PLAYER_UPDATE_STATE_KEY = json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY]
-					
+			local state = json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY]
+
 			-- The position has to be updated
 			if (pos ~= nil) then
 				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
