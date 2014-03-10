@@ -32,7 +32,7 @@ local scoreDText
 local scoreKText
 local scoreGroup 
 local isDead = false
-local rankOn = false
+rankOn = false
 
 function movePlayerById(id,arcP)
 	local exist = false
@@ -81,10 +81,6 @@ function removeScoreDisplay()
 	Runtime:addEventListener("tap",moveObject)	
 end
 
-function displayScore(tableScore) 
-	
-end
-
 function updateTime()
 	if (time <= 0) then
 		time = gameTime
@@ -104,7 +100,7 @@ function showScore()
 	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
 	timeText.x =  display.contentWidth/ 2;
 	timeText.y =  display.contentHeight - 20;
-	timeText: setFillColor( 0,0,0 )
+	timeText: setFillColor( 1,1,1 )
 
 	scoreDText = display.newText("-"..player.nbDeath, 0, 0, native.systemFont, 16*2)
 	scoreDText.xScale = 0.5
@@ -245,9 +241,9 @@ function initGame(player_id)
 
 	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
 
-	isDead = false
+	
 	if (not rankOn) then
-				-- print ("Received player update from server: " .. json.encode(json_obj))
+				--print ("Received player update from server: " .. json.encode(json_obj))
 
 		if (json_obj.data ~= nil) then
 			-- There's some data to crunch
@@ -272,6 +268,8 @@ function initGame(player_id)
 			end
 			if (json_obj.data[NETWORK_TIME] ~= nil) then
 				time = json_obj.data[NETWORK_TIME]
+				timeText.text = "Temps restant: ".. time
+				print("time"..time)
 			end
 				--handling self death
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
@@ -283,6 +281,10 @@ function initGame(player_id)
 						scoreDText.text = "-"..player.nbDeath
 						print(player.nbDeath)
 						isDead = true
+						local revive = function()
+							isDead = false
+						end
+						timer.performWithDelay( 3000, revive )
 					end
 
 				else
