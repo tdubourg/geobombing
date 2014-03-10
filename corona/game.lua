@@ -23,6 +23,12 @@ currentMap = nil
 itemsManager = nil
 background = nil
 local gui = require ("gui") -- has to be required after globals definition
+local timerId = nil
+local gameTime = 300
+local time = gameTime
+local timeText
+local scoreDText
+local scoreKText
 
 function movePlayerById(id,arcP)
 	local exist = false
@@ -35,6 +41,81 @@ function movePlayerById(id,arcP)
 	end
 
 	daPlayer:setAR(arcP)
+end
+
+function playerUpD(id)
+	local exist = false
+	strid = "" .. id
+
+	local daPlayer = others[strid]
+	if (not daPlayer) then
+		daPlayer = Player.new(strid,0.02,0,arcP)
+		others[strid] = daPlayer
+	end
+
+	daPlayer.nbDeath = daPlayer.nbDeath +1
+end
+
+function playerUpK(id)
+	local exist = false
+	strid = "" .. id
+
+	local daPlayer = others[strid]
+	if (not daPlayer) then
+		daPlayer = Player.new(strid,0.02,0,arcP)
+		others[strid] = daPlayer
+	end
+
+	daPlayer.nbKill = daPlayer.nbKill +1
+end
+
+local function onComplete( event )
+
+	local action = event.action
+	if "clicked" == event.action then
+    	if 1 == event.index then
+
+    	end
+end
+
+end
+
+
+
+function updateTime()
+	if (time <= 0) then
+		time = gameTime
+		local alert = native.showAlert( "Scores!", "Nombre de morts : ".. player.nbDeath .. "\n Nombre de tués : " .. player.nbKill, { "OK" }, onComplete )
+	else
+		time = time - 1
+	end
+	timeText.text = "Temps restant: ".. time
+end
+
+function showScore()
+	-- Create a new text field to display the timer
+	timeText = display.newText("Temps restant: ".. time, 0, 0, native.systemFont, 16*2)
+	timeText.xScale = 0.5
+	timeText.yScale = 0.5
+	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
+	timeText.x =  display.contentWidth/ 2;
+	timeText.y =  display.contentHeight - 20;
+
+	scoreDText = display.newText("-"..player.nbDeath, 0, 0, native.systemFont, 16*2)
+	scoreDText.xScale = 0.5
+	scoreDText.yScale = 0.5
+	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
+	scoreDText.x =  60 -- display.contentWidth- 20--display.contentWidth;
+	scoreDText.y =  display.contentHeight - 20
+	scoreDText:setFillColor(1, 0, 0 )
+
+	scoreKText = display.newText(" / +"..player.nbKill, 0, 0, native.systemFont, 16*2)
+	scoreKText.xScale = 0.5
+	scoreKText.yScale = 0.5
+	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
+	scoreKText.x =  90 -- display.contentWidth- 20--display.contentWidth;
+	scoreKText.y =  display.contentHeight - 20
+		scoreKText:setFillColor( 0, 1, 0 )
 end
 
 function update_player_position(id, pos_obj )
@@ -59,6 +140,7 @@ local updateLoop = function( event )
 		btnBombClicked = false
 	else
 		if (player ~=nil) then 
+			
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
@@ -143,6 +225,7 @@ local function moveObject(e)
 end
 
 function initGame(player_id)
+	
 	player_id = "" .. player_id
 	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
 	for voisin,_ in pairs(nodeFr.arcs) do
@@ -183,9 +266,10 @@ function initGame(player_id)
 		end
 	end
 
-
+	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener("tap", moveObject)	
+	timer.performWithDelay( 1000, updateTime , -1 )
 end
 
 -- local function myTapListener( event )

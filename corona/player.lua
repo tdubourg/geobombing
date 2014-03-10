@@ -47,6 +47,7 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	self.id = pId
 	self.speed = pSpeed or 0.2
 	self.nbDeath = pNDeath or 0
+	self.nbKill = 0
 
 	--Player current state : FROZEN / WALKING / DEAD
 	self.currentState = PLAYER_FROZEN_STATE 
