@@ -10,16 +10,15 @@ function Node:new(worldX, worldY, uid, map)  -- The constructor
 	self.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
 	self.arcs = {}                                   -- K: destination node, V: corresponding arc
 
-	self.drawable = display.newGroup()
-	map.mapGroup:insert(self.drawable)
+	if DISPLAY_MAP_MODEL then
+		self.drawable = display.newGroup()
+		map.mapGroup:insert(self.drawable)
 
-	local circle =display.newCircle(self.drawable, self.pos.x, self.pos.y, 3 )
-	circle:setFillColor( 1, 1, 1 )
+		local circle =display.newCircle(self.drawable, self.pos.x, self.pos.y, 3 )
+		circle:setFillColor( 1, 1, 1 )
+		camera:addListener(self)
+	end
 
-	-- local text = display.newText(self.drawable, uid, self.pos.x, self.pos.y, native.systemFont, 16 )
-	-- text:setFillColor( 0, 0, 1 )
-
-	camera:addListener(self)
 
 	-- if nodesByUID[uid] ~= nil then
 	-- 	print ("WARNING: node uid: ".. uid .." is not unique!")
@@ -31,7 +30,7 @@ function Node:new(worldX, worldY, uid, map)  -- The constructor
 end
 
 -- part of the contract with Camera
-function Node:redraw()
+function Node:redraw(zoomChange)
 	local newPos = camera:worldToScreen(self.pos)
 	self.drawable.x = newPos.x
 	self.drawable.y = newPos.y
