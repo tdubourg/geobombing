@@ -10,6 +10,7 @@ var net = require('./network')
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
+var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
 var SESSION_LENGHT = 120 
@@ -103,6 +104,7 @@ function GameServer(game, tiles)
 		var time = Date.now()
 		var explodingBombs = []
 		var dyingPlayers = []
+		
 		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)
 		
 		explodingBombs.forEach(function (bomb) 
@@ -112,12 +114,12 @@ function GameServer(game, tiles)
 		
 		dyingPlayers.forEach(function (p) 
 		{
-			var to_id = setTimeOut(function() {
+			var to_id = setTimeout(function() {
 				console.log("Player",this.name,"automatically respawned")
 				p.respawn()
-				delete this.respawnIntervalsByPlayerId[p.id]
-			})
-			this.respawnIntervalsByPlayerId[p.id] = to_id
+				delete that.respawnIntervalsByPlayerId[p.id]
+			}, TIME_BEFORE_RESPAWN)
+			that.respawnIntervalsByPlayerId[p.id] = to_id
 		})
 		
 		lastTime = time
@@ -151,9 +153,9 @@ function GameServer(game, tiles)
 				console.log("fin de la partie")
 				
 				//this.respawnIntervalsByPlayerId.forEach(to_id) {
-				for (var p_id in this.respawnIntervalsByPlayerId) {
-					clearTimeout(this.respawnIntervalsByPlayerId[p_id])
-					delete respawnIntervalsByPlayerId[p_id]
+				for (var p_id in that.respawnIntervalsByPlayerId) {
+					clearTimeout(that.respawnIntervalsByPlayerId[p_id])
+					delete that.respawnIntervalsByPlayerId[p_id]
 				}
 				//this.respawnIntervalsByPlayerId.length = 0
 				
@@ -171,7 +173,7 @@ function GameServer(game, tiles)
 				{ 
 					session_time_remaining = SESSION_LENGHT
 					console.log("nouvelle partie")
-					this.game.newGame()
+					that.game.newGame()
 					
 					
 					

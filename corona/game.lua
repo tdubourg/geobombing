@@ -257,6 +257,8 @@ function initGame(player_id)
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 						)
+				else
+					dbg(DISCARDED_PLAYER_UPDATES, {"DISCARDED player updated", json_obj.data})
 				end
 			end
 
