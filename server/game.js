@@ -112,6 +112,7 @@ function Map(jsonObj) {
 	})
 	
 }
+
 Map.prototype.getNode = function (nid) {
 	return this.nodes[nid]
 }
@@ -134,6 +135,7 @@ function Player(game, stream) {
 	this.speed = PLAYER_SPEED //.3 //1E-3
 	this.connexion = null
 	this.dead = false
+	this.spwanPosition = null
 
 	// for ranking
 	this.deads = 0
@@ -152,6 +154,7 @@ function Game(map) {
 	this.players = []
 	this.playersId = 0
 	this.bombs = []
+	//this.dyingPlayers = []
 }
 
 var bombNb = 0
@@ -164,7 +167,6 @@ function Bomb(player) { //, arc, coeff) {
 	//this.power = 1
 	this.power = BOMB_POWER
 	//player.game.bombs[this.id] = this
-	
 }
 
 Player.prototype.onKillPlayer = function (player_killed) // can be called on himself (kamikaze)
@@ -218,6 +220,7 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	var player = this.player
 	var playersOnArc = {}
 	var visitedArc = {}
+	var that = this
 	
 	function addPlayerOn(player, arc, dist) {
 		if (!playersOnArc[arc.id])
@@ -246,7 +249,7 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		playersOnArc[arc.id].forEach(function(pd) {
 			if (startDist <= pd.d && pd.d <= distToCover) {
 				pd.p.die()
-				this.player.onKillPlayer(pd.p)
+				that.player.onKillPlayer(pd.p)
 			}
 		})
 		
@@ -358,13 +361,9 @@ Player.prototype.die = function () {
 	{
 		console.log("Player",this.name,"died in horrible pain!!")
 		this.dead = true
-
-		//respawn
-		setTimeOut(function() 
-			{ 
-				console.log("Player",this.name,"Respawn!!")
-				this.dead = false
-			}, TIME_BEFORE_RESPAWN)
+		
+		this.game.dyingPlayers.push(this)
+		
 	}
 }
 
@@ -379,8 +378,23 @@ Player.prototype.getPosition = function () {
 		this.currentArcDist/this.currentArc.length);
 }
 
-Player.prototype.setPosition = function (position) {
+Player.prototype.setSpawnPosition = function (position) {
 	console.log("setpos",position)
+	this.spwanPosition = position
+	this.respawn()
+	// this.currentArc = this.game.map.nodes[position.n1].arcToId(position.n2)
+	// if (!this.currentArc)
+	// 	console.log("[Game Model Error]: couldn't set initial position with nodes ", position.n1, position.n2)
+	// this.currentArcDist = position.c*this.currentArc.length;
+	// this.targetArcDist = null
+}
+
+Player.prototype.respawn = function () {
+	this.setPosition(this.spwanPosition)
+	this.dead = false
+}
+
+Player.prototype.setPosition = function (position) {
 	this.currentArc = this.game.map.nodes[position.n1].arcToId(position.n2)
 	if (!this.currentArc)
 		console.log("[Game Model Error]: couldn't set initial position with nodes ", position.n1, position.n2)
@@ -439,10 +453,21 @@ Player.prototype.bomb = function ()
 	return b
 }
 
-Game.prototype.update = function (period, explodingBombs) 
+Game.prototype.update = function (period, explodingBombs, dyingPlayers) 
 {
+	this.dyingPlayers = dyingPlayers
 	this.players.thismap(Player.prototype.update, period)	
 	this.bombs.thismap(Bomb.prototype.update, period, explodingBombs)
+}
+
+Game.prototype.newGame = function () 
+{
+	
+	for (var i = 0; i < this.players.length; i++) {
+		var p = this.players[i]
+		p.respawn()
+	};
+	
 }
 
 
