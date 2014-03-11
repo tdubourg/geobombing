@@ -72,7 +72,7 @@ var MapTiles =
 			grid.push(grid_line)
 		}
 		this.last_grid_of_urls = grid
-		sessionMapBounds = L.bounds(this.topLeftPoint, this.bottomRightPoint)
+		var sessionMapBounds = L.bounds(this.topLeftPoint, this.bottomRightPoint)
 		var result = {
 			'grid': this.last_grid_of_urls,
 			'sessionMapTopLeftPoint': {'x': sessionMapBounds.min.x, 'y': sessionMapBounds.min.y},
