@@ -330,6 +330,7 @@ if (json_obj.data ~= nil) then
 								plScore:setFillColor(0, 0, 0 )
 							end
 							int = int +30
+							rank=rank+1
 						end
 						
 					end
