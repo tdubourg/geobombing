@@ -144,7 +144,7 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 			j--
 		}
 	}
-	console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
+	//console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
 	return leMap
 }
 
@@ -222,7 +222,7 @@ function mapDataToJSon(mapData)
     map.shiftY = mapData.shiftY
     map.scale  = mapData.scale
     
-    console.log("Map scale:",mapData.scale,"shifts:",mapData.shiftX,mapData.shiftY)
+    //console.log("Map scale:",mapData.scale,"shifts:",mapData.shiftX,mapData.shiftY)
     
     return map
 }
