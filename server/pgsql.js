@@ -21,7 +21,6 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	//latitude = 45.7816; longitude = 4.8730
 	//latitude = 41.9205551; longitude = 8.7361006
 	latitude = 45.7836925; longitude = 4.8714986
-	
 	//////////////////////////////////
 	
 	if (!conDB) 
