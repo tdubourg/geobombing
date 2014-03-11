@@ -22,11 +22,11 @@ var MapTiles =
 	_url: "http://tdvps.fr.nf:8080/osm_tiles/{z}/{x}/{y}.png",
 
 	project: function (latlng, zoom) { // (LatLng[, Number]) -> Point
-		zoom = zoom === undefined ? this._zoom : zoom;
+		zoom = zoom === undefined ? this.zoom : zoom;
 		return this.crs.latLngToPoint(L.latLng(latlng), zoom);
 	},
 	unproject: function (point, zoom) { // (Point[, Number]) -> LatLng
-		zoom = zoom === undefined ? this._zoom : zoom;
+		zoom = zoom === undefined ? this.zoom : zoom;
 		return this.crs.pointToLatLng(L.point(point), zoom);
 	},
 	getTileUrl: function (tilePoint) {
@@ -45,6 +45,7 @@ var MapTiles =
 		gps_bottom_right = L.latLng(gps_bottom_right.lat, gps_bottom_right.lng)
 		this.topLeftPoint = this.project(gps_top_left, this.zoom)
 		this.bottomRightPoint = this.project(gps_bottom_right, this.zoom)
+		this.sessionMapBounds = L.bounds(this.topLeftPoint, this.bottomRightPoint)
 	},
 
 	tileSize: 256,
@@ -72,11 +73,10 @@ var MapTiles =
 			grid.push(grid_line)
 		}
 		this.last_grid_of_urls = grid
-		var sessionMapBounds = L.bounds(this.topLeftPoint, this.bottomRightPoint)
 		var result = {
 			'grid': this.last_grid_of_urls,
-			'sessionMapTopLeftPoint': {'x': sessionMapBounds.min.x, 'y': sessionMapBounds.min.y},
-			'sessionMapBottomRightPoint': {'x': sessionMapBounds.max.x, 'y': sessionMapBounds.max.y},
+			'sessionMapTopLeftPoint': {'x': this.sessionMapBounds.min.x, 'y': this.sessionMapBounds.min.y},
+			'sessionMapBottomRightPoint': {'x': this.sessionMapBounds.max.x, 'y': this.sessionMapBounds.max.y},
 			'tilesTopLeftPoint': {'x': tileBounds.min.x * this.tileSize, 'y': tileBounds.min.y * this.tileSize},
 			'tilesBottomRightPoint': {'x': (tileBounds.max.x + 1) * this.tileSize, 'y': (tileBounds.max.y + 1) * this.tileSize}
 		}
