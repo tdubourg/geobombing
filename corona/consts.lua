@@ -109,6 +109,7 @@ BOMB_DBG_MODE = false
 NETW_DBG_MODE = false
 NETW_DUMP_MODE = false
 DEBUG_ZOOM = false
+DISCARDED_PLAYER_UPDATES = true
 GAME_DBG = false
 
 -- require("consts-local")
