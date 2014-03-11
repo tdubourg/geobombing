@@ -103,6 +103,7 @@ function GameServer(game, tiles)
 		var time = Date.now()
 		var explodingBombs = []
 		var dyingPlayers = []
+		
 		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)
 		
 		explodingBombs.forEach(function (bomb) 
@@ -171,7 +172,7 @@ function GameServer(game, tiles)
 				{ 
 					session_time_remaining = SESSION_LENGHT
 					console.log("nouvelle partie")
-					this.game.newGame()
+					that.game.newGame()
 					
 					
 					
