@@ -385,7 +385,6 @@ function scene:enterScene( event )
 	local result = net.connect_to_server("127.0.0.1", 3000)
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
-		print_r(json_obj)
 		dbg(Y,{"HANDLER"})
 		if (json_obj.data ~= nil) then
 			if (json_obj.data[NETWORK_TIME] ~= nil) then
