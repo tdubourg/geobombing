@@ -56,7 +56,6 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
 				local node = self.nodesByUID[strUid]
 				if (previousNode) then
 					self.arcs[#(self.arcs)+1] =previousNode:linkTo(node, wayName)
-					print(previousNode.uid .. " / " .. node.uid)
 				end
 				previousNode = node
 			end
