@@ -1,13 +1,15 @@
+require "vector2D"
+
 TileBackground = {}
 
 function TileBackground:new(luaTiles)
   local self = {}
   local tiles = {}
 
-  local mapTL = Vector2D.fromJSON(mapluaTiles[NETW_INIT_GRID_BOUNDS_SMTLP])
-  local mapBR = Vector2D.fromJSON(mapluaTiles[NETW_INIT_GRID_BOUNDS_SMBRP])
-  local tilesTL = Vector2D.fromJSON(mapluaTiles[NETW_INIT_GRID_BOUNDS_TTLP])
-  local tilesBR = Vector2D.fromJSON(mapluaTiles[NETW_INIT_GRID_BOUNDS_TBRP])
+  local mapTL = Vector2D.fromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_SMTLP])
+  local mapBR = Vector2D.fromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_SMBRP])
+  local tilesTL = Vector2D.fromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_TTLP])
+  local tilesBR = Vector2D.fromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_TBRP])
 
   dbg(Y,{"mapTL",mapTL})
   dbg(Y,{"mapBR",mapBR})
@@ -17,6 +19,7 @@ function TileBackground:new(luaTiles)
   for i,list in ipairs(luaTiles[TYPEGRID]) do
   	for j,url in ipairs(list) do
   		tiles[i][j] = Tile:new(url)
+      dbg(Y,{"new tile"})
   	end
   end
 

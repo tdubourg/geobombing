@@ -14,7 +14,7 @@ require "vector2D"
 require "map"
 require "items"
 require "print_r"
-require "tile"
+require "tileBackground"
 local json = require "json"
 local physics = require( "physics" )
 local playBtn
@@ -395,9 +395,15 @@ function scene:enterScene( event )
 
 			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
 			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
-			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
+
+			local luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
+
+			-- local luaTiles = json_obj[JSON_FRAME_DATA][TYPETILES]
+	  --   if tileBackground then tileBackground:destroy() end
+	  --   tileBackground = TileBackground:new(luaTiles)
+
 			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
 			player:refresh()
 			camera:lookAt(player:getPos())
