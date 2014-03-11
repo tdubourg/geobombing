@@ -117,7 +117,7 @@ function GameServer(game) {
 			var con = that.connexions[conKey]
 			game.players.forEach(function (player) 
 			{
-				fa.sendPlayerUpdate(con.stream, player);
+				fa.sendPlayerUpdate(con.stream, player, session_time_remaining);
 			})
 		}
 		
