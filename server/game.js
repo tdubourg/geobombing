@@ -220,6 +220,7 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	var player = this.player
 	var playersOnArc = {}
 	var visitedArc = {}
+	var that = this
 	
 	function addPlayerOn(player, arc, dist) {
 		if (!playersOnArc[arc.id])
@@ -234,8 +235,6 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	})
 
 	function rec (startDist, distToCover, prevNode, arc) {
-		
-		var that = this
 		
 		if (visitedArc[arc.id]) return
 		visitedArc[arc.id] = true
