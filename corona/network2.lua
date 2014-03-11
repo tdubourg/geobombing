@@ -8,7 +8,7 @@ require "arcPos"
 
 local client = nil
 local FRAME_SEPARATOR = "\n"
-local NETWORK_DUMP = false
+
 local _msgsendtable = {} -- send message queue
 local net_handlers = {}
 local mrcvTimer = nil
@@ -34,7 +34,9 @@ function test_network()
 end
 
 function receive_line()
-	return client:receive() -- with no parameter = receive a line
+	local result = client:receive() -- with no parameter = receive a line
+	dbg(NETW_DBG_MODE, {result})
+	return result
 end
 
 function receive_until(end_separator)
@@ -168,10 +170,6 @@ end
 function sendString(data)
 	if client ~= nil then
 		client:send(data .. FRAME_SEPARATOR)
-		if NETWORK_DUMP then
-			print "NETWORK DUMP - OUT"
-			print(data)
-		end
 	end
 end
 
