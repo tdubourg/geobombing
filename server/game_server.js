@@ -12,7 +12,7 @@ var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
 
 // in seconds
-var SESSION_LENGHT = 120 
+var SESSION_LENGHT = 60 
 var PALMARES_SHOW_TIME = 10
 var session_time_remaining = SESSION_LENGHT
 var session = true
