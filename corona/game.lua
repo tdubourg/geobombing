@@ -31,7 +31,7 @@ local timeText
 local scoreDText
 local scoreKText
 local scoreGroup 
-local isDead = false
+ isDead = false
 rankOn = false
 
 function movePlayerById(id,arcP)
@@ -292,7 +292,7 @@ function initGame(player_id)
 				else
 					playerUpD(player.id)
 				end
-			else
+			elseif tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id  then
 				isDead=false
 				--print("Youhou2", isDead)
 			end
@@ -389,7 +389,7 @@ function scene:enterScene( event )
 	
 	-- connect to server
 	print "create scene"
-	local result = net.connect_to_server("127.0.0.1", 3000)
+	local result = net.connect_to_server(SERVER_IP_ADDR, SERVER_PORT)
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 		dbg(Y,{"HANDLER"})
