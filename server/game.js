@@ -10,6 +10,7 @@ var u = require("./util")
 var com = require("./common")
 var fa = require("./frame_action")
 
+var TIME_BEFORE_RESPAWN = 3000
 var PLAYER_SPEED = .1 //.5
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
@@ -353,12 +354,17 @@ Player.prototype.update = function (period) {
 }
 
 Player.prototype.die = function () {
-	if (!this.dead) {
+	if (!this.dead) 
+	{
 		console.log("Player",this.name,"died in horrible pain!!")
 		this.dead = true
-		/////////
-		//this.remove() // TODO really make the player die
-		/////////
+
+		//respawn
+		setTimeOut(function() 
+			{ 
+				console.log("Player",this.name,"Respawn!!")
+				this.dead = false
+			}, TIME_BEFORE_RESPAWN)
 	}
 }
 
