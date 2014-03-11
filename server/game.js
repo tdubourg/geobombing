@@ -386,7 +386,7 @@ Player.prototype.getPosition = function () {
 Player.prototype.setSpawnPosition = function (position) {
 	console.log("setpos",position)
 	this.spwanPosition = position
-	respawn()
+	this.respawn()
 	// this.currentArc = this.game.map.nodes[position.n1].arcToId(position.n2)
 	// if (!this.currentArc)
 	// 	console.log("[Game Model Error]: couldn't set initial position with nodes ", position.n1, position.n2)
@@ -395,7 +395,7 @@ Player.prototype.setSpawnPosition = function (position) {
 }
 
 Player.prototype.respawn = function () {
-	setPosition(this.spwanPosition)
+	this.setPosition(this.spwanPosition)
 	this.dead = false
 }
 
@@ -468,7 +468,7 @@ Game.prototype.update = function (period, explodingBombs, dyingPlayers)
 Game.prototype.newGame = function () 
 {
 	
-	for (var i = 0; i < var p = this.players.length; i++) {
+	for (var i = 0; i < this.players.length; i++) {
 		var p = this.players[i]
 		p.respawn()
 	};
