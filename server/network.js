@@ -32,7 +32,7 @@ var TYPEID = "id"
 var TYPEKEY = "key"
 var TYPEPOS = "pos" 
 var TYPEDEAD = "dead"
-var TYPEPOINTS = "points"
+var TYPEKILLS = "k"
 var TYPEGONE = "gone"
 
 var TYPEBOMBUPDATE = "bu"
@@ -58,7 +58,7 @@ exports.TYPEID = TYPEID
 exports.TYPEKEY = TYPEKEY
 exports.TYPEPOS = TYPEPOS
 exports.TYPEDEAD = TYPEDEAD
-exports.TYPEPOINTS = TYPEPOINTS
+exports.TYPEKILLS = TYPEKILLS
 exports.TYPEGONE = TYPEGONE
 
 exports.TYPEBOMBUPDATE = TYPEBOMBUPDATE

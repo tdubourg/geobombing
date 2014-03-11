@@ -96,6 +96,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	data[net.TYPEID] = player.id
 	data[net.TYPETIMESTAMP] = Date.now() // for discard playerUpdatePosition
 	data[net.TYPETIMEREMAINING] = gs.session_time_remaining // time before end of game 
+	data[net.TYPEKILLS] = player.kills
 	if (player.dead) { data[net.TYPEDEAD] = player.dead }
 
 	var content = 
@@ -106,7 +107,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
-		//console.log("sendPlayerUpdate: ", content.data[net.TYPETIMESTAMP])
+		//console.log("sendPlayerUpdate: ", player.kills)//content.data[net.TYPEKILLS])
 	})
 }
 
