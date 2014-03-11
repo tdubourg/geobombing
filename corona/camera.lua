@@ -76,13 +76,14 @@ function Camera:worldToScreen(v2World)
 	return Vector2D:new(self:worldToScreenXY(v2World.x, v2World.y))
 end
 
-function Camera:worldToGps(v2World)
-	return Vector2D:new(self:worldToGpsXY(v2World.x, v2World.y))
-end
+-- not used
+-- function Camera:worldToGps(v2World)
+-- 	return Vector2D:new(self:worldToGpsXY(v2World.x, v2World.y))
+-- end
 
-function Camera:worldToGps(v2Gps)
-	return Vector2D:new(self:worldToGpsXY(v2Gps.x, v2Gps.y))
-end
+-- function Camera:worldToGps(v2Gps)
+-- 	return Vector2D:new(self:worldToGpsXY(v2Gps.x, v2Gps.y))
+-- end
 
 
 -- space conversions
@@ -99,17 +100,18 @@ function Camera:worldToScreenXY(wX, wY)
 	return sX,sY
 end
 
-function Camera:worldToGpsXY(wX, wY) -- crash? call setGPSConversion() first :p
-	local gX = self.mapShift.x + wX*self.mapScale.x
-	local gY = self.mapShift.y + wX*self.mapScale.y
-	return gX,gY
-end
+-- not used
+-- function Camera:worldToGpsXY(wX, wY) -- crash? call setGPSConversion() first :p
+-- 	local gX = self.mapShift.x + wX*self.mapScale.x
+-- 	local gY = self.mapShift.y + wX*self.mapScale.y
+-- 	return gX,gY
+-- end
 
-function Camera:GpsToWorldXY(gX, gY) -- crash? call setGPSConversion() first :p
-	local wX = (gX-self.mapShift.x)/self.mapScale.x
-	local wY = (gY-self.mapShift.y)/self.mapScale.y
-	return wX,wY
-end
+-- function Camera:GpsToWorldXY(gX, gY) -- crash? call setGPSConversion() first :p
+-- 	local wX = (gX-self.mapShift.x)/self.mapScale.x
+-- 	local wY = (gY-self.mapShift.y)/self.mapScale.y
+-- 	return wX,wY
+-- end
 ---------------------------------------------------------------------------------------
 
 
