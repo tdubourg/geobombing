@@ -266,7 +266,7 @@ function initGame(player_id)
 			if (json_obj.data[NETWORK_TIME] ~= nil) then
 				time = json_obj.data[NETWORK_TIME]
 				timeText.text = "Temps restant: ".. time
-				print("time"..time)
+				--print("time"..time)
 			end
 				--handling self death
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
@@ -276,17 +276,19 @@ function initGame(player_id)
 						print("MOOOOOOOOOOORT")
 						player.nbDeath = player.nbDeath + 1
 						scoreDText.text = "-"..player.nbDeath
-						print(player.nbDeath)
+						--print(player.nbDeath)
 						isDead = true
-						local revive = function()
-							isDead = false
-						end
-						timer.performWithDelay( 3000, revive )
+						-- local revive = function()
+						-- 	isDead = false
+						-- end
+						--timer.performWithDelay( 3000, revive )
 					end
 
 				else
 					playerUpD(player.id)
 				end
+			else
+				idDead=false
 			end
 			
 		end
