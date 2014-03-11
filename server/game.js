@@ -249,9 +249,9 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		{
 			if (startDist <= pd.d && pd.d <= distToCover) 
 			{
-				pd.p.die()
 				console.log("\nKILLER:", that.player.name)
 				console.log("DYER:", pd.p.name)
+				pd.p.die()
 				that.player.onKillPlayer(pd.p)
 				console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 			}
