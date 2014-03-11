@@ -127,8 +127,7 @@ function GameServer(game, tiles)
 	}, GAME_REFRESH_PERIOD)
 	
 	// Player network updates
-	setInterval(function() 
-	{
+	setInterval(function() {
 		if (sending_player_updates)
 		{
 			
