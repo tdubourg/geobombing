@@ -5,6 +5,10 @@ SERVER_PORT = "3000"
 DEV_MODE = true
 EXPLOSION_DELAY = 3000 -- in ms
 EXPLOSION_DURATION = 1.5 -- in seconds
+
+ZOOM_X = 2000
+ZOOM_Y = 2000
+
 -- JSON labels
 	-- protocol
 	JSON_FRAME_TYPE = "type"
@@ -117,7 +121,6 @@ NETW_DISCARD_PU_OPTIMIZATION = false
 BOMB_DBG_MODE = false
 NETW_DBG_MODE = false
 NETW_DUMP_MODE = false
-DEBUG_ZOOM = false
 DISCARDED_PLAYER_UPDATES = true
 GAME_DBG = false
 
