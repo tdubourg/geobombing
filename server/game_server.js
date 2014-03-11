@@ -89,9 +89,10 @@ function Connexion(gserver, stream, player) {
 	//gserver.connexions.push(this)
 }
 
-function GameServer(game) {
+function GameServer(game, tiles) 
+{
 	var that = this
-	
+	this.tiles = tiles
 	this.game = game
 	this.connexions = {}
 	
@@ -104,7 +105,7 @@ function GameServer(game) {
 		
 		explodingBombs.forEach(function (bomb) 
 		{
-			that.notifyBomb(bomb);
+			that.notifyBomb(bomb)
 		})
 		
 		lastTime = time

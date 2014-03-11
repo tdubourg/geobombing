@@ -49,14 +49,14 @@ var sendInit_action = function (frame_data, stream)
 		function (mapData, position, tiles)
 		{
 			single_game_server = new gs.GameServer(
-				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
+				new g.Game(new g.Map(db.mapDataToJSon(mapData))), tiles)
 
 			sendInit(single_game_server.game.map.jsonObj,  tiles);
 			setInitialPosition();
 		}); // lat, lon
 		else
 		{
-			sendInit(single_game_server.game.map.jsonObj, tiles);
+			sendInit(single_game_server.game.map.jsonObj, single_game_server.tiles);
 			setInitialPosition();
 		}
 } // end sendInit_action
