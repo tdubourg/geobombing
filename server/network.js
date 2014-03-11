@@ -16,6 +16,7 @@ var decode_frame = function (frame_string)
 
 ///--- Network Constants on Server---
 var TYPEPLAYERINIT = "init" // new map, new list bomb (no positions)
+var TYPENAME = "name"
 var TYPEMAP = "map"
 var TYPETIMEREMAINING = "tr"
 var TYPETILES = "tiles"
@@ -42,6 +43,7 @@ var TYPEBOMBSTATE = "bs" // 0 = new, 1 = exploding
 var TYPEBOMBTYPE = "btype" // 0 to ...
 
 exports.TYPEPLAYERINIT = TYPEPLAYERINIT
+exports.TYPENAME = TYPENAME
 exports.TYPEMAP = TYPEMAP
 exports.TYPETIMEREMAINING = TYPETIMEREMAINING
 exports.TYPETILES = TYPETILES

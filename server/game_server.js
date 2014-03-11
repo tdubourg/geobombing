@@ -14,7 +14,7 @@ var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
 var SESSION_LENGHT = 180
-var PALMARES_SHOW_TIME = 8
+var PALMARES_SHOW_TIME = 15
 var session_time_remaining = SESSION_LENGHT
 var session = true
 exports.session_time_remaining = session_time_remaining
@@ -162,7 +162,7 @@ function GameServer(game, tiles)
 				//this.respawnIntervalsByPlayerId.length = 0
 				
 				// calculates palmares
-				game.players.sort(function(p1, p2){return p2.points-p1.points});
+				game.players.sort(function(p1, p2){return p2.points<p1.points});
 				for (var conKey in that.connexions) 
 				{
 					var con = that.connexions[conKey]

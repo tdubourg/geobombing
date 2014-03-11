@@ -317,10 +317,10 @@ if (json_obj.data ~= nil) then
 						plScore.yScale = 0.5
 						plScore.x =  scoreDisplay.contentWidth/ 2;
 						plScore.y =  int;
-
-						if (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id) then
+						--print(json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID],player.id,json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id)
+						if (tostring(json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID]) == player.id) then
 							plScore:setFillColor(0, 0, 1 )
-							print("la")
+							--print("la")
 						else
 							plScore:setFillColor(0, 0, 0 )
 						end
