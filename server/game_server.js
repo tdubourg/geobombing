@@ -13,7 +13,7 @@ var MOVE_REFRESH_PERIOD = 50
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
-var SESSION_LENGHT = 10 
+var SESSION_LENGHT = 60 
 var PALMARES_SHOW_TIME = 10
 var session_time_remaining = SESSION_LENGHT
 var session = true
@@ -127,14 +127,9 @@ function GameServer(game, tiles)
 	}, GAME_REFRESH_PERIOD)
 	
 	// Player network updates
-<<<<<<< HEAD
-	setInterval(function() {
-		if (sending_player_updates)
-=======
 	setInterval(function() 
-	{	
-		for (var conKey in that.connexions) 
->>>>>>> 6937a93fc7be95ac5956107de5f9559770ec7ae9
+	{
+		if (sending_player_updates)
 		{
 			
 			for (var conKey in that.connexions) 
