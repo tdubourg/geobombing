@@ -10,12 +10,12 @@ function Node:new(worldX, worldY, uid, map)  -- The constructor
 	self.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
 	self.arcs = {}                                   -- K: destination node, V: corresponding arc
 
-	if DISPLAY_MAP_NODE then
+	if DISPLAY_MAP_NODES then
 		self.drawable = display.newGroup()
 		map.mapGroup:insert(self.drawable)
 
-		local circle =display.newCircle(self.drawable, self.pos.x, self.pos.y, 3 )
-		circle:setFillColor( 1, 1, 1 )
+		local circle =display.newCircle(self.drawable, self.pos.x, self.pos.y, 7 )
+		circle:setFillColor( 1, 0, 0 )
 		camera:addListener(self)
 	end
 
