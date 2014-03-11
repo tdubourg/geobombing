@@ -3,9 +3,10 @@ require "utils"
 local tempFileIndex = 0
 
 Tile = {}
-function Tile:new(url)
+function Tile:new(url, tileBackground)
   local self = {}
   self.url = url
+  self.tileBackground = tileBackground
   self.image = nil
 
   local loadCompleteListener = 
@@ -17,6 +18,7 @@ function Tile:new(url)
         event.target.anchorX = 0
         event.target.anchorY = 0
         tileLayer:insert(self.image)
+        self.tileBackground:redraw(true)
       end
     end
 
