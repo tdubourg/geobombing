@@ -361,11 +361,7 @@ function scene:enterScene( event )
 	local group = self.view
 	displayMainGroup:insert(group)
 	camera = Camera:new()
-	if (DEBUG_ZOOM) then
-		camera:setZoomXY(200,200)				--debug zoom
-	else
-		camera:setZoomXY(2000,2000)	--city zoom
-	end
+	camera:setZoomXY(ZOOM_X,ZOOM_Y)
 	camera:lookAtXY(0,0)	
 	gui.initGUI()
 	
