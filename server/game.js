@@ -220,6 +220,7 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	var player = this.player
 	var playersOnArc = {}
 	var visitedArc = {}
+	var that = this
 	
 	function addPlayerOn(player, arc, dist) {
 		if (!playersOnArc[arc.id])
@@ -248,7 +249,7 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		playersOnArc[arc.id].forEach(function(pd) {
 			if (startDist <= pd.d && pd.d <= distToCover) {
 				pd.p.die()
-				this.player.onKillPlayer(pd.p)
+				that.player.onKillPlayer(pd.p)
 			}
 		})
 		
@@ -363,12 +364,6 @@ Player.prototype.die = function () {
 		
 		this.game.dyingPlayers.push(this)
 		
-		//respawn
-		// setTimeOut(function() 
-		// { 
-		// 	console.log("Player",this.name,"Respawn!!")
-		// 	this.dead = false
-		// }, TIME_BEFORE_RESPAWN)
 	}
 }
 
