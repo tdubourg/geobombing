@@ -384,47 +384,48 @@ function scene:enterScene( event )
 	print "create scene"
 	local result = net.connect_to_server("127.0.0.1", 3000)
 
+	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
+		print_r(json_obj)
+		dbg(Y,{"HANDLER"})
+		if (json_obj.data ~= nil) then
+			if (json_obj.data[NETWORK_TIME] ~= nil) then
+				print(json_obj.data[NETWORK_TIME])
+				gameTime =10
+				time = json_obj.data[NETWORK_TIME]
+			end
+
+			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
+			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
+			luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
+			if (currentMap) then currentMap:destroy() end
+			currentMap = Map:new(luaMap)
+			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
+			player:refresh()
+			camera:lookAt(player:getPos())
+		end
+	end
+
 	if result then
 		print ( "!!CONNECTED!!" )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
-		local strid = tostring(json_obj.data.id)
-		local playerObj = others[strid]
-		if playerObj then
-			playerObj:destroy()
-			others[strid] = nil
+			local strid = tostring(json_obj.data.id)
+			local playerObj = others[strid]
+			if playerObj then
+				playerObj:destroy()
+				others[strid] = nil
+			end
 		end
+		print "GPS pos"
+		net.sendGPSPosition()
+	else
+		print ("Could no connect to server")
+		currentMap = Map:new(nil)
+		initGame("1")
+		player:refresh()
+		camera:lookAt(player:getPos())
 	end
-	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
-	if (json_obj.data ~= nil) then
-		if (json_obj.data[NETWORK_TIME] ~= nil) then
-			print(json_obj.data[NETWORK_TIME])
-			gameTime =10
-			time = json_obj.data[NETWORK_TIME]
-		end
-	end
 
-
-	NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
-	print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
-	luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
-	if (currentMap) then currentMap:destroy() end
-	currentMap = Map:new(luaMap)
-	initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
-	player:refresh()
-	camera:lookAt(player:getPos())
-end
-net.sendGPSPosition()
-else
-	print ("Could no connect to server")
-	currentMap = Map:new(nil)
-	initGame("1")
-	player:refresh()
-	camera:lookAt(player:getPos())
-end
-
-itemsManager = ItemsManager.new()
-local testtilz = Tile:new("http://tdvps.fr.nf:8080/osm_tiles/16/33657/23369.png")
-
+	itemsManager = ItemsManager.new()
 end
 
 
