@@ -389,7 +389,7 @@ function scene:enterScene( event )
 	
 	-- connect to server
 	print "create scene"
-	local result = net.connect_to_server("127.0.0.1", 3000)
+	local result = net.connect_to_server(SERVER_IP_ADDR, SERVER_PORT)
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 		dbg(Y,{"HANDLER"})
