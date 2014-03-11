@@ -116,7 +116,7 @@ function GameServer(game, tiles)
 		dyingPlayers.forEach(function (p) 
 		{
 			var to_id = setTimeout(function() {
-				console.log("Player",this.name,"automatically respawned")
+				console.log("Player",p.name,"automatically respawned")
 				p.respawn()
 				delete that.respawnIntervalsByPlayerId[p.id]
 			}, TIME_BEFORE_RESPAWN)
@@ -176,8 +176,8 @@ function GameServer(game, tiles)
 			{ 
 				session_time_remaining = SESSION_LENGHT
 				console.log("nouvelle partie")
-				that.game.newGame()	
-				sending_player_updates = true	
+				that.game.newGame()
+				sending_player_updates = true
 			}
 			
 		}, 1000) // refresh counter each second

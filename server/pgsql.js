@@ -100,7 +100,9 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 		var map = roads
 		trimMap(map, latitude, longitude, hauteur, largeur)
 		projectMap(map)
-		autoScaleMap(map)
+		// autoScaleMap(map)
+		scaleMap(map)
+		// console.log(map)
 		
 		callback(err, map)
 		
@@ -144,7 +146,46 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 			j--
 		}
 	}
-	//console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
+	console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
+	return leMap
+}
+
+// function scaleMap(leMap,hauteur,largeur)
+function scaleMap (leMap) //, topLeft, bottomRight)
+{
+	// var topLeft = t.MapTiles.topLeftPoint,
+	//     bottomRight = t.MapTiles.bottomRightPoint,
+	    
+	//     shiftX = topLeft.x,
+	//     shiftY = topLeft.y,
+	//     coeffX = 1/Math.abs(bottomRight.x-topLeft.x),
+	//     coeffY = 1/Math.abs(bottomRight.y-topLeft.y)
+	var
+	    shiftX = t.MapTiles.sessionMapBounds.min.x,
+	    shiftY = t.MapTiles.sessionMapBounds.min.y,
+	    coeffX = 1/(t.MapTiles.sessionMapBounds.max.x-t.MapTiles.sessionMapBounds.min.x),
+	    coeffY = 1/(t.MapTiles.sessionMapBounds.max.y-t.MapTiles.sessionMapBounds.min.y)
+	
+	
+	// console.log(shiftX,shiftY)
+	// console.log(coeffX,coeffY)
+	var out = 0
+	leMap.forEach(function(road) {
+		road.forEach(function(p) {
+			
+			if (p[0] < t.MapTiles.sessionMapBounds.min.x
+				|| p[0] > t.MapTiles.sessionMapBounds.max.x)
+				// console.log("LOOOOL!!")
+				out++
+			
+			p[0] = (p[0]-shiftX)*coeffX
+			p[1] = (p[1]-shiftY)*coeffY
+		})
+	})
+	
+	if (out > 0)
+		console.log("Warning: outlying points:", out)
+	
 	return leMap
 }
 
