@@ -126,8 +126,8 @@ function GameServer(game, tiles)
 	}, GAME_REFRESH_PERIOD)
 	
 	// Player network updates
-	setInterval(function() {
-		
+	setInterval(function() 
+	{	
 		for (var conKey in that.connexions) 
 		{
 			var con = that.connexions[conKey]
@@ -147,12 +147,10 @@ function GameServer(game, tiles)
 			
 			session_time_remaining--;
 			exports.session_time_remaining = session_time_remaining
-			console.log("session_time_remaining: ", session_time_remaining)
+			//console.log("session_time_remaining: ", session_time_remaining)
 			if (session_time_remaining == 0)
 			{
 				console.log("fin de la partie")
-				
-				//this.respawnIntervalsByPlayerId.forEach(to_id) {
 				for (var p_id in that.respawnIntervalsByPlayerId) {
 					clearTimeout(that.respawnIntervalsByPlayerId[p_id])
 					delete that.respawnIntervalsByPlayerId[p_id]
