@@ -81,16 +81,16 @@ function removeScoreDisplay()
 	Runtime:addEventListener("tap",moveObject)	
 end
 
-function updateTime()
-	if (time <= 0) then
-		time = gameTime
-		timer.cancel( timerId )
+-- function updateTime()
+-- 	if (time <= 0) then
+-- 		time = gameTime
+-- 		timer.cancel( timerId )
 
-	else
-		time = time - 1
-	end
-	timeText.text = "Temps restant: ".. time
-end
+-- 	else
+-- 		time = time - 1
+-- 	end
+-- 	timeText.text = "Temps restant: ".. time
+-- end
 
 function showScore()
 	-- Create a new text field to display the timer
@@ -272,9 +272,12 @@ function initGame(player_id)
 			end
 				--handling self death
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
+
 				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
+					--print("Youhou0", isDead)
 					-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
 					if (isDead == false) then
+						--print("Youhou01", isDead)
 						print("MOOOOOOOOOOORT")
 						player.nbDeath = player.nbDeath + 1
 						scoreDText.text = "-"..player.nbDeath
@@ -290,12 +293,15 @@ function initGame(player_id)
 					playerUpD(player.id)
 				end
 			else
-				idDead=false
+				isDead=false
+				--print("Youhou2", isDead)
 			end
 			
 		end
 
 
+	else
+		removeScoreDisplay()
 	end
 end
 
@@ -337,7 +343,7 @@ if (json_obj.data ~= nil) then
 					end
 				end
 
-				timer.performWithDelay( 3000, removeScoreDisplay , 1 )
+				--timer.performWithDelay( 3000, removeScoreDisplay , 1 )
 			end
 			player.nbDeath = 0
 			scoreDText.text = "-"..player.nbDeath
