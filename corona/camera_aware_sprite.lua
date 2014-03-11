@@ -27,7 +27,7 @@ function CameraAwareSprite.create(options)
 	return self
 end
 
-function CameraAwareSprite:redraw(  )
+function CameraAwareSprite:redraw( zoomChange )
 	--print ("CameraAwareSprite:redraw() of ", self.name)
 	--print ("sprite world pos", self.worldPosition.x, self.worldPosition.y)
 	local newPos = camera:worldToScreen(self.worldPosition)

@@ -1,5 +1,5 @@
 -- listener contract:
--- self.redraw() -> method that handles redrawing the object (ie. moving DrawObjets or modifying them)
+-- self.redraw(zoomChange) -> method that handles redrawing the object (ie. moving DrawObjets or modifying them)
 -- The Camera should be queried for conversion from world to screen, and scale if necessary.
 
 require "vector2D"

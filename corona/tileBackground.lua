@@ -47,7 +47,7 @@ end
 
 
 
-function TileBackground:redraw()
+function TileBackground:redraw(zoomChange)
   local screenWidth = self.tileSize.x * camera.zoomXY.x
   local screenHeight = self.tileSize.y * camera.zoomXY.y
   dbg(Y,{"screenWidth",screenWidth,"screenHeight",screenHeight})
