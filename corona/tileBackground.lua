@@ -29,12 +29,16 @@ function TileBackground:new(luaTiles)
   self.scale = Vector2D:Sub(mapBR,mapTL)
 
   self.offset = Vector2D:Sub(tilesTL,mapTL)
-  self.offset.x = self.offset.x * self.scale.x
-  self.offset.y = self.offset.y * self.scale.y
+  self.offset.x = self.offset.x / self.scale.x
+  self.offset.y = self.offset.y / self.scale.y
 
   self.tileSize = Vector2D:Sub(tilesBR,tilesTL)
-  self.tileSize.x = self.tileSize.x * self.scale.x / #(self.tiles[1])
-  self.tileSize.y = self.tileSize.y * self.scale.y / #(self.tiles)
+  self.tileSize.x = self.tileSize.x  / (#(self.tiles[1]) * self.scale.x)
+  self.tileSize.y = self.tileSize.y  / (#(self.tiles) * self.scale.y)
+
+    dbg(Y,{"self.scale",self.scale})
+    dbg(Y,{"self.offset",self.offset})
+    dbg(Y,{"self.tileSize",self.tileSize})
 
   camera:addListener(self)
 
@@ -44,12 +48,16 @@ end
 
 
 function TileBackground:redraw()
+  local screenWidth = self.tileSize.x * camera.zoomXY.x
+  local screenHeight = self.tileSize.y * camera.zoomXY.y
+  dbg(Y,{"screenWidth",screenWidth,"screenHeight",screenHeight})
 	for i,list in ipairs(self.tiles) do
   	for j,tile in ipairs(list) do
   		if tile.image then  -- already loaded
         local wX = self.offset.x + (j-1)*self.tileSize.x
         local wY = self.offset.y + (i-1)*self.tileSize.y
   			tile.image.x, tile.image.y = camera:worldToScreenXY(wX, wY)
+        tile:setScreenSize(screenWidth, screenHeight)
   		end
   	end
   end
