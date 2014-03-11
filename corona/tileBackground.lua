@@ -55,4 +55,10 @@ function TileBackground:redraw(zoomChange)
 end
 
 function TileBackground:destroy()
+  for i,list in ipairs(self.tiles) do
+    for j,tile in ipairs(list) do
+      self.tiles[i][j]:destroy()
+    end
+  end
+  camera:removeListener(self)
 end

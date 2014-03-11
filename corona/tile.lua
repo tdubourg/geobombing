@@ -36,5 +36,5 @@ function Tile:setScreenSize(width,height)
 end
 
 function Tile:destroy()
-  camera:removeListener(self)
+  if self.image then self.image:removeSelf( ) end
 end
