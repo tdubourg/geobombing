@@ -7,12 +7,17 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 	-- protocol
 	JSON_FRAME_TYPE = "type"
 	JSON_FRAME_DATA = "data"
+	NETW_INIT_GRID_BOUNDS_SMTLP = 'sessionMapTopLeftPoint'
+	NETW_INIT_GRID_BOUNDS_SMBRP = 'sessionMapBottomRightPoint'
+	NETW_INIT_GRID_BOUNDS_TTLP = 'tilesTopLeftPoint'
+	NETW_INIT_GRID_BOUNDS_TBRP = 'tilesBottomRightPoint'
 		-- Frame Types
 		if (DEV_MODE) then
 			NETWORK_PLAYER_UPDATE_POS_KEY = "pos"
 			NETWORK_PLAYER_UPDATE_STATE_KEY = "s"
 			NETWORK_PLAYER_UPDATE_ID_KEY = "id"
 			NETWORK_PLAYER_UPDATE_DEAD_KEY = "dead"
+			NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY = "ts"
 
 			NETWORK_INIT_MAP_KEY = "map"
 			NETWORK_INIT_KEY_KEY = "key"
@@ -35,6 +40,7 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 			NETWORK_PLAYER_UPDATE_STATE_KEY = "s"
 			NETWORK_PLAYER_UPDATE_ID_KEY = "id"
 			NETWORK_PLAYER_UPDATE_DEAD_KEY = "dead"
+			NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY = "ts"
 			
 			NETWORK_INIT_PLAYER_ID_KEY = "id"
 			NETWORK_INIT_MAP_KEY = "map"
@@ -68,8 +74,8 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 	TYPEPOINT = "topLeftPoint"
 
 	-- time remaining
-	NETWORK_TIME = "time"
-	
+	NETWORK_TIME = "tr"
+
 	--bomb data
 	FRAMETYPE_BOMB_UPDATE = "bu"
 	NETWORK_BOMB_UPDATE_ID_KEY = "bid"
@@ -95,10 +101,13 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 -- DISPLAY
 EXPLOSION_INTERVAL = 0.02
 
+PLAYER_UPDATE_DISCARD_DELAY_IN_MS = 500
 
 -- GAMEPLAY
 
 BOMB_DBG_MODE = false
-
+NETW_DBG_MODE = false
+NETW_DUMP_MODE = false
+DEBUG_ZOOM = false
 -- require("consts-local")
 silent_fail_require("consts-local")
