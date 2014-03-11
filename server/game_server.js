@@ -95,17 +95,29 @@ function GameServer(game, tiles)
 	this.tiles = tiles
 	this.game = game
 	this.connexions = {}
+	this.respawnIntervalsByPlayerId = {}
 	
 	var lastTime = Date.now()
 	
 	setInterval(function() {
 		var time = Date.now()
 		var explodingBombs = []
-		game.update((time-lastTime)/1000, explodingBombs)
+		var dyingPlayers = []
+		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)
 		
 		explodingBombs.forEach(function (bomb) 
 		{
 			that.notifyBomb(bomb)
+		})
+		
+		dyingPlayers.forEach(function (p) 
+		{
+			var to_id = setTimeOut(function() {
+				console.log("Player",this.name,"automatically respawned")
+				p.respawn()
+				delete this.respawnIntervalsByPlayerId[p.id]
+			})
+			this.respawnIntervalsByPlayerId[p.id] = to_id
 		})
 		
 		lastTime = time
@@ -129,32 +141,43 @@ function GameServer(game, tiles)
 	if (session)
 	{ 
 		setInterval(function() 
-		{ 
-
-		session_time_remaining--;
-		exports.session_time_remaining = session_time_remaining
-		//console.log("session_time_remaining: ", session_time_remaining)
-		if (session_time_remaining <= 0)
 		{
-			console.log("fin de la partie")
-
-			// calculates palmares
-			game.players.sort(function(p1, p2){return p2.points-p1.points});
-			for (var conKey in that.connexions) 
+			
+			session_time_remaining--;
+			exports.session_time_remaining = session_time_remaining
+			//console.log("session_time_remaining: ", session_time_remaining)
+			if (session_time_remaining <= 0)
 			{
-				var con = that.connexions[conKey]
-				game.players.forEach(function (player) 
+				console.log("fin de la partie")
+				
+				//this.respawnIntervalsByPlayerId.forEach(to_id) {
+				for (var p_id in this.respawnIntervalsByPlayerId) {
+					clearTimeout(this.respawnIntervalsByPlayerId[p_id])
+					delete respawnIntervalsByPlayerId[p_id]
+				}
+				//this.respawnIntervalsByPlayerId.length = 0
+				
+				// calculates palmares
+				game.players.sort(function(p1, p2){return p2.points-p1.points});
+				for (var conKey in that.connexions) 
 				{
-					fa.sendEnd(con.stream, game.players)
-				})
+					var con = that.connexions[conKey]
+					game.players.forEach(function (player) 
+					{
+						fa.sendEnd(con.stream, game.players)
+					})
+				}
+				if (session_time_remaining <= -PALMARES_SHOW_TIME)
+				{ 
+					session_time_remaining = SESSION_LENGHT
+					console.log("nouvelle partie")
+					this.game.newGame()
+					
+					
+					
+				}
 			}
-			if (session_time_remaining <= -PALMARES_SHOW_TIME)
-			{ 
-				session_time_remaining = SESSION_LENGHT
-				console.log("nouvelle partie")
-			}
-		}
-	
+			
 		}, 1000) // refresh counter each second
 	}
 	
@@ -208,7 +231,7 @@ GameServer.prototype.quitCommand = function(stream, key) { // not used atm
 }
 
 GameServer.prototype.setInitialPosition = function(stream, position) {
-	this.getPlayer(stream).setPosition(position)
+	this.getPlayer(stream).setSpawnPosition(position)
 }
 
 
