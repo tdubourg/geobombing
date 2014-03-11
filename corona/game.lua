@@ -397,9 +397,10 @@ function scene:enterScene( event )
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 
-			-- local luaTiles = json_obj[JSON_FRAME_DATA][TYPETILES]
-	  --   if tileBackground then tileBackground:destroy() end
-	  --   tileBackground = TileBackground:new(luaTiles)
+			dbg(Y,{"before lua tiles"})
+			local luaTiles = json_obj[JSON_FRAME_DATA][TYPETILES]
+	    if tileBackground then tileBackground:destroy() end
+	    tileBackground = TileBackground:new(luaTiles)
 
 			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
 			player:refresh()
