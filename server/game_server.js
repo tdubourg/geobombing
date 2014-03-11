@@ -174,14 +174,14 @@ function GameServer(game, tiles)
 						fa.sendEnd(con.stream, game.players)
 					})
 				}
-				if (session_time_remaining == -PALMARES_SHOW_TIME)
-				{ 
-					session_time_remaining = SESSION_LENGHT
-					console.log("nouvelle partie")
-					that.game.newGame()	
-					sending_player_updates = true	
-				}
 				
+			}
+			else if (session_time_remaining == -PALMARES_SHOW_TIME)
+			{ 
+				session_time_remaining = SESSION_LENGHT
+				console.log("nouvelle partie")
+				that.game.newGame()	
+				sending_player_updates = true	
 			}
 			
 		}, 1000) // refresh counter each second
