@@ -10,7 +10,6 @@ var u = require("./util")
 var com = require("./common")
 var fa = require("./frame_action")
 
-var TIME_BEFORE_RESPAWN = 3000
 var PLAYER_SPEED = .1 //.5
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
@@ -20,7 +19,7 @@ var debug_bombes = false
 
 /// MAP //////////////////////
 
-function panick(str) {
+function panic(str) {
 	console.log("[Game Model Error]: "+(str? str: "unspecified"))
 }
 
@@ -361,6 +360,7 @@ Player.prototype.die = function () {
 	{
 		console.log("Player",this.name,"died in horrible pain!!")
 		this.dead = true
+		this.resetMove()
 		
 		this.game.dyingPlayers.push(this)
 		
@@ -416,7 +416,7 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 		//this.nextNode = this.currentArc.n2
 	}
 	//else console.log("[Game Model Error]: Unknown move ")
-	else panick("Unknown move")
+	else panic("Unknown move")
 	//console.log("mvTo:",this.nextNode)
 	
 	
@@ -434,7 +434,7 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 		arc = arc.n2.arcToId(node.id)
 		if (!arc) {
 			this.targetArcDist = 0
-			panick("Invalid move: no way to node "+node)
+			panic("Invalid move: no way to node "+node)
 			return
 		}
 	}
@@ -442,6 +442,10 @@ Player.prototype.move = function (nodeIds, endCoeff) {
 	this.targetArcDist = endCoeff*arc.length
 	
 	//console.log("Going to", this.currentArc+"")
+}
+
+Player.prototype.resetMove = function (nodeIds, endCoeff) {
+	this.targetArcDist = null
 }
 
 Player.prototype.bomb = function () 
