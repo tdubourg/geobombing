@@ -11,11 +11,12 @@ var net = require('./network')
 var GAME_REFRESH_PERIOD = 50
 var MOVE_REFRESH_PERIOD = 50
 
-var SESSION_LENGHT = 10 // in seconds
-var PALMARES_SHOW_TIME = 3 // in seconds
+// in seconds
+var SESSION_LENGHT = 120 
+var PALMARES_SHOW_TIME = 10
 var session_time_remaining = SESSION_LENGHT
-exports.session_time_remaining = session_time_remaining
 var session = true
+exports.session_time_remaining = session_time_remaining
 
 function streamKey(stream) {
 	//console.log(stream)
@@ -130,7 +131,8 @@ function GameServer(game) {
 		{ 
 
 		session_time_remaining--;
-		console.log("session_time_remaining: ", session_time_remaining)
+		exports.session_time_remaining = session_time_remaining
+		//console.log("session_time_remaining: ", session_time_remaining)
 		if (session_time_remaining <= 0)
 		{
 			console.log("fin de la partie")
@@ -157,7 +159,8 @@ function GameServer(game) {
 	
 }
 
-GameServer.prototype.notify = function(fct) {
+GameServer.prototype.notify = function(fct) 
+{
 	for (var conKey in this.connexions) 
 	{
 		fct(this.connexions[conKey].stream)
@@ -173,14 +176,16 @@ GameServer.prototype.notifyBomb = function(bomb)
 	}
 }
 
-GameServer.prototype.addPlayer = function(stream) {
+GameServer.prototype.addPlayer = function(stream) 
+{
 	// TODO handle timeouts
 	
 	var p = new g.Player(this.game, stream)	
 	var c = new Connexion(this, stream, p)
 	return p
 }
-GameServer.prototype.getPlayer = function(stream) {
+GameServer.prototype.getPlayer = function(stream) 
+{
 	return this.connexions[streamKey(stream)].player
 }
 
