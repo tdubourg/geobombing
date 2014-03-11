@@ -23,6 +23,7 @@ var sendInit_action = function (frame_data, stream)
 		var player = single_game_server.addPlayer(stream)
 		var data = {}
 		data[net.TYPEID] = player.id // id
+		data[net.TYPENAME] = player.name // id
 		data[net.TYPEKEY] = player.connexion.conKey // key
 		data[net.TYPEMAP] = jsonMap // map
 		if (tiles != null) data[net.TYPETILES] = tiles // maptiles
