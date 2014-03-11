@@ -302,26 +302,30 @@ if (json_obj.data ~= nil) then
 				scoreGroup:insert( scoreDisplay)
 
 				local int = 50
+				local rank = 1
 				
 				for i,j in pairs (json_obj.data[NETWORK_GAME_RANKING]) do
-					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID])
-					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH])
-					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL])
-					print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS])
+					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID])
+					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH])
+					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL])
+					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS])
 					
 					if (((int)<scoreDisplay.contentHeight) or (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id)) then
-						local plScore = display.newText(i.. " : -".. json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH].." / +".. json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL].. " total : "..json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS] , 0, 0, native.systemFont, 16*2)
+						local plScore = display.newText(rank.." = "..i.. " : -".. json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH].." / +".. json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL].. " total : "..json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS] , 0, 0, native.systemFont, 16*2)
 						scoreGroup:insert( plScore)
 						plScore.xScale = 0.5
 						plScore.yScale = 0.5
 						plScore.x =  scoreDisplay.contentWidth/ 2;
 						plScore.y =  int;
+
 						if (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id) then
 							plScore:setFillColor(0, 0, 1 )
+							print("la")
 						else
 							plScore:setFillColor(0, 0, 0 )
 						end
 						int = int +30
+						rank = rank + 1
 					end
 				end
 

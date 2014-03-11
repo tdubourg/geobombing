@@ -34,11 +34,13 @@ function Camera:new()  -- The constructor
 	return self
 end
 
-function Camera:setGPSConversion(v2MapOriginGps, v2MapScaleGps)
-	self.mapShift = v2MapOriginGps
-	self.mapScale = v2MapScaleGps
-	self:updateManaged()
-end
+
+-- not used
+-- function Camera:setGPSConversion(v2MapOriginGps, v2MapScaleGps)
+-- 	self.mapShift = v2MapOriginGps
+-- 	self.mapScale = v2MapScaleGps
+-- 	self:updateManaged()
+-- end
 
 function Camera:lookAtXY(wX, wY)
 	self:lookAt(Vector2D:new(wX,wY))
@@ -47,7 +49,7 @@ end
 function Camera:lookAt(v2WorldPos)
 	if self.cameraPos:distSquared(v2WorldPos) ~= 0 then     -- checks if an update is necessary
 		self.cameraPos = v2WorldPos
-		self:updateManaged()
+		self:updateManaged(false)
 	end
 end
 
@@ -63,7 +65,7 @@ function Camera:setZoomXY(zoomX, zoomY)
 		self.invZoomXY.y = 1/ zoomX
 	end
 
-	self:updateManaged()
+	self:updateManaged(true)
 end
 
 
@@ -123,10 +125,10 @@ function Camera:removeListener(obj)
 	self.listeners[obj] = nil
 end
 
-function Camera:updateManaged()
+function Camera:updateManaged(zoomChanged)
 	for obj,_ in pairs(self.listeners) do
 		if (obj ~= nil) then
-			obj:redraw()
+			obj:redraw(zoomChanged)
 		end
 	end
 end

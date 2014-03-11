@@ -10,7 +10,7 @@ function TileBackground:new(luaTiles)
   for i,list in ipairs(luaTiles[TYPEGRID]) do
   	self.tiles[i] = {}
   	for j,url in ipairs(list) do
-  		self.tiles[i][j] = Tile:new(url)
+  		self.tiles[i][j] = Tile:new(url, self)
   	end
   end
 
@@ -20,11 +20,6 @@ function TileBackground:new(luaTiles)
   local mapBR = v2FromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_SMBRP])
   local tilesTL = v2FromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_TTLP])
   local tilesBR = v2FromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_TBRP])
-
-  dbg(Y,{"mapTL",mapTL})
-  dbg(Y,{"mapBR",mapBR})
-  dbg(Y,{"tilesTL",tilesTL})
-  dbg(Y,{"tilesBR",tilesBR})
 
   self.scale = Vector2D:Sub(mapBR,mapTL)
 
@@ -36,28 +31,24 @@ function TileBackground:new(luaTiles)
   self.tileSize.x = self.tileSize.x  / (#(self.tiles[1]) * self.scale.x)
   self.tileSize.y = self.tileSize.y  / (#(self.tiles) * self.scale.y)
 
-    dbg(Y,{"self.scale",self.scale})
-    dbg(Y,{"self.offset",self.offset})
-    dbg(Y,{"self.tileSize",self.tileSize})
-
   camera:addListener(self)
-
   setmetatable(self, { __index = TileBackground })  -- Inheritance
-end
 
+end
 
 
 function TileBackground:redraw(zoomChange)
   local screenWidth = self.tileSize.x * camera.zoomXY.x
   local screenHeight = self.tileSize.y * camera.zoomXY.y
-  dbg(Y,{"screenWidth",screenWidth,"screenHeight",screenHeight})
 	for i,list in ipairs(self.tiles) do
   	for j,tile in ipairs(list) do
   		if tile.image then  -- already loaded
         local wX = self.offset.x + (j-1)*self.tileSize.x
         local wY = self.offset.y + (i-1)*self.tileSize.y
   			tile.image.x, tile.image.y = camera:worldToScreenXY(wX, wY)
-        tile:setScreenSize(screenWidth, screenHeight)
+        if zoomChange then
+          tile:setScreenSize(screenWidth, screenHeight)
+        end
   		end
   	end
   end

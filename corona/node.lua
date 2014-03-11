@@ -10,7 +10,7 @@ function Node:new(worldX, worldY, uid, map)  -- The constructor
 	self.pos = Vector2D:new(worldX, worldY)    -- linearized position 0..1 (world)
 	self.arcs = {}                                   -- K: destination node, V: corresponding arc
 
-	if DISPLAY_MAP_MODEL then
+	if DISPLAY_MAP_NODE then
 		self.drawable = display.newGroup()
 		map.mapGroup:insert(self.drawable)
 
