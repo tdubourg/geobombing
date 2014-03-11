@@ -13,8 +13,8 @@ var MOVE_REFRESH_PERIOD = 50
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
-var SESSION_LENGHT = 60 
-var PALMARES_SHOW_TIME = 10
+var SESSION_LENGHT = 180 
+var PALMARES_SHOW_TIME = 8
 var session_time_remaining = SESSION_LENGHT
 var session = true
 exports.session_time_remaining = session_time_remaining
@@ -153,11 +153,8 @@ function GameServer(game, tiles)
 			//console.log("session_time_remaining: ", session_time_remaining)
 			if (session_time_remaining == 0)
 			{
-				console.log("fin de la partie")
-				
+				console.log("fin de la partie")			
 				sending_player_updates = false
-				
-				//this.respawnIntervalsByPlayerId.forEach(to_id) {
 				for (var p_id in that.respawnIntervalsByPlayerId) {
 					clearTimeout(that.respawnIntervalsByPlayerId[p_id])
 					delete that.respawnIntervalsByPlayerId[p_id]
@@ -173,8 +170,7 @@ function GameServer(game, tiles)
 					{
 						fa.sendEnd(con.stream, game.players)
 					})
-				}
-				
+				}			
 			}
 			else if (session_time_remaining == -PALMARES_SHOW_TIME)
 			{ 

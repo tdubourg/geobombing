@@ -465,10 +465,13 @@ Game.prototype.update = function (period, explodingBombs, dyingPlayers)
 }
 
 Game.prototype.newGame = function () 
-{
-	
-	for (var i = 0; i < this.players.length; i++) {
+{	
+	for (var i = 0; i < this.players.length; i++) 
+	{
 		var p = this.players[i]
+		p.deads = 0
+		p.kills = 0
+		p.points = 0
 		p.respawn()
 	};
 	
