@@ -27,7 +27,7 @@ end
 
 
 local initGUI = function (  )
-	displayMainGroup:insert(gui_group)
+	guiLayer:insert(gui_group)
 	-- Those constants are the ratio of the sizes and positions of the widget button relative to the full sized-background,
 	-- As the background is going to be scaled, using the ratio, and multiplying by the contentWidth/contentHeight, we're
 	-- going to place them at the exact location where they should be
