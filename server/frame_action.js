@@ -35,7 +35,7 @@ var sendInit_action = function (frame_data, stream)
 		var data = JSON.stringify(content); // parsage JSON
 		stream.write(data + net.FRAME_SEPARATOR, function () {
 			//console.log("sendInit(data): ", data)
-			//console.log("sendInit(tiles): ", content.data.tiles)
+			console.log("sendInit(nb tiles?): ", tiles? tiles.grid.length:"no_tiles")
 		})
 	}
 	
