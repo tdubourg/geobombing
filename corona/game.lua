@@ -228,12 +228,9 @@ end
 function initGame(player_id)
 	
 	player_id = "" .. player_id
-	local nodeFr = currentMap:getClosestNode(Vector2D:new(0,0))
-	for voisin,_ in pairs(nodeFr.arcs) do
-		nodeT=voisin
-	end
-	local arcP = currentMap:createArcPos(nodeFr, nodeT,0.5)
-
+	local arcP =currentMap.arcs[1]
+	 arcP= currentMap:createArcPosByUID(arcP.end1.uid, arcP.end2.uid,0.5)
+	
 	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
 	others = {}
@@ -260,6 +257,8 @@ function initGame(player_id)
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 						)
+				else
+					dbg(DISCARDED_PLAYER_UPDATES, {"DISCARDED player updated", json_obj.data})
 				end
 			end
 
