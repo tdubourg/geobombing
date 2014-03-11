@@ -97,6 +97,7 @@ function GameServer(game, tiles)
 	this.game = game
 	this.connexions = {}
 	this.respawnIntervalsByPlayerId = {}
+	var sending_player_updates = true
 	
 	var lastTime = Date.now()
 	
@@ -127,16 +128,19 @@ function GameServer(game, tiles)
 	
 	// Player network updates
 	setInterval(function() {
-		
-		for (var conKey in that.connexions) 
+		if (sending_player_updates)
 		{
-			var con = that.connexions[conKey]
-			game.players.forEach(function (player) 
+			
+			for (var conKey in that.connexions) 
 			{
-				fa.sendPlayerUpdate(con.stream, player);
-			})
-		}
-		
+				var con = that.connexions[conKey]
+				game.players.forEach(function (player) 
+				{
+					fa.sendPlayerUpdate(con.stream, player);
+				})
+			}
+			
+		}		
 	}, MOVE_REFRESH_PERIOD)
 
 	// SESSIONS
@@ -151,6 +155,8 @@ function GameServer(game, tiles)
 			if (session_time_remaining <= 0)
 			{
 				console.log("fin de la partie")
+				
+				sending_player_updates = false
 				
 				//this.respawnIntervalsByPlayerId.forEach(to_id) {
 				for (var p_id in that.respawnIntervalsByPlayerId) {
@@ -175,7 +181,7 @@ function GameServer(game, tiles)
 					console.log("nouvelle partie")
 					that.game.newGame()
 					
-					
+					sending_player_updates = true
 					
 				}
 			}
