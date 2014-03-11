@@ -50,7 +50,7 @@ var MapTiles =
 	tileSize: 256,
 
 	compute_grid_of_urls: function (lat, long) 
-	{		
+	{	
 		var bounds = new L.Bounds(this.topLeftPoint, this.bottomRightPoint);
 		console.log("bounds", bounds.min.x, bounds.min.y)
 
