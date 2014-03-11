@@ -2,7 +2,7 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap
 var common = require("./common")
-var conDB = true
+var conDB = false
 var qh = conDB? require('./query_helper'): null; // for generic query
 var lastMapId = 1
 var lastNodeId = 1
@@ -92,12 +92,39 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 		//console.log(rez)
 		console.log("Number of roads loaded: " + roads.length)
 		
-		callback(err, autoScaleMap(trimMap(roads, latitude, longitude, hauteur, largeur)));
+		// callback(err,
+		// 	projectMap(
+		// 		autoScaleMap(
+		// 			trimMap(roads, latitude, longitude, hauteur, largeur)
+		// 	))
+		// );
+		
+		var map = roads
+		trimMap(map, latitude, longitude, hauteur, largeur)
+		projectMap(map)
+		autoScaleMap(map)
+		
+		callback(err, map)
 		
 	});
 	
 	// todo replace by select_query();
 	
+}
+
+function projectMap (leMap)
+{
+	for (var i = 0; i < leMap.length; i++)
+	for (var j = 0; j < leMap[i].length; j++) {
+		//var pt = t.MapTiles.project({lat: leMap[i][j][0], lng: leMap[i][j][1]})
+		// var pt = t.MapTiles.project({lng: leMap[i][j][0], lat: leMap[i][j][1]})
+		var pt = t.MapTiles.project({lat: leMap[i][j][1], lng: leMap[i][j][0]})
+		//console.log(pt)
+		// leMap[i][j] = [pt.y, pt.x]
+		leMap[i][j] = [pt.x, pt.y]
+	}
+	//console.log(leMap)
+	return leMap
 }
 
 // removes points lying outside the selection box
@@ -119,7 +146,7 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 			j--
 		}
 	}
-	//console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
+	console.log("Trimmed "+trimmed+" outlying points "+"("+total+" total)")
 	return leMap
 }
 
@@ -155,12 +182,16 @@ function autoScaleMap(leMap)
 			//console.log(p[0])
 			p[0] = (p[0]-shiftX)*coeff
 			p[1] = (p[1]-shiftY)*coeff
+			// p[0] = (p[0]-shiftX)*coeffX
+			// p[1] = (p[1]-shiftY)*coeffY
 		})
 	})
 	
 	leMap.shiftX = shiftX
 	leMap.shiftY = shiftY
 	leMap.scale = coeff
+	// leMap.scaleX = coeffX
+	// leMap.scaleY = coeffY
 	
 	return leMap
 }
