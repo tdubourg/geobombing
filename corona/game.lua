@@ -454,6 +454,10 @@ function scene:exitScene( event )
 		background:removeSelf( )
 	end
 
+	if tileBackground then
+		tileBackground:destroy()
+	end
+
 	for id,player in pairs(others) do
 		player:destroy()
 		others[id] = nil
