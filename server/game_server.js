@@ -127,14 +127,8 @@ function GameServer(game, tiles)
 	}, GAME_REFRESH_PERIOD)
 	
 	// Player network updates
-<<<<<<< HEAD
 	setInterval(function() {
 		if (sending_player_updates)
-=======
-	setInterval(function() 
-	{	
-		for (var conKey in that.connexions) 
->>>>>>> 6937a93fc7be95ac5956107de5f9559770ec7ae9
 		{
 			
 			for (var conKey in that.connexions) 
