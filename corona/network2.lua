@@ -34,7 +34,12 @@ function test_network()
 end
 
 function receive_line()
-	local result = client:receive() -- with no parameter = receive a line
+	local result
+	if (NETW_RECV_OPTIMIZATION) then
+		result = client:receive() -- with no parameter = receive a line
+	else
+		result = receive_until(FRAME_SEPARATOR)
+	end
 	dbg(NETW_DBG_MODE, {result})
 	return result
 end
@@ -46,7 +51,7 @@ function receive_until(end_separator)
 	-- print (start, _end)
 	while start == nil do
 		-- print (start, _end)
-		local chunk = client:receive(25)
+		local chunk = client:receive(1)
 		dbg(NETW_DBG_MODE, {"chunk=", chunk})
 		if (chunk == nil) then
 			break
