@@ -10,6 +10,7 @@ var u = require("./util")
 var com = require("./common")
 var fa = require("./frame_action")
 
+var TIME_BEFORE_RESPAWN = 3000
 var PLAYER_SPEED = .1 //.5
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
@@ -166,7 +167,7 @@ function Bomb(player) { //, arc, coeff) {
 	
 }
 
-Player.prototype.KillPlayer = function (player_killed) // can be called or himself (kamikaze)
+Player.prototype.onKillPlayer = function (player_killed) // can be called on himself (kamikaze)
 {
 	player_killed.deads++
 	if (player_killed != this)
@@ -243,8 +244,10 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		
 		if (playersOnArc[arc.id])
 		playersOnArc[arc.id].forEach(function(pd) {
-			if (startDist <= pd.d && pd.d <= distToCover)
+			if (startDist <= pd.d && pd.d <= distToCover) {
 				pd.p.die()
+				this.player.onKillPlayer(pd.p)
+			}
 		})
 		
 		// Propagate:
@@ -351,12 +354,17 @@ Player.prototype.update = function (period) {
 }
 
 Player.prototype.die = function () {
-	if (!this.dead) {
+	if (!this.dead) 
+	{
 		console.log("Player",this.name,"died in horrible pain!!")
 		this.dead = true
-		/////////
-		//this.remove() // TODO really make the player die
-		/////////
+
+		//respawn
+		setTimeOut(function() 
+			{ 
+				console.log("Player",this.name,"Respawn!!")
+				this.dead = false
+			}, TIME_BEFORE_RESPAWN)
 	}
 }
 
