@@ -26,6 +26,7 @@ Camera = {}                   -- Create a table to hold the class methods
 function Camera:new()  -- The constructor
 	local self = {}
 	self.listeners = {}    -- set of managed selfs, in keys
+
 	self.cameraPos = Vector2D:new(0,0)
 	self.zoomXY = Vector2D:new(1,1)
 	self.invZoomXY = Vector2D:new(1,1)
@@ -51,6 +52,14 @@ function Camera:lookAt(v2WorldPos)
 		self.cameraPos = v2WorldPos
 		self:updateManaged(false)
 	end
+end
+
+function Camera:setZoomUniform(zoom)
+	self.zoomXY.x = zoom
+	self.zoomXY.y = self.zoomXY.x * (display.stageWidth/display.stageHeight)
+	self.invZoomXY.x = 1/self.zoomXY.wX 
+	self.invZoomXY.y = 1/self.zoomXY.y
+	self:updateManaged(true)
 end
 
 function Camera:setZoomXY(zoomX, zoomY)
