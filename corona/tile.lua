@@ -20,18 +20,9 @@ function Tile:new(url)
     end
 
   display.loadRemoteImage( self.url , "GET", loadCompleteListener, "test.png", system.TemporaryDirectory, 0, 0 )
-  camera:addListener(self)
-
   setmetatable(self, { __index = Tile })  -- Inheritance
 end
 
-
-
-function Tile:redraw()
-	if self.image then
-  	self.image.x, self.image.y = camera:worldToScreenXY(0,0)
-  end
-end
 
 function Tile:destroy()
   camera:removeListener(self)
