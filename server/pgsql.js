@@ -2,8 +2,7 @@
 "use strict"
 var clMap = require("./Classes/clMap").clMap
 var common = require("./common")
-var conDB = false
-var qh = conDB? require('./query_helper'): null; // for generic query
+var qh = require('./query_helper')
 var lastMapId = 1
 var lastNodeId = 1
 var u = require("./util")
@@ -24,20 +23,20 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	
 	//////////////////////////////////
 	
-	if (!conDB) 
-	{	
-		var m = [[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
-			[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]
+	// if (conDB!) 
+	// {	
+	// 	var m = [[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
+	// 		[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]
 		
-		m.roadNames = ["Microsoft road", "Apple road"]
+	// 	m.roadNames = ["Microsoft road", "Apple road"]
 		
-		// Useless, ceinture-bretelle
-		m.shiftX = m.shiftY = 0
-		m.scale = 1
+	// 	// Useless, ceinture-bretelle
+	// 	m.shiftX = m.shiftY = 0
+	// 	m.scale = 1
 		
-		callback(null, autoScaleMap(m));
-		return;
-	}
+	// 	callback(null, autoScaleMap(m));
+	// 	return;
+	// }
 	
 	console.log("Loading map from: " + latitude + ", " + longitude)
 
@@ -232,12 +231,7 @@ function mapDataToJSon(mapData)
 
 
 function getInitialPosition() {
-	var position;
-	position = common.CreatePosition(0, 0, 0);
-	//if (!conDB) 
-	{
-		position = common.CreatePosition(1, 2, 0.5);
-	}
+	var position = common.CreatePosition(1, 2, 0.5);
     return position;
 }
 
