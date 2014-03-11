@@ -166,7 +166,7 @@ function Bomb(player) { //, arc, coeff) {
 	
 }
 
-Player.prototype.KillPlayer = function (player_killed) // can be called or himself (kamikaze)
+Player.prototype.onKillPlayer = function (player_killed) // can be called on himself (kamikaze)
 {
 	player_killed.deads++
 	if (player_killed != this)
@@ -243,8 +243,10 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		
 		if (playersOnArc[arc.id])
 		playersOnArc[arc.id].forEach(function(pd) {
-			if (startDist <= pd.d && pd.d <= distToCover)
+			if (startDist <= pd.d && pd.d <= distToCover) {
 				pd.p.die()
+				this.player.onKillPlayer(pd.p)
+			}
 		})
 		
 		// Propagate:
