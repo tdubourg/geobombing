@@ -59,7 +59,7 @@ var MapTiles =
 		        bounds.max.divideBy(this.tileSize)._floor());
 
 		//console.log("tileBounds", tileBounds.min.x, tileBounds.min.y)
-		console.log("##############################exported_bounds#####################", tileBounds)
+		//console.log("##############################exported_bounds#####################", tileBounds)
 		var i,j,point
 		var grid = []
 		for (j = tileBounds.min.y; j < tileBounds.max.y + 1; j++) {
@@ -79,7 +79,7 @@ var MapTiles =
 			'tilesTopLeftPoint': {'x': tileBounds.min.x * this.tileSize, 'y': tileBounds.min.y * this.tileSize},
 			'tilesBottomRightPoint': {'x': (tileBounds.max.x + 1) * this.tileSize, 'y': (tileBounds.max.y + 1) * this.tileSize}
 		}
-		console.log(result) // TODO: Remove that when debug is done :) 
+		//console.log(result) // TODO: Remove that when debug is done :) 
 		return result
 	},
 }
