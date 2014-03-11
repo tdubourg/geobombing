@@ -362,6 +362,11 @@ Player.prototype.die = function () {
 	}
 }
 
+Player.prototype.revive = function () {
+	
+	this.dead = false
+}
+
 Player.prototype.remove = function () {
 	this.game.players.splice(this.game.players.indexOf(this),1)
 }
