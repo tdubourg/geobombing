@@ -109,5 +109,7 @@ BOMB_DBG_MODE = false
 NETW_DBG_MODE = false
 NETW_DUMP_MODE = false
 DEBUG_ZOOM = false
+GAME_DBG = false
+
 -- require("consts-local")
 silent_fail_require("consts-local")
