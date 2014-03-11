@@ -2,16 +2,15 @@
 
 var net = require('./network');
 var utils = require("./common");
-
 var db = require('./pgsql');
-var nb_instance_move = 0;
 
+var nb_instance_move = 0;
 var g = require('./game')
-//var single_game_instance/*: g.Game */ = null
 var gs = require('./game_server')
 var single_game_server = null
 
 exports.getServer = function() { return single_game_server }
+
 
 // executed function according to client result
 var sendInit_action = function (frame_data, stream) 
@@ -21,12 +20,10 @@ var sendInit_action = function (frame_data, stream)
 	
 	function sendInit(jsonMap, tiles)
 	{
-		//var conKey = single_game_server.addPlayer(stream).conKey
 		var player = single_game_server.addPlayer(stream)
 		var data = {}
 		data[net.TYPEID] = player.id // id
 		data[net.TYPEKEY] = player.connexion.conKey // key
-		data[net.TYPETIMEREMAINING] = gs.time_remaining // time before end of game 
 		data[net.TYPEMAP] = jsonMap // map
 		if (tiles != null) data[net.TYPETILES] = tiles // maptiles
 		var content =  
@@ -39,7 +36,6 @@ var sendInit_action = function (frame_data, stream)
 		stream.write(data + net.FRAME_SEPARATOR, function () {
 			//console.log("sendInit(data): ", data)
 			//console.log("sendInit(tiles): ", content.data.tiles)
-			console.log("sendInit(time_remaining): ", content.data.time)
 		})
 	}
 	
@@ -53,14 +49,14 @@ var sendInit_action = function (frame_data, stream)
 		function (mapData, position, tiles)
 		{
 			single_game_server = new gs.GameServer(
-				new g.Game(new g.Map(db.mapDataToJSon(mapData))))
+				new g.Game(new g.Map(db.mapDataToJSon(mapData))), tiles)
 
 			sendInit(single_game_server.game.map.jsonObj,  tiles);
 			setInitialPosition();
 		}); // lat, lon
 		else
 		{
-			sendInit(single_game_server.game.map.jsonObj);
+			sendInit(single_game_server.game.map.jsonObj, single_game_server.tiles);
 			setInitialPosition();
 		}
 } // end sendInit_action
@@ -78,18 +74,6 @@ function sendEnd(stream, players)
 		data[net.TYPERANKING][player.name][net.TYPEPLAYERKILLS] = player.kills
 		data[net.TYPERANKING][player.name][net.TYPEPLAYERPOINTS] = player.points
 	}) 
-
-	data[net.TYPERANKING]["jo la fritte"] = {}
-		data[net.TYPERANKING]["jo la fritte"][net.TYPEID] = 52
-		data[net.TYPERANKING]["jo la fritte"][net.TYPEPLAYERDEADS] = 553
-		data[net.TYPERANKING]["jo la fritte"][net.TYPEPLAYERKILLS] = 54
-		data[net.TYPERANKING]["jo la fritte"][net.TYPEPLAYERPOINTS] = 78546
-
-	data[net.TYPERANKING]["tonton gaston"] = {}
-		data[net.TYPERANKING]["tonton gaston"][net.TYPEID] = 45
-		data[net.TYPERANKING]["tonton gaston"][net.TYPEPLAYERDEADS] = 56
-		data[net.TYPERANKING]["tonton gaston"][net.TYPEPLAYERKILLS] = 87
-		data[net.TYPERANKING]["tonton gaston"][net.TYPEPLAYERPOINTS] = 6546
 
 	var content =  
 	{
@@ -111,7 +95,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	data[net.TYPEPOS] = player.getPosition() 
 	data[net.TYPEID] = player.id
 	data[net.TYPETIMESTAMP] = Date.now() // for discard playerUpdatePosition
-	data[net.TYPETIMEREMAINING] = gs.time_remaining // time before end of game 
+	data[net.TYPETIMEREMAINING] = gs.session_time_remaining // time before end of game 
 	if (player.dead) { data[net.TYPEDEAD] = player.dead }
 
 	var content = 
@@ -122,7 +106,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
-		//console.log("Send updt", stream.address().address)
+		//console.log("sendPlayerUpdate: ", content.data[net.TYPETIMESTAMP])
 	})
 }
 
@@ -142,6 +126,7 @@ var sendPlayerRemove = function (stream, player) // player and other players
 
 var sendBombUpdate = function (stream, bomb) // player and other players
 {
+	if (bomb == null) console.log("Error: Unknown Bomb")
 	var data = {}
 	data[net.TYPEID] = bomb.player.id // player id
 	data[net.TYPEPOS] = bomb.getPosition()
@@ -157,8 +142,7 @@ var sendBombUpdate = function (stream, bomb) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
-		//console.log("Bomb update sent ("+(bomb.time<0?1:0)+")")
-		//console.log(bomb.arc.toString(), bomb.arcDist)
+		console.log("radius: ", content.data[net.TYPERADIUS])
 	})
 }
 
