@@ -13,7 +13,7 @@ var MOVE_REFRESH_PERIOD = 50
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
-var SESSION_LENGHT = 120 
+var SESSION_LENGHT = 10 
 var PALMARES_SHOW_TIME = 10
 var session_time_remaining = SESSION_LENGHT
 var session = true
@@ -127,8 +127,14 @@ function GameServer(game, tiles)
 	}, GAME_REFRESH_PERIOD)
 	
 	// Player network updates
+<<<<<<< HEAD
 	setInterval(function() {
 		if (sending_player_updates)
+=======
+	setInterval(function() 
+	{	
+		for (var conKey in that.connexions) 
+>>>>>>> 6937a93fc7be95ac5956107de5f9559770ec7ae9
 		{
 			
 			for (var conKey in that.connexions) 
@@ -152,7 +158,7 @@ function GameServer(game, tiles)
 			session_time_remaining--;
 			exports.session_time_remaining = session_time_remaining
 			//console.log("session_time_remaining: ", session_time_remaining)
-			if (session_time_remaining <= 0)
+			if (session_time_remaining == 0)
 			{
 				console.log("fin de la partie")
 				
@@ -175,7 +181,7 @@ function GameServer(game, tiles)
 						fa.sendEnd(con.stream, game.players)
 					})
 				}
-				if (session_time_remaining <= -PALMARES_SHOW_TIME)
+				if (session_time_remaining == -PALMARES_SHOW_TIME)
 				{ 
 					session_time_remaining = SESSION_LENGHT
 					console.log("nouvelle partie")
@@ -184,6 +190,7 @@ function GameServer(game, tiles)
 					sending_player_updates = true
 					
 				}
+				
 			}
 			
 		}, 1000) // refresh counter each second
