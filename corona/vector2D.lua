@@ -6,7 +6,7 @@ function Vector2D:new(x, y)
 	return object
 end
 
-function Vector2D.FromJSON(jsonVect)
+function v2FromJSON(jsonVect)
 	return Vector2D:new(jsonVect["x"], jsonVect["y"])
 end
  
