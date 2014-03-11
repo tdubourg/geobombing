@@ -246,7 +246,7 @@ function initGame(player_id)
 				timeText.text = "Temps restant: ".. time
 				--print("time"..time)
 			end
-			if (json_obj.data[NETWORK_KILLS] ~= nil) then
+			if (json_obj.data[NETWORK_KILLS] ~= nil and tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id) then
 				--print("KILLLL",json_obj.data[NETWORK_KILLS])
 				player.nbKill = json_obj.data[NETWORK_KILLS]
 				scoreKText.text = " / +"..player.nbKill
