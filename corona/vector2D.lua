@@ -5,6 +5,10 @@ function Vector2D:new(x, y)
 	setmetatable(object, { __index = Vector2D })  
 	return object
 end
+
+function Vector2D.FromJSON(jsonVect)
+	return Vector2D:new(jsonVect["x"], jsonVect["y"])
+end
  
 function Vector2D:copy()
 	return Vector2D:new(self.x, self.y)
