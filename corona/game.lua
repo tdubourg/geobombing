@@ -407,7 +407,6 @@ function scene:enterScene( event )
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 
-			dbg(Y,{"before lua tiles"})
 			local luaTiles = json_obj[JSON_FRAME_DATA][TYPETILES]
 	    if tileBackground then tileBackground:destroy() end
 	    tileBackground = TileBackground:new(luaTiles)
