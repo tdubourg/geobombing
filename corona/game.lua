@@ -47,31 +47,7 @@ function movePlayerById(id,arcP)
 	daPlayer:setAR(arcP)
 end
 
-function playerUpD(id)
-	local exist = false
-	strid = "" .. id
 
-	local daPlayer = others[strid]
-	if (not daPlayer) then
-		daPlayer = Player.new(strid,0.02,0,arcP)
-		others[strid] = daPlayer
-	end
-
-	daPlayer.nbDeath = daPlayer.nbDeath +1
-end
-
-function playerUpK(id)
-	local exist = false
-	strid = "" .. id
-
-	local daPlayer = others[strid]
-	if (not daPlayer) then
-		daPlayer = Player.new(strid,0.02,0,arcP)
-		others[strid] = daPlayer
-	end
-
-	daPlayer.nbKill = daPlayer.nbKill +1
-end
 
 function removeScoreDisplay()
 	rankOn = false
@@ -241,7 +217,7 @@ function initGame(player_id)
 	
 	if (not rankOn) then
 				--print ("Received player update from server: " .. json.encode(json_obj))
-
+				
 		if (json_obj.data ~= nil) then
 			-- There's some data to crunch
 			local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
@@ -270,11 +246,10 @@ function initGame(player_id)
 				timeText.text = "Temps restant: ".. time
 				--print("time"..time)
 			end
-			if (json_obj.data[NETWORK_KILLS] ~= nil) then
-				time = json_obj.data[NETWORK_KILLS]
+			if (json_obj.data[NETWORK_KILLS] ~= nil and tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id) then
+				--print("KILLLL",json_obj.data[NETWORK_KILLS])
 				player.nbKill = json_obj.data[NETWORK_KILLS]
 				scoreKText.text = " / +"..player.nbKill
-				--print("time"..time)
 			end
 				--handling self death
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
@@ -284,9 +259,10 @@ function initGame(player_id)
 					-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
 					if (isDead == false) then
 						--print("Youhou01", isDead)
-						print("MOOOOOOOOOOORT")
+						
 						player.nbDeath = player.nbDeath + 1
 						scoreDText.text = "-"..player.nbDeath
+						--print("MOOOOOOOOOOORT",player.nbDeath,scoreDText.text)
 						--print(player.nbDeath)
 						isDead = true
 						-- local revive = function()
@@ -296,7 +272,7 @@ function initGame(player_id)
 					end
 
 				else
-					playerUpD(player.id)
+					
 				end
 			elseif tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id  then
 				isDead=false
