@@ -147,8 +147,7 @@ function GameServer(game, tiles)
 	if (session)
 	{ 
 		setInterval(function() 
-		{
-			
+		{		
 			session_time_remaining--;
 			exports.session_time_remaining = session_time_remaining
 			//console.log("session_time_remaining: ", session_time_remaining)
@@ -179,10 +178,8 @@ function GameServer(game, tiles)
 				{ 
 					session_time_remaining = SESSION_LENGHT
 					console.log("nouvelle partie")
-					that.game.newGame()
-					
-					sending_player_updates = true
-					
+					that.game.newGame()	
+					sending_player_updates = true	
 				}
 				
 			}
