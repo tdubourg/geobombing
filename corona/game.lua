@@ -270,6 +270,12 @@ function initGame(player_id)
 				timeText.text = "Temps restant: ".. time
 				--print("time"..time)
 			end
+			if (json_obj.data[NETWORK_KILLS] ~= nil) then
+				time = json_obj.data[NETWORK_KILLS]
+				player.nbKill = json_obj.data[NETWORK_KILLS]
+				scoreKText.text = " / +"..player.nbKill
+				--print("time"..time)
+			end
 				--handling self death
 			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
 
@@ -407,7 +413,6 @@ function scene:enterScene( event )
 			if (currentMap) then currentMap:destroy() end
 			currentMap = Map:new(luaMap)
 
-			dbg(Y,{"before lua tiles"})
 			local luaTiles = json_obj[JSON_FRAME_DATA][TYPETILES]
 	    if tileBackground then tileBackground:destroy() end
 	    tileBackground = TileBackground:new(luaTiles)

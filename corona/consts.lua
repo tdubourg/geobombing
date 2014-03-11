@@ -78,6 +78,9 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 	-- time remaining
 	NETWORK_TIME = "tr"
 
+	-- number of kills
+	NETWORK_KILLS = "k"
+
 	--bomb data
 	FRAMETYPE_BOMB_UPDATE = "bu"
 	NETWORK_BOMB_UPDATE_ID_KEY = "bid"
