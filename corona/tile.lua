@@ -1,5 +1,7 @@
 require "utils"
 
+local tempFileIndex = 0
+
 Tile = {}
 function Tile:new(url)
   local self = {}
@@ -15,12 +17,13 @@ function Tile:new(url)
         event.target.anchorX = 0
         event.target.anchorY = 0
         tileLayer:insert(self.image)
-        dbg(Y,{"loaded ok"})
       end
     end
 
-  display.loadRemoteImage( self.url , "GET", loadCompleteListener, self.url..".png", system.TemporaryDirectory, 0, 0 )
+  display.loadRemoteImage( self.url , "GET", loadCompleteListener, "tempTile"..tempFileIndex..".png", system.TemporaryDirectory, 0, 0 )
+  tempFileIndex = tempFileIndex +1
   setmetatable(self, { __index = Tile })  -- Inheritance
+  return self
 end
 
 
