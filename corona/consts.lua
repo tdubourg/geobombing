@@ -62,6 +62,11 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 	NETWORK_RANKING_NB_KILL = "pkills"
 	NETWORK_RANKING_POINTS= "ppoints"
 
+	-- tiles 
+	TYPETILES = "tiles"
+	TYPEGRID = "grid"
+	TYPEPOINT = "topLeftPoint"
+
 	-- time remaining
 	NETWORK_TIME = "time"
 	
