@@ -9,8 +9,7 @@ EXPLOSION_DURATION = 1.5 -- in seconds
 DISPLAY_MAP_ARCS = false
 DISPLAY_MAP_NODES = false
 
-ZOOM_X = 2000
-ZOOM_Y = 2000
+ZOOM = 2000
 
 -- JSON labels
 	-- protocol
