@@ -19,7 +19,7 @@ function Tile:new(url)
       end
     end
 
-  display.loadRemoteImage( self.url , "GET", loadCompleteListener, "test.png", system.TemporaryDirectory, 0, 0 )
+  display.loadRemoteImage( self.url , "GET", loadCompleteListener, self.url..".png", system.TemporaryDirectory, 0, 0 )
   setmetatable(self, { __index = Tile })  -- Inheritance
 end
 
