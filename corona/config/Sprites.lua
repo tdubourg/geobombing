@@ -32,7 +32,7 @@ return {
 			man = {
 				leftwalk = {
 					frameCount = 4,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				leftstand = {
@@ -42,7 +42,7 @@ return {
 				},
 				rightwalk = {
 					frameCount = 4,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				rightstand = {
@@ -52,7 +52,7 @@ return {
 				},
 				upwalk = {
 					frameCount = 2,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				upstand = {
@@ -62,7 +62,7 @@ return {
 				},
 				downwalk = {
 					frameCount = 2,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				downstand = {
@@ -81,7 +81,7 @@ return {
 			manc = {
 				leftwalk = {
 					frameCount = 4,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				leftstand = {
@@ -91,7 +91,7 @@ return {
 				},
 				rightwalk = {
 					frameCount = 4,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				rightstand = {
@@ -101,7 +101,7 @@ return {
 				},
 				upwalk = {
 					frameCount = 2,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				upstand = {
@@ -111,7 +111,7 @@ return {
 				},
 				downwalk = {
 					frameCount = 2,
-					period = 0.9
+					period = 0.4
 					-- loopCount = 1
 				},
 				downstand = {
