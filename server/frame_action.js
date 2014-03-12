@@ -34,7 +34,8 @@ var sendInit_action = function (frame_data, stream)
 		}
 		
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + net.FRAME_SEPARATOR, function () {
+		stream.write(data + net.FRAME_SEPARATOR, function () 
+		{
 			//console.log("sendInit(data): ", data)
 			console.log("sendInit(nb tiles?): ", tiles? tiles.grid.length:"no_tiles")
 		})
@@ -97,7 +98,11 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	data[net.TYPEID] = player.id
 	data[net.TYPETIMESTAMP] = Date.now() // for discard playerUpdatePosition
 	data[net.TYPETIMEREMAINING] = gs.session_time_remaining // time before end of game 
-	data[net.TYPEKILLS] = player.kills
+	if (player.haskilled)
+	{
+		data[net.TYPEKILLS] = player.kills
+		player.haskilled = false // to stop sending
+	}
 	if (player.dead) { data[net.TYPEDEAD] = player.dead }
 
 	var content = 
