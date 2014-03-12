@@ -8,13 +8,13 @@ var fa = require('./frame_action')
 var net = require('./network')
 
 // in milliseconds:
-var GAME_REFRESH_PERIOD = 50
-var MOVE_REFRESH_PERIOD = 50
+var GAME_REFRESH_PERIOD = 100
+// var MOVE_REFRESH_PERIOD = 100
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
-var SESSION_LENGHT = 180
-var PALMARES_SHOW_TIME = 15
+var SESSION_LENGHT = 300
+var PALMARES_SHOW_TIME = 10
 var session_time_remaining = SESSION_LENGHT
 var session = true
 exports.session_time_remaining = session_time_remaining
@@ -89,61 +89,54 @@ function GameServer(game, tiles)
 	this.connexions = {}
 	this.respawnIntervalsByPlayerId = {}
 	var sending_player_updates = true
-	
 	var lastTime = Date.now()
 	
-	setInterval(function() {
+	// MAIN LOOP (GAME ENGINE)
+	setInterval(function() 
+	{
 		var time = Date.now()
 		var explodingBombs = []
 		var dyingPlayers = []
 		
-		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)
-		
-		explodingBombs.forEach(function (bomb) 
-		{
-			that.notifyBomb(bomb)
-		})
-		
+		// Dying players
+		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)		
+		explodingBombs.forEach(function (bomb) { that.notifyBomb(bomb) })		
 		dyingPlayers.forEach(function (p) 
 		{
-			var to_id = setTimeout(function() {
+			var to_id = setTimeout(function() 
+			{
 				console.log("Player",p.name,"automatically respawned")
 				p.respawn()
 				delete that.respawnIntervalsByPlayerId[p.id]
 			}, TIME_BEFORE_RESPAWN)
 			that.respawnIntervalsByPlayerId[p.id] = to_id
 		})
-		
 		lastTime = time
-	}, GAME_REFRESH_PERIOD)
-	
-	// Player network updates
-	setInterval(function() 
-	{
-		if (sending_player_updates)
-		{		
-			for (var conKey in that.connexions) 
-			{
-				var con = that.connexions[conKey]
-				/*game.players.forEach(function (player) 
-				{
-					fa.sendPlayerUpdate(con.stream, player);
-				})*/
 
-				game.players.forEach(function (player) 
+		// Network updates
+		if (sending_player_updates)
+		{	
+			//game.players.forEach(function (player) { // todo delete
+
+				for (var conKey in that.connexions) 
 				{
-					fa.sendPlayersUpdate(con.stream, game.players);
-				})
-			}
-			
+					var con = that.connexions[conKey]
+					fa.sendPlayersUpdate(con.stream, game.players);/******/	
+
+					//fa.sendPlayerUpdate(con.stream, player);// todo delete	
+				}	
+				game.players.forEach(function (player) { /**********/
+					player.haskilled = false 
+				})// to stop sending number kills	/***********/
+			//})// todo delete	
 		}		
-	}, MOVE_REFRESH_PERIOD)
+	}, GAME_REFRESH_PERIOD)
+
 
 	// SESSIONS
 	if (session)
 	{ 
-		setInterval(function() 
-		{		
+		setInterval(function() {		
 			session_time_remaining--;
 			exports.session_time_remaining = session_time_remaining
 			if (session_time_remaining == 0)

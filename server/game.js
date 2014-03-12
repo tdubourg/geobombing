@@ -14,8 +14,8 @@ var PLAYER_SPEED = .1 //.5
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
 var BOMB_POWER = .2
-
-var debug_bombes = false
+var REDUCE_BOMB_POWER_AT_ANGLE = true
+var DEBUG_BOMBES = false
 
 /// MAP //////////////////////
 
@@ -69,7 +69,11 @@ Arc.prototype.distFromTo = function (coeff, node) {
 // angle formed by n1, n2, node
 Arc.prototype.angleWith = function (node) {
 	//return Math.atan2(this.n2.y - this.n1.y,)
-	return (this.angle - this.n2.arcToId(node.id).angle)%(2*Math.PI)
+	//return (this.angle - this.n2.arcToId(node.id).angle)%(2*Math.PI)
+	var a = (this.angle + 2*Math.PI - this.n2.arcToId(node.id).angle)%(2*Math.PI)
+	if (a > Math.PI)
+		a -= 2*Math.PI
+	return a
 }
 
 Arc.prototype.getOpposite = function () {
@@ -139,6 +143,7 @@ function Player(game, stream) {
 	// for ranking
 	this.deads = 0
 	this.kills = 0
+	this.haskilled = false
 	this.points = 0
 
 	//this.currentArcPos = null
@@ -176,11 +181,13 @@ Player.prototype.onKillPlayer = function (player_killed) // can be called on him
 		player_killed.points -= 5
 		this.points += 10
 		this.kills++
+		this.haskilled = true // true until it is send
 	}
 }
 
 
-Bomb.prototype.update = function (period, explodingBombs) {
+Bomb.prototype.update = function (period, explodingBombs) 
+{
 	//console.log("tick...")
 	if (this.time < 0 && this.time+period >= 0)
 	{
@@ -239,7 +246,8 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		visitedArc[arc.id] = true
 		visitedArc[arc.getOpposite().id] = true
 		
-		if (debug_bombes)
+		if (DEBUG_BOMBES
+		)
 			DEBUG_fillWithBombs(game, player, arc, startDist, distToCover)
 		
 		// Test kills:
@@ -275,8 +283,9 @@ Bomb.prototype.explode_propagate = function (coeff) {
 				) {
 					//console.log("ang: "+angle)
 					//console.log(">> "+a)
-						
-					rec(0, newDistToCover*Math.cos(angle), arc.n2, newArc)
+					if (REDUCE_BOMB_POWER_AT_ANGLE)
+						 rec(0, newDistToCover*Math.cos(angle), arc.n2, newArc)
+					else rec(0, newDistToCover, arc.n2, newArc)
 				}
 				
 			}
@@ -365,10 +374,8 @@ Player.prototype.die = function () {
 	{
 		console.log("Player",this.name,"died in horrible pain!!")
 		this.dead = true
-		this.resetMove()
-		
-		this.game.dyingPlayers.push(this)
-		
+		this.resetMove()		
+		this.game.dyingPlayers.push(this)	
 	}
 }
 
@@ -477,6 +484,7 @@ Game.prototype.newGame = function ()
 		p.deads = 0
 		p.kills = 0
 		p.points = 0
+		p.haskilled = false
 		p.respawn()
 	};
 	

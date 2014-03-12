@@ -34,7 +34,8 @@ var sendInit_action = function (frame_data, stream)
 		}
 		
 		var data = JSON.stringify(content); // parsage JSON
-		stream.write(data + net.FRAME_SEPARATOR, function () {
+		stream.write(data + net.FRAME_SEPARATOR, function () 
+		{
 			//console.log("sendInit(data): ", data)
 			console.log("sendInit(nb tiles?): ", tiles? tiles.grid.length:"no_tiles")
 		})
@@ -116,9 +117,8 @@ var sendPlayersUpdate = function (stream, players) // player and other players
 	};
 	
 	var data = JSON.stringify(content);
-	stream.write(data + net.FRAME_SEPARATOR,function() 
-	{
-		console.log("sendPlayersUpdate: ", data)
+	stream.write(data + net.FRAME_SEPARATOR, function() {
+		//console.log("sendPlayersUpdate: ", data)
 	})
 }
 
@@ -129,7 +129,12 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	data[net.TYPEID] = player.id
 	data[net.TYPETIMESTAMP] = Date.now() // for discard playerUpdatePosition
 	data[net.TYPETIMEREMAINING] = gs.session_time_remaining // time before end of game 
-	data[net.TYPEKILLS] = player.kills
+	if (player.haskilled)
+	{
+		console.log("KILL Update: ", player.name)//content.data[net.TYPEKILLS])
+		var show = true
+		data[net.TYPEKILLS] = player.kills
+	}
 	if (player.dead) { data[net.TYPEDEAD] = player.dead }
 
 	var content = 
@@ -140,7 +145,7 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR,function() {
-		//console.log("sendPlayerUpdate: ", player.kills)//content.data[net.TYPEKILLS])
+		if (show) console.log("sendPlayerUpdate:\n", data)
 	})
 }
 

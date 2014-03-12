@@ -56,7 +56,8 @@ end
 
 function Camera:setZoomUniform(zoom)
 	self.zoomXY.x = zoom
-	self.zoomXY.y = self.zoomXY.x * (display.stageWidth/display.stageHeight)
+	-- self.zoomXY.y = self.zoomXY.x * (display.stageWidth/display.stageHeight)*PERSPECTIVE_PROJ
+	self.zoomXY.y = self.zoomXY.x * (display.contentWidth/display.contentHeight)*PERSPECTIVE_PROJ
 	self.invZoomXY.x = 1/self.zoomXY.x 
 	self.invZoomXY.y = 1/self.zoomXY.y
 	self:updateManaged(true)

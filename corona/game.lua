@@ -103,10 +103,6 @@ function update_player_position(id, pos_obj )
 	movePlayerById(id, arcP)
 end
 
-function update_player_state( state_obj )
-	-- TODO
-end
-
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 
@@ -147,7 +143,6 @@ end
 
 	local trans
 	function moveObject(e)
-		print "TAP HANDLER"
 		if(trans)then
 			transition.cancel(trans)
 		end
@@ -166,13 +161,11 @@ end
 			-- test
 			--movePlayerById(1, arcP)
 
-			print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
 			if (arcP.progress<0) then
-				print (arcP.progress.." ERROR")
+				dbg (ERRORS, {arcP.progress.." ERROR"})
 			end
 			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
-			net.sendPathToServer(nil,arcP)
-				--player:saveNewNodes(nil,arcP)
+				net.sendPathToServer(nil,arcP)
 			else
 				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
 				if (nodes == nil) then -- FIXME!
@@ -213,88 +206,84 @@ function initGame(player_id)
 	others[player_id] = player
 
 	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
+		if (not rankOn) then
+			if (json_obj.data ~= nil) then
+				-- There's some data to crunch
+				local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+				local dead = json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY]
+				local kills = json_obj.data[NETWORK_KILLS]
+				local player_id = tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
 
-	
-	if (not rankOn) then
-				--print ("Received player update from server: " .. json.encode(json_obj))
-				
-		if (json_obj.data ~= nil) then
-			-- There's some data to crunch
-			local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-			local state = json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY]
-
-			-- The position has to be updated
-			if (pos ~= nil) then
 				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
 				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS
 				dbg(NETW_DBG_MODE, {"timestamp frame=", t})
 				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
 				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", t - discard_timestamp_limit})
-				-- If we do not want to discard it...
-				if (t < discard_timestamp_limit or state == nil or not NETW_DISCARD_PU_OPTIMIZATION) then				
+				-- Frame too old and does not contain information we want to read even if old ? Discard it!
+				if (
+					    (t - discard_timestamp_limit) < 0 -- old enough
+					and dead == nil and kills == nil -- no important info in the frame
+					and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
+				) then
+					dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
+					return -- and end the function
+				end
+				-- The position has to be updated
+				if (pos ~= nil) then
 					-- Then take it into account!
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-						)
-				else
-					dbg(DISCARDED_PLAYER_UPDATES, {"DISCARDED player updated", json_obj.data})
+					)
 				end
-			end
 
-			if (state ~= nil) then
-				update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
-			end
-			if (json_obj.data[NETWORK_TIME] ~= nil) then
-				time = json_obj.data[NETWORK_TIME]
-				timeText.text = "Temps restant: ".. time
-				--print("time"..time)
-			end
-			if (json_obj.data[NETWORK_KILLS] ~= nil and tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id) then
-				--print("KILLLL",json_obj.data[NETWORK_KILLS])
-				player.nbKill = json_obj.data[NETWORK_KILLS]
-				scoreKText.text = " / +"..player.nbKill
-			end
-				--handling self death
-			if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
+				if (json_obj.data[NETWORK_REMAINING_TIME] ~= nil) then
+					time = json_obj.data[NETWORK_REMAINING_TIME]
+					timeText.text = "Temps restant: " .. time
+				end
 
-				if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
-					--print("Youhou0", isDead)
-					-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
-					if (isDead == false) then
-						--print("Youhou01", isDead)
-						
-						player.nbDeath = player.nbDeath + 1
-						scoreDText.text = "-"..player.nbDeath
-						--print("MOOOOOOOOOOORT",player.nbDeath,scoreDText.text)
-						--print(player.nbDeath)
-						isDead = true
-						-- local revive = function()
-						-- 	isDead = false
-						-- end
-						--timer.performWithDelay( 3000, revive )
+				if (kills ~= nil) then
+					dbg(NETW_KILLS_DBG, {"Received the player_update with a kills key:", kills})
+					if (player_id == player.id) then
+						dbg(NETW_KILLS_DBG, {"And the player is me", kills})
+						player.nbKill = json_obj.data[NETWORK_KILLS]
+						scoreKText.text = " / +" .. player.nbKill
+					else
+						dbg(NETW_KILLS_DBG, {"But the player is not më, I am=", player.id, "and it is=", player_id})
 					end
-
-				else
-					
 				end
-			elseif tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id  then
-				isDead=false
-				--print("Youhou2", isDead)
+
+				--handling self death
+				if dead then
+					if player_id == player.id then
+						-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
+						if (isDead == false) then
+							player.nbDeath = player.nbDeath + 1
+							scoreDText.text = "-"..player.nbDeath
+							isDead = true
+							-- local revive = function()
+							-- 	isDead = false
+							-- end
+							--timer.performWithDelay( 3000, revive )
+						end
+
+					else
+						
+					end
+				elseif player_id == player.id  then
+					isDead = false
+				end
+				
 			end
-			
+		else
+			removeScoreDisplay()
 		end
-
-
-	else
-		removeScoreDisplay()
 	end
-end
 
-net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
--- print ("Received player update from server: " .. json.encode(json_obj))
+	net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
+	-- print ("Received player update from server: " .. json.encode(json_obj))
 
-if (json_obj.data ~= nil) then 	
+		if (json_obj.data ~= nil) then 	
 
 			-- Show the ranking
 			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
@@ -310,11 +299,6 @@ if (json_obj.data ~= nil) then
 
 				local prev =math.huge
 				for i,j in pairs (json_obj.data[NETWORK_GAME_RANKING]) do
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID])
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH])
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL])
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS])
-					
 					if (((int)<scoreDisplay.contentHeight) or (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id)) then
 						if (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS] == prev) then
 							local tempR = rank-1
@@ -339,24 +323,17 @@ if (json_obj.data ~= nil) then
 						
 					end
 				end
-
-				--timer.performWithDelay( 3000, removeScoreDisplay , 1 )
 			end
 			player.nbDeath = 0
 			scoreDText.text = "-"..player.nbDeath
 			player.nbKill = 0
 			scoreKText.text = " / +"..player.nbKill
-
-
 		end
 	end
 	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener("tap", moveObject)	
-		--timerId = timer.performWithDelay( 1000, updateTime , -1 )
-
-
-	end
+end
 
 -- local function myTapListener( event )
 
