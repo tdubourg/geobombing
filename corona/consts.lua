@@ -68,6 +68,9 @@ PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
 			FRAMETYPE_PLAYER_DISCONNECT = "gone"
 		end
 
+	-- player name
+	NETWORK_NAME = "name"
+
 	-- ranking
 	FRAMETYPE_GAME_END = "end"
 	NETWORK_GAME_RANKING = "ranking"
