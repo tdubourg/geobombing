@@ -9,7 +9,7 @@ var net = require('./network')
 
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 50
-var MOVE_REFRESH_PERIOD = 50
+var MOVE_REFRESH_PERIOD = 100
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
