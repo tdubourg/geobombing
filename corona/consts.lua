@@ -82,7 +82,7 @@ ZOOM = 2000
 	TYPEPOINT = "topLeftPoint"
 
 	-- time remaining
-	NETWORK_TIME = "tr"
+	NETWORK_REMAINING_TIME = "tr"
 
 	-- number of kills
 	NETWORK_KILLS = "k"

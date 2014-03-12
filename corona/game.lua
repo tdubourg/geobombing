@@ -103,10 +103,6 @@ function update_player_position(id, pos_obj )
 	movePlayerById(id, arcP)
 end
 
-function update_player_state( state_obj )
-	-- TODO
-end
-
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 
@@ -219,43 +215,43 @@ function initGame(player_id)
 				local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 				local dead = json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY]
 				local kills = json_obj.data[NETWORK_RANKING_NB_KILL]
+				local player_id = tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
 
+				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
+				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS
+				dbg(NETW_DBG_MODE, {"timestamp frame=", t})
+				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
+				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", t - discard_timestamp_limit})
+				-- Frame too old and does not contain information we want to read even if old ? Discard it!
+				if (
+					    (t - discard_timestamp_limit) < 0 -- old enough
+					and dead == nil and kills == nill -- no important info in the frame
+					and not NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
+				) then				
+					dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
+					return -- and end the function
+				end
 				-- The position has to be updated
 				if (pos ~= nil) then
-					local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
-					local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS
-					dbg(NETW_DBG_MODE, {"timestamp frame=", t})
-					dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
-					dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", t - discard_timestamp_limit})
-					-- If we do not want to discard it...
-					if ((t - discard_timestamp_limit) > 0 or state ~= nil or not NETW_DISCARD_PU_OPTIMIZATION) then				
-						-- Then take it into account!
-						update_player_position(
-							json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
-							json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-							)
-					else
-						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
-					end
+					-- Then take it into account!
+					update_player_position(
+						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
+						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
+					)
 				end
 
-				if (state ~= nil) then
-					update_player_state(json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY])
+				if (json_obj.data[NETWORK_REMAINING_TIME] ~= nil) then
+					time = json_obj.data[NETWORK_REMAINING_TIME]
+					timeText.text = "Temps restant: " .. time
 				end
-				if (json_obj.data[NETWORK_TIME] ~= nil) then
-					time = json_obj.data[NETWORK_TIME]
-					timeText.text = "Temps restant: ".. time
-					--print("time"..time)
-				end
-				if (json_obj.data[NETWORK_KILLS] ~= nil and tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id) then
-					--print("KILLLL",json_obj.data[NETWORK_KILLS])
+
+				if (kills ~= nil and tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id) then
 					player.nbKill = json_obj.data[NETWORK_KILLS]
 					scoreKText.text = " / +"..player.nbKill
 				end
-					--handling self death
-				if json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY] then
-
-					if tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id then
+				--handling self death
+				if dead then
+					if player_id == player.id then
 						--print("Youhou0", isDead)
 						-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
 						if (isDead == false) then
@@ -305,11 +301,6 @@ function initGame(player_id)
 
 				local prev =math.huge
 				for i,j in pairs (json_obj.data[NETWORK_GAME_RANKING]) do
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID])
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_DEATH])
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_NB_KILL])
-					--print (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS])
-					
 					if (((int)<scoreDisplay.contentHeight) or (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id)) then
 						if (json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_POINTS] == prev) then
 							local tempR = rank-1
@@ -334,8 +325,6 @@ function initGame(player_id)
 						
 					end
 				end
-
-				--timer.performWithDelay( 3000, removeScoreDisplay , 1 )
 			end
 			player.nbDeath = 0
 			scoreDText.text = "-"..player.nbDeath
@@ -346,7 +335,6 @@ function initGame(player_id)
 	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener("tap", moveObject)	
-		--timerId = timer.performWithDelay( 1000, updateTime , -1 )
 end
 
 -- local function myTapListener( event )
