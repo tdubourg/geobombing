@@ -22,7 +22,8 @@
 --  phase = ended when the animation ends (not on the last frame, but after it)
 --
 -----------------------------------------------------------------------------------------
-
+require "utils"
+require "consts"
 local utils = require("lib.ecusson.Utils")
 local vec2 = require("lib.ecusson.math.vec2")
 local EcussonDisplayObject = require("lib.ecusson.internal.EcussonDisplayObject")
@@ -81,7 +82,7 @@ end
 --  sheetName: The sheet to load
 function Class.loadSheet(sheetName)
 	if not spritesheets[sheetName] then
-		print("[Sprite] Load spriteSheet   "..sheetName)
+		dbg(ERRORS, {"[Sprite] Load spriteSheet   "..sheetName})
 		-- Load sprite sheet data (either with getSheet method or getSpriteSheetData)
 		local dataFile = require(datapath..sheetName)
 		local sheetInfo = dataFile.getSheet and dataFile:getSheet() or dataFile.getSpriteSheetData()
@@ -202,7 +203,7 @@ end
 --  sheetName: The sheet to unload
 function Class.unloadSheet(sheetName)
 	if spritesheets[sheetName] then
-		print("[Sprite] Unload spriteSheet "..sheetName)
+		dbg(ERRORS, {"[Sprite] Unload spriteSheet "..sheetName})
 
 		for setId, sprites in pairs(animationData[sheetName]) do
 			sets[setId] = nil
@@ -419,8 +420,7 @@ function Class:pause()
 	if self._displayObject.pause then
 		self._displayObject:pause()
 	else
-		print("[Ecusson:Sprite] Impossible to pause sprite "..self.spriteSet..":"..self.animation..
-			", display object does not exists")
+		dbg(ERRORS, {"[Ecusson:Sprite] Impossible to pause sprite "..self.spriteSet..":"..self.animation..", display object does not exists"})
 	end
 end
 

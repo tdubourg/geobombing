@@ -5,38 +5,38 @@ local locationHandler = function( event )
 	-- Check for error (user may have turned off Location Services)
 	if event.errorCode then
 		native.showAlert( "GPS Location Error", event.errorMessage, {"OK"} )
-		print( "Location error: " .. tostring( event.errorMessage ) )
+		dbg( INFO, {"Location error: " .. tostring( event.errorMessage ) })
 	else
 		local latitudeText = string.format( '%.4f', event.latitude )
-		print ("Inside", latText)
+		dbg (INFO, {"Inside", latText})
 		currentLatitude = latitudeText
-		print ("Lat", latitudeText )
+		dbg (INFO, {"Lat", latitudeText })
 		-- display.newText(latitudeText, 0, 10, "Helvetica", 18 )
 
 		local longitudeText = string.format( '%.4f', event.longitude )
 		currentLongitude = longitudeText
-		print ("Lat",  longitudeText )
+		dbg (INFO, {"Lat",  longitudeText })
 		-- display.newText(longitudeText, 0, 30, "Helvetica", 18 )
 
 		local altitudeText = string.format( '%.3f', event.altitude )
-		print ("Altitude",  altitudeText )
+		dbg (INFO, {"Altitude",  altitudeText })
 		-- display.newText(altitudeText, 0, 50, "Helvetica", 18 )
 
 		local accuracyText = string.format( '%.3f', event.accuracy )
-		print ("Accuracy",  accuracyText )
+		dbg (INFO, {"Accuracy",  accuracyText })
 		-- display.newText(accuracyText, 0, 70, "Helvetica", 18 )
 
 		local speedText = string.format( '%.3f', event.speed )
-		print ("Speed",  speedText )
+		dbg (INFO, {"Speed",  speedText })
 		-- display.newText(speedText, 0, 90, "Helvetica", 18 )
 
 		local directionText = string.format( '%.3f', event.direction )
-		print ("Dir",  directionText )
+		dbg (INFO, {"Dir",  directionText })
 		-- display.newText(directionText, 0, 110, "Helvetica", 18 )
 
 		-- Note: event.time is a Unix-style timestamp, expressed in seconds since Jan. 1, 1970
 		local timeText = string.format( '%.0f', event.time )
-		print ("Time",  timeText )
+		dbg (INFO, {"Time",  timeText })
 		-- display.newText(timeText, 0, 130, "Helvetica", 18 )
 	end
 end

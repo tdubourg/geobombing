@@ -39,7 +39,7 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
 			local uid = tostring(node[JSON_NODE_UID])
 
 			if self.nodesByUID[uid] ~= nil then
-			 print ("WARNING: node uid: ".. uid .." is not unique!")
+			 dbg (INFO, {"WARNING: node uid: ".. uid .." is not unique!"})
 		 end
 
 		 self.nodesByUID[uid] = Node:new(x, y , uid, self)
@@ -62,7 +62,7 @@ function Map:new(luaMap) -- luaMap = nil  ->  build dummy map
 		end
 	else
 	--dummy map
-	print "loading dummy map"
+	dbg(INFO, {"loading dummy map"})
 
 	self.nodesByUID["1"] = Node:new(0, 0, "1", self)
 	self.nodesByUID["2"] = Node:new(0, 1, "2", self)

@@ -42,7 +42,7 @@ local Player = {}
 
 function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	local self = utils.extend(Player)
-	print ( "Creating player... " )
+	dbg (INFO, {"Creating player... "})
 	--Player name / speed / number of death
 	self.id = pId
 	self.speed = pSpeed or 0.2
@@ -60,7 +60,6 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 
 	self.currentAnimString = "downstand"
 
-	print ("worldToScreen:", camera:worldToScreen(self.pos).x, camera:worldToScreen(self.pos).y)
 	self.sprite = CameraAwareSprite.create {
 		spriteSet = "man",
 		animation = self.currentAnimString,
@@ -144,8 +143,6 @@ end
 function Player:saveNewNodes(nodes, arcP)
 	self.nodes=nodes
 	self.arcPDest=arcP
-	-- print( self.nodes[1].pos.x .. ", " .. self.nodes[1].pos.y .. " ." )
-	-- print( self.nodes[2].pos.x .. ", " .. self.nodes[2].pos.y .. " ." )
    -- self.saveNewDestination(self.nodes[1])
    if (nodes~=nil) then
 		self.nodesI=1
@@ -154,7 +151,6 @@ function Player:saveNewNodes(nodes, arcP)
 		self.toX=self.nodes[1].pos.x
 		self.toY=self.nodes[1].pos.y
 		self.nodeTo=nodes[1]
-		print(self.nodeFrom.uid .. "to" .. self.nodeTo.uid)
    else
 		self.nodesI=0
 		self.nodesMax=0
@@ -235,15 +231,15 @@ end
 
 function Player:upCurrentArc(from, to)
 	if (from == nil) then
-		print ("from == nil")
+		dbg (INFO, {"from == nil"})
 	elseif (to == nil) then
-		print ("to == nil")
+		dbg (INFO, {"to == nil"})
 	elseif (from == to) then
-		print ("from == to") 
-		print (from.uid .."  à " .. to.uid)
+		dbg (INFO, {"from == to"})
+		dbg (INFO, {from.uid .."  à " .. to.uid})
 	elseif (from.arcs[to] == nil) then
-		print ("from.arc[to] == nil") 
-		print (from.uid .."  à " .. to.uid)
+		dbg (INFO, {"from.arc[to] == nil"})
+		dbg (INFO, {from.uid .."  à " .. to.uid})
 	else 
 		local dist = Vector2D:Dist(from.pos,self.pos)
 		self.arcPCurrent.arc=from.arcs[to]
@@ -264,8 +260,6 @@ function Player:goToAR(arcP)
 	self.toX=destination.x
 	self.toY=destination.y
 	self.arcPDest = nil
-	print("ICI")
-	
 end
 
 function Player:setAR(arcP)
@@ -313,7 +307,7 @@ function Player:getCurrentStreetName()
 end
 
 function Player:destroy()
-	print "player:destroy()"
+	dbg (ERRORS, {"player:destroy()"})
 	self.sprite:destroy()
 end
 

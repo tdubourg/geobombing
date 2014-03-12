@@ -122,6 +122,7 @@ NETW_DISCARD_PU_OPTIMIZATION = true
 -- GAMEPLAY
 
 ERRORS = true -- enables or disables displaying errors on stdout
+INFO = true -- INFO traces
 BOMB_DBG_MODE = false
 NETW_DBG_MODE = false
 NETW_DUMP_MODE = false

@@ -99,10 +99,7 @@ function showScore()
 end
 
 function update_player_position(id, pos_obj )
-	--print ( "TOTO")
-	--print (pos_obj.n1, pos_obj.n2, pos_obj.c)
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
-	--print ('arcP returned is', arcP)
 	movePlayerById(id, arcP)
 end
 
@@ -171,9 +168,8 @@ local updateLoop = function( event )
 			else
 				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
 				if (nodes == nil) then -- FIXME!
-					print "WHAT?! WTF?"
+					dbg(ERRORS, {"WHAT?! WTF?"})
 				else
-					--print(from.uid .. "<--- from")	
 					if (nodes[1] == from) then
 						if (player.arcPCurrent.arc.end1 == from) then
 						player.nodeFrom=player.arcPCurrent.arc.end2
@@ -191,7 +187,7 @@ local updateLoop = function( event )
 			--player:saveNewNodes(nodes,arcP)
 		end
 	else
-		print("arcP == nil") 
+		dbg(ERRORS, {"arcP == nil"})
 	end
 end
 end
@@ -288,10 +284,7 @@ function initGame(player_id)
 	end
 
 	net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
-	-- print ("Received player update from server: " .. json.encode(json_obj))
-
 		if (json_obj.data ~= nil) then 	
-
 			-- Show the ranking
 			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
 				rankOn = true
@@ -317,10 +310,8 @@ function initGame(player_id)
 							plScore.yScale = 0.5
 							plScore.x =  scoreDisplay.contentWidth/ 2;
 							plScore.y =  int;
-							--print(json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID],player.id,json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID] == player.id)
 							if (tostring(json_obj.data[NETWORK_GAME_RANKING][i][NETWORK_RANKING_ID]) == player.id) then
 								plScore:setFillColor(0, 0, 1 )
-								--print("la")
 							else
 								plScore:setFillColor(0, 0, 0 )
 							end
@@ -366,20 +357,17 @@ function scene:enterScene( event )
 	gui.initGUI()
 	
 	-- connect to server
-	print "create scene"
 	local result = net.connect_to_server(SERVER_IP_ADDR, SERVER_PORT)
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 		dbg(Y,{"HANDLER"})
 		if (json_obj.data ~= nil) then
 			if (json_obj.data[NETWORK_TIME] ~= nil) then
-				print(json_obj.data[NETWORK_TIME])
 				gameTime =10
 				time = json_obj.data[NETWORK_TIME]
 			end
 
 			NETWORK_KEY = json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY]
-			print ("SENT KEY=", json_obj[JSON_FRAME_DATA][NETWORK_INIT_KEY_KEY])
 
 			local luaMap = json_obj[JSON_FRAME_DATA][NETWORK_INIT_MAP_KEY]
 			if (currentMap) then currentMap:destroy() end
@@ -396,7 +384,7 @@ function scene:enterScene( event )
 	end
 
 	if result then
-		print ( "!!CONNECTED!!" )
+		dbg (INFO, {"!!CONNECTED!!"} )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
 			local strid = tostring(json_obj.data.id)
 			local playerObj = others[strid]
@@ -405,10 +393,9 @@ function scene:enterScene( event )
 				others[strid] = nil
 			end
 		end
-		print "GPS pos"
 		net.sendGPSPosition()
 	else
-		print ("Could no connect to server")
+		dbg (ERRORS, {"Could no connect to server"} )
 		currentMap = Map:new(nil)
 		initGame("1")
 		player:refresh()

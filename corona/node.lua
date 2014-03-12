@@ -18,13 +18,6 @@ function Node:new(worldX, worldY, uid, map)  -- The constructor
 		circle:setFillColor( 1, 0, 0 )
 		camera:addListener(self)
 	end
-
-
-	-- if nodesByUID[uid] ~= nil then
-	-- 	print ("WARNING: node uid: ".. uid .." is not unique!")
-	-- end
-	-- nodesByUID[uid] = self;
-
 	setmetatable(self, { __index = Node })  -- Inheritance
 	return self
 end

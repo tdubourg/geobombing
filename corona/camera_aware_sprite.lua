@@ -19,7 +19,6 @@ local CameraAwareSprite = utils.extend(Super)
 function CameraAwareSprite.create(options)
 	local self = utils.extend(CameraAwareSprite) -- just an instanciation
 	self.name = options.spriteSet
-	-- print ("CameraAwareSprite.create", self.name, "self.worldPosition", self.worldPosition.x, self.worldPosition.y)
 	Super.super(self, options)
 	camera:addListener(self)
 
@@ -28,10 +27,7 @@ function CameraAwareSprite.create(options)
 end
 
 function CameraAwareSprite:redraw( zoomChange )
-	--print ("CameraAwareSprite:redraw() of ", self.name)
-	--print ("sprite world pos", self.worldPosition.x, self.worldPosition.y)
 	local newPos = camera:worldToScreen(self.worldPosition)
-	--print ("sprite newPos", newPos, newPos.x, newPos.y)
 	Super.setPosition(self, newPos)
 end
 
@@ -41,7 +37,6 @@ function CameraAwareSprite:destroy( options )
 end
 
 function CameraAwareSprite:setPosition( position )
-	-- print ("setPosition() of sprite", self.name, "is being executed with param position=", position.x, position.y)
 	self.worldPosition = camera:screenToWorld(position)
 	if (self:getDisplayObject() ~= nil) then
 		self:redraw()
@@ -49,7 +44,6 @@ function CameraAwareSprite:setPosition( position )
 end
 
 function CameraAwareSprite:setWorldPosition( position )
-	-- print ("setWorldPosition() of sprite", self.name, "is being executed with param position=", position.x, position.y)
 	self.worldPosition = position
 	if (self:getDisplayObject() ~= nil) then
 		self:redraw()
