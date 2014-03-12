@@ -209,7 +209,11 @@ function initGame(player_id)
 		if (not rankOn) then
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
-				local updates = json_obj.data["pl"]
+				local updates = json_obj.data[NETWORK_PLAYER_UPDATE_PLAYERS_KEY]
+
+				if (updates == nil) then
+					return
+				end
 
 				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
 				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS
