@@ -84,6 +84,7 @@ PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
 
 	-- time remaining
 	NETWORK_REMAINING_TIME = "tr"
+	NETWORK_PLAYER_UPDATE_PLAYERS_KEY = "pl"
 
 	-- number of kills
 	NETWORK_KILLS = "k"
