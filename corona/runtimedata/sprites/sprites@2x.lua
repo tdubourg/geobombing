@@ -16,472 +16,472 @@ SheetInfo.sheet =
     
         {
             -- bombButton
-            x=928,
-            y=272,
+            x=464,
+            y=136,
+            width=128,
+            height=128,
+
+        },
+        {
+            -- bombButton2
+            x=264,
+            y=360,
             width=256,
             height=256,
 
         },
         {
-            -- bombButton2
-            x=528,
-            y=720,
-            width=512,
-            height=512,
-
-        },
-        {
             -- bombButton3
             x=0,
-            y=624,
-            width=512,
-            height=512,
+            y=312,
+            width=256,
+            height=256,
 
         },
         {
             -- bomb_idle
-            x=1104,
-            y=544,
-            width=32,
-            height=32,
+            x=552,
+            y=272,
+            width=16,
+            height=16,
 
         },
         {
             -- bombe_idle_01
-            x=1232,
-            y=1680,
-            width=160,
-            height=160,
+            x=616,
+            y=840,
+            width=80,
+            height=80,
 
         },
         {
             -- bombe_idle_02
-            x=1056,
-            y=1856,
-            width=160,
-            height=160,
+            x=528,
+            y=928,
+            width=80,
+            height=80,
 
         },
         {
             -- bombec_idle_01
-            x=1056,
-            y=1680,
-            width=160,
-            height=160,
+            x=528,
+            y=840,
+            width=80,
+            height=80,
 
         },
         {
             -- bombec_idle_02
-            x=880,
-            y=1776,
-            width=160,
-            height=160,
+            x=440,
+            y=888,
+            width=80,
+            height=80,
 
         },
         {
             -- explo_idle_01
-            x=704,
-            y=1776,
-            width=160,
-            height=160,
+            x=352,
+            y=888,
+            width=80,
+            height=80,
 
         },
         {
             -- explo_idle_02
-            x=880,
-            y=1600,
-            width=160,
-            height=160,
+            x=440,
+            y=800,
+            width=80,
+            height=80,
 
         },
         {
             -- explo_idle_03
-            x=704,
-            y=1600,
-            width=160,
-            height=160,
+            x=352,
+            y=800,
+            width=80,
+            height=80,
 
         },
         {
             -- man_death_01
-            x=528,
-            y=1856,
-            width=160,
-            height=160,
+            x=264,
+            y=928,
+            width=80,
+            height=80,
 
         },
         {
             -- man_death_02
-            x=528,
-            y=1680,
-            width=160,
-            height=160,
+            x=264,
+            y=840,
+            width=80,
+            height=80,
 
         },
         {
             -- man_downstand_01
-            x=352,
-            y=1856,
-            width=160,
-            height=160,
+            x=176,
+            y=928,
+            width=80,
+            height=80,
 
         },
         {
             -- man_downstand_02
-            x=352,
-            y=1856,
-            width=160,
-            height=160,
+            x=176,
+            y=928,
+            width=80,
+            height=80,
 
         },
         {
             -- man_downwalk_01
-            x=352,
-            y=1680,
-            width=160,
-            height=160,
+            x=176,
+            y=840,
+            width=80,
+            height=80,
 
         },
         {
             -- man_downwalk_02
-            x=176,
-            y=1856,
-            width=160,
-            height=160,
+            x=88,
+            y=928,
+            width=80,
+            height=80,
 
         },
         {
             -- man_leftstand_01
-            x=176,
-            y=1680,
-            width=160,
-            height=160,
+            x=88,
+            y=840,
+            width=80,
+            height=80,
 
         },
         {
             -- man_leftstand_02
-            x=352,
-            y=1504,
-            width=160,
-            height=160,
+            x=176,
+            y=752,
+            width=80,
+            height=80,
 
         },
         {
             -- man_leftwalk_01
-            x=176,
-            y=1504,
-            width=160,
-            height=160,
+            x=88,
+            y=752,
+            width=80,
+            height=80,
 
         },
         {
             -- man_leftwalk_02
             x=0,
-            y=1856,
-            width=160,
-            height=160,
+            y=928,
+            width=80,
+            height=80,
 
         },
         {
             -- man_leftwalk_03
             x=0,
-            y=1504,
-            width=160,
-            height=160,
+            y=752,
+            width=80,
+            height=80,
 
         },
         {
             -- man_leftwalk_04
             x=0,
-            y=1856,
-            width=160,
-            height=160,
+            y=928,
+            width=80,
+            height=80,
 
         },
         {
             -- man_rightstand_01
             x=0,
-            y=1680,
-            width=160,
-            height=160,
+            y=840,
+            width=80,
+            height=80,
 
         },
         {
             -- man_rightstand_02
-            x=1232,
-            y=1504,
-            width=160,
-            height=160,
+            x=616,
+            y=752,
+            width=80,
+            height=80,
 
         },
         {
             -- man_rightwalk_01
-            x=1056,
-            y=1504,
-            width=160,
-            height=160,
+            x=528,
+            y=752,
+            width=80,
+            height=80,
 
         },
         {
             -- man_rightwalk_02
-            x=880,
-            y=1424,
-            width=160,
-            height=160,
+            x=440,
+            y=712,
+            width=80,
+            height=80,
 
         },
         {
             -- man_rightwalk_03
-            x=704,
-            y=1424,
-            width=160,
-            height=160,
+            x=352,
+            y=712,
+            width=80,
+            height=80,
 
         },
         {
             -- man_rightwalk_04
-            x=880,
-            y=1424,
-            width=160,
-            height=160,
+            x=440,
+            y=712,
+            width=80,
+            height=80,
 
         },
         {
             -- man_upstand_01
-            x=528,
-            y=1424,
-            width=160,
-            height=160,
+            x=264,
+            y=712,
+            width=80,
+            height=80,
 
         },
         {
             -- man_upstand_02
-            x=352,
-            y=1328,
-            width=160,
-            height=160,
+            x=176,
+            y=664,
+            width=80,
+            height=80,
 
         },
         {
             -- man_upwalk_01
-            x=176,
-            y=1328,
-            width=160,
-            height=160,
+            x=88,
+            y=664,
+            width=80,
+            height=80,
 
         },
         {
             -- man_upwalk_02
             x=0,
-            y=1328,
-            width=160,
-            height=160,
+            y=664,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_death_01
-            x=1232,
-            y=1328,
-            width=160,
-            height=160,
+            x=616,
+            y=664,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_death_02
-            x=1056,
-            y=1328,
-            width=160,
-            height=160,
+            x=528,
+            y=664,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_downstand_01
-            x=1232,
-            y=1328,
-            width=160,
-            height=160,
+            x=616,
+            y=664,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_downstand_02
-            x=1232,
-            y=1328,
-            width=160,
-            height=160,
+            x=616,
+            y=664,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_downwalk_01
-            x=880,
-            y=1248,
-            width=160,
-            height=160,
+            x=440,
+            y=624,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_downwalk_02
-            x=704,
-            y=1248,
-            width=160,
-            height=160,
+            x=352,
+            y=624,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_leftstand_01
-            x=528,
-            y=1248,
-            width=160,
-            height=160,
+            x=264,
+            y=624,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_leftstand_02
-            x=352,
-            y=1152,
-            width=160,
-            height=160,
+            x=176,
+            y=576,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_leftwalk_01
-            x=176,
-            y=1152,
-            width=160,
-            height=160,
+            x=88,
+            y=576,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_leftwalk_02
             x=0,
-            y=1152,
-            width=160,
-            height=160,
+            y=576,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_leftwalk_03
-            x=1232,
-            y=1152,
-            width=160,
-            height=160,
+            x=616,
+            y=576,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_leftwalk_04
             x=0,
-            y=1152,
-            width=160,
-            height=160,
+            y=576,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_rightstand_01
-            x=1056,
-            y=1152,
-            width=160,
-            height=160,
+            x=528,
+            y=576,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_rightstand_02
-            x=1232,
-            y=976,
-            width=160,
-            height=160,
+            x=616,
+            y=488,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_rightwalk_01
-            x=1056,
-            y=976,
-            width=160,
-            height=160,
+            x=528,
+            y=488,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_rightwalk_02
-            x=1232,
-            y=800,
-            width=160,
-            height=160,
+            x=616,
+            y=400,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_rightwalk_03
-            x=1056,
-            y=800,
-            width=160,
-            height=160,
+            x=528,
+            y=400,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_rightwalk_04
-            x=1232,
-            y=800,
-            width=160,
-            height=160,
+            x=616,
+            y=400,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_upstand_01
-            x=1104,
-            y=624,
-            width=160,
-            height=160,
+            x=552,
+            y=312,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_upstand_02
-            x=928,
-            y=544,
-            width=160,
-            height=160,
+            x=464,
+            y=272,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_upwalk_01
-            x=1200,
-            y=448,
-            width=160,
-            height=160,
+            x=600,
+            y=224,
+            width=80,
+            height=80,
 
         },
         {
             -- manc_upwalk_02
-            x=1200,
-            y=272,
-            width=160,
-            height=160,
+            x=600,
+            y=136,
+            width=80,
+            height=80,
 
         },
         {
             -- play-button-startscreen-mouseover
-            x=928,
-            y=136,
-            width=456,
-            height=120,
+            x=464,
+            y=68,
+            width=228,
+            height=60,
 
         },
         {
             -- play-button-startscreen
-            x=928,
+            x=464,
             y=0,
-            width=456,
-            height=120,
+            width=228,
+            height=60,
 
         },
         {
             -- startscreen
             x=0,
             y=0,
-            width=912,
-            height=608,
+            width=456,
+            height=304,
 
         },
     },
     
-    sheetContentWidth = 1392,
-    sheetContentHeight = 2016
+    sheetContentWidth = 696,
+    sheetContentHeight = 1008
 }
 
 SheetInfo.frameIndex =

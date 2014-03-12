@@ -29,12 +29,90 @@ return {
 				foreground = {}
 			},
 
-			bonhomme = {
-				idle = {
-					frameCount = 8,
+			man = {
+				leftwalk = {
+					frameCount = 4,
 					period = 0.9
 					-- loopCount = 1
-				}
+				},
+				leftstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				rightwalk = {
+					frameCount = 4,
+					period = 0.9
+					-- loopCount = 1
+				},
+				rightstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				upwalk = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				upstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				downwalk = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				downstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+			},
+
+			manc = {
+				leftwalk = {
+					frameCount = 4,
+					period = 0.9
+					-- loopCount = 1
+				},
+				leftstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				rightwalk = {
+					frameCount = 4,
+					period = 0.9
+					-- loopCount = 1
+				},
+				rightstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				upwalk = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				upstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				downwalk = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
+				downstand = {
+					frameCount = 2,
+					period = 0.9
+					-- loopCount = 1
+				},
 			},
 
 			bomb = {
