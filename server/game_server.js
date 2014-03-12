@@ -13,7 +13,7 @@ var GAME_REFRESH_PERIOD = 100
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
-var SESSION_LENGHT = 180
+var SESSION_LENGHT = 300
 var PALMARES_SHOW_TIME = 10
 var session_time_remaining = SESSION_LENGHT
 var session = true

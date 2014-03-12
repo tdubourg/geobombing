@@ -17,9 +17,9 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	//////////////////////////////////
 	// FIXME !! (méthode agile)
 	//latitude = 4.8730; longitude = 45.7816
-	//latitude = 45.7816; longitude = 4.8730
+	latitude = 45.7816; longitude = 4.8730
 	//latitude = 41.9205551; longitude = 8.7361006
-	latitude = 45.7836925; longitude = 4.8714986
+	//latitude = 45.7836925; longitude = 4.8714986
 	//////////////////////////////////
 	
 	// if (conDB!) 
@@ -115,14 +115,11 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 function projectMap (leMap)
 {
 	for (var i = 0; i < leMap.length; i++)
-	for (var j = 0; j < leMap[i].length; j++) {
-		//var pt = t.MapTiles.project({lat: leMap[i][j][0], lng: leMap[i][j][1]})
-		// var pt = t.MapTiles.project({lng: leMap[i][j][0], lat: leMap[i][j][1]})
-		var pt = t.MapTiles.project({lat: leMap[i][j][1], lng: leMap[i][j][0]})
-		//console.log(pt)
-		// leMap[i][j] = [pt.y, pt.x]
-		leMap[i][j] = [pt.x, pt.y]
-	}
+		for (var j = 0; j < leMap[i].length; j++) 
+		{
+			var pt = t.MapTiles.project({lat: leMap[i][j][1], lng: leMap[i][j][0]})
+			leMap[i][j] = [pt.x, pt.y]
+		}
 	//console.log(leMap)
 	return leMap
 }
@@ -139,7 +136,7 @@ function trimMap(leMap, latitude, longitude, hauteur, largeur) {
 	for (var j = 0; j < leMap[i].length; j++) {
 		total++
 		if ( leMap[i][j][0] < longitude-largeur || leMap[i][j][0] > longitude+largeur
-		  && leMap[i][j][1] < latitude-hauteur  || leMap[i][j][1] > latitude+hauteur
+		  || leMap[i][j][1] < latitude-hauteur  || leMap[i][j][1] > latitude+hauteur
 		) {
 			trimmed++
 			leMap[i].splice(j, 1)
@@ -169,22 +166,47 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 	
 	// console.log(shiftX,shiftY)
 	// console.log(coeffX,coeffY)
-	var out = 0
-	leMap.forEach(function(road) {
-		road.forEach(function(p) {
+	var trimmed = 0, total = 0
+	// leMap.forEach(function(road) {
+	// 	road.forEach(function(p) {
 			
-			if (p[0] < t.MapTiles.sessionMapBounds.min.x
-				|| p[0] > t.MapTiles.sessionMapBounds.max.x)
-				// console.log("LOOOOL!!")
-				out++
+	// 		if (p[0] < t.MapTiles.sessionMapBounds.min.x
+	// 			|| p[0] > t.MapTiles.sessionMapBounds.max.x)
+	// 			// console.log("LOOOOL!!")
+	// 			out++
 			
+	// 		p[0] = (p[0]-shiftX)*coeffX
+	// 		p[1] = (p[1]-shiftY)*coeffY
+	// 	})
+	// })
+	
+	for (var i = 0; i < leMap.length; i++)
+	for (var j = 0; j < leMap[i].length; j++) {
+		total++
+		var p = leMap[i][j]
+		if (p[0] < t.MapTiles.sessionMapBounds.min.x
+		 || p[0] > t.MapTiles.sessionMapBounds.max.x
+		 || p[1] < t.MapTiles.sessionMapBounds.min.y
+		 || p[1] > t.MapTiles.sessionMapBounds.max.y
+		) {
+			trimmed++
+			leMap[i].splice(j, 1)
+			j--
+			// p[0] = 10
+			// p[1] = 0
+		} else {
 			p[0] = (p[0]-shiftX)*coeffX
 			p[1] = (p[1]-shiftY)*coeffY
-		})
-	})
+		}
+	}
 	
-	if (out > 0)
-		console.log("Warning: outlying points:", out)
+	// if (out > 0)
+	// 	console.log("Warning: outlying points:", out)
+	
+	console.log("Removed "+trimmed+" outlying points out of "+total)
+	
+	// FIXME: in practice this could produce empty roads if all
+	// points of the road lie out of the bounds
 	
 	return leMap
 }
@@ -270,9 +292,12 @@ function mapDataToJSon(mapData)
 
 
 
-function getInitialPosition() {
-	var position = common.CreatePosition(1, 2, 0.5);
-    return position;
+function getInitialPosition() 
+{
+	var x = Math.floor((Math.random()*6)+1)
+	var y = x + 1
+	var z = Math.random() 
+    return common.CreatePosition(x, y, z);
 }
 
 
