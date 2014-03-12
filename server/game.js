@@ -478,6 +478,7 @@ Game.prototype.newGame = function ()
 		p.deads = 0
 		p.kills = 0
 		p.points = 0
+		p.haskilled = false
 		p.respawn()
 	};
 	
