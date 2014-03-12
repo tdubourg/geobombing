@@ -19,8 +19,8 @@ var session_time_remaining = SESSION_LENGHT
 var session = true
 exports.session_time_remaining = session_time_remaining
 
-function streamKey(stream) {
-	//console.log(stream)
+function streamKey(stream) 
+{
 	/*
 	var a = stream.address()
 	return a.address+":" + a.port
@@ -30,7 +30,8 @@ function streamKey(stream) {
 
 var usedConKeys = []
 
-function Connexion(gserver, stream, player) {
+function Connexion(gserver, stream, player) 
+{
 	var that = this
 	
 	console.log("Connecting player " + player.name)//+", key "+)
@@ -48,45 +49,35 @@ function Connexion(gserver, stream, player) {
 	
 	// Unique randomized id gen for security
 	var cons = gserver.connexions
-	do {
-		this.conKey = Math.random().toString().substring(2);
-	//} while (!Object.keys(cons).reduce (
-	} while (!usedConKeys.reduce (
-		function(prev,currKey) {
-			//return prev && cons[currKey].conKey != that.conKey
+	do { this.conKey = Math.random().toString().substring(2); } 
+	while (!usedConKeys.reduce (
+		function(prev,currKey) 
+		{
 			return prev && currKey != that.conKey
 		}, true)
 	)
 	stream.id = this.conKey
-	console.log("Generated key for " + player.name + ":", this.conKey)
-	
+	console.log("Generated key for " + player.name + ":", this.conKey)	
 	gserver.connexions[streamKey(stream)/*==this.conKey*/] = this
 	usedConKeys.push(this.conKey)
 	
-	//gserver.playersByStream[stream] = player
-	
 	function disco()
 	{
-		if (that.open) {
+		if (that.open) 
+		{
 			console.log("Disconnecting player "+player.name)
 			that.open = false
 			delete gserver.connexions[streamKey(stream)]
 			player.remove()
-			gserver.notify(function(stream) {
+			gserver.notify(function(stream) 
+			{
 				fa.sendPlayerRemove(stream, player)
 			})
-		} else {
-			console.log("Player "+player.name+" is already disconnected")
-		}
-	}
-	
+		} else { console.log("Player "+player.name+" is already disconnected") }
+	}	
 	stream.addListener("end", disco)
-	stream.addListener("error", function(err) {
-		disco()
-	})
-	
+	stream.addListener("error", function(err) { disco() })	
 	this.open = true
-	
 	//gserver.connexions.push(this)
 }
 
@@ -127,16 +118,21 @@ function GameServer(game, tiles)
 	}, GAME_REFRESH_PERIOD)
 	
 	// Player network updates
-	setInterval(function() {
+	setInterval(function() 
+	{
 		if (sending_player_updates)
-		{
-			
+		{		
 			for (var conKey in that.connexions) 
 			{
 				var con = that.connexions[conKey]
-				game.players.forEach(function (player) 
+				/*game.players.forEach(function (player) 
 				{
 					fa.sendPlayerUpdate(con.stream, player);
+				})*/
+
+				game.players.forEach(function (player) 
+				{
+					fa.sendPlayersUpdate(con.stream, game.players);
 				})
 			}
 			
@@ -150,17 +146,16 @@ function GameServer(game, tiles)
 		{		
 			session_time_remaining--;
 			exports.session_time_remaining = session_time_remaining
-			//console.log("session_time_remaining: ", session_time_remaining)
 			if (session_time_remaining == 0)
 			{
 				console.log("fin de la partie")			
 				sending_player_updates = false
-				for (var p_id in that.respawnIntervalsByPlayerId) {
+				for (var p_id in that.respawnIntervalsByPlayerId) 
+				{
 					clearTimeout(that.respawnIntervalsByPlayerId[p_id])
 					delete that.respawnIntervalsByPlayerId[p_id]
 				}
-				//this.respawnIntervalsByPlayerId.length = 0
-				
+
 				// calculates palmares
 				game.players.sort(function(p1, p2){return p2.points<p1.points});
 				for (var conKey in that.connexions) 
@@ -205,7 +200,6 @@ GameServer.prototype.notifyBomb = function(bomb)
 GameServer.prototype.addPlayer = function(stream) 
 {
 	// TODO handle timeouts
-	
 	var p = new g.Player(this.game, stream)	
 	var c = new Connexion(this, stream, p)
 	return p
