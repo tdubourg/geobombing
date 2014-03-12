@@ -176,7 +176,6 @@ end
 
 
 function Player:refresh()
-
 	if(self.pos.x<= (self.toX+accepted_error) and self.pos.x>=(self.toX-accepted_error) and self.pos.y <=(self.toY+accepted_error) and  self.pos.y>=(self.toY-accepted_error)) then
 		self.currentState = PLAYER_FROZEN_STATE 
 		self.nodesI=self.nodesI+1
@@ -213,11 +212,9 @@ function Player:refresh()
 		self.pos:add(vectDir)
 		self:upCurrentArc(self.nodeFrom,self.nodeTo)
 
-		
-		dbg(Y,{self.dirString..self.animString})
 
-		self.sprite:redraw()    
-		self.colorSprite:redraw()    
+		-- self.sprite:redraw()    
+		-- self.colorSprite:redraw()    
 	end
 end
 

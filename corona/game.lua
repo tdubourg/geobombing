@@ -45,6 +45,10 @@ function movePlayerById(id,arcP)
 	end
 
 	daPlayer:setAR(arcP)
+	
+	if daPlayer == player then
+		camera:lookAt(player:getPos())
+	end
 end
 
 
@@ -109,15 +113,14 @@ function scene:createScene( event )
 end
 
 local updateLoop = function( event )
-if (btnBombClicked) then
-	btnBombClicked = false
-else
-	if (player ~=nil) then 
+	if (btnBombClicked) then
+		btnBombClicked = false
+	else
+		if (player ~=nil) then 
 
-		player:refresh()
-		camera:lookAt(player:getPos())
+			player:refresh()
+		end
 	end
-end
 
 		-- TODO: move this into GUI.lua
 		-- OPTIM: pull au lieu de fetch
