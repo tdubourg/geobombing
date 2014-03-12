@@ -229,8 +229,9 @@ function initGame(player_id)
 				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS
 				dbg(NETW_DBG_MODE, {"timestamp frame=", t})
 				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
+				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", t - discard_timestamp_limit})
 				-- If we do not want to discard it...
-				if (t >= discard_timestamp_limit  or state == nil or not NETW_DISCARD_PU_OPTIMIZATION) then				
+				if (t < discard_timestamp_limit or state == nil or not NETW_DISCARD_PU_OPTIMIZATION) then				
 					-- Then take it into account!
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
