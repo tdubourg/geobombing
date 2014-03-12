@@ -36,6 +36,9 @@ function array_concat(...)
 		return t
 end
 
+_G.print = function ( ... )
+	io.write( "Utiliser la fonction print tue des chatons, je vais utiliser dbg(const, {arg1, arg2, arg3} a la place.\n")
+end
 
 function array_insert(receivingArray, insertedArray)
 	for _,v in ipairs(insertedArray) do
