@@ -15,7 +15,8 @@
 --  Lazy loading of sounds
 --
 -----------------------------------------------------------------------------------------
-
+require "utils"
+require "consts"
 local utils = require("lib.ecusson.Utils")
 
 -----------------------------------------------------------------------------------------
@@ -139,7 +140,7 @@ end
 -- Parameters:
 --  soundId: The sound to load
 function Class.loadSound(soundId)
-	print("[Sound] load sound   "..soundId)
+	dbg(ERRORS, {"[Sound] load sound   "..soundId})
 
 	-- Load variations
 	local variations = {}
@@ -183,7 +184,7 @@ function Class.unloadSound(soundId)
 	local soundDefinition = sounds[soundId]
 
 	if soundDefinition.loaded then
-		print("[Sound] unload sound "..soundId)
+		dbg(ERRORS, {"[Sound] unload sound "..soundId})
 
 		for i = 1, #soundDefinition.variations do
 			audio.dispose(soundDefinition.variations[i].handle)
@@ -255,7 +256,7 @@ function Class.create(sound, options)
 	options = options or {}
 
 	if audio.freeChannels == 0 then
-		print("[Ecusson:Sound] Sound "..soundDefinition.name.." could not be played because all channels are in use.")
+		dbg(ERRORS, {"[Ecusson:Sound] Sound "..soundDefinition.name.." could not be played because all channels are in use."})
 	else
 		-- Determine which variation to play
 		local variationId = options.variation or random(#soundDefinition.variations)
@@ -346,7 +347,7 @@ end
 -- Warning: This does not free the channel
 function Class:pause()
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot pause a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot pause a media sound"})
 	elseif self.channel then
 		if self.timerId then
 			nativeTimer.pause(self.timerId)
@@ -359,7 +360,7 @@ end
 -- Resume the sound
 function Class:resume()
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot resume a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot resume a media sound"})
 	elseif self.channel then
 		if self.timerId then
 			nativeTimer.resume(self.timerId)
@@ -372,7 +373,7 @@ end
 -- Rewind the sound
 function Class:rewind()
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot rewind a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot rewind a media sound"})
 	elseif self.channel then
 		if self.isStream then
 			audio.rewind(self.handle)
@@ -390,7 +391,7 @@ end
 --  time: The time to seek, in seconds
 function Class:seek(time)
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot seek a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot seek a media sound"})
 	elseif self.channel then
 		audio.seek(time * 1000, {
 			channel = self.channel
@@ -405,7 +406,7 @@ end
 --  time: The time in seconds to fade the volume (default is nil, no fade)
 function Class:setVolume(options)
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot set the volume of a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot set the volume of a media sound"})
 	elseif self.channel then
 		self.volume = utils.extractValue(options.volume)
 
@@ -429,7 +430,7 @@ end
 --  pitch: The new pitch value
 function Class:setPitch(pitch)
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot change the pitch of a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot change the pitch of a media sound"})
 	else
 		al.Source(self.source, al.PITCH, utils.extractValue(pitch))
 	end
@@ -441,7 +442,7 @@ end
 --  value: The pan value, in [-1 ; 1]
 function Class:pan(value)
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot pan a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot pan a media sound"})
 	else
 		local radi = (-90 + ((1 + value) * -90)) * MATH_PI_180
 		al.Source(self.source, al.POSITION, sin(radi), cos(radi), 0)
@@ -454,7 +455,7 @@ end
 --  fadeOutTime: The time in seconds to fade out (default is nil, no fade)
 function Class:stop(fadeOutTime)
 	if self.isMedia then
-		print("[Ecusson:Sound] Error: Cannot stop a media sound")
+		dbg(ERRORS, {"[Ecusson:Sound] Error: Cannot stop a media sound"})
 	elseif self.channel then
 		if self.timerId then
 			nativeTimer.cancel(self.timerId)

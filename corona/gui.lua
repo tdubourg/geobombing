@@ -8,7 +8,6 @@ local net = require("network2")
 
 local function onBombBtnRelease()
 	if(not rankOn and not player.isDead) then
-		print("BOMB")
 		btnBombClicked = true
 		net.sendBombRequestToServer()
 	end
@@ -18,7 +17,6 @@ end
 
 local function onBombBtnDown()
 	if (not rankOn and not player.isDead ) then
-		print "BOMBDOWN"
 	end
 	return true	-- indicates successful touch, to avoid other layers to grab the tap event as well
 end

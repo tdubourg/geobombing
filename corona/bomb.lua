@@ -31,8 +31,6 @@ function Bomb.create(options)
 	self.type = options.type
 	self.power = options.power
 
-	-- print ("bomb options.arcPos", options.arcPos)
-
 	self.sprite = CameraAwareSprite.create {
 		spriteSet = "bomb",
 		animation = "idle",

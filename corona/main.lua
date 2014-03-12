@@ -9,7 +9,6 @@ displayMainGroup = display.newGroup( )
 net = require "network2"
 loc = require "location"
 consts = require "consts"
-print( loc )
 
 display.setDefault("magTextureFilter","nearest")
 

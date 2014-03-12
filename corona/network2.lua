@@ -20,7 +20,7 @@ function test_network()
 	local port = 3000
 	connect_to_server(ip, port)
 	if (not client) then
-		print ("Unable to connect to server...", ip, port)
+		dbg (ERRORS, {"Unable to connect to server...", ip, port})
 		return false
 	end
 	client:send("Bonjour!\n")
@@ -28,9 +28,6 @@ function test_network()
 
 	response_packet = receive_line() -- receive_until("\n")
 	client:close()
-
-	--print ("Serveur answered:", response_packet)
--- load scenetemplate.lua
 end
 
 function receive_line()
@@ -155,14 +152,10 @@ function sendBombRequestToServer(  )
 end
 
 function receivedBombUpdate( network_data )
-	if (BOMB_DBG_MODE) then
-		print ( "Received bomb update")
-	end
 	itemsManager:bombUpdate(network_data.data)
 end
-dbg(Y,{})
+
 function receivedGameEnd( network_data )
-	print ( "Received game end")
 	--itemsManager:gameEnd(network_data.data) -- todo
 end
 
@@ -257,13 +250,11 @@ function sendPathToServer( nodes, arcP )
 		-- 	--net_nodes[#net_nodes+1] = arcP.arc.end2.uid
 		-- 	--end
 		-- 	ratioEnd =1- arcP.progress
-		-- 	-- print ("ratioooooo" .. ratioEnd)
 		-- 	elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
 		-- 	--if (#net_nodes>1) then
 		-- 	--net_nodes[#net_nodes+1] = arcP.arc.end1.uid
 		-- 	--end
 		-- 	ratioEnd = arcP.progress
-		-- 	-- print ("ratioooooo 1-" .. ratioEnd)
 
 		-- 	else
 		-- 		print("error in sendPathToServer")

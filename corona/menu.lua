@@ -74,7 +74,7 @@ local function onKeyEvent( event )
 						storyboard.hideOverlay()
 				 else
 						local lastScene = storyboard.returnTo
-						print( "previous scene", lastScene )
+						DBG(INFO, {"previous scene", lastScene} )
 						if ( lastScene ) then
 							 storyboard.gotoScene( lastScene, { effect="crossFade", time=500 } )
 						else

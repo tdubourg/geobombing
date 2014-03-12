@@ -8,7 +8,8 @@
 -- Collection of utils functions.
 --
 -----------------------------------------------------------------------------------------
-
+require "utils"
+require "consts"
 local Class = {}
 
 -----------------------------------------------------------------------------------------
@@ -32,11 +33,11 @@ local currentId = 0
 -- Function replacing the destroy method after an object has been destroyed.
 -- If you see this message, it means you destroyed twice the same object.
 local function fakeDestroy()
-	print("[Warning] *X*X*X*X*X*X*X*X*X*X*X*")
-	print("[Warning] *X*                 *X*")
-	print("[Warning] *X*  Fake  Destroy  *X*")
-	print("[Warning] *X*                 *X*")
-	print("[Warning] *X*X*X*X*X*X*X*X*X*X*X*")
+	dbg(ERRORS, {"[Warning] *X*X*X*X*X*X*X*X*X*X*X*"})
+	dbg(ERRORS, {"[Warning] *X*                 *X*"})
+	dbg(ERRORS, {"[Warning] *X*  Fake  Destroy  *X*"})
+	dbg(ERRORS, {"[Warning] *X*                 *X*"})
+	dbg(ERRORS, {"[Warning] *X*X*X*X*X*X*X*X*X*X*X*"})
 end
 
 -----------------------------------------------------------------------------------------
@@ -235,7 +236,7 @@ function Class.printTable(var, name, iteration)
 		end
 
 		if type(var) ~= "table" then
-			print(name .. " = " .. tostring(var))
+			dbg(ERRORS, {name .. " = " .. tostring(var)})
 		else
 			-- for tables, recurse through children
 			for k, v in pairs(var) do
@@ -373,17 +374,17 @@ function Class.angleDifference(a, b)
 	return min(diff, 360 - diff)
 end
 
--- Print in the console the memory usage
+-- dbg ERRORS, {in the console the memory usag}e
 function Class.printMemory()
 	collectgarbage("collect")
 
-	print(" ")
-	print("------ MEMORY USAGE ------")
-	print(" FPS: "..display.fps)
-	print(" System memory:  "..string.format("%.00f", collectgarbage("count")).. " KB")
-	print(" Texture memory: "..string.format("%.02f", system.getInfo("textureMemoryUsed") / 1024 / 1024).." MB")
-	print("--------------------------")
-	print(" ")
+	dbg(ERRORS, {" "})
+	dbg(ERRORS, {"------ MEMORY USAGE ------"})
+	dbg(ERRORS, {" FPS: "..display.fps})
+	dbg(ERRORS, {" System memory:  "..string.format("%.00f", collectgarbage("count")).. " KB"})
+	dbg(ERRORS, {" Texture memory: "..string.format("%.02f", system.getInfo("textureMemoryUsed") / 1024 / 1024).." MB"})
+	dbg(ERRORS, {"--------------------------"})
+	dbg(ERRORS, {" "})
 end
 
 -----------------------------------------------------------------------------------------
