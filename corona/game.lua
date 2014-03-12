@@ -231,14 +231,14 @@ function initGame(player_id)
 				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
 				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", t - discard_timestamp_limit})
 				-- If we do not want to discard it...
-				if (t < discard_timestamp_limit or state == nil or not NETW_DISCARD_PU_OPTIMIZATION) then				
+				if ((t - discard_timestamp_limit) > 0 or state ~= nil or not NETW_DISCARD_PU_OPTIMIZATION) then				
 					-- Then take it into account!
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
 						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 						)
 				else
-					dbg(DISCARDED_PLAYER_UPDATES, {"DISCARDED player updated", json_obj.data})
+					dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
 				end
 			end
 
