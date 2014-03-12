@@ -143,7 +143,6 @@ end
 
 	local trans
 	function moveObject(e)
-		print "TAP HANDLER"
 		if(trans)then
 			transition.cancel(trans)
 		end
@@ -162,13 +161,11 @@ end
 			-- test
 			--movePlayerById(1, arcP)
 
-			print(arcP.arc.end1.uid .."/"..arcP.arc.end2.uid.."  ratio ".. arcP.progress)
 			if (arcP.progress<0) then
-				print (arcP.progress.." ERROR")
+				dbg (ERRORS, {arcP.progress.." ERROR"})
 			end
 			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
-			net.sendPathToServer(nil,arcP)
-				--player:saveNewNodes(nil,arcP)
+				net.sendPathToServer(nil,arcP)
 			else
 				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
 				if (nodes == nil) then -- FIXME!
@@ -245,9 +242,15 @@ function initGame(player_id)
 					timeText.text = "Temps restant: " .. time
 				end
 
-				if (kills ~= nil and player_id == player.id) then
-					player.nbKill = json_obj.data[NETWORK_KILLS]
-					scoreKText.text = " / +" .. player.nbKill
+				if (kills ~= nil) then
+					dbg(NETW_KILLS_DBG, {"Received the player_update with a kills key:", kills})
+					if (player_id == player.id) then
+						dbg(NETW_KILLS_DBG, {"And the player is me", kills})
+						player.nbKill = json_obj.data[NETWORK_KILLS]
+						scoreKText.text = " / +" .. player.nbKill
+					else
+						dbg(NETW_KILLS_DBG, {"But the player is not më, I am=", player.id, "and it is=", player_id})
+					end
 				end
 
 				--handling self death
