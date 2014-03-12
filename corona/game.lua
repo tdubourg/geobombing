@@ -221,7 +221,8 @@ function initGame(player_id)
 		if (json_obj.data ~= nil) then
 			-- There's some data to crunch
 			local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-			local state = json_obj.data[NETWORK_PLAYER_UPDATE_STATE_KEY]
+			local dead = json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY]
+			local kills = json_obj.data[NETWORK_RANKING_NB_KILL]
 
 			-- The position has to be updated
 			if (pos ~= nil) then
@@ -231,7 +232,7 @@ function initGame(player_id)
 				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
 				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", t - discard_timestamp_limit})
 				-- If we do not want to discard it...
-				if (t < discard_timestamp_limit or state == nil or not NETW_DISCARD_PU_OPTIMIZATION) then				
+				if (t < discard_timestamp_limit or state == nil or  or not NETW_DISCARD_PU_OPTIMIZATION) then				
 					-- Then take it into account!
 					update_player_position(
 						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
