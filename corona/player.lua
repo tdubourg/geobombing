@@ -292,6 +292,7 @@ function Player:setAR(arcP)
 	local newAnimString = self.dirString..self.animString
 	if (self.currentAnimString ~= newAnimString) then
 		self.sprite:play(newAnimString)
+		self.colorSprite:play(newAnimString)
 	end
 
 end
