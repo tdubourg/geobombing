@@ -33,11 +33,13 @@ end
 function receive_line()
 	local result
 	if (NETW_RECV_OPTIMIZATION) then
-		result = client:receive() -- with no parameter = receive a line
+		result, status, partial = client:receive() -- with no parameter = receive a line
 	else
 		result = receive_until(FRAME_SEPARATOR)
 	end
-	dbg(NETW_DBG_MODE, {result})
+	dbg(NETW_DBG_MODE, {"result=", result})
+	dbg(NETW_DBG_MODE, {"status=", status})
+	dbg(NETW_DBG_MODE, {"partial=", partial})
 	return result
 end
 
@@ -76,15 +78,16 @@ function _mrcv(connection)
 	local frameString, status = receive_line()-- receive_until(FRAME_SEPARATOR)
 
 	if frameString ~= nil then
-		--print ( "Received network data: " .. frameString)
 		local json_obj = json.decode(frameString)
 		if (json_obj ~= nil) then
 			if(not (type(json_obj) == "table")) then -- not valid json, probably
 				dbg(ERRORS, {"Received an invalid frame: ", json_obj})
 				return nil
 			end
+			dbg(NETW_DBG_MODE, {"json_obj.type=", json_obj.type})
 			local handler = net_handlers[json_obj.type]
-			if (handler ~=nil) then
+			dbg(NETW_DBG_MODE, {"Found handler", handler, "for this data"})
+			if (handler ~= nil) then
 				handler(json_obj)
 			end
 		end
