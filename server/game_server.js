@@ -116,18 +116,12 @@ function GameServer(game, tiles)
 		// Network updates
 		if (sending_player_updates)
 		{	
-			game.players.forEach(function (player) { // todo delete
-
-				for (var conKey in that.connexions) 
-				{
-					var con = that.connexions[conKey]
-					//fa.sendPlayersUpdate(con.stream, game.players);/******/	
-					fa.sendPlayerUpdate(con.stream, player);// todo delete	
-				}	
-				//game.players.forEach(function (player) { /**********/
-					player.haskilled = false 
-				//})// to stop sending number kills	/***********/
-			})// todo delete	
+			for (var conKey in that.connexions) 
+			{
+				var con = that.connexions[conKey]
+				fa.sendPlayersUpdate(con.stream, game.players);/******/	
+			}	
+			game.players.forEach(function (player) {player.haskilled = false })// to stop sending number kills		
 		}		
 	}, GAME_REFRESH_PERIOD)
 
