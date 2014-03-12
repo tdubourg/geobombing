@@ -15,7 +15,7 @@ var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
 var BOMB_POWER = .2
 var REDUCE_BOMB_POWER_AT_ANGLE = true
-var DEBUG_BOMBES = true
+var DEBUG_BOMBES = false
 
 /// MAP //////////////////////
 
