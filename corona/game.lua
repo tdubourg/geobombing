@@ -209,71 +209,77 @@ function initGame(player_id)
 		if (not rankOn) then
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
-				local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-				local dead = json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY]
-				local kills = json_obj.data[NETWORK_KILLS]
-				local player_id = tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
+				local updates = json_obj.data["pl"]
 
 				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
 				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS
+				local dt = t - discard_timestamp_limit
 				dbg(NETW_DBG_MODE, {"timestamp frame=", t})
 				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
-				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", t - discard_timestamp_limit})
-				-- Frame too old and does not contain information we want to read even if old ? Discard it!
-				if (
-					    (t - discard_timestamp_limit) < 0 -- old enough
-					and dead == nil and kills == nil -- no important info in the frame
-					and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
-				) then
-					dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
-					return -- and end the function
-				end
-				-- The position has to be updated
-				if (pos ~= nil) then
-					-- Then take it into account!
-					update_player_position(
-						json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY],
-						json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
-					)
-				end
+				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", dt})
 
-				if (json_obj.data[NETWORK_REMAINING_TIME] ~= nil) then
-					time = json_obj.data[NETWORK_REMAINING_TIME]
-					timeText.text = "Temps restant: " .. time
-				end
+				for k,v in pairs(updates) do
+					dbg(T, {"k=",k, "v=", v})
+					local dead = v[NETWORK_PLAYER_UPDATE_DEAD_KEY]
+					local kills = v[NETWORK_KILLS]
 
-				if (kills ~= nil) then
-					dbg(NETW_KILLS_DBG, {"Received the player_update with a kills key:", kills})
-					if (player_id == player.id) then
-						dbg(NETW_KILLS_DBG, {"And the player is me", kills})
-						player.nbKill = json_obj.data[NETWORK_KILLS]
-						scoreKText.text = " / +" .. player.nbKill
+					-- Frame too old and does not contain information we want to read even if old ? Discard it!
+					if (
+						    dt < 0 -- old enough
+						and dead == nil and kills == nil -- no important info in the frame
+						and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
+					) then
+						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
 					else
-						dbg(NETW_KILLS_DBG, {"But the player is not më, I am=", player.id, "and it is=", player_id})
-					end
-				end
-
-				--handling self death
-				if dead then
-					if player_id == player.id then
-						-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
-						if (isDead == false) then
-							player.nbDeath = player.nbDeath + 1
-							scoreDText.text = "-"..player.nbDeath
-							isDead = true
-							-- local revive = function()
-							-- 	isDead = false
-							-- end
-							--timer.performWithDelay( 3000, revive )
+						-- The position has to be updated
+						local pos = v[NETWORK_PLAYER_UPDATE_POS_KEY]
+						local player_id = tostring(v[NETWORK_PLAYER_UPDATE_ID_KEY])
+						if (pos ~= nil) then
+							-- Then take it into account!
+							update_player_position(
+								player_id,
+								pos
+							)
 						end
 
-					else
-						
+						if (json_obj.data[NETWORK_REMAINING_TIME] ~= nil) then
+							time = json_obj.data[NETWORK_REMAINING_TIME]
+							timeText.text = "Temps restant: " .. time
+						end
+
+						if (kills ~= nil) then
+							dbg(NETW_KILLS_DBG, {"Received the player_update with a kills key:", kills})
+							if (player_id == player.id) then
+								dbg(NETW_KILLS_DBG, {"And the player is me", kills})
+								player.nbKill = kills
+								scoreKText.text = " / +" .. player.nbKill
+							else
+								dbg(NETW_KILLS_DBG, {"But the player is not më, I am=", player.id, "and it is=", player_id})
+							end
+						end
+
+						--handling self death
+						if dead then
+							if player_id == player.id then
+								-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
+								if (isDead == false) then
+									player.nbDeath = player.nbDeath + 1
+									scoreDText.text = "-"..player.nbDeath
+									isDead = true
+									-- local revive = function()
+									-- 	isDead = false
+									-- end
+									--timer.performWithDelay( 3000, revive )
+								end
+
+							else
+								
+							end
+						elseif player_id == player.id  then
+							isDead = false
+						end
 					end
-				elseif player_id == player.id  then
-					isDead = false
 				end
-				
 			end
 		else
 			removeScoreDisplay()
