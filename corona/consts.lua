@@ -10,7 +10,7 @@ DISPLAY_MAP_ARCS = false
 DISPLAY_MAP_NODES = false
 
 ZOOM = 2000
-PERSPECTIVE_PROJ = 0.6 -- 1 for top-down, 0.4-0.6 for iso perspective
+PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
 
 -- JSON labels
 	-- protocol

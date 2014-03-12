@@ -79,10 +79,17 @@ function Node:transmitionCoef(fromNode, toNode)
 	v2:normalize()
 
 	local dot = v1:dot(v2)
-	-- return (dot+1)*0.5    -- [-v1..v1] => [0..1]
 
-	dot = math.max( dot, 0 )
-	return dot
+	-- return (dot+1)*0.5         -- [-v1..v1] => [0..1]
+
+	-- dot = math.max( dot, 0 )		-- [0..90] => [0..1]
+	-- return dot
+
+	if dot>0.2 then                 -- tout ou rien
+		return 1
+	else
+		return 0
+	end
 end
 
 function Node:destroy()
