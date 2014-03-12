@@ -31,6 +31,7 @@ local timeText
 local scoreDText
 local scoreKText
 local scoreGroup 
+local nameText
 rankOn = false
 
 function movePlayerById(id,arcP)
@@ -73,29 +74,37 @@ end
 
 function showScore()
 	-- Create a new text field to display the timer
-	timeText = display.newText("Temps restant: ".. time, 0, 0, native.systemFont, 16*2)
+	timeText = display.newText("Temps restant: ".. time, 0, 0,  native.systemFont, 40)
 	timeText.xScale = 0.5
 	timeText.yScale = 0.5
 	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
 	timeText.x =  display.contentWidth/ 2;
 	timeText.y =  display.contentHeight - 20;
-	timeText: setFillColor( 1,1,1 )
+	timeText: setFillColor( 0,0.7,0.5 )
 
-	scoreDText = display.newText("-"..player.nbDeath, 0, 0, native.systemFont, 16*2)
+	scoreDText = display.newText("-"..player.nbDeath, 0, 0,  native.systemFont, 40)
 	scoreDText.xScale = 0.5
 	scoreDText.yScale = 0.5
 	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
 	scoreDText.x =  60 -- display.contentWidth- 20--display.contentWidth;
 	scoreDText.y =  display.contentHeight - 20
-	scoreDText:setFillColor(1, 0, 0 )
+	scoreDText:setFillColor(0.7, 0.1, 0.1 )
 
-	scoreKText = display.newText(" / +"..player.nbKill, 0, 0, native.systemFont, 16*2)
+	scoreKText = display.newText(" / +"..player.nbKill, 0, 0,  native.systemFont, 40)
 	scoreKText.xScale = 0.5
 	scoreKText.yScale = 0.5
 	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
-	scoreKText.x =  90 -- display.contentWidth- 20--display.contentWidth;
+	scoreKText.x =  90 -- display.contentWidth- 20--display.contentWidth
 	scoreKText.y =  display.contentHeight - 20
-	scoreKText:setFillColor( 0, 1, 0 )
+	scoreKText:setFillColor( 0.1, 0.7, 0.1 )
+
+	nameText = display.newText("Nom : "..player.name, 0, 0,  native.systemFont, 40)
+	nameText.xScale = 0.5
+	nameText.yScale = 0.5
+	-- timeText:setReferencePoint(display.BottomLeftReferencePoint);
+	nameText.x =  display.contentWidth*(4/5)-- display.contentWidth- 20--display.contentWidth;
+	nameText.y =  20
+	nameText:setFillColor( 0.7, 0, 0.3 )
 end
 
 function update_player_position(id, pos_obj )
@@ -134,7 +143,7 @@ local updateLoop = function( event )
 			-- streetText:setFillColor( 0.7, 0, 0.3 )
 
 			if not streetText then
-				streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+				streetText = display.newText(name , 10, 10, native.systemFont, 20 )
 				streetText.anchorX = 0
 				streetText.anchorY = 0
 				streetText:setFillColor( 0.7, 0, 0.3 )
@@ -371,9 +380,10 @@ function scene:enterScene( event )
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 		dbg(Y,{"HANDLER"})
+		dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
 		if (json_obj.data ~= nil) then
 			if (json_obj.data[NETWORK_TIME] ~= nil) then
-				print(json_obj.data[NETWORK_TIME])
+				--print(json_obj.data[NETWORK_TIME])
 				gameTime =10
 				time = json_obj.data[NETWORK_TIME]
 			end
@@ -390,6 +400,11 @@ function scene:enterScene( event )
 	    tileBackground = TileBackground:new(luaTiles)
 
 			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
+			if (json_obj.data[NETWORK_NAME] ~= nil) then
+				dbg (GAME_DBG, {"name = ",json_obj.data[NETWORK_NAME] })
+				player.name = json_obj.data[NETWORK_NAME]
+				nameText.text = "Nom = "..player.name
+			end
 			player:refresh()
 			camera:lookAt(player:getPos())
 		end
