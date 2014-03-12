@@ -48,6 +48,7 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	self.speed = pSpeed or 0.2
 	self.nbDeath = pNDeath or 0
 	self.nbKill = 0
+	self.isDead = true
 
 	--Player current state : FROZEN / WALKING / DEAD
 	self.currentState = PLAYER_FROZEN_STATE 
@@ -124,6 +125,19 @@ function Player:getPos(  )
 	return self.pos
 end
 
+function Player:die()
+	self.sprite:play("death")
+	self.colorSprite:play("death")
+	self.isDead = true
+	return self
+end
+
+function Player:revive()
+	self.sprite:play("leftwalk")
+	self.colorSprite:play("leftwalk")
+	self.isDead = false
+	return self
+end
 
 function Player:saveNewNodes(nodes, arcP)
 	self.nodes=nodes
