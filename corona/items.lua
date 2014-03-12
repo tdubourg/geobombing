@@ -43,11 +43,6 @@ function ItemsManager:bombUpdate( bomb_data )
 		dbg(BOMB_DBG_MODE, {"Explosion on bomb", bomb.id})
 		bomb:explode()
 	end
-
-	-- timer.performWithDelay(EXPLOSION_DELAY, function ()
-	-- 	newBomb:explode()			
-	-- end)
-	-- self.itemsDispGroup:insert(newBomb)
 end
 
 function ItemsManager:destroy(  )
