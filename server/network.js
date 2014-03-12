@@ -5,9 +5,11 @@ var FRAME_SEPARATOR = "\n"
 var decode_frame = function (frame_string) 
 {
 	var decoded_frame;
-	try {
+	try 
+	{
 		decoded_frame = JSON.parse(frame_string); // deserialization JSON
-	} catch (e) {
+	} catch (e) 
+	{
 		console.error("Error parsing JSON for frame:", frame_string)
 		decoded_frame = {type: "unknown", data: frame_string};
 	}
@@ -28,6 +30,8 @@ var TYPEPLAYERKILLS = "pkills" // number of people killed by the player
 var TYPEPLAYERPOINTS = "ppoints" // number of points of the player
 
 var TYPEPLAYERUPDATE = "pu" // new position, new death, new points
+var TYPEPLAYERSUPDATE = "pu" // new position, new death, new points for all players
+var TYPEPLAYERS = "pl" // players
 var TYPETIMESTAMP  = "ts"
 var TYPEID = "id"
 var TYPEKEY = "key"
@@ -56,6 +60,8 @@ exports.TYPEPLAYERPOINTS = TYPEPLAYERPOINTS
 
 exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
 exports.TYPETIMESTAMP  = TYPETIMESTAMP 
+exports.TYPEPLAYERSUPDATE = TYPEPLAYERSUPDATE
+exports.TYPEPLAYERS = TYPEPLAYERS
 exports.TYPEID = TYPEID
 exports.TYPEKEY = TYPEKEY
 exports.TYPEPOS = TYPEPOS
