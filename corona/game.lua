@@ -214,7 +214,7 @@ function initGame(player_id)
 				-- There's some data to crunch
 				local pos = json_obj.data[NETWORK_PLAYER_UPDATE_POS_KEY]
 				local dead = json_obj.data[NETWORK_PLAYER_UPDATE_DEAD_KEY]
-				local kills = json_obj.data[NETWORK_RANKING_NB_KILL]
+				local kills = json_obj.data[NETWORK_KILLS]
 				local player_id = tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY])
 
 				local t = json_obj.data[NETWORK_PLAYER_UPDATE_TIMESTAMP_KEY]
@@ -245,22 +245,18 @@ function initGame(player_id)
 					timeText.text = "Temps restant: " .. time
 				end
 
-				if (kills ~= nil and tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id) then
+				if (kills ~= nil and player_id == player.id) then
 					player.nbKill = json_obj.data[NETWORK_KILLS]
-					scoreKText.text = " / +"..player.nbKill
+					scoreKText.text = " / +" .. player.nbKill
 				end
+
 				--handling self death
 				if dead then
 					if player_id == player.id then
-						--print("Youhou0", isDead)
 						-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
 						if (isDead == false) then
-							--print("Youhou01", isDead)
-							
 							player.nbDeath = player.nbDeath + 1
 							scoreDText.text = "-"..player.nbDeath
-							--print("MOOOOOOOOOOORT",player.nbDeath,scoreDText.text)
-							--print(player.nbDeath)
 							isDead = true
 							-- local revive = function()
 							-- 	isDead = false
@@ -271,9 +267,8 @@ function initGame(player_id)
 					else
 						
 					end
-				elseif tostring(json_obj.data[NETWORK_PLAYER_UPDATE_ID_KEY]) == player.id  then
-					isDead=false
-					--print("Youhou2", isDead)
+				elseif player_id == player.id  then
+					isDead = false
 				end
 				
 			end
