@@ -57,10 +57,12 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	self.pos = Vector2D:new(0, 0)
 	self.oldpos = Vector2D:new(0, 0)
 
+	self.currentAnimString = "downstand"
+
 	print ("worldToScreen:", camera:worldToScreen(self.pos).x, camera:worldToScreen(self.pos).y)
 	self.sprite = CameraAwareSprite.create {
 		spriteSet = "man",
-		animation = "leftwalk",
+		animation = self.currentAnimString,
 		anchor = "bc",
 		worldPosition = self.pos,
 		scale = 1,
@@ -202,18 +204,18 @@ function Player:refresh()
 		self.currentState = PLAYER_WALKING_STATE 
 		local to = Vector2D:new(self.toX, self.toY)
 		local vectDir = Vector2D:new(0,0)
-		self.oldpos = Vector2D:new(self.pos.x, self.pos.y)
-		vectDir = Vector2D:Sub(to,self.pos)
+		local vectDir = Vector2D:Sub(to,self.pos)
 		vectDir:normalize()
 		-- vecteur normalisé de la direction * la vitesse * delta temps
-		tempVectDir = Vector2D:Mult(vectDir, self.speed)
-		temp = Vector2D:Add(self.pos,tempVectDir)
+		local tempVectDir = Vector2D:Mult(vectDir, self.speed)
+		local temp = Vector2D:Add(self.pos,tempVectDir)
 		vectDir:mult(self.speed)
 		self.pos:add(vectDir)
 		self:upCurrentArc(self.nodeFrom,self.nodeTo)
 
-		-- update sprites
 		
+		dbg(Y,{self.dirString..self.animString})
+
 		self.sprite:redraw()    
 		self.colorSprite:redraw()    
 	end
@@ -256,7 +258,7 @@ function Player:goToAR(arcP)
 end
 
 function Player:setAR(arcP)
-
+	self.oldpos = self.pos
 	local destination = arcP:getPosXY()
 	self.toX=destination.x
 	self.toY=destination.y
@@ -264,6 +266,34 @@ function Player:setAR(arcP)
 	self.sprite:setWorldPosition(self.pos)
 	self.colorSprite:setWorldPosition(self.pos)
 	self.arcPCurrent = arcP
+
+	-- update sprites
+	local myCuteDir = Vector2D:Sub(self.pos, self.oldpos)
+
+	if myCuteDir.x==0 and myCuteDir.y==0 then
+		self.animString = "stand"
+	else
+		self.animString = "walk"
+		if math.abs(myCuteDir.x) > math.abs(myCuteDir.y) then
+			if myCuteDir.x > 0 then -- right
+				self.dirString = "right"
+			else                    -- left
+				self.dirString = "left"
+			end
+		else
+			if myCuteDir.y < 0 then -- up
+				self.dirString = "up"
+			else                    -- down
+				self.dirString = "down"
+			end
+		end
+	end
+
+	local newAnimString = self.dirString..self.animString
+	if (self.currentAnimString ~= newAnimString) then
+		self.sprite:play(newAnimString)
+	end
+
 end
 
 function Player:getCurrentStreetName()
