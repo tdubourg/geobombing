@@ -117,7 +117,7 @@ PLAYER_UPDATE_DISCARD_DELAY_IN_MS = 100
 
 -- Other
 NETW_RECV_OPTIMIZATION = true
-NETW_DISCARD_PU_OPTIMIZATION = false
+NETW_DISCARD_PU_OPTIMIZATION = true
 
 -- GAMEPLAY
 
@@ -125,7 +125,7 @@ ERRORS = true -- enables or disables displaying errors on stdout
 BOMB_DBG_MODE = false
 NETW_DBG_MODE = false
 NETW_DUMP_MODE = false
-DISCARDED_PLAYER_UPDATES = true
+DISCARDED_PLAYER_UPDATES_MSG = true
 GAME_DBG = false
 
 -- require("consts-local")
