@@ -100,10 +100,9 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 	data[net.TYPETIMEREMAINING] = gs.session_time_remaining // time before end of game 
 	if (player.haskilled)
 	{
-		console.log("KILL Update: ", player.kills)//content.data[net.TYPEKILLS])
+		console.log("KILL Update: ", player.name)//content.data[net.TYPEKILLS])
 		var show = true
 		data[net.TYPEKILLS] = player.kills
-		player.haskilled = false // to stop sending
 	}
 	if (player.dead) { data[net.TYPEDEAD] = player.dead }
 
