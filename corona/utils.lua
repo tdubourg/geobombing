@@ -60,8 +60,10 @@ function dbg( mode, things )
 		for _,v in pairs(things) do
 			if (type(v) == "table") then
 				v = json.encode(v)
+			else
+				v = tostring(v)
 			end
-			io.write( v, "\t")
+			io.write(v, "\t")
 		end
 		io.write("\n")
 	end
