@@ -14,6 +14,7 @@ local net_handlers = {}
 local mrcvTimer = nil
 NETWORK_KEY = ""
 local net_buffer = ""
+local net_line_buffer = "" 
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -32,10 +33,20 @@ end
 
 function receive_line()
 	local result
-	if (NETW_RECV_OPTIMIZATION) then
-		result, status, partial = client:receive() -- with no parameter = receive a line
-	else
-		result = receive_until(FRAME_SEPARATOR)
+	result, status, partial = client:receive() -- with no parameter = receive a line
+	if (result == nil and partial ~= nil) then 
+		-- We did not manage to read a full line 
+		-- but we still read something, keep it 
+		-- to complete it afterwards
+		net_line_buffer = net_line_buffer .. partial
+	elseif (result ~= nil) then
+		-- We had a result, that is to say, an end of line
+		-- concatenate it to the line buffer so that in case
+		-- we previously had a partial line and this is in fact the
+		-- end of the line, we have the full line in "result" variable
+		result = net_line_buffer .. result
+		-- and thus, also clear the line buffer!
+		net_line_buffer = "" -- reset the buffer
 	end
 	dbg(NETW_DBG_MODE, {"result=", result})
 	dbg(NETW_DBG_MODE, {"status=", status})
