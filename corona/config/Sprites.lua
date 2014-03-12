@@ -70,6 +70,12 @@ return {
 					period = 0.9
 					-- loopCount = 1
 				},
+				death = {
+					frameCount = 2,
+					period = 1,
+					loopCount = 1
+				},
+
 			},
 
 			manc = {
@@ -112,6 +118,11 @@ return {
 					frameCount = 2,
 					period = 0.9
 					-- loopCount = 1
+				},
+				death = {
+					frameCount = 2,
+					period = 1,
+					loopCount = 1
 				},
 			},
 
