@@ -17,9 +17,9 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	//////////////////////////////////
 	// FIXME !! (méthode agile)
 	//latitude = 4.8730; longitude = 45.7816
-	//latitude = 45.7816; longitude = 4.8730
+	latitude = 45.7816; longitude = 4.8730
 	//latitude = 41.9205551; longitude = 8.7361006
-	latitude = 45.7836925; longitude = 4.8714986
+	//latitude = 45.7836925; longitude = 4.8714986
 	//////////////////////////////////
 	
 	// if (conDB!) 
@@ -115,14 +115,11 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 function projectMap (leMap)
 {
 	for (var i = 0; i < leMap.length; i++)
-	for (var j = 0; j < leMap[i].length; j++) {
-		//var pt = t.MapTiles.project({lat: leMap[i][j][0], lng: leMap[i][j][1]})
-		// var pt = t.MapTiles.project({lng: leMap[i][j][0], lat: leMap[i][j][1]})
-		var pt = t.MapTiles.project({lat: leMap[i][j][1], lng: leMap[i][j][0]})
-		//console.log(pt)
-		// leMap[i][j] = [pt.y, pt.x]
-		leMap[i][j] = [pt.x, pt.y]
-	}
+		for (var j = 0; j < leMap[i].length; j++) 
+		{
+			var pt = t.MapTiles.project({lat: leMap[i][j][1], lng: leMap[i][j][0]})
+			leMap[i][j] = [pt.x, pt.y]
+		}
 	//console.log(leMap)
 	return leMap
 }
@@ -270,9 +267,12 @@ function mapDataToJSon(mapData)
 
 
 
-function getInitialPosition() {
-	var position = common.CreatePosition(1, 2, 0.5);
-    return position;
+function getInitialPosition() 
+{
+	var x = Math.floor((Math.random()*10)+1)
+	var y = x + 1
+	var z = Math.random() 
+    return common.CreatePosition(x, y, z);
 }
 
 
