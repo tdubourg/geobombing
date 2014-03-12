@@ -13,7 +13,7 @@ var client = new pg.Client(conString)
 
 client.connect()
 
-var DBG = true
+var DBG = false
 
 var text_query = function (query, callback) {
 	if (DBG) {
