@@ -83,7 +83,7 @@ PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
 	TYPEPOINT = "topLeftPoint"
 
 	-- time remaining
-	NETWORK_TIME = "tr"
+	NETWORK_REMAINING_TIME = "tr"
 
 	-- number of kills
 	NETWORK_KILLS = "k"

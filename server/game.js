@@ -143,6 +143,7 @@ function Player(game, stream) {
 	// for ranking
 	this.deads = 0
 	this.kills = 0
+	this.haskilled = false
 	this.points = 0
 
 	//this.currentArcPos = null
@@ -180,11 +181,13 @@ Player.prototype.onKillPlayer = function (player_killed) // can be called on him
 		player_killed.points -= 5
 		this.points += 10
 		this.kills++
+		this.haskilled = true // true until it is send
 	}
 }
 
 
-Bomb.prototype.update = function (period, explodingBombs) {
+Bomb.prototype.update = function (period, explodingBombs) 
+{
 	//console.log("tick...")
 	if (this.time < 0 && this.time+period >= 0)
 	{
@@ -371,10 +374,8 @@ Player.prototype.die = function () {
 	{
 		console.log("Player",this.name,"died in horrible pain!!")
 		this.dead = true
-		this.resetMove()
-		
-		this.game.dyingPlayers.push(this)
-		
+		this.resetMove()		
+		this.game.dyingPlayers.push(this)	
 	}
 }
 
@@ -483,6 +484,7 @@ Game.prototype.newGame = function ()
 		p.deads = 0
 		p.kills = 0
 		p.points = 0
+		p.haskilled = false
 		p.respawn()
 	};
 	
