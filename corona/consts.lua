@@ -3,7 +3,6 @@ require("utils")
 SERVER_IP_ADDR = "127.0.0.1"
 SERVER_PORT = "3000"
 DEV_MODE = true
-EXPLOSION_DELAY = 3000 -- in ms
 EXPLOSION_DURATION = 1.5 -- in seconds
 
 DISPLAY_MAP_ARCS = false
