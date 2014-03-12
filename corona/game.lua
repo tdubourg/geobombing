@@ -31,7 +31,6 @@ local timeText
 local scoreDText
 local scoreKText
 local scoreGroup 
- isDead = false
 rankOn = false
 
 function movePlayerById(id,arcP)
@@ -266,21 +265,16 @@ function initGame(player_id)
 						if dead then
 							if player_id == player.id then
 								-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
-								if (isDead == false) then
+								if (player.isDead == false) then
 									player.nbDeath = player.nbDeath + 1
 									scoreDText.text = "-"..player.nbDeath
-									isDead = true
-									-- local revive = function()
-									-- 	isDead = false
-									-- end
-									--timer.performWithDelay( 3000, revive )
+									player:die()
 								end
-
-							else
-								
 							end
 						elseif player_id == player.id  then
-							isDead = false
+							if (player.isDead) then
+								player:revive()
+							end
 						end
 					end
 				end
