@@ -225,9 +225,9 @@ function initGame(player_id)
 				-- Frame too old and does not contain information we want to read even if old ? Discard it!
 				if (
 					    (t - discard_timestamp_limit) < 0 -- old enough
-					and dead == nil and kills == nill -- no important info in the frame
-					and not NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
-				) then				
+					and dead == nil and kills == nil -- no important info in the frame
+					and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
+				) then
 					dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
 					return -- and end the function
 				end
