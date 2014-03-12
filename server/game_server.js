@@ -13,7 +13,7 @@ var MOVE_REFRESH_PERIOD = 50
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
-var SESSION_LENGHT = 180
+var SESSION_LENGHT = 300
 var PALMARES_SHOW_TIME = 15
 var session_time_remaining = SESSION_LENGHT
 var session = true
