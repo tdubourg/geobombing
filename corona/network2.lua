@@ -82,7 +82,8 @@ function _mrcv(connection)
 		--print ( "Received network data: " .. frameString)
 		local json_obj = json.decode(frameString)
 		if (json_obj ~= nil) then
-			if(not type(v) == "table") then -- not valid json, probably
+			if(not type(json_obj) == "table") then -- not valid json, probably
+				dbg(ERRORS, {"Received an invalid frame: ", json_obj})
 				return nil
 			end
 			local handler = net_handlers[json_obj.type]
