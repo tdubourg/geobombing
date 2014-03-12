@@ -21,6 +21,8 @@ require("consts")
 --
 -----------------------------------------------------------------------------------------
 
+local DEATH_ANIM_PERIOD = 3
+
 return {
 	sheets = {
 		sprites = {
@@ -72,7 +74,7 @@ return {
 				},
 				death = {
 					frameCount = 2,
-					period = 1,
+					period = DEATH_ANIM_PERIOD,
 					loopCount = 1
 				},
 
@@ -121,7 +123,7 @@ return {
 				},
 				death = {
 					frameCount = 2,
-					period = 1,
+					period = DEATH_ANIM_PERIOD,
 					loopCount = 1
 				},
 			},

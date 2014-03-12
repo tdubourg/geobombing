@@ -135,8 +135,8 @@ function Player:die()
 end
 
 function Player:revive()
-	self.sprite:play("leftwalk")
-	self.colorSprite:play("leftwalk")
+	self.sprite:play("downstand")
+	self.colorSprite:play("downstand")
 	self.isDead = false
 	return self
 end
