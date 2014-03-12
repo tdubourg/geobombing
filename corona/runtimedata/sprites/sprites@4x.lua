@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:6329427568ca333a54323144db817916:854b3c8bc36c8d910ef454fff23a8b2f:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:c6239bb5c0846b15c40116c9ed8cc31d:032581d71b07f9ee3ee30607c9aa41ee:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -15,17 +15,25 @@ SheetInfo.sheet =
     frames = {
     
         {
-            -- bombButton
-            x=528,
+            -- background
+            x=0,
             y=624,
+            width=912,
+            height=608,
+
+        },
+        {
+            -- bombButton
+            x=3456,
+            y=0,
             width=256,
             height=256,
 
         },
         {
             -- bombButton2
-            x=1456,
-            y=0,
+            x=928,
+            y=528,
             width=512,
             height=512,
 
@@ -39,600 +47,1192 @@ SheetInfo.sheet =
 
         },
         {
-            -- bomb_explode_0
-            x=928,
-            y=528,
+            -- bomb_explode/frame0
+            x=2760,
+            y=1184,
             width=72,
             height=72,
 
         },
         {
-            -- bomb_explode_1
-            x=3936,
-            y=976,
+            -- bomb_explode/frame1
+            x=3976,
+            y=0,
             width=112,
             height=112,
 
         },
         {
-            -- bomb_explode_10
-            x=3904,
-            y=208,
+            -- bomb_explode/frame10
+            x=3200,
+            y=952,
             width=192,
             height=192,
 
         },
         {
-            -- bomb_explode_11
-            x=3720,
-            y=912,
+            -- bomb_explode/frame11
+            x=2760,
+            y=976,
             width=200,
             height=192,
 
         },
         {
-            -- bomb_explode_12
-            x=3504,
-            y=672,
+            -- bomb_explode/frame12
+            x=1376,
+            y=1056,
             width=200,
             height=200,
 
         },
         {
-            -- bomb_explode_13
-            x=3352,
-            y=888,
+            -- bomb_explode/frame13
+            x=1152,
+            y=1056,
             width=208,
             height=200,
 
         },
         {
-            -- bomb_explode_14
-            x=3280,
-            y=672,
+            -- bomb_explode/frame14
+            x=928,
+            y=1056,
             width=208,
             height=200,
 
         },
         {
-            -- bomb_explode_15
-            x=3280,
-            y=448,
+            -- bomb_explode/frame15
+            x=3176,
+            y=728,
             width=216,
             height=208,
 
         },
         {
-            -- bomb_explode_16
-            x=3192,
-            y=224,
+            -- bomb_explode/frame16
+            x=3176,
+            y=504,
             width=216,
             height=208,
 
         },
         {
-            -- bomb_explode_17
-            x=3192,
-            y=0,
+            -- bomb_explode/frame17
+            x=2936,
+            y=736,
             width=224,
             height=208,
 
         },
         {
-            -- bomb_explode_18
-            x=3040,
-            y=696,
+            -- bomb_explode/frame18
+            x=3728,
+            y=472,
             width=224,
             height=208,
 
         },
         {
-            -- bomb_explode_19
-            x=3040,
-            y=464,
+            -- bomb_explode/frame19
+            x=2936,
+            y=504,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_2
-            x=3936,
-            y=832,
+            -- bomb_explode/frame2
+            x=3968,
+            y=384,
             width=128,
             height=128,
 
         },
         {
-            -- bomb_explode_20
-            x=2952,
-            y=232,
+            -- bomb_explode/frame20
+            x=2696,
+            y=744,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_21
-            x=1264,
-            y=848,
+            -- bomb_explode/frame21
+            x=3480,
+            y=272,
             width=232,
             height=216,
 
         },
         {
-            -- bomb_explode_22
-            x=1040,
-            y=616,
+            -- bomb_explode/frame22
+            x=3232,
+            y=272,
             width=232,
             height=216,
 
         },
         {
-            -- bomb_explode_23
-            x=2952,
+            -- bomb_explode/frame23
+            x=2696,
+            y=512,
+            width=224,
+            height=216,
+
+        },
+        {
+            -- bomb_explode/frame24
+            x=3728,
             y=0,
-            width=224,
-            height=216,
-
-        },
-        {
-            -- bomb_explode_24
-            x=776,
-            y=896,
             width=232,
             height=216,
 
         },
         {
-            -- bomb_explode_25
-            x=528,
-            y=896,
+            -- bomb_explode/frame25
+            x=2984,
+            y=272,
             width=232,
             height=216,
 
         },
         {
-            -- bomb_explode_26
-            x=1024,
-            y=864,
+            -- bomb_explode/frame26
+            x=1976,
+            y=512,
             width=224,
             height=224,
 
         },
         {
-            -- bomb_explode_27
-            x=2800,
-            y=696,
+            -- bomb_explode/frame27
+            x=2520,
+            y=976,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_28
-            x=2800,
-            y=464,
+            -- bomb_explode/frame28
+            x=2280,
+            y=976,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_29
-            x=2712,
+            -- bomb_explode/frame29
+            x=2040,
+            y=984,
+            width=224,
+            height=216,
+
+        },
+        {
+            -- bomb_explode/frame3
+            x=3968,
             y=232,
-            width=224,
-            height=216,
-
-        },
-        {
-            -- bomb_explode_3
-            x=3576,
-            y=888,
             width=128,
             height=136,
 
         },
         {
-            -- bomb_explode_30
-            x=800,
-            y=624,
+            -- bomb_explode/frame30
+            x=3728,
+            y=232,
             width=224,
             height=224,
 
         },
         {
-            -- bomb_explode_31
-            x=2712,
-            y=0,
+            -- bomb_explode/frame31
+            x=1800,
+            y=1024,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_32
-            x=2560,
-            y=696,
+            -- bomb_explode/frame32
+            x=2456,
+            y=744,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_33
-            x=2560,
-            y=464,
+            -- bomb_explode/frame33
+            x=2456,
+            y=512,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_34
-            x=2472,
-            y=232,
+            -- bomb_explode/frame34
+            x=2216,
+            y=744,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_35
-            x=2472,
-            y=0,
+            -- bomb_explode/frame35
+            x=2216,
+            y=512,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_36
-            x=1288,
-            y=528,
+            -- bomb_explode/frame36
+            x=1976,
+            y=752,
             width=224,
             height=216,
 
         },
         {
-            -- bomb_explode_37
-            x=3872,
-            y=624,
+            -- bomb_explode/frame37
+            x=2976,
+            y=960,
             width=208,
             height=192,
 
         },
         {
-            -- bomb_explode_38
-            x=1048,
-            y=576,
+            -- bomb_explode/frame38
+            x=3608,
+            y=1040,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_39
-            x=3888,
-            y=416,
+            -- bomb_explode/frame39
+            x=3408,
+            y=712,
             width=208,
             height=192,
 
         },
         {
-            -- bomb_explode_4
-            x=3720,
-            y=608,
+            -- bomb_explode/frame4
+            x=3936,
+            y=1072,
             width=136,
             height=144,
 
         },
         {
-            -- bomb_explode_40
-            x=3128,
-            y=920,
+            -- bomb_explode/frame40
+            x=3408,
+            y=504,
             width=208,
             height=192,
 
         },
         {
-            -- bomb_explode_41
-            x=1240,
-            y=1104,
+            -- bomb_explode/frame41
+            x=224,
+            y=1248,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_42
-            x=1216,
-            y=1104,
+            -- bomb_explode/frame42
+            x=3608,
+            y=1016,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_43
-            x=3904,
-            y=0,
+            -- bomb_explode/frame43
+            x=1592,
+            y=1056,
             width=192,
             height=192,
 
         },
         {
-            -- bomb_explode_44
-            x=3512,
-            y=440,
+            -- bomb_explode/frame44
+            x=3408,
+            y=920,
             width=184,
             height=192,
 
         },
         {
-            -- bomb_explode_45
-            x=2760,
-            y=928,
+            -- bomb_explode/frame45
+            x=3832,
+            y=696,
             width=160,
             height=184,
 
         },
         {
-            -- bomb_explode_46
-            x=1192,
-            y=1104,
+            -- bomb_explode/frame46
+            x=200,
+            y=1248,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_47
-            x=1168,
-            y=1104,
+            -- bomb_explode/frame47
+            x=3608,
+            y=992,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_48
-            x=3720,
-            y=768,
+            -- bomb_explode/frame48
+            x=3408,
+            y=1128,
             width=136,
             height=128,
 
         },
         {
-            -- bomb_explode_49
-            x=3600,
-            y=264,
+            -- bomb_explode/frame49
+            x=3968,
+            y=528,
             width=96,
             height=104,
 
         },
         {
-            -- bomb_explode_5
-            x=3720,
-            y=440,
+            -- bomb_explode/frame5
+            x=3776,
+            y=1080,
             width=144,
             height=152,
 
         },
         {
-            -- bomb_explode_50
-            x=1016,
-            y=576,
+            -- bomb_explode/frame50
+            x=4080,
+            y=528,
             width=16,
             height=24,
 
         },
         {
-            -- bomb_explode_51
-            x=992,
-            y=864,
+            -- bomb_explode/frame51
+            x=96,
+            y=1248,
             width=16,
             height=8,
 
         },
         {
-            -- bomb_explode_52
-            x=1144,
-            y=1104,
+            -- bomb_explode/frame52
+            x=176,
+            y=1248,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_53
-            x=1120,
-            y=1104,
+            -- bomb_explode/frame53
+            x=3608,
+            y=968,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_54
-            x=864,
-            y=864,
+            -- bomb_explode/frame54
+            x=1760,
+            y=1024,
             width=16,
             height=16,
 
         },
         {
-            -- bomb_explode_55
-            x=1096,
-            y=1104,
+            -- bomb_explode/frame55
+            x=152,
+            y=1248,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_56
-            x=960,
-            y=864,
+            -- bomb_explode/frame56
+            x=64,
+            y=1248,
             width=16,
             height=8,
 
         },
         {
-            -- bomb_explode_57
-            x=1072,
-            y=1104,
+            -- bomb_explode/frame57
+            x=3608,
+            y=944,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_58
-            x=832,
-            y=864,
+            -- bomb_explode/frame58
+            x=4080,
+            y=568,
             width=16,
             height=16,
 
         },
         {
-            -- bomb_explode_59
-            x=928,
-            y=864,
+            -- bomb_explode/frame59
+            x=32,
+            y=1248,
             width=16,
             height=8,
 
         },
         {
-            -- bomb_explode_6
-            x=3720,
-            y=264,
+            -- bomb_explode/frame6
+            x=3608,
+            y=1080,
             width=152,
             height=160,
 
         },
         {
-            -- bomb_explode_60
-            x=1048,
-            y=1104,
+            -- bomb_explode/frame60
+            x=128,
+            y=1248,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_61
-            x=1024,
-            y=1104,
+            -- bomb_explode/frame61
+            x=3608,
+            y=920,
             width=8,
             height=8,
 
         },
         {
-            -- bomb_explode_62
-            x=896,
-            y=864,
+            -- bomb_explode/frame62
+            x=0,
+            y=1248,
             width=16,
             height=8,
 
         },
         {
-            -- bomb_explode_63
-            x=800,
-            y=864,
+            -- bomb_explode/frame63
+            x=1728,
+            y=1024,
             width=16,
             height=16,
 
         },
         {
-            -- bomb_explode_7
-            x=3424,
-            y=264,
+            -- bomb_explode/frame7
+            x=3824,
+            y=896,
             width=160,
             height=160,
 
         },
         {
-            -- bomb_explode_8
-            x=2936,
-            y=928,
+            -- bomb_explode/frame8
+            x=3632,
+            y=896,
             width=176,
             height=168,
 
         },
         {
-            -- bomb_explode_9
-            x=2560,
-            y=928,
+            -- bomb_explode/frame9
+            x=3632,
+            y=696,
             width=184,
             height=184,
 
         },
         {
             -- bomb_idle
-            x=1016,
-            y=528,
+            x=4048,
+            y=936,
             width=32,
             height=32,
 
         },
         {
-            -- bonhomme_0
-            x=1800,
+            -- bonhomme/frame0
+            x=1456,
             y=528,
             width=256,
             height=512,
 
         },
         {
-            -- bonhomme_1
-            x=1528,
-            y=528,
-            width=256,
-            height=512,
-
-        },
-        {
-            -- bonhomme_2
-            x=1984,
+            -- bonhomme/frame1
+            x=1456,
             y=0,
+            width=256,
+            height=512,
+
+        },
+        {
+            -- bonhomme/frame2
+            x=1728,
+            y=504,
             width=232,
             height=504,
 
         },
         {
-            -- bonhomme_3
-            x=2232,
+            -- bonhomme/frame3
+            x=2272,
             y=0,
             width=224,
             height=496,
 
         },
         {
-            -- bonhomme_4
-            x=2328,
-            y=512,
+            -- bonhomme/frame4
+            x=2512,
+            y=0,
             width=216,
             height=496,
 
         },
         {
-            -- bonhomme_5
-            x=2072,
-            y=520,
+            -- bonhomme/frame5
+            x=2016,
+            y=0,
             width=240,
             height=496,
 
         },
         {
-            -- bonhomme_6
-            x=288,
-            y=624,
+            -- bonhomme/frame6
+            x=2744,
+            y=0,
             width=224,
             height=488,
 
         },
         {
-            -- bonhomme_7
-            x=0,
-            y=624,
+            -- bonhomme/frame7
+            x=1728,
+            y=0,
             width=272,
             height=488,
 
         },
         {
+            -- final/bombe
+            x=4048,
+            y=888,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bombe/1_colo
+            x=4000,
+            y=992,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bombe/1_nb
+            x=4000,
+            y=944,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bombe/2_colo
+            x=4000,
+            y=896,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bombe/2_nb
+            x=3328,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bombe/bomb_nb
+            x=4000,
+            y=944,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bombe/bombe_idle_1
+            x=3328,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol
+            x=3328,
+            y=1160,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/stand/1_colo
+            x=3280,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/stand/1_nb
+            x=3280,
+            y=1160,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/stand/2_colo
+            x=3232,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/stand/2_nb
+            x=3232,
+            y=1160,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/stand/entire/1
+            x=3184,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/stand/entire/2
+            x=3184,
+            y=1168,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/walk/1_colo
+            x=3136,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/walk/1_nb
+            x=3088,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/walk/2_colo
+            x=3040,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/walk/2_nb
+            x=2992,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/walk/entire/1
+            x=3136,
+            y=1168,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/back/walk/entire/2
+            x=3088,
+            y=1168,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/cendre_colo
+            x=3040,
+            y=1168,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/cendre_nb
+            x=2992,
+            y=1168,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/dead_colo
+            x=2944,
+            y=1184,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/dead_nb
+            x=2712,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/stand/1_colo
+            x=2944,
+            y=1184,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/stand/1_nb
+            x=2664,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/stand/entire/1
+            x=2616,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/stand/entire/2
+            x=2568,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/walk/1_colo
+            x=2520,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/walk/1_nb
+            x=2472,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/walk/2_colo
+            x=2424,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/walk/2_nb
+            x=2376,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/walk/entire/1
+            x=2328,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/face/walk/entire/2
+            x=2280,
+            y=1208,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/stand/1_colo
+            x=2232,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/stand/1_nb
+            x=2184,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/stand/2_colo
+            x=2136,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/stand/2_nb
+            x=2088,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/stand/entire/1
+            x=2040,
+            y=1216,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/stand/entire/2
+            x=4056,
+            y=840,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/1_colo
+            x=4056,
+            y=792,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/1_nb
+            x=4008,
+            y=840,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/2_colo
+            x=4056,
+            y=744,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/2_nb
+            x=4008,
+            y=792,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/3_colo
+            x=4024,
+            y=176,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/3_nb
+            x=3680,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/4_colo
+            x=4056,
+            y=744,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/4_nb
+            x=4008,
+            y=792,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/entire/1
+            x=3680,
+            y=600,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/entire/2
+            x=3632,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/entire/3
+            x=3632,
+            y=600,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/left/walk/entire/4
+            x=3632,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/stand/1_colo
+            x=4056,
+            y=696,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/stand/1_nb
+            x=4008,
+            y=744,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/stand/2_colo
+            x=2896,
+            y=1184,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/stand/2_nb
+            x=4024,
+            y=128,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/stand/entire/1
+            x=3976,
+            y=176,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/stand/entire/2
+            x=3680,
+            y=552,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/1_colo
+            x=3632,
+            y=552,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/1_nb
+            x=4008,
+            y=696,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/2_colo
+            x=4064,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/2_nb
+            x=4016,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/3_colo
+            x=2848,
+            y=1184,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/3_nb
+            x=3976,
+            y=128,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/4_colo
+            x=4064,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/4_nb
+            x=4016,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/entire/1
+            x=3680,
+            y=504,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/entire/2
+            x=3632,
+            y=504,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/entire/3
+            x=3968,
+            y=648,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/bomberlol/right/walk/entire/4
+            x=3632,
+            y=504,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/explo
+            x=3560,
+            y=1224,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/explo/1
+            x=3560,
+            y=1176,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/explo/2
+            x=3560,
+            y=1128,
+            width=32,
+            height=32,
+
+        },
+        {
+            -- final/explo/3
+            x=3560,
+            y=1224,
+            width=32,
+            height=32,
+
+        },
+        {
             -- play-button-startscreen-mouseover
-            x=3432,
+            x=2984,
             y=136,
             width=456,
-            height=112,
+            height=120,
 
         },
         {
             -- play-button-startscreen
-            x=3432,
+            x=2984,
             y=0,
             width=456,
             height=120,
@@ -649,91 +1249,166 @@ SheetInfo.sheet =
     },
     
     sheetContentWidth = 4096,
-    sheetContentHeight = 1112
+    sheetContentHeight = 1256
 }
 
 SheetInfo.frameIndex =
 {
 
-    ["bombButton"] = 1,
-    ["bombButton2"] = 2,
-    ["bombButton3"] = 3,
-    ["bomb_explode_0"] = 4,
-    ["bomb_explode_01"] = 5,
-    ["bomb_explode_10"] = 6,
-    ["bomb_explode_11"] = 7,
-    ["bomb_explode_12"] = 8,
-    ["bomb_explode_13"] = 9,
-    ["bomb_explode_14"] = 10,
-    ["bomb_explode_15"] = 11,
-    ["bomb_explode_16"] = 12,
-    ["bomb_explode_17"] = 13,
-    ["bomb_explode_18"] = 14,
-    ["bomb_explode_19"] = 15,
-    ["bomb_explode_02"] = 16,
-    ["bomb_explode_20"] = 17,
-    ["bomb_explode_21"] = 18,
-    ["bomb_explode_22"] = 19,
-    ["bomb_explode_23"] = 20,
-    ["bomb_explode_24"] = 21,
-    ["bomb_explode_25"] = 22,
-    ["bomb_explode_26"] = 23,
-    ["bomb_explode_27"] = 24,
-    ["bomb_explode_28"] = 25,
-    ["bomb_explode_29"] = 26,
-    ["bomb_explode_03"] = 27,
-    ["bomb_explode_30"] = 28,
-    ["bomb_explode_31"] = 29,
-    ["bomb_explode_32"] = 30,
-    ["bomb_explode_33"] = 31,
-    ["bomb_explode_34"] = 32,
-    ["bomb_explode_35"] = 33,
-    ["bomb_explode_36"] = 34,
-    ["bomb_explode_37"] = 35,
-    ["bomb_explode_38"] = 36,
-    ["bomb_explode_39"] = 37,
-    ["bomb_explode_04"] = 38,
-    ["bomb_explode_40"] = 39,
-    ["bomb_explode_41"] = 40,
-    ["bomb_explode_42"] = 41,
-    ["bomb_explode_43"] = 42,
-    ["bomb_explode_44"] = 43,
-    ["bomb_explode_45"] = 44,
-    ["bomb_explode_46"] = 45,
-    ["bomb_explode_47"] = 46,
-    ["bomb_explode_48"] = 47,
-    ["bomb_explode_49"] = 48,
-    ["bomb_explode_05"] = 49,
-    ["bomb_explode_50"] = 50,
-    ["bomb_explode_51"] = 51,
-    ["bomb_explode_52"] = 52,
-    ["bomb_explode_53"] = 53,
-    ["bomb_explode_54"] = 54,
-    ["bomb_explode_55"] = 55,
-    ["bomb_explode_56"] = 56,
-    ["bomb_explode_57"] = 57,
-    ["bomb_explode_58"] = 58,
-    ["bomb_explode_59"] = 59,
-    ["bomb_explode_06"] = 60,
-    ["bomb_explode_60"] = 61,
-    ["bomb_explode_61"] = 62,
-    ["bomb_explode_62"] = 63,
-    ["bomb_explode_63"] = 64,
-    ["bomb_explode_07"] = 65,
-    ["bomb_explode_08"] = 66,
-    ["bomb_explode_09"] = 67,
-    ["bomb_idle"] = 68,
-    ["bonhomme_idle_0"] = 69,
-    ["bonhomme_idle_1"] = 70,
-    ["bonhomme_idle_2"] = 71,
-    ["bonhomme_idle_3"] = 72,
-    ["bonhomme_idle_4"] = 73,
-    ["bonhomme_idle_5"] = 74,
-    ["bonhomme_idle_6"] = 75,
-    ["bonhomme_idle_7"] = 76,
-    ["play-button-startscreen-mouseover"] = 77,
-    ["play-button-startscreen"] = 78,
-    ["startscreen"] = 79,
+    ["background"] = 1,
+    ["bombButton"] = 2,
+    ["bombButton2"] = 3,
+    ["bombButton3"] = 4,
+    ["bomb_explode/frame0"] = 5,
+    ["bomb_explode/frame1"] = 6,
+    ["bomb_explode/frame10"] = 7,
+    ["bomb_explode/frame11"] = 8,
+    ["bomb_explode/frame12"] = 9,
+    ["bomb_explode/frame13"] = 10,
+    ["bomb_explode/frame14"] = 11,
+    ["bomb_explode/frame15"] = 12,
+    ["bomb_explode/frame16"] = 13,
+    ["bomb_explode/frame17"] = 14,
+    ["bomb_explode/frame18"] = 15,
+    ["bomb_explode/frame19"] = 16,
+    ["bomb_explode/frame2"] = 17,
+    ["bomb_explode/frame20"] = 18,
+    ["bomb_explode/frame21"] = 19,
+    ["bomb_explode/frame22"] = 20,
+    ["bomb_explode/frame23"] = 21,
+    ["bomb_explode/frame24"] = 22,
+    ["bomb_explode/frame25"] = 23,
+    ["bomb_explode/frame26"] = 24,
+    ["bomb_explode/frame27"] = 25,
+    ["bomb_explode/frame28"] = 26,
+    ["bomb_explode/frame29"] = 27,
+    ["bomb_explode/frame3"] = 28,
+    ["bomb_explode/frame30"] = 29,
+    ["bomb_explode/frame31"] = 30,
+    ["bomb_explode/frame32"] = 31,
+    ["bomb_explode/frame33"] = 32,
+    ["bomb_explode/frame34"] = 33,
+    ["bomb_explode/frame35"] = 34,
+    ["bomb_explode/frame36"] = 35,
+    ["bomb_explode/frame37"] = 36,
+    ["bomb_explode/frame38"] = 37,
+    ["bomb_explode/frame39"] = 38,
+    ["bomb_explode/frame4"] = 39,
+    ["bomb_explode/frame40"] = 40,
+    ["bomb_explode/frame41"] = 41,
+    ["bomb_explode/frame42"] = 42,
+    ["bomb_explode/frame43"] = 43,
+    ["bomb_explode/frame44"] = 44,
+    ["bomb_explode/frame45"] = 45,
+    ["bomb_explode/frame46"] = 46,
+    ["bomb_explode/frame47"] = 47,
+    ["bomb_explode/frame48"] = 48,
+    ["bomb_explode/frame49"] = 49,
+    ["bomb_explode/frame5"] = 50,
+    ["bomb_explode/frame50"] = 51,
+    ["bomb_explode/frame51"] = 52,
+    ["bomb_explode/frame52"] = 53,
+    ["bomb_explode/frame53"] = 54,
+    ["bomb_explode/frame54"] = 55,
+    ["bomb_explode/frame55"] = 56,
+    ["bomb_explode/frame56"] = 57,
+    ["bomb_explode/frame57"] = 58,
+    ["bomb_explode/frame58"] = 59,
+    ["bomb_explode/frame59"] = 60,
+    ["bomb_explode/frame6"] = 61,
+    ["bomb_explode/frame60"] = 62,
+    ["bomb_explode/frame61"] = 63,
+    ["bomb_explode/frame62"] = 64,
+    ["bomb_explode/frame63"] = 65,
+    ["bomb_explode/frame7"] = 66,
+    ["bomb_explode/frame8"] = 67,
+    ["bomb_explode/frame9"] = 68,
+    ["bomb_idle"] = 69,
+    ["bonhomme/frame0"] = 70,
+    ["bonhomme/frame1"] = 71,
+    ["bonhomme/frame2"] = 72,
+    ["bonhomme/frame3"] = 73,
+    ["bonhomme/frame4"] = 74,
+    ["bonhomme/frame5"] = 75,
+    ["bonhomme/frame6"] = 76,
+    ["bonhomme/frame7"] = 77,
+    ["final/bombe"] = 78,
+    ["final/bombe/1_colo"] = 79,
+    ["final/bombe/1_nb"] = 80,
+    ["final/bombe/2_colo"] = 81,
+    ["final/bombe/2_nb"] = 82,
+    ["final/bombe/bomb_nb"] = 83,
+    ["final/bombe/bombe_idle_1"] = 84,
+    ["final/bomberlol"] = 85,
+    ["final/bomberlol/back/stand/1_colo"] = 86,
+    ["final/bomberlol/back/stand/1_nb"] = 87,
+    ["final/bomberlol/back/stand/2_colo"] = 88,
+    ["final/bomberlol/back/stand/2_nb"] = 89,
+    ["final/bomberlol/back/stand/entire/1"] = 90,
+    ["final/bomberlol/back/stand/entire/2"] = 91,
+    ["final/bomberlol/back/walk/1_colo"] = 92,
+    ["final/bomberlol/back/walk/1_nb"] = 93,
+    ["final/bomberlol/back/walk/2_colo"] = 94,
+    ["final/bomberlol/back/walk/2_nb"] = 95,
+    ["final/bomberlol/back/walk/entire/1"] = 96,
+    ["final/bomberlol/back/walk/entire/2"] = 97,
+    ["final/bomberlol/cendre_colo"] = 98,
+    ["final/bomberlol/cendre_nb"] = 99,
+    ["final/bomberlol/dead_colo"] = 100,
+    ["final/bomberlol/dead_nb"] = 101,
+    ["final/bomberlol/face/stand/1_colo"] = 102,
+    ["final/bomberlol/face/stand/1_nb"] = 103,
+    ["final/bomberlol/face/stand/entire/1"] = 104,
+    ["final/bomberlol/face/stand/entire/2"] = 105,
+    ["final/bomberlol/face/walk/1_colo"] = 106,
+    ["final/bomberlol/face/walk/1_nb"] = 107,
+    ["final/bomberlol/face/walk/2_colo"] = 108,
+    ["final/bomberlol/face/walk/2_nb"] = 109,
+    ["final/bomberlol/face/walk/entire/1"] = 110,
+    ["final/bomberlol/face/walk/entire/2"] = 111,
+    ["final/bomberlol/left/stand/1_colo"] = 112,
+    ["final/bomberlol/left/stand/1_nb"] = 113,
+    ["final/bomberlol/left/stand/2_colo"] = 114,
+    ["final/bomberlol/left/stand/2_nb"] = 115,
+    ["final/bomberlol/left/stand/entire/1"] = 116,
+    ["final/bomberlol/left/stand/entire/2"] = 117,
+    ["final/bomberlol/left/walk/1_colo"] = 118,
+    ["final/bomberlol/left/walk/1_nb"] = 119,
+    ["final/bomberlol/left/walk/2_colo"] = 120,
+    ["final/bomberlol/left/walk/2_nb"] = 121,
+    ["final/bomberlol/left/walk/3_colo"] = 122,
+    ["final/bomberlol/left/walk/3_nb"] = 123,
+    ["final/bomberlol/left/walk/4_colo"] = 124,
+    ["final/bomberlol/left/walk/4_nb"] = 125,
+    ["final/bomberlol/left/walk/entire/1"] = 126,
+    ["final/bomberlol/left/walk/entire/2"] = 127,
+    ["final/bomberlol/left/walk/entire/3"] = 128,
+    ["final/bomberlol/left/walk/entire/4"] = 129,
+    ["final/bomberlol/right/stand/1_colo"] = 130,
+    ["final/bomberlol/right/stand/1_nb"] = 131,
+    ["final/bomberlol/right/stand/2_colo"] = 132,
+    ["final/bomberlol/right/stand/2_nb"] = 133,
+    ["final/bomberlol/right/stand/entire/1"] = 134,
+    ["final/bomberlol/right/stand/entire/2"] = 135,
+    ["final/bomberlol/right/walk/1_colo"] = 136,
+    ["final/bomberlol/right/walk/1_nb"] = 137,
+    ["final/bomberlol/right/walk/2_colo"] = 138,
+    ["final/bomberlol/right/walk/2_nb"] = 139,
+    ["final/bomberlol/right/walk/3_colo"] = 140,
+    ["final/bomberlol/right/walk/3_nb"] = 141,
+    ["final/bomberlol/right/walk/4_colo"] = 142,
+    ["final/bomberlol/right/walk/4_nb"] = 143,
+    ["final/bomberlol/right/walk/entire/1"] = 144,
+    ["final/bomberlol/right/walk/entire/2"] = 145,
+    ["final/bomberlol/right/walk/entire/3"] = 146,
+    ["final/bomberlol/right/walk/entire/4"] = 147,
+    ["final/explo"] = 148,
+    ["final/explo/1"] = 149,
+    ["final/explo/2"] = 150,
+    ["final/explo/3"] = 151,
+    ["play-button-startscreen-mouseover"] = 152,
+    ["play-button-startscreen"] = 153,
+    ["startscreen"] = 154,
 }
 
 function SheetInfo:getSheet()
