@@ -103,8 +103,6 @@ var sendPlayerUpdate = function (stream, player) // player and other players
 		console.log("KILL Update: ", player.name)//content.data[net.TYPEKILLS])
 		var show = true
 		data[net.TYPEKILLS] = player.kills
-		if (single_game_server.getPlayer(stream).name == player.name) 
-			player.haskilled = false // to stop sending
 	}
 	if (player.dead) { data[net.TYPEDEAD] = player.dead }
 

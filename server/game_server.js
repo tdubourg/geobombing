@@ -8,8 +8,8 @@ var fa = require('./frame_action')
 var net = require('./network')
 
 // in milliseconds:
-var GAME_REFRESH_PERIOD = 50
-var MOVE_REFRESH_PERIOD = 100
+var GAME_REFRESH_PERIOD = 100
+// var MOVE_REFRESH_PERIOD = 100
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
@@ -115,7 +115,8 @@ function GameServer(game, tiles)
 		
 		dyingPlayers.forEach(function (p) 
 		{
-			var to_id = setTimeout(function() {
+			var to_id = setTimeout(function() 
+			{
 				console.log("Player",p.name,"automatically respawned")
 				p.respawn()
 				delete that.respawnIntervalsByPlayerId[p.id]
@@ -124,24 +125,20 @@ function GameServer(game, tiles)
 		})
 		
 		lastTime = time
-	}, GAME_REFRESH_PERIOD)
-	
-	// Player network updates
-	setInterval(function() {
+		// Network updates
 		if (sending_player_updates)
-		{
-			
-			for (var conKey in that.connexions) 
+		{		
+			game.players.forEach(function (player) 
 			{
-				var con = that.connexions[conKey]
-				game.players.forEach(function (player) 
+				for (var conKey in that.connexions) 
 				{
+					var con = that.connexions[conKey]
 					fa.sendPlayerUpdate(con.stream, player);
-				})
-			}
-			
+				}
+				player.haskilled = false // to stop sending
+			})	
 		}		
-	}, MOVE_REFRESH_PERIOD)
+	}, GAME_REFRESH_PERIOD)
 
 	// SESSIONS
 	if (session)
@@ -150,7 +147,6 @@ function GameServer(game, tiles)
 		{		
 			session_time_remaining--;
 			exports.session_time_remaining = session_time_remaining
-			//console.log("session_time_remaining: ", session_time_remaining)
 			if (session_time_remaining == 0)
 			{
 				console.log("fin de la partie")			
