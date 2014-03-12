@@ -269,7 +269,7 @@ function mapDataToJSon(mapData)
 
 function getInitialPosition() 
 {
-	var x = Math.floor((Math.random()*10)+1)
+	var x = Math.floor((Math.random()*6)+1)
 	var y = x + 1
 	var z = Math.random() 
     return common.CreatePosition(x, y, z);
