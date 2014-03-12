@@ -55,12 +55,36 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
   self.arcPCurrent = arcP
 	--Player Sprite
 	self.pos = Vector2D:new(0, 0)
+	self.oldpos = Vector2D:new(0, 0)
+
 	print ("worldToScreen:", camera:worldToScreen(self.pos).x, camera:worldToScreen(self.pos).y)
 	self.sprite = CameraAwareSprite.create {
-		spriteSet = "bonhomme",
-		animation = "idle",
+		spriteSet = "man",
+		animation = "leftwalk",
+		anchor = "bc",
 		worldPosition = self.pos,
-		scale = 0.4,
+		scale = 1,
+		position = camera:worldToScreen(self.pos),
+		group = playerLayer,
+	}
+
+	r = math.random()
+	g = math.random()
+	b = math.random()
+
+	total = r+g+b
+
+	r = r*255/total
+	g = g*255/total
+	b = b*255/total
+
+	self.colorSprite = CameraAwareSprite.create {
+		spriteSet = "manc",
+		animation = "leftwalk",
+		anchor = "bc",
+		worldPosition = self.pos,
+		scale = 1,
+		color = {r,g,b},
 		position = camera:worldToScreen(self.pos),
 		group = playerLayer,
 	}
@@ -178,6 +202,7 @@ function Player:refresh()
 		self.currentState = PLAYER_WALKING_STATE 
 		local to = Vector2D:new(self.toX, self.toY)
 		local vectDir = Vector2D:new(0,0)
+		self.oldpos = Vector2D:new(self.pos.x, self.pos.y)
 		vectDir = Vector2D:Sub(to,self.pos)
 		vectDir:normalize()
 		-- vecteur normalisé de la direction * la vitesse * delta temps
@@ -186,7 +211,11 @@ function Player:refresh()
 		vectDir:mult(self.speed)
 		self.pos:add(vectDir)
 		self:upCurrentArc(self.nodeFrom,self.nodeTo)
+
+		-- update sprites
+		
 		self.sprite:redraw()    
+		self.colorSprite:redraw()    
 	end
 end
 
@@ -233,6 +262,7 @@ function Player:setAR(arcP)
 	self.toY=destination.y
 	self.pos=destination
 	self.sprite:setWorldPosition(self.pos)
+	self.colorSprite:setWorldPosition(self.pos)
 	self.arcPCurrent = arcP
 end
 

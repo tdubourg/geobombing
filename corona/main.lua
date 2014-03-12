@@ -11,6 +11,7 @@ loc = require "location"
 consts = require "consts"
 print( loc )
 
+display.setDefault("magTextureFilter","nearest")
 
 local Sound = require("lib.ecusson.Sound")
 local Sprite = require("lib.ecusson.Sprite")
