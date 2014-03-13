@@ -6,6 +6,7 @@
 
 local storyboard = require( "storyboard" )
 local Player = require( "player" )
+local Monster = require( "monster" )
 local scene = storyboard.newScene()
 require "node"
 require "consts"
@@ -36,6 +37,23 @@ local others -- ajout recent à vérifier
 local monsters
 rankOn = false
 
+-- activate multitouch
+system.activate( "multitouch" )
+local maxpos, maypos, maxminuspos, mayminuspos = 2000, 2000, -2000, -2000
+
+local function calculateDelta( previousTouches, event )
+	local id,touch = next( previousTouches )
+	if event.id == id then
+		id,touch = next( previousTouches, id )
+		assert( id ~= event.id )
+	end
+	 
+	local dx = touch.x - event.x
+	local dy = touch.y - event.y
+	return dx, dy
+end
+
+
 function movePlayerById(id,arcP)
 	local exist = false
 	local strid = "" .. id -- ajout recent du local à vérifier
@@ -62,7 +80,7 @@ function moveMonsterById(id,arcP)
 		daMonster = Monster.new(strid,0.02,0,arcP)
 		monsters[strid] = daMonster
 	end
-
+	dbg(GAME_DBG, {arcP.arc.end1.uid,arcP.arc.end2.uid,arcP.progress})
 	daMonster:setAR(arcP)
 	
 end
@@ -232,6 +250,8 @@ function initGame(player_id)
 	others = {}
 	others[player_id] = player
 
+	monsters = {}
+
 	net.net_handlers[FRAMETYPE_PLAYERS_UPDATE] = function ( json_obj )
 		if (not rankOn) then
 			if (json_obj.data ~= nil) then
@@ -325,68 +345,68 @@ function initGame(player_id)
 		end
 	end
 
-		net.net_handlers[FRAMETYPE_MONSTERS_UPDATE] = function ( json_obj )
-		if (not rankOn) then
-			if (json_obj.data ~= nil) then
+	-- net.net_handlers[FRAMETYPE_MONSTERS_UPDATE] = function ( json_obj )
+	-- 	if (not rankOn) then
+	-- 		if (json_obj.data ~= nil) then
 				
-				-- There's some data to crunch
-				local updates = json_obj.data[NETWORK_MONSTER_UPDATE_MONSTERS_KEY]
-				if (updates == nil) then
-					return
-				end
+	-- 			-- There's some data to crunch
+	-- 			local updates = json_obj.data[NETWORK_MONSTER_UPDATE_MONSTERS_KEY]
+	-- 			if (updates == nil) then
+	-- 				return
+	-- 			end
 
-				local t = json_obj.data[NETWORK_MONSTER_UPDATE_TIMESTAMP_KEY]
-				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS -- same delay for monsters
-				local dt = t - discard_timestamp_limit
-				dbg(NETW_DBG_MODE, {"timestamp frame=", t})
-				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
-				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", dt})
+	-- 			local t = json_obj.data[NETWORK_MONSTER_UPDATE_TIMESTAMP_KEY]
+	-- 			local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS -- same delay for monsters
+	-- 			local dt = t - discard_timestamp_limit
+	-- 			dbg(NETW_DBG_MODE, {"timestamp frame=", t})
+	-- 			dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
+	-- 			dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", dt})
 
-				for k,v in pairs(updates) do
-					dbg(T, {"k=",k, "v=", v})
-					local dead = v[NETWORK_MONSTER_UPDATE_DEAD_KEY]
+	-- 			for k,v in pairs(updates) do
+	-- 				dbg(T, {"k=",k, "v=", v})
+	-- 				local dead = v[NETWORK_MONSTER_UPDATE_DEAD_KEY]
 
-					-- Frame too old and does not contain information we want to read even if old ? Discard it!
-					if (
-						    dt < 0 -- old enough
-						and dead == nil -- no important info in the frame
-						and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
-					) then
-						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED monster updated", json_obj.data})
-					else
-						-- The position has to be updated
-						local pos = v[NETWORK_MONSTER_UPDATE_POS_KEY]
-						local monster_id = tostring(v[NETWORK_MONSTER_UPDATE_ID_KEY])
-						if (pos ~= nil) then
-							-- Then take it into account!
-							 update_monster_position(
-								monster_id,
-								pos
-							)
-						end
+	-- 				-- Frame too old and does not contain information we want to read even if old ? Discard it!
+	-- 				if (
+	-- 					    dt < 0 -- old enough
+	-- 					and dead == nil -- no important info in the frame
+	-- 					and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
+	-- 				) then
+	-- 					dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED monster updated", json_obj.data})
+	-- 				else
+	-- 					-- The position has to be updated
+	-- 					local pos = v[NETWORK_MONSTER_UPDATE_POS_KEY]
+	-- 					local monster_id = tostring(v[NETWORK_MONSTER_UPDATE_ID_KEY])
+	-- 					if (pos ~= nil) then
+	-- 						-- Then take it into account!
+	-- 						 update_monster_position(
+	-- 							monster_id,
+	-- 							pos
+	-- 						)
+	-- 					end
 
-						--handling monster death
-						if dead then
-							dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
-							local daMonster = monsters[monster_id]
-							if (daMonster.isDead == false) then
-								--daPlayer.nbDeath = daPlayer.nbDeath + 1
-								daMonster:die()
-							end
-						else
-							local daMonster = monsters[monster_id]
-							if (daMonster.isDead) then
-								--daPlayer.nbDeath = daPlayer.nbDeath + 1
-								daMonster:revive()
-							end
-						end
-					end
-				end
-			end
-		else
-			removeScoreDisplay()
-		end
-	end
+	-- 					--handling monster death
+	-- 					if dead then
+	-- 						dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
+	-- 						local daMonster = monsters[monster_id]
+	-- 						if (daMonster.isDead == false) then
+	-- 							--daPlayer.nbDeath = daPlayer.nbDeath + 1
+	-- 							daMonster:die()
+	-- 						end
+	-- 					else
+	-- 						local daMonster = monsters[monster_id]
+	-- 						if (daMonster.isDead) then
+	-- 							--daPlayer.nbDeath = daPlayer.nbDeath + 1
+	-- 							daMonster:revive()
+	-- 						end
+	-- 					end
+	-- 				end
+	-- 			end
+	-- 		end
+	-- 	else
+	-- 		removeScoreDisplay()
+	-- 	end
+	-- end
 
 	net.net_handlers[FRAMETYPE_GAME_END] = function ( json_obj )
 		if (json_obj.data ~= nil) then 	
