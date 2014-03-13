@@ -23,22 +23,26 @@ end
 
 function ArcPos:initExplosion(power)
 	drawPosList = {}
-	local end1Power = power - self.progress*self.arc.len
-	local end2Power = power - (1-self.progress)*self.arc.len
+	local end1dist = self.progress*self.arc.len
+	local end2dist = (1-self.progress)*self.arc.len
+	local end1Power = power - end1dist
+	local end2Power = power - end2dist
 	local end1AP = nil
 	local end2AP = nil
 
 	-- TODO: faire un truc plus générique et moins dégueu
 	-- ... ou s'en foutre et faire refaire cette partie au stagiaire quand on est riches.
 	if end1Power>0 then
-		self.arc.end1:transmitExplosion(self.arc.end2, end1Power, EXPLOSION_INTERVAL, drawPosList)
+		local forceTransmit = (end1dist < FORCETRANSMIT_RADIUS)
+		self.arc.end1:transmitExplosion(self.arc.end2, end1Power, EXPLOSION_INTERVAL, drawPosList, forceTransmit)
 		end1AP = ArcPos:new(self.arc, 0.0)
 	else
 		end1AP = ArcPos:new(self.arc, self.progress - power/self.arc.len)
 	end
 
 	if end2Power>0 then
-		self.arc.end2:transmitExplosion(self.arc.end1, end2Power, EXPLOSION_INTERVAL, drawPosList)
+		local forceTransmit = (end2dist < FORCETRANSMIT_RADIUS)
+		self.arc.end2:transmitExplosion(self.arc.end1, end2Power, EXPLOSION_INTERVAL, drawPosList, forceTransmit)
 		end2AP = ArcPos:new(self.arc, 1.0)
 	else
 		end2AP = ArcPos:new(self.arc, self.progress + power/self.arc.len)
