@@ -201,7 +201,7 @@ function newPlayerDestination(e)
 					dbg(ERRORS, {"WHAT?! WTF?"})
 				else
 					if (nodes[1] == from) then
-						player.predictionPath = nodes
+						player:setPredictionNodes(nodes)
 						if (player.arcPCurrent.arc.end1 == from) then
 							player.nodeFrom=player.arcPCurrent.arc.end2
 						else

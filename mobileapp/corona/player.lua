@@ -4,6 +4,7 @@ local utils = require("lib.ecusson.Utils")
 local CameraAwareSprite = require("camera_aware_sprite")
 require "print_r"
 require "arcPos"
+local Deque = require "deque"
 
 -- error accepted when moving the player
 local accepted_error = 0.008
@@ -193,6 +194,29 @@ function Player:refresh()
 	-- 	-- self.sprite:redraw()    
 	-- 	-- self.colorSprite:redraw()    
 	-- end
+	local currentDestination = Deque.first(self.predictionNodes)
+	if (currentDestination ~= nil) then
+		local proximity = Vector2D:Sub(self.pos, currentDestination)
+		dbg(PREDICTION_DBG, {"Proximity is:", proximity})
+		dbg(PREDICTION_DBG, {"accepted_error:", accepted_error})
+		if (proximity <= accepted_error) then
+			Deque.popleft(self.predictionNodes)
+			currentDestination = Deque.first(self.predictionNodes)
+		end
+		-- TODO: Differentiate between self.pos, the actual pos sent by the server and self.predictedPos, the pos predicted by the client, AND USE PREDICTED POS FOR DISPLAY
+		-- First: grab the Vecto2D of destination and store it in destinationV2d
+		local destinationV2d = nil
+		-- Then, updating the predictedPos to the new one, after adding the speed of the player to the previous predicted pos
+		self.predictedPos:add(Vector2D.Sub(destinationV2d, self.predictedPos))
+	end
+end
+
+function Player:setPredictionNodes( nodes )
+	self.predictionNodes = Deque.new()
+	for i,v in ipairs(nodes) do
+		dbg(PREDICTION_DBG, {"Adding node", i, v, "to predictionNodes"})
+		self.predictionNodes:pushright()
+	end
 end
 
 
@@ -235,8 +259,8 @@ function Player:setAR(arcP)
 	self.toX=destination.x
 	self.toY=destination.y
 	self.pos=destination
-	self.sprite:setWorldPosition(self.pos)
-	self.colorSprite:setWorldPosition(self.pos)
+	self.sprite:setWorldPosition(self.predictedPos)
+	self.colorSprite:setWorldPosition(self.predictedPos)
 	self.arcPCurrent = arcP
 
 	-- update sprites
