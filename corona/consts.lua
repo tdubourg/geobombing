@@ -2,14 +2,16 @@ require("utils")
 
 SERVER_IP_ADDR = "127.0.0.1"
 SERVER_PORT = "3000"
-EXPLOSION_PERIOD = 1.2 -- in seconds
-DEATH_ANIM_PERIOD = 3
 
 DISPLAY_MAP_ARCS = false
 DISPLAY_MAP_NODES = false
 
 ZOOM = 2000
 PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
+
+-- anim
+EXPLOSION_PERIOD = 1.2 -- in seconds
+DEATH_ANIM_PERIOD = 3
 
 -- JSON labels
 	-- protocol
