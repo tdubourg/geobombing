@@ -245,6 +245,7 @@ function Player:setAR(arcP)
 	self.arcPCurrent = arcP
 
 	-- update sprites
+
 	local myCuteDir = Vector2D:Sub(self.pos, self.oldpos)
 	if myCuteDir.x==0 and myCuteDir.y==0 then
 		self.animString = "stand"
@@ -265,11 +266,13 @@ function Player:setAR(arcP)
 		end
 	end
 
-	local newAnimString = self.dirString..self.animString
-	if self.currentAnimString ~= newAnimString then
-		self.sprite:play(newAnimString)
-		self.colorSprite:play(newAnimString)
-		self.currentAnimString = newAnimString
+	if not self.isDead then
+		local newAnimString = self.dirString..self.animString
+		if self.currentAnimString ~= newAnimString then
+			self.sprite:play(newAnimString)
+			self.colorSprite:play(newAnimString)
+			self.currentAnimString = newAnimString
+		end
 	end
 
 end
