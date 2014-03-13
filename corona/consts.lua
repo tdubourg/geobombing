@@ -12,6 +12,7 @@ PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
 -- anim
 EXPLOSION_PERIOD = 1.2 -- in seconds
 DEATH_ANIM_PERIOD = 3
+BOMB_PULSE_PERIOD = 0.5
 
 -- JSON labels
 	-- protocol

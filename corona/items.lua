@@ -33,7 +33,7 @@ function ItemsManager:bombUpdate( bomb_data )
 	local bomb = self.bombs[bomb_id]
 	if (bomb == nil) then
 		dbg(BOMB_DBG_MODE, {"Bomb not found in already created ones, creating a new one"})
-		bomb = Bomb.create(bdata)
+		bomb = Bomb.create(bdata, {255,0,0}) --temporary
 		self.bombs[bomb_id] = bomb
 	else
 		bomb:update(bdata)
