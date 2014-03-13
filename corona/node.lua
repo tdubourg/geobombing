@@ -45,10 +45,15 @@ end
 -- power : transmited power
 -- distanceInterval : distance between returned positions (distance, not ratio!)
 -- resultList : array of ArcPos containing the resulting positions where to draw explosion sprites
-function Node:transmitExplosion(origin, power, distanceInterval, resultArray)
+function Node:transmitExplosion(origin, power, distanceInterval, resultArray, forceTransmit)
 	for otherNode,arc in pairs(self.arcs) do
-		if otherNode ~= origin then             -- do not transmit back to origin
-			local transmitedPower = power*self:transmitionCoef(origin, otherNode)
+		if otherNode ~= origin then 
+			local transmitedPower = nil
+			if forceTransmit then
+				transmitedPower = power
+			else
+				transmitedPower = power*self:transmitionCoef(origin, otherNode)
+			end
 
 			local APfrom = self.map:createArcPos(self, otherNode, 0.0)
 			local APto = nil
@@ -78,7 +83,7 @@ function Node:transmitionCoef(fromNode, toNode)
 	-- dot = math.max( dot, 0 )		-- [0..90] => [0..1]
 	-- return dot
 
-	if dot>0.2 then                 -- tout ou rien
+	if dot> SPREAD_ANGLE_TOLLERANCE then                 -- tout ou rien
 		return 1
 	else
 		return 0
