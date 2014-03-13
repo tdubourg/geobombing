@@ -59,13 +59,15 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	g = g*255/total
 	b = b*255/total
 
+	self.color = {r,g,b}
+
 	self.colorSprite = CameraAwareSprite.create {
 		spriteSet = "manc",
 		animation = "leftwalk",
 		anchor = "bc",
 		worldPosition = self.pos,
 		scale = 1,
-		color = {r,g,b},
+		color = self.color,
 		position = camera:worldToScreen(self.pos),
 		group = playerLayer,
 	}
