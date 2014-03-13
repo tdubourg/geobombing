@@ -343,18 +343,13 @@ function initGame(player_id)
 					else
 						-- The position has to be updated
 						local pos = v[NETWORK_MONSTER_UPDATE_POS_KEY]
-						local player_id = tostring(v[NETWORK_MONSTER_UPDATE_ID_KEY])
+						local monster_id = tostring(v[NETWORK_MONSTER_UPDATE_ID_KEY])
 						if (pos ~= nil) then
 							-- Then take it into account!
-							-- update_monster_position(
-								--monster_id,
-								--pos
-							--)
-						end
-
-						if (json_obj.data[NETWORK_REMAINING_TIME] ~= nil) then
-							time = json_obj.data[NETWORK_REMAINING_TIME]
-							timeText.text = "Temps restant: " .. time
+							 update_monster_position(
+								monster_id,
+								pos
+							)
 						end
 
 						--handling monster death
