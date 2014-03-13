@@ -291,6 +291,7 @@ function initGame(player_id)
 
 						--handling self death
 						if dead then
+							--dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
 							if player_id == player.id then
 								-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
 								if (player.isDead == false) then
@@ -298,10 +299,22 @@ function initGame(player_id)
 									scoreDText.text = "-"..player.nbDeath
 									player:die()
 								end
+							else
+								local daPlayer = others[player_id]
+								if (daPlayer.isDead == false) then
+									--daPlayer.nbDeath = daPlayer.nbDeath + 1
+									daPlayer:die()
+								end
 							end
 						elseif player_id == player.id  then
 							if (player.isDead) then
 								player:revive()
+							end
+						else
+							local daPlayer = others[player_id]
+							if (daPlayer.isDead) then
+								--daPlayer.nbDeath = daPlayer.nbDeath + 1
+								daPlayer:revive()
 							end
 						end
 					end
@@ -354,16 +367,18 @@ function initGame(player_id)
 
 						--handling monster death
 						if dead then
-							-- if monster_id == monster.id then
-								-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
-								-- if (monster.isDead == false) then
-									-- monster:die()
-								-- end
-							-- end
-						-- elseif monster_id == monster.id  then
-							-- if (monster.isDead) then
-								-- monster:revive()
-							-- end
+							dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
+							local daMonster = monsters[monster_id]
+							if (daMonster.isDead == false) then
+								--daPlayer.nbDeath = daPlayer.nbDeath + 1
+								daMonster:die()
+							end
+						else
+							local daMonster = monsters[monster_id]
+							if (daMonster.isDead) then
+								--daPlayer.nbDeath = daPlayer.nbDeath + 1
+								daMonster:revive()
+							end
 						end
 					end
 				end
