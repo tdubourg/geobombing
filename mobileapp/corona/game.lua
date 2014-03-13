@@ -90,7 +90,7 @@ function removeScoreDisplay()
 	scoreGroup:removeSelf()
 	--time = gameTime
 	--timerId = timer.performWithDelay( 1000, updateTime , -1 )
-	Runtime:addEventListener("touch", moveOurPlayer)	
+	Runtime:addEventListener("touch", newPlayerDestination)	
 end
 
 -- function updateTime()
@@ -166,8 +166,8 @@ local updateLoop = function( event )
 end
 
 local trans
-local last_moveOurPlayer = 0
-function moveOurPlayer(e)
+local last_newPlayerDestination = 0
+function newPlayerDestination(e)
 	if(trans)then
 		transition.cancel(trans)
 	end
@@ -176,12 +176,12 @@ function moveOurPlayer(e)
 		btnBombClicked = false
 	else
 		local timeLimit = now() - PLAYER_MOVE_ON_DRAG_UPDATE_INTERVAL_IN_MS
-		if (e.phase ~= "began" and last_moveOurPlayer > timeLimit) then
+		if (e.phase ~= "began" and last_newPlayerDestination > timeLimit) then
 			-- Do not do anything, to avoid spamming player move requests on each pixel 
 			return
 		end
 
-		last_moveOurPlayer = now()
+		last_newPlayerDestination = now()
 		local screenPos = Vector2D:new(e.x,e.y)
 		local worldPos = camera:screenToWorld(screenPos)
 
@@ -202,7 +202,7 @@ function moveOurPlayer(e)
 				else
 					if (nodes[1] == from) then
 						if (player.arcPCurrent.arc.end1 == from) then
-						player.nodeFrom=player.arcPCurrent.arc.end2
+							player.nodeFrom=player.arcPCurrent.arc.end2
 						else
 							player.nodeFrom=player.arcPCurrent.arc.end1
 						end
@@ -393,7 +393,7 @@ function initGame(player_id)
 			-- Show the ranking
 			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
 				rankOn = true
-				Runtime:removeEventListener("touch",moveOurPlayer)	
+				Runtime:removeEventListener("touch",newPlayerDestination)	
 				scoreGroup = display.newGroup()
 				local scoreDisplay = display.newRect( display.contentCenterX, display.contentCenterY, display.contentWidth-20, display.contentHeight-20 )
 				scoreDisplay.alpha = 0.5
@@ -436,7 +436,7 @@ function initGame(player_id)
 	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener( "enterFrame", gui.update )
-	Runtime:addEventListener("touch", moveOurPlayer)	
+	Runtime:addEventListener("touch", newPlayerDestination)	
 
 end
 
@@ -525,7 +525,7 @@ function scene:exitScene( event )
 
 	Runtime:removeEventListener( "enterFrame", updateLoop )
 	Runtime:removeEventListener( "enterFrame", gui.update )
-	Runtime:removeEventListener("touch",moveOurPlayer)	
+	Runtime:removeEventListener("touch",newPlayerDestination)	
 
 	net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = nil
 	net.net_handlers[FRAMETYPE_INIT] = nil
