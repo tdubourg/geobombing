@@ -45,22 +45,27 @@ var sendInit_action = function (frame_data, stream)
 	{
 		var position = db.getInitialPosition(); // FIXME calcul de position initiale par la base de données
 		single_game_server.setInitialPosition(stream, position)
+		
+		////////
+		// FIXME: debug add monsters
+		single_game_server.addMonster(db.getInitialPosition())
+		////////
 	}
 	
-	if (single_game_server == null) db.fullMapAccordingToLocation(lat, lon, 
-		function (mapData, position, tiles)
+	if (single_game_server == null)
+		db.fullMapAccordingToLocation(lat, lon, function (mapData, position, tiles)
 		{
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))), tiles)
-
+			
 			sendInit(single_game_server.game.map.jsonObj,  tiles);
 			setInitialPosition();
 		}); // lat, lon
-		else
-		{
-			sendInit(single_game_server.game.map.jsonObj, single_game_server.tiles);
-			setInitialPosition();
-		}
+	else
+	{
+		sendInit(single_game_server.game.map.jsonObj, single_game_server.tiles);
+		setInitialPosition();
+	}
 } // end sendInit_action
 
 

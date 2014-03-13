@@ -124,15 +124,21 @@ Map.prototype.getNode = function (nid) {
 /// PLAYERS /////////////////////////
 
 
-var pids = 0
-function Player(game, stream) {
+// var pids = 0
+function Player(game, isMonster) {
 	//console.log("CRE PLAY",game)
 	/*this.id = id
 	this.name = name*/
 	this.game = game
-	game.players.push(this)
-	this.stream = stream
-	this.id = ++pids
+	if (isMonster)
+		game.monsters.push(this)
+	else
+		game.players.push(this)
+	
+	// this.stream = stream
+	
+	//this.id = ++pids
+	this.id = ++game.nextPlayerId
 	this.name = "Player_" + this.id
 	this.currentPath = []  // contains nextNode? -> NOT
 	this.speed = PLAYER_SPEED //.3 //1E-3
@@ -153,10 +159,23 @@ function Player(game, stream) {
 	//this.nextNode = null
 }
 
+// var nbMonsters = 0
+// function Monster(game) {
+// 	this.game = game
+// 	game.monsters.push(this)
+// 	this.id = ++nextMonsterId
+	
+// }
+
 function Game(map) {
 	this.map = map
 	this.players = []
-	this.playersId = 0
+	this.nextPlayerId = 0
+	// this.playersId = 0
+	
+	this.monsters = []
+	// this.nextMonsterId = 0
+	
 	this.bombs = []
 	//this.dyingPlayers = []
 }
