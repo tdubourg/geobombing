@@ -136,8 +136,22 @@ return {
 				},
 
 				explode = {
-					frameCount = 60,
-					period = EXPLOSION_DURATION,
+					frameCount = 8,
+					period = EXPLOSION_PERIOD,
+					loopCount = 1
+				}
+			},
+
+			bombc = {
+				idle = {
+					frameCount = 1,
+					period = 10000,
+					loopCount = 1
+				},
+
+				explode = {
+					frameCount = 8,
+					period = EXPLOSION_PERIOD,
 					loopCount = 1
 				}
 			}
