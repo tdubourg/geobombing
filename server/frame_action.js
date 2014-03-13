@@ -91,6 +91,34 @@ function sendEnd(stream, players)
 
 // --- updates ---
 
+var sendMonstersUpdate = function (stream, monsters) // all monsters
+{
+	var data = {}
+	data[net.TYPETIMESTAMP] = Date.now() // for discard monsterUpdatePosition 
+	var all_monsters = []
+	monsters.forEach(function (monster) 
+	{
+		var current_monster = {}
+		current_monster[net.TYPEPOS] = monster.getPosition() 
+		current_monster[net.TYPEID] = monster.id
+		if (monster.dead) { current_monster[net.TYPEDEAD] = monster.dead }
+
+		all_monsters[all_monsters.length] = current_monster
+	})
+
+	data[net.TYPEMONSTERS] = all_monsters
+	var content = 
+	{
+		"type": net.TYPEMONSTERSUPDATE,
+		"data": data
+	};
+	
+	var data = JSON.stringify(content);
+	stream.write(data + net.FRAME_SEPARATOR, function() {
+		//console.log("sendMonstersUpdate: ", data)
+	})
+}
+
 var sendPlayersUpdate = function (stream, players) // player and other players
 {
 	var data = {}
@@ -119,33 +147,6 @@ var sendPlayersUpdate = function (stream, players) // player and other players
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR, function() {
 		//console.log("sendPlayersUpdate: ", data)
-	})
-}
-
-var sendPlayerUpdate = function (stream, player) // player and other players
-{
-	var data = {}
-	data[net.TYPEPOS] = player.getPosition() 
-	data[net.TYPEID] = player.id
-	data[net.TYPETIMESTAMP] = Date.now() // for discard playerUpdatePosition
-	data[net.TYPETIMEREMAINING] = gs.session_time_remaining // time before end of game 
-	if (player.haskilled)
-	{
-		console.log("KILL Update: ", player.name)//content.data[net.TYPEKILLS])
-		var show = true
-		data[net.TYPEKILLS] = player.kills
-	}
-	if (player.dead) { data[net.TYPEDEAD] = player.dead }
-
-	var content = 
-	{
-		"type": net.TYPEPLAYERUPDATE,
-		"data": data
-	};
-	
-	var data = JSON.stringify(content);
-	stream.write(data + net.FRAME_SEPARATOR,function() {
-		if (show) console.log("sendPlayerUpdate:\n", data)
 	})
 }
 
@@ -226,8 +227,8 @@ var frame_actions =
 
 
 exports.sendEnd = sendEnd
-exports.sendPlayerUpdate = sendPlayerUpdate
 exports.sendPlayersUpdate = sendPlayersUpdate
+exports.sendMonstersUpdate = sendMonstersUpdate
 exports.sendPlayerRemove = sendPlayerRemove
 exports.sendBombUpdate = sendBombUpdate
 exports.frame_actions = frame_actions
