@@ -117,11 +117,10 @@ function GameServer(game, tiles)
 		{	
 			for (var conKey in that.connexions) 
 			{
-				var monsters = []
 				var con = that.connexions[conKey]
 				fa.sendPlayersUpdate(con.stream, game.players)
-				fa.sendMonstersUpdate(con.stream, monsters);	
-			}	
+				fa.sendMonstersUpdate(con.stream, game.monsters)
+			}
 			game.players.forEach(function (player) {player.haskilled = false })// to stop sending number kills		
 		}		
 	}, GAME_REFRESH_PERIOD)
@@ -188,10 +187,18 @@ GameServer.prototype.notifyBomb = function(bomb)
 GameServer.prototype.addPlayer = function(stream) 
 {
 	// TODO handle timeouts
-	var p = new g.Player(this.game, stream)	
+	var p = new g.Player(this.game)
 	var c = new Connexion(this, stream, p)
+	
 	return p
 }
+GameServer.prototype.addMonster = function(position) 
+{
+	var m = new g.Player(this.game, true)
+	m.setSpawnPosition(position)
+	return m
+}
+
 GameServer.prototype.getPlayer = function(stream) 
 {
 	return this.connexions[streamKey(stream)].player

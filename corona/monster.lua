@@ -19,7 +19,7 @@ local Monster = {}
 -------------------------------------------------
 
 function Monster.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
-	local self = utils.extend(Monster)
+	local self = utils.extend(Player)
 	dbg (INFO, {"Creating monster... "})
 	--Monster name / speed / number of death
 	self.id = pId
@@ -121,6 +121,7 @@ end
 
 
 function Monster:setAR(arcP)
+	dbg(GAME_DBG, {"LA",arcP.arc.end1.uid,arcP.arc.end2.uid,arcP.progress})
 	self.oldpos = self.pos
 	local destination = arcP:getPosXY()
 	self.toX=destination.x
