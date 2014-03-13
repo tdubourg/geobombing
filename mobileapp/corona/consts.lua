@@ -121,5 +121,8 @@ NETW_DUMP_MODE = false
 DISCARDED_PLAYER_UPDATES_MSG = false
 GAME_DBG = false
 
+PLAYER_SPEED = .1
+
+
 -- require("consts-local")
 silent_fail_require("consts-local")

@@ -158,46 +158,41 @@ end
 
 
 function Player:refresh()
-	if(self.pos.x<= (self.toX+accepted_error) and self.pos.x>=(self.toX-accepted_error) and self.pos.y <=(self.toY+accepted_error) and  self.pos.y>=(self.toY-accepted_error)) then
-		self.currentState = PLAYER_FROZEN_STATE 
-		self.nodesI=self.nodesI+1
+	-- if(self.pos.x<= (self.toX+accepted_error) and self.pos.x>=(self.toX-accepted_error) and self.pos.y <=(self.toY+accepted_error) and  self.pos.y>=(self.toY-accepted_error)) then
+	-- 	self.currentState = PLAYER_FROZEN_STATE 
+	-- 	self.nodesI=self.nodesI+1
 
-		if (self.nodesI>self.nodesMax ) then
-			self.nodesI=0
-			self.nodesMax=0
-			if (self.arcPDest ~= nil) then
-				self:goToAR(self.arcPDest)
-			end
-			--print_r(self.pos)
-			--self.nodeFrom=self.nodeTo
-			--self.nodeTo=nil
-
-			-- self.upCurrentArc(self.nodeFrom,self.nodeTo)
-		else
-			self.toX=self.nodes[self.nodesI].pos.x
-			self.toY=self.nodes[self.nodesI].pos.y
-			self.nodeFrom=self.nodes[self.nodesI-1]
-			self.nodeTo=self.nodes[self.nodesI]
-			--self.upCurrentArc(self.nodeFrom,self.nodeTo)
-			self:refresh()
-		end
-	else 
-		self.currentState = PLAYER_WALKING_STATE 
-		local to = Vector2D:new(self.toX, self.toY)
-		local vectDir = Vector2D:new(0,0)
-		local vectDir = Vector2D:Sub(to,self.pos)
-		vectDir:normalize()
-		-- vecteur normalisé de la direction * la vitesse * delta temps
-		local tempVectDir = Vector2D:Mult(vectDir, self.speed)
-		local temp = Vector2D:Add(self.pos,tempVectDir)
-		vectDir:mult(self.speed)
-		self.pos:add(vectDir)
-		self:upCurrentArc(self.nodeFrom,self.nodeTo)
+	-- 	if (self.nodesI>self.nodesMax ) then
+	-- 		self.nodesI=0
+	-- 		self.nodesMax=0
+	-- 		if (self.arcPDest ~= nil) then
+	-- 			self:goToAR(self.arcPDest)
+	-- 		end
+	-- 	else
+	-- 		self.toX=self.nodes[self.nodesI].pos.x
+	-- 		self.toY=self.nodes[self.nodesI].pos.y
+	-- 		self.nodeFrom=self.nodes[self.nodesI-1]
+	-- 		self.nodeTo=self.nodes[self.nodesI]
+	-- 		--self.upCurrentArc(self.nodeFrom,self.nodeTo)
+	-- 		self:refresh()
+	-- 	end
+	-- else 
+		-- self.currentState = PLAYER_WALKING_STATE 
+		-- local to = Vector2D:new(self.toX, self.toY)
+		-- local vectDir = Vector2D:new(0,0)
+		-- local vectDir = Vector2D:Sub(to,self.pos)
+		-- vectDir:normalize()
+		-- -- vecteur normalisé de la direction * la vitesse * delta temps
+		-- local tempVectDir = Vector2D:Mult(vectDir, self.speed)
+		-- local temp = Vector2D:Add(self.pos,tempVectDir)
+		-- vectDir:mult(self.speed)
+		-- self.pos:add(vectDir)
+		-- self:upCurrentArc(self.nodeFrom,self.nodeTo)
 
 
-		-- self.sprite:redraw()    
-		-- self.colorSprite:redraw()    
-	end
+	-- 	-- self.sprite:redraw()    
+	-- 	-- self.colorSprite:redraw()    
+	-- end
 end
 
 
