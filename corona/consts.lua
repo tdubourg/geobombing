@@ -110,7 +110,7 @@ NETW_RECV_OPTIMIZATION = true
 NETW_DISCARD_PU_OPTIMIZATION = true
 
 -- GAMEPLAY
-
+PLAYER_MOVE_ON_DRAG_UPDATE_INTERVAL_IN_MS = 100
 ERRORS = true -- enables or disables displaying errors on stdout
 INFO = true -- INFO traces
 BOMB_DBG_MODE = false

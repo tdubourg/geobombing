@@ -89,7 +89,7 @@ function removeScoreDisplay()
 	scoreGroup:removeSelf()
 	--time = gameTime
 	--timerId = timer.performWithDelay( 1000, updateTime , -1 )
-	Runtime:addEventListener("tap",moveObject)	
+	Runtime:addEventListener("touch", moveOurPlayer)	
 end
 
 -- function updateTime()
@@ -158,32 +158,37 @@ local updateLoop = function( event )
 		btnBombClicked = false
 	else
 		if (player ~=nil) then 
-
 			player:refresh()
 		end
 	end
+
 end
 
-	local trans
-	function moveObject(e)
-		if(trans)then
-			transition.cancel(trans)
+local trans
+local last_moveOurPlayer = 0
+function moveOurPlayer(e)
+	if(trans)then
+		transition.cancel(trans)
+	end
+
+	if (btnBombClicked) then
+		btnBombClicked = false
+	else
+		local timeLimit = now() - PLAYER_MOVE_ON_DRAG_UPDATE_INTERVAL_IN_MS
+		if (e.phase ~= "began" and last_moveOurPlayer > timeLimit) then
+			-- Do not do anything, to avoid spamming player move requests on each pixel 
+			return
 		end
 
-		if (btnBombClicked) then
-			btnBombClicked = false
-		else
-			local screenPos = Vector2D:new(e.x,e.y)
-			local worldPos = camera:screenToWorld(screenPos)
+		last_moveOurPlayer = now()
+		local screenPos = Vector2D:new(e.x,e.y)
+		local worldPos = camera:screenToWorld(screenPos)
 
-			local from = currentMap:getClosestNode(player.pos)	
+		local from = currentMap:getClosestNode(player.pos)	
 
-			local arcP = currentMap:getClosestPos(worldPos)
+		local arcP = currentMap:getClosestPos(worldPos)
 
-			if (arcP ~= nil) then 
-			-- test
-			--movePlayerById(1, arcP)
-
+		if (arcP ~= nil) then 
 			if (arcP.progress<0) then
 				dbg (ERRORS, {arcP.progress.." ERROR"})
 			end
@@ -197,23 +202,19 @@ end
 					if (nodes[1] == from) then
 						if (player.arcPCurrent.arc.end1 == from) then
 						player.nodeFrom=player.arcPCurrent.arc.end2
+						else
+							player.nodeFrom=player.arcPCurrent.arc.end1
+						end
 					else
-						player.nodeFrom=player.arcPCurrent.arc.end1
+						player.nodeFrom=from
 					end
-				else
-					player.nodeFrom=from
 				end
+				net.sendPathToServer(nodes,arcP)
 			end
-
-
-			net.sendPathToServer(nodes,arcP)
-
-			--player:saveNewNodes(nodes,arcP)
+		else
+			dbg(ERRORS, {"arcP == nil"})
 		end
-	else
-		dbg(ERRORS, {"arcP == nil"})
 	end
-end
 end
 
 function initGame(player_id)
@@ -257,7 +258,7 @@ function initGame(player_id)
 						and dead == nil and kills == nil -- no important info in the frame
 						and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
 					) then
-						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player updated", json_obj.data})
+						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player update"})
 					else
 						-- The position has to be updated
 						local pos = v[NETWORK_PLAYER_UPDATE_POS_KEY]
@@ -349,7 +350,7 @@ function initGame(player_id)
 						and dead == nil -- no important info in the frame
 						and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
 					) then
-						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED monster updated", json_obj.data})
+						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED monster update"})
 					else
 						-- The position has to be updated
 						local pos = v[NETWORK_MONSTER_UPDATE_POS_KEY]
@@ -390,7 +391,7 @@ function initGame(player_id)
 			-- Show the ranking
 			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
 				rankOn = true
-				Runtime:removeEventListener("tap",moveObject)	
+				Runtime:removeEventListener("touch",moveOurPlayer)	
 				scoreGroup = display.newGroup()
 				local scoreDisplay = display.newRect( display.contentCenterX, display.contentCenterY, display.contentWidth-20, display.contentHeight-20 )
 				scoreDisplay.alpha = 0.5
@@ -433,7 +434,8 @@ function initGame(player_id)
 	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
 	Runtime:addEventListener( "enterFrame", gui.update )
-	Runtime:addEventListener("tap", moveObject)	
+	Runtime:addEventListener("touch", moveOurPlayer)	
+
 end
 
 -- local function myTapListener( event )
@@ -521,7 +523,7 @@ function scene:exitScene( event )
 
 	Runtime:removeEventListener( "enterFrame", updateLoop )
 	Runtime:removeEventListener( "enterFrame", gui.update )
-	Runtime:removeEventListener("tap",moveObject)	
+	Runtime:removeEventListener("touch",moveOurPlayer)	
 
 	net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = nil
 	net.net_handlers[FRAMETYPE_INIT] = nil
