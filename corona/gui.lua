@@ -21,7 +21,27 @@ local function onBombBtnDown()
 	return true	-- indicates successful touch, to avoid other layers to grab the tap event as well
 end
 
+local function update()
+  -- OPTIM: pull au lieu de fetch
+  local name = player:getCurrentStreetName()
+  if name then
+    -- if streetText then
+    --  streetText:removeSelf()
+    -- end
+    -- streetText = display.newText(name , 10, 10, native.systemFont, 24 )
+    -- streetText.anchorX = 0
+    -- streetText.anchorY = 0
+    -- streetText:setFillColor( 0.7, 0, 0.3 )
 
+    if not streetText then
+      streetText = display.newText(name , 10, 10, native.systemFont, 20 )
+      streetText.anchorX = 0
+      streetText.anchorY = 0
+      streetText:setFillColor( 0.7, 0, 0.3 )
+    end
+    streetText.text = name
+  end
+end
 
 
 local initGUI = function (  )
@@ -66,4 +86,5 @@ end
 return {
 	initGUI = initGUI,
 	exitGUI = exitGUI,
+	update = update,
 }

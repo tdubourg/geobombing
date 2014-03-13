@@ -162,28 +162,7 @@ local updateLoop = function( event )
 			player:refresh()
 		end
 	end
-
-		-- TODO: move this into GUI.lua
-		-- OPTIM: pull au lieu de fetch
-		local name = player:getCurrentStreetName()
-		if name then
-			-- if streetText then
-			-- 	streetText:removeSelf()
-			-- end
-			-- streetText = display.newText(name , 10, 10, native.systemFont, 24 )
-			-- streetText.anchorX = 0
-			-- streetText.anchorY = 0
-			-- streetText:setFillColor( 0.7, 0, 0.3 )
-
-			if not streetText then
-				streetText = display.newText(name , 10, 10, native.systemFont, 20 )
-				streetText.anchorX = 0
-				streetText.anchorY = 0
-				streetText:setFillColor( 0.7, 0, 0.3 )
-			end
-			streetText.text = name
-		end
-	end
+end
 
 	local trans
 	function moveObject(e)
@@ -453,6 +432,7 @@ function initGame(player_id)
 	end
 	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
+	Runtime:addEventListener( "enterFrame", gui.update )
 	Runtime:addEventListener("tap", moveObject)	
 end
 
@@ -540,6 +520,7 @@ function scene:exitScene( event )
 	net.disconnect()
 
 	Runtime:removeEventListener( "enterFrame", updateLoop )
+	Runtime:removeEventListener( "enterFrame", gui.update )
 	Runtime:removeEventListener("tap",moveObject)	
 
 	net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = nil
