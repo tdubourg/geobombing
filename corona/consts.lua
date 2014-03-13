@@ -8,6 +8,7 @@ DISPLAY_MAP_NODES = false
 
 ZOOM = 2000
 PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
+SPREAD_ANGLE_TOLLERANCE = 0.2
 
 -- anim
 EXPLOSION_PERIOD = 1.2 -- in seconds
