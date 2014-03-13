@@ -14,6 +14,7 @@ var PLAYER_SPEED = .1 //.5
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
 var BOMB_POWER = .17
+var BOMB_RADIUS = .01
 var BOMB_COS_TOLERANCE = .2
 var REDUCE_BOMB_POWER_AT_ANGLE = false
 var DEBUG_BOMBES = false
@@ -241,7 +242,7 @@ function DEBUG_fillWithBombs(game, player, arc, from, to) {
 	}
 }
 
-Bomb.prototype.explode_propagate = function (coeff) {
+Bomb.prototype.explode_propagate = function (coeff, frstTime) {
 	var game = this.player.game
 	var player = this.player
 	var playersOnArc = {}
@@ -260,7 +261,7 @@ Bomb.prototype.explode_propagate = function (coeff) {
 		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
 	})
 
-	function rec (startDist, distToCover, prevNode, arc) {
+	function rec (startDist, distToCover, prevNode, arc, firstTime) {
 		
 		if (visitedArc[arc.id]) return
 		visitedArc[arc.id] = true
@@ -303,13 +304,16 @@ Bomb.prototype.explode_propagate = function (coeff) {
 				// if (!visitedArc[newArc.id]
 				// 	&& -Math.PI/2 < angle && angle < Math.PI/2
 				// ) {
-				if (cos > BOMB_COS_TOLERANCE) {
+				if (
+					cos > BOMB_COS_TOLERANCE
+				 || firstTime && (arc.length-startDist <= BOMB_RADIUS)
+				) {
 					//console.log("ang: "+angle)
 					//console.log(">> "+a)
 					if (REDUCE_BOMB_POWER_AT_ANGLE)
 						 // rec(0, newDistToCover*Math.cos(angle), arc.n2, newArc)
-						 rec(0, newDistToCover*cos, arc.n2, newArc)
-					else rec(0, newDistToCover, arc.n2, newArc)
+						 rec(0, newDistToCover*cos, arc.n2, newArc, false)
+					else rec(0, newDistToCover, arc.n2, newArc, false)
 				}
 				
 			}
@@ -324,11 +328,11 @@ Bomb.prototype.explode_propagate = function (coeff) {
 	
 	power *= coeff
 	
-	rec(this.arcDist, this.arcDist+power, curArc.n1, curArc)
+	rec(this.arcDist, this.arcDist+power, curArc.n1, curArc, true)
 	visitedArc[curArc.getOpposite().id] = false
 	//rec(curArc.length-this.arcDist, power, curArc.n2, curArc.n2.arcToId(curArc.n1.id))
 	var d = curArc.length-this.arcDist
-	rec(d, d+power, curArc.n2, curArc.getOpposite())
+	rec(d, d+power, curArc.n2, curArc.getOpposite(), true)
 	
 }
 
