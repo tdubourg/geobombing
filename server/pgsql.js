@@ -98,7 +98,7 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 		// );
 		
 		var map = roads
-		trimMap(map, latitude, longitude, hauteur, largeur)
+		//trimMap(map, latitude, longitude, hauteur, largeur)
 		projectMap(map)
 		// autoScaleMap(map)
 		scaleMap(map)
