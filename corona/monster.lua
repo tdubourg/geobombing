@@ -19,7 +19,7 @@ local Monster = {}
 -------------------------------------------------
 
 function Monster.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
-	local self = utils.extend(Player)
+	local self = utils.extend(Monster)
 	dbg (INFO, {"Creating monster... "})
 	--Monster name / speed / number of death
 	self.id = pId
