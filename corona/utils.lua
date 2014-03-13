@@ -75,6 +75,37 @@ function dbg( mode, things )
 	end
 end
 
+local colors = {
+	[1] = {255,0,0},
+	[2] = {0,255,0},
+	[3] = {0,0,255},
+	[4] = {255,0,195},
+	[5] = {162,0,255},
+	[6] = {0,221,255},
+	[7] = {234,255,0},
+	[8] = {255,149,0},
+	[9] = {255,255,255},
+	[10] = {0,0,0},
+}
+
+function idToColor(pid)
+	-- old method based on random + seeding
+	-----------------------------------------------
+	-- math.randomseed(pid)
+	-- local r = math.random()
+	-- local g = math.random()
+	-- local b = math.random()
+	-- math.randomseed(os.time())
+
+	-- local total = r+g+b
+
+	-- r = r*255/total
+	-- g = g*255/total
+	-- b = b*255/total
+	-----------------------------------------------
+	return colors[pid%(#colors)]
+end
+
 -- Returns the timestamp in milliseconds 
 -- That is to say the number of milliseconds since the 01/01/1970
 function now()
