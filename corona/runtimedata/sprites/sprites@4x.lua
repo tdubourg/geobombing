@@ -1,7 +1,7 @@
 --
 -- created with TexturePacker (http://www.codeandweb.com/texturepacker)
 --
--- $TexturePacker:SmartUpdate:e5e6b99f637ac762afd44a040719deab:fa4c2708e609b0e8e5fd0a626deb3e22:f5c322b4188998d6cd973301e8657e5f$
+-- $TexturePacker:SmartUpdate:313134a95193bebfb461a8c492bcab3d:465cf561e2d5fc4f4a109cdec467ca52:f5c322b4188998d6cd973301e8657e5f$
 --
 -- local sheetInfo = require("mysheet")
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
@@ -39,6 +39,30 @@ SheetInfo.sheet =
 
         },
         {
+            -- bomb_explode_01
+            x=1232,
+            y=1680,
+            width=160,
+            height=160,
+
+        },
+        {
+            -- bomb_explode_02
+            x=1056,
+            y=1856,
+            width=160,
+            height=160,
+
+        },
+        {
+            -- bomb_explode_03
+            x=1056,
+            y=1680,
+            width=160,
+            height=160,
+
+        },
+        {
             -- bomb_idle
             x=1104,
             y=544,
@@ -48,30 +72,6 @@ SheetInfo.sheet =
         },
         {
             -- bombe_idle_01
-            x=1232,
-            y=1680,
-            width=160,
-            height=160,
-
-        },
-        {
-            -- bombe_idle_02
-            x=1056,
-            y=1856,
-            width=160,
-            height=160,
-
-        },
-        {
-            -- bombec_idle_01
-            x=1056,
-            y=1680,
-            width=160,
-            height=160,
-
-        },
-        {
-            -- bombec_idle_02
             x=880,
             y=1776,
             width=160,
@@ -79,7 +79,7 @@ SheetInfo.sheet =
 
         },
         {
-            -- explo_idle_01
+            -- bombe_idle_02
             x=704,
             y=1776,
             width=160,
@@ -87,7 +87,7 @@ SheetInfo.sheet =
 
         },
         {
-            -- explo_idle_02
+            -- bombec_idle_01
             x=880,
             y=1600,
             width=160,
@@ -95,7 +95,7 @@ SheetInfo.sheet =
 
         },
         {
-            -- explo_idle_03
+            -- bombec_idle_02
             x=704,
             y=1600,
             width=160,
@@ -490,14 +490,14 @@ SheetInfo.frameIndex =
     ["bombButton"] = 1,
     ["bombButton2"] = 2,
     ["bombButton3"] = 3,
-    ["bomb_idle"] = 4,
-    ["bombe_idle_01"] = 5,
-    ["bombe_idle_02"] = 6,
-    ["bombec_idle_01"] = 7,
-    ["bombec_idle_02"] = 8,
-    ["explo_idle_01"] = 9,
-    ["explo_idle_02"] = 10,
-    ["explo_idle_03"] = 11,
+    ["bomb_explode_01"] = 4,
+    ["bomb_explode_02"] = 5,
+    ["bomb_explode_03"] = 6,
+    ["bomb_idle"] = 7,
+    ["bombe_idle_01"] = 8,
+    ["bombe_idle_02"] = 9,
+    ["bombec_idle_01"] = 10,
+    ["bombec_idle_02"] = 11,
     ["man_death_01"] = 12,
     ["man_death_02"] = 13,
     ["man_downstand_01"] = 14,
