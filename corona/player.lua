@@ -28,6 +28,8 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 	self.nbDeath = pNDeath or 0
 	self.nbKill = 0
 	self.isDead = true
+	dbg(Y,{"ID is", self.id})
+	self.color = idToColor(self.id)
 
 	--Player current state : FROZEN / WALKING / DEAD
 	self.currentState = PLAYER_FROZEN_STATE 
@@ -49,17 +51,6 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 		group = playerLayer,
 	}
 
-	r = math.random()
-	g = math.random()
-	b = math.random()
-
-	total = r+g+b
-
-	r = r*255/total
-	g = g*255/total
-	b = b*255/total
-
-	self.color = {r,g,b}
 
 	self.colorSprite = CameraAwareSprite.create {
 		spriteSet = "manc",
