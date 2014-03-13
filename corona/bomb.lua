@@ -18,7 +18,7 @@ local transitionDuration = 1.0
 -----------------------------------------------------------------------------------------
 
 -- Create the environment
-function Bomb.create(options)
+function Bomb.create(options, playerColor)
 	local self = utils.extend(Bomb)
 
 	-- Initialize attributes
@@ -27,13 +27,22 @@ function Bomb.create(options)
 	self.time = 0
 	self.alive = true
 	self.arcPos = options.arcPos
-	self.id = options.id
+	self.id = options.idle
 	self.type = options.type
 	self.power = options.power
 
 	self.sprite = CameraAwareSprite.create {
 		spriteSet = "bomb",
 		animation = "idle",
+		worldPosition = options.arcPos:getPosXY(),
+		position = camera:worldToScreen(options.arcPos:getPosXY()),
+		-- rotation = self.spawnPoint.rotation
+	}
+
+	self.colorSprite = CameraAwareSprite.create {
+		spriteSet = "bombc",
+		animation = "idle",
+		color = playerColor,
 		worldPosition = options.arcPos:getPosXY(),
 		position = camera:worldToScreen(options.arcPos:getPosXY()),
 		-- rotation = self.spawnPoint.rotation
@@ -55,6 +64,7 @@ function Bomb:destroy()
 	self.sprite:removeEventListener("touch", self)
 
 	self.sprite:destroy()
+	self.colorSprite:destroy()
 
 	for _,explosionSprite in ipairs(self.expSprites) do
 		explosionSprite:destroy()
