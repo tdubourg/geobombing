@@ -29,7 +29,8 @@ var TYPEPLAYERDEADS = "pdeads" // number of deaths of the player
 var TYPEPLAYERKILLS = "pkills" // number of people killed by the player
 var TYPEPLAYERPOINTS = "ppoints" // number of points of the player
 
-var TYPEPLAYERUPDATE = "pu" // new position, new death, new points
+var TYPEMONSTERSUPDATE = "mu" // new position, new death for all monsters
+var TYPEMONSTERS = "ms" // monsters
 var TYPEPLAYERSUPDATE = "pu" // new position, new death, new points for all players
 var TYPEPLAYERS = "pl" // players
 var TYPETIMESTAMP  = "ts"
@@ -58,8 +59,9 @@ exports.TYPEPLAYERDEADS = TYPEPLAYERDEADS
 exports.TYPEPLAYERKILLS = TYPEPLAYERKILLS
 exports.TYPEPLAYERPOINTS = TYPEPLAYERPOINTS
 
-exports.TYPEPLAYERUPDATE = TYPEPLAYERUPDATE
 exports.TYPETIMESTAMP  = TYPETIMESTAMP 
+exports.TYPEMONSTERSUPDATE = TYPEMONSTERSUPDATE
+exports.TYPEMONSTERS = TYPEMONSTERS
 exports.TYPEPLAYERSUPDATE = TYPEPLAYERSUPDATE
 exports.TYPEPLAYERS = TYPEPLAYERS
 exports.TYPEID = TYPEID

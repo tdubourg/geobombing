@@ -9,7 +9,6 @@ var net = require('./network')
 
 // in milliseconds:
 var GAME_REFRESH_PERIOD = 100
-// var MOVE_REFRESH_PERIOD = 100
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
@@ -118,8 +117,10 @@ function GameServer(game, tiles)
 		{	
 			for (var conKey in that.connexions) 
 			{
+				var monsters = []
 				var con = that.connexions[conKey]
-				fa.sendPlayersUpdate(con.stream, game.players);/******/	
+				fa.sendPlayersUpdate(con.stream, game.players)
+				fa.sendMonstersUpdate(con.stream, monsters);	
 			}	
 			game.players.forEach(function (player) {player.haskilled = false })// to stop sending number kills		
 		}		
@@ -129,7 +130,8 @@ function GameServer(game, tiles)
 	// SESSIONS
 	if (session)
 	{ 
-		setInterval(function() {		
+		setInterval(function() 
+		{		
 			session_time_remaining--;
 			exports.session_time_remaining = session_time_remaining
 			if (session_time_remaining == 0)
