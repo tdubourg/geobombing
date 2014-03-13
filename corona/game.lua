@@ -72,6 +72,7 @@ end
 
 function moveMonsterById(id,arcP)
 	local strid = tostring(id)
+	dbg(MONSTER_UPDATES_DBG, {"Executing moveMonsterById for id", strid})
 
 	local daMonster = monsters[strid]
 	if (not daMonster) then
@@ -324,6 +325,7 @@ function initGame(player_id)
 	end
 
 	net.net_handlers[FRAMETYPE_MONSTERS_UPDATE] = function ( json_obj )
+		dbg(MONSTER_UPDATES_DBG, {"Received a monster update frame: ", json_obj})
 		if (not rankOn) then
 			if (json_obj.data ~= nil) then
 				
