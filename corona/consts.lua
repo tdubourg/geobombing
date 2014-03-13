@@ -118,7 +118,7 @@ INFO = true -- INFO traces
 BOMB_DBG_MODE = false
 NETW_DBG_MODE = false
 NETW_DUMP_MODE = false
-DISCARDED_PLAYER_UPDATES_MSG = true
+DISCARDED_PLAYER_UPDATES_MSG = false
 GAME_DBG = false
 
 -- require("consts-local")
