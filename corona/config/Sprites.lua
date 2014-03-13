@@ -129,9 +129,8 @@ return {
 
 			bomb = {
 				idle = {
-					frameCount = 1,
-					period = 10000,
-					loopCount = 1
+					frameCount = 2,
+					period = BOMB_PULSE_PERIOD,
 				},
 
 				explode = {
@@ -143,16 +142,9 @@ return {
 
 			bombc = {
 				idle = {
-					frameCount = 1,
-					period = 10000,
-					loopCount = 1
+					frameCount = 2,
+					period = BOMB_PULSE_PERIOD,
 				},
-
-				explode = {
-					frameCount = 8,
-					period = EXPLOSION_PERIOD,
-					loopCount = 1
-				}
 			}
 		}
 	},
