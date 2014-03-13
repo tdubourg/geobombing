@@ -2,7 +2,7 @@ require("utils")
 
 SERVER_IP_ADDR = "127.0.0.1"
 SERVER_PORT = "3000"
-EXPLOSION_DURATION = 1.5 -- in seconds
+EXPLOSION_PERIOD = 1.2 -- in seconds
 
 DISPLAY_MAP_ARCS = false
 DISPLAY_MAP_NODES = false
