@@ -91,12 +91,13 @@ function Bomb:explode(options)
 												spriteSet = "bomb",
 												animation = "explode",
 												worldPosition = ap:getPosXY(),
+												rotation = math.random( ) * 360
 													}
 		self.expSprites[#self.expSprites+1] = newSprite
 	end
 
 	self.sprite:play("explode")
-	timer.performWithDelay(EXPLOSION_DURATION*1000, function ( ) -- converting from seconds to ms
+	timer.performWithDelay(EXPLOSION_PERIOD*1000, function ( ) -- converting from seconds to ms, 8 frames
 		self:destroy()
 	end)
 end
