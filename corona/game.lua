@@ -32,11 +32,13 @@ local scoreDText
 local scoreKText
 local scoreGroup 
 local nameText
+local others -- ajout recent à vérifier
+local monsters
 rankOn = false
 
 function movePlayerById(id,arcP)
 	local exist = false
-	strid = "" .. id
+	local strid = "" .. id -- ajout recent du local à vérifier
 
 	local daPlayer = others[strid]
 	if (not daPlayer) then
@@ -51,6 +53,19 @@ function movePlayerById(id,arcP)
 	end
 end
 
+function moveMonsterById(id,arcP)
+	local exist = false
+	local strid = "" .. id -- ajout recent du local à vérifier
+
+	local daMonster = monsters[strid]
+	if (not daMonster) then
+		daMonster = Monster.new(strid,0.02,0,arcP)
+		monsters[strid] = daMonster
+	end
+
+	daMonster:setAR(arcP)
+	
+end
 
 
 function removeScoreDisplay()
@@ -110,6 +125,11 @@ end
 function update_player_position(id, pos_obj )
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
 	movePlayerById(id, arcP)
+end
+
+function update_monster_position(id, pos_obj )
+	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
+	moveMonsterById(id, arcP)
 end
 
 -- Called when the scene's view does not exist:

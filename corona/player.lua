@@ -5,34 +5,12 @@ local CameraAwareSprite = require("camera_aware_sprite")
 require "print_r"
 require "arcPos"
 
--- The following constants define the widht and height of the player in percentage of the screen so that the player
--- takes the same amount of space on a small and on a big screen
-PLAYER_WIDTH_IN_PERCENTAGE = 10
-PLAYER_HEIGHT_IN_PERCENTAGE = 10
-
-PLAYER_SPRITE_RAW_WIDTH = 237
-PLAYER_SPRITE_RAW_HEIGHT = 513
-PLAYER_SPRITESHEET_WIDTH = 2037
-PLAYER_SPRITESHEET_HEIGHT = 513
-
-PLAYER_DEAD_STATE = 42
-PLAYER_WALKING_STATE = 43
-PLAYER_FROZEN_STATE = 44
-
-spriteWidth = 25
-spriteHeight = 25
-
 -- error accepted when moving the player
 local accepted_error = 0.008
 
 -------------------------------------------------
 -- PRIVATE FUNCTIONS
 -------------------------------------------------
-
-local PLAYER_SPRITE_SEQUENCE_DATA = {
-{ name="normal", start=1, count=7, time=400}--,
---{ name="dead", start=9, count=4, time=400}
-}
 
 local Player = {}
 
