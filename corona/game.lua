@@ -32,11 +32,13 @@ local scoreDText
 local scoreKText
 local scoreGroup 
 local nameText
+local others -- ajout recent à vérifier
+local monsters
 rankOn = false
 
 function movePlayerById(id,arcP)
 	local exist = false
-	strid = "" .. id
+	local strid = "" .. id -- ajout recent du local à vérifier
 
 	local daPlayer = others[strid]
 	if (not daPlayer) then
@@ -51,6 +53,19 @@ function movePlayerById(id,arcP)
 	end
 end
 
+function moveMonsterById(id,arcP)
+	local exist = false
+	local strid = "" .. id -- ajout recent du local à vérifier
+
+	local daMonster = monsters[strid]
+	if (not daMonster) then
+		daMonster = Monster.new(strid,0.02,0,arcP)
+		monsters[strid] = daMonster
+	end
+
+	daMonster:setAR(arcP)
+	
+end
 
 
 function removeScoreDisplay()
@@ -110,6 +125,11 @@ end
 function update_player_position(id, pos_obj )
 	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
 	movePlayerById(id, arcP)
+end
+
+function update_monster_position(id, pos_obj )
+	local arcP = currentMap:createArcPosByUID(pos_obj.n1, pos_obj.n2, pos_obj.c)
+	moveMonsterById(id, arcP)
 end
 
 -- Called when the scene's view does not exist:
@@ -212,7 +232,7 @@ function initGame(player_id)
 	others = {}
 	others[player_id] = player
 
-	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = function ( json_obj )
+	net.net_handlers[FRAMETYPE_PLAYERS_UPDATE] = function ( json_obj )
 		if (not rankOn) then
 			if (json_obj.data ~= nil) then
 				-- There's some data to crunch
@@ -271,6 +291,7 @@ function initGame(player_id)
 
 						--handling self death
 						if dead then
+							--dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
 							if player_id == player.id then
 								-- storyboard.gotoScene("game" , { effect="crossFade", time=500 } )
 								if (player.isDead == false) then
@@ -278,10 +299,85 @@ function initGame(player_id)
 									scoreDText.text = "-"..player.nbDeath
 									player:die()
 								end
+							else
+								local daPlayer = others[player_id]
+								if (daPlayer.isDead == false) then
+									--daPlayer.nbDeath = daPlayer.nbDeath + 1
+									daPlayer:die()
+								end
 							end
 						elseif player_id == player.id  then
 							if (player.isDead) then
 								player:revive()
+							end
+						else
+							local daPlayer = others[player_id]
+							if (daPlayer.isDead) then
+								--daPlayer.nbDeath = daPlayer.nbDeath + 1
+								daPlayer:revive()
+							end
+						end
+					end
+				end
+			end
+		else
+			removeScoreDisplay()
+		end
+	end
+
+		net.net_handlers[FRAMETYPE_MONSTERS_UPDATE] = function ( json_obj )
+		if (not rankOn) then
+			if (json_obj.data ~= nil) then
+				
+				-- There's some data to crunch
+				local updates = json_obj.data[NETWORK_MONSTER_UPDATE_MONSTERS_KEY]
+				if (updates == nil) then
+					return
+				end
+
+				local t = json_obj.data[NETWORK_MONSTER_UPDATE_TIMESTAMP_KEY]
+				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS -- same delay for monsters
+				local dt = t - discard_timestamp_limit
+				dbg(NETW_DBG_MODE, {"timestamp frame=", t})
+				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
+				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", dt})
+
+				for k,v in pairs(updates) do
+					dbg(T, {"k=",k, "v=", v})
+					local dead = v[NETWORK_MONSTER_UPDATE_DEAD_KEY]
+
+					-- Frame too old and does not contain information we want to read even if old ? Discard it!
+					if (
+						    dt < 0 -- old enough
+						and dead == nil -- no important info in the frame
+						and NETW_DISCARD_PU_OPTIMIZATION -- and optimization is not disabled
+					) then
+						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED monster updated", json_obj.data})
+					else
+						-- The position has to be updated
+						local pos = v[NETWORK_MONSTER_UPDATE_POS_KEY]
+						local monster_id = tostring(v[NETWORK_MONSTER_UPDATE_ID_KEY])
+						if (pos ~= nil) then
+							-- Then take it into account!
+							 update_monster_position(
+								monster_id,
+								pos
+							)
+						end
+
+						--handling monster death
+						if dead then
+							dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
+							local daMonster = monsters[monster_id]
+							if (daMonster.isDead == false) then
+								--daPlayer.nbDeath = daPlayer.nbDeath + 1
+								daMonster:die()
+							end
+						else
+							local daMonster = monsters[monster_id]
+							if (daMonster.isDead) then
+								--daPlayer.nbDeath = daPlayer.nbDeath + 1
+								daMonster:revive()
 							end
 						end
 					end
@@ -430,7 +526,7 @@ function scene:exitScene( event )
 
 	net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = nil
 	net.net_handlers[FRAMETYPE_INIT] = nil
-	net.net_handlers[FRAMETYPE_PLAYER_UPDATE] = nil
+	net.net_handlers[FRAMETYPE_PLAYERS_UPDATE] = nil
 	net.net_handlers[FRAMETYPE_GAME_END] = nil
 
 	local group = self.view
