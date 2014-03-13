@@ -13,7 +13,8 @@ var fa = require("./frame_action")
 var PLAYER_SPEED = .1 //.5
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
-var BOMB_POWER = .2
+var BOMB_POWER = .17
+var BOMB_COS_TOLERANCE = .2
 var REDUCE_BOMB_POWER_AT_ANGLE = false
 var DEBUG_BOMBES = false
 
@@ -297,13 +298,17 @@ Bomb.prototype.explode_propagate = function (coeff) {
 				//console.log("> "+a)
 				var angle = arc.angleWith(newArc.n2)
 				
-				if (!visitedArc[newArc.id]
-					&& angle > -Math.PI/2 && angle < Math.PI/2
-				) {
+				var cos = Math.cos(angle)
+				
+				// if (!visitedArc[newArc.id]
+				// 	&& -Math.PI/2 < angle && angle < Math.PI/2
+				// ) {
+				if (cos > BOMB_COS_TOLERANCE) {
 					//console.log("ang: "+angle)
 					//console.log(">> "+a)
 					if (REDUCE_BOMB_POWER_AT_ANGLE)
-						 rec(0, newDistToCover*Math.cos(angle), arc.n2, newArc)
+						 // rec(0, newDistToCover*Math.cos(angle), arc.n2, newArc)
+						 rec(0, newDistToCover*cos, arc.n2, newArc)
 					else rec(0, newDistToCover, arc.n2, newArc)
 				}
 				
