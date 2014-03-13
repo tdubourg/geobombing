@@ -89,7 +89,7 @@ function removeScoreDisplay()
 	scoreGroup:removeSelf()
 	--time = gameTime
 	--timerId = timer.performWithDelay( 1000, updateTime , -1 )
-	Runtime:addEventListener("tap",moveObject)	
+	Runtime:addEventListener("tap", moveOurPlayer)	
 end
 
 -- function updateTime()
@@ -158,53 +158,49 @@ local updateLoop = function( event )
 		btnBombClicked = false
 	else
 		if (player ~=nil) then 
-
 			player:refresh()
 		end
 	end
 
-		-- TODO: move this into GUI.lua
-		-- OPTIM: pull au lieu de fetch
-		local name = player:getCurrentStreetName()
-		if name then
-			-- if streetText then
-			-- 	streetText:removeSelf()
-			-- end
-			-- streetText = display.newText(name , 10, 10, native.systemFont, 24 )
-			-- streetText.anchorX = 0
-			-- streetText.anchorY = 0
-			-- streetText:setFillColor( 0.7, 0, 0.3 )
+	-- TODO: move this into GUI.lua
+	-- OPTIM: pull au lieu de fetch
+	local streetName = player:getCurrentStreetName()
+	if streetName then
+		-- if streetText then
+		-- 	streetText:removeSelf()
+		-- end
+		-- streetText = display.newText(streetName , 10, 10, native.systemFont, 24 )
+		-- streetText.anchorX = 0
+		-- streetText.anchorY = 0
+		-- streetText:setFillColor( 0.7, 0, 0.3 )
 
-			if not streetText then
-				streetText = display.newText(name , 10, 10, native.systemFont, 20 )
-				streetText.anchorX = 0
-				streetText.anchorY = 0
-				streetText:setFillColor( 0.7, 0, 0.3 )
-			end
-			streetText.text = name
+		if not streetText then
+			streetText = display.newText(streetName , 10, 10, native.systemFont, 20)
+			streetText.anchorX = 0
+			streetText.anchorY = 0
+			streetText:setFillColor(0.7, 0, 0.3)
 		end
+		streetText.text = streetName
+	end
+end
+
+local trans
+function moveOurPlayer(e)
+	if(trans)then
+		transition.cancel(trans)
 	end
 
-	local trans
-	function moveObject(e)
-		if(trans)then
-			transition.cancel(trans)
-		end
+	if (btnBombClicked) then
+		btnBombClicked = false
+	else
+		local screenPos = Vector2D:new(e.x,e.y)
+		local worldPos = camera:screenToWorld(screenPos)
 
-		if (btnBombClicked) then
-			btnBombClicked = false
-		else
-			local screenPos = Vector2D:new(e.x,e.y)
-			local worldPos = camera:screenToWorld(screenPos)
+		local from = currentMap:getClosestNode(player.pos)	
 
-			local from = currentMap:getClosestNode(player.pos)	
+		local arcP = currentMap:getClosestPos(worldPos)
 
-			local arcP = currentMap:getClosestPos(worldPos)
-
-			if (arcP ~= nil) then 
-			-- test
-			--movePlayerById(1, arcP)
-
+		if (arcP ~= nil) then 
 			if (arcP.progress<0) then
 				dbg (ERRORS, {arcP.progress.." ERROR"})
 			end
@@ -218,23 +214,19 @@ local updateLoop = function( event )
 					if (nodes[1] == from) then
 						if (player.arcPCurrent.arc.end1 == from) then
 						player.nodeFrom=player.arcPCurrent.arc.end2
+						else
+							player.nodeFrom=player.arcPCurrent.arc.end1
+						end
 					else
-						player.nodeFrom=player.arcPCurrent.arc.end1
+						player.nodeFrom=from
 					end
-				else
-					player.nodeFrom=from
 				end
+				net.sendPathToServer(nodes,arcP)
 			end
-
-
-			net.sendPathToServer(nodes,arcP)
-
-			--player:saveNewNodes(nodes,arcP)
+		else
+			dbg(ERRORS, {"arcP == nil"})
 		end
-	else
-		dbg(ERRORS, {"arcP == nil"})
 	end
-end
 end
 
 function initGame(player_id)
@@ -411,7 +403,7 @@ function initGame(player_id)
 			-- Show the ranking
 			if (json_obj.data[NETWORK_GAME_RANKING] ~= nil  and rankOn == false) then
 				rankOn = true
-				Runtime:removeEventListener("tap",moveObject)	
+				Runtime:removeEventListener("tap",moveOurPlayer)	
 				scoreGroup = display.newGroup()
 				local scoreDisplay = display.newRect( display.contentCenterX, display.contentCenterY, display.contentWidth-20, display.contentHeight-20 )
 				scoreDisplay.alpha = 0.5
@@ -453,7 +445,7 @@ function initGame(player_id)
 	end
 	showScore()
 	Runtime:addEventListener( "enterFrame", updateLoop )
-	Runtime:addEventListener("tap", moveObject)	
+	Runtime:addEventListener("tap", moveOurPlayer)	
 end
 
 -- local function myTapListener( event )
@@ -540,7 +532,7 @@ function scene:exitScene( event )
 	net.disconnect()
 
 	Runtime:removeEventListener( "enterFrame", updateLoop )
-	Runtime:removeEventListener("tap",moveObject)	
+	Runtime:removeEventListener("tap",moveOurPlayer)	
 
 	net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = nil
 	net.net_handlers[FRAMETYPE_INIT] = nil
