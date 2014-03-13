@@ -18,7 +18,7 @@ local transitionDuration = 1.0
 -----------------------------------------------------------------------------------------
 
 -- Create the environment
-function Bomb.create(options, playerColor)
+function Bomb.create(options)
 	local self = utils.extend(Bomb)
 
 	-- Initialize attributes
@@ -28,6 +28,8 @@ function Bomb.create(options, playerColor)
 	self.alive = true
 	self.arcPos = options.arcPos
 	self.id = options.idle
+	self.owner = options.ownerId
+	self.color = idToColor(options.ownerId)
 	self.type = options.type
 	self.power = options.power
 
@@ -42,7 +44,7 @@ function Bomb.create(options, playerColor)
 	self.colorSprite = CameraAwareSprite.create {
 		spriteSet = "bombc",
 		animation = "idle",
-		color = playerColor,
+		color = self.color,
 		worldPosition = options.arcPos:getPosXY(),
 		position = camera:worldToScreen(options.arcPos:getPosXY()),
 		-- rotation = self.spawnPoint.rotation

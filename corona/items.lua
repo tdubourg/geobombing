@@ -29,6 +29,7 @@ function ItemsManager:bombUpdate( bomb_data )
 		, arcPos = ArcPos.createFromNetworkPosObj(currentMap, bomb_data[NETWORK_BOMB_UPDATE_POS_KEY])
 		, type = bomb_data[NETWORK_BOMB_UPDATE_TYPE_KEY]
 		, power = bomb_data[NETWORK_BOMB_UPDATE_POWER_KEY]
+		, ownerId = bomb_data[NETWORK_BOMB_UPDATE_OWNER_KEY]
 	}
 	local bomb = self.bombs[bomb_id]
 	if (bomb == nil) then
