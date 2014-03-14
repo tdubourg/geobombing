@@ -13,12 +13,13 @@ var fa = require("./frame_action")
 var PLAYER_SPEED = .1 //.5
 var MONSTER_SPEED = PLAYER_SPEED*.4
 
-var MONSTER_MOVE_PERIOD = 8
-var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*.8
+var MONSTER_MOVE_PERIOD = 1
+var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*2//*.8
+var MONSTERS_PER_GAME = 10
 
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
-var BOMB_POWER = .17
+var BOMB_POWER = .12//.17
 var BOMB_RADIUS = .01
 var BOMB_COS_TOLERANCE = .2
 
@@ -183,6 +184,13 @@ function Game(map)
 	
 	this.bombs = []
 	//this.dyingPlayers = []
+	
+	for (var i = 0; i < MONSTERS_PER_GAME; i++)
+	{
+		var m = new Player(this, true)
+		m.setSpawnPosition(this.getRandomPosition())
+	}
+	
 }
 
 var bombNb = 0
@@ -363,13 +371,14 @@ var delta = 0.0001
 Player.prototype.update = function (period) 
 {
 	
-	if (this.isMonster)
+	if (this.isMonster && !this.dead)
 	{
 		//console.log(">>",this.nextMoveTimer)
 		
-		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD) {
-			this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
-			//this.move()
+		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD)
+		{
+			//this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
+			this.nextMoveTimer = Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS
 			
 			var curNode = Math.random()>.5? this.currentArc.n1: this.currentArc.n2
 			
@@ -383,16 +392,16 @@ Player.prototype.update = function (period)
 			
 			this.move([curNode.id, nextArc.n2.id], Math.random()*nextArc.length)
 			
-		} else {
-			this.nextMoveTimer++
 		}
+		else this.nextMoveTimer += period
 	}
 	
 	
-	if (this.targetArcDist != null) 
+	if (this.targetArcDist != null)
 	{
 		var distToWalk = this.speed*period
-		while (distToWalk > delta) {
+		while (distToWalk > delta)
+		{
 			// Iterate until we have walked the entire distance we can walk in a single round
 			// This has to be done in multiple iterations when we need to change arc 
 			// (the distance to walk is > to the distance until the end of the current arc)
@@ -403,14 +412,18 @@ Player.prototype.update = function (period)
 			:	this.currentArc.length-this.currentArcDist
 			
 			// The distance to walk fits into the current arc
-			if (distToWalk < distToNextDest) {
+			if (distToWalk < distToNextDest)
+			{
 				this.currentArcDist += distToWalk
 				distToWalk = 0
-			} else {
+			}
+			else
+			{
 				// The distance to walk goes over passing through the next node...
 				// update it to be the remaining distance to walk after passing the next node
 				distToWalk -= distToNextDest
-				if (this.currentPath.length > 0) {
+				if (this.currentPath.length > 0)
+				{
 					var currNode = this.currentArc.n2
 					var nextNode = this.currentPath.shift()	
 					var newCurrentArc = currNode.arcToId(nextNode.id)
@@ -420,8 +433,9 @@ Player.prototype.update = function (period)
 						console.log("[Game Model Error]: couldn't find a path from node",
 							currNode.id, "to node", nextNode.id)
 					this.currentArcDist = 0
-					
-				} else {
+				}
+				else 
+				{
 					this.targetArcDist = null
 					break
 				}
@@ -499,6 +513,11 @@ Player.prototype.respawn = function ()
 {
 	this.setPosition(this.spwanPosition)
 	this.dead = false
+	
+	if (this.isMonster)
+	{
+		this.spwanPosition = this.game.getRandomPosition();
+	}
 }
 
 Player.prototype.setPosition = function (position) {
@@ -591,8 +610,8 @@ Game.prototype.getRandomPosition = function()
 	var node = null
 	
 	var nb_considered_nodes =
-		// this.map.nodes.length
-		5
+		this.map.nodes.length
+		// 12
 	
 	while (!node || node.arcsTo.length < 1)
 	{
