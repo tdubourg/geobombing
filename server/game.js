@@ -367,8 +367,7 @@ Player.prototype.update = function (period)
 	{
 		//console.log(">>",this.nextMoveTimer)
 		
-		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD)
-		{
+		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD) {
 			this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
 			//this.move()
 			
@@ -384,8 +383,9 @@ Player.prototype.update = function (period)
 			
 			this.move([curNode.id, nextArc.n2.id], Math.random()*nextArc.length)
 			
+		} else {
+			this.nextMoveTimer++
 		}
-		else this.nextMoveTimer++
 	}
 	
 	
