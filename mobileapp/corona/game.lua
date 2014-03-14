@@ -210,7 +210,6 @@ function newPlayerDestination(e)
 					dbg(ERRORS, {"WHAT?! WTF?"})
 				else
 					if (nodes[1] == from) then
-						player:setPredictionNodes(nodes)
 						if (player.arcPCurrent.arc.end1 == from) then
 							player.nodeFrom=player.arcPCurrent.arc.end2
 						else
@@ -220,6 +219,8 @@ function newPlayerDestination(e)
 						player.nodeFrom=from
 					end
 				end
+				player:setPredictionNodes(nodes)
+				player:setPredictionDestination(arcP)
 				net.sendPathToServer(nodes,arcP)
 				if (nodes ~= nil) then
 					local pos = player.arcPCurrent:getPosXY()

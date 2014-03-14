@@ -3,19 +3,21 @@
 local Deque = {}
 
 function Deque.new ()
-	return {first = 0, last = -1}
+	return {first = 0, last = -1, length = 0}
 end
 
 function Deque.pushleft (deque, value)
 	local first = deque.first - 1
 	deque.first = first
 	deque[first] = value
+	a.length = a.length + 1
 end
 
 function Deque.pushright (deque, value)
 	local last = deque.last + 1
 	deque.last = last
 	deque[last] = value
+	a.length = a.length + 1
 end
 
 function Deque.popleft (deque)
@@ -24,14 +26,21 @@ function Deque.popleft (deque)
 	local value = deque[first]
 	deque[first] = nil        -- to allow garbage collection
 	deque.first = first + 1
+	a.length = a.length - 1
 	return value
 end
 
 function Deque.first(deque)
+	if (a.length == 0) then
+		return nil
+	end
 	return deque[deque.first]
 end
 
 function Deque.last(deque)
+	if (a.length == 0) then
+		return nil
+	end
 	return deque[deque.first]
 end
 
@@ -41,6 +50,7 @@ function Deque.popright (deque)
 	local value = deque[last]
 	deque[last] = nil         -- to allow garbage collection
 	deque.last = last - 1
+	a.length = a.length - 1
 	return value
 end
 

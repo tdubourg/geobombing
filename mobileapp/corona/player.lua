@@ -194,29 +194,86 @@ function Player:refresh()
 	-- 	-- self.sprite:redraw()    
 	-- 	-- self.colorSprite:redraw()    
 	-- end
-	local currentDestination = Deque.first(self.predictionNodes)
-	if (currentDestination ~= nil) then
-		local proximity = Vector2D:Sub(self.pos, currentDestination)
-		dbg(PREDICTION_DBG, {"Proximity is:", proximity})
-		dbg(PREDICTION_DBG, {"accepted_error:", accepted_error})
-		if (proximity <= accepted_error) then
-			Deque.popleft(self.predictionNodes)
-			currentDestination = Deque.first(self.predictionNodes)
+	local delta = 0.0001 -- TODO: Move this constant and document it, cf server for now
+	local distToWalk = 0.1 -- TODO: Move this constant and document it, cf server for now
+
+	if (self.arcPCurrent == nil or self.predictionDestination == nil) then
+		dbg(PREDICTION_DBG, {"Not enough information to run prediction"})
+		return
+	end
+
+	local currentArc = self.arcPCurrent.arc
+	local currentArcDist = self.arcPCurrent.progress
+	local targetArcDist = self.predictionDestination.progress
+	while (distToWalk > delta) do
+		-- Iterate until we have walked the entire distance we can walk in a single round
+		-- This has to be done in multiple iterations when we need to change arc 
+		-- (the distance to walk is > to the distance until the end of the current arc)
+
+		-- Distance between current pos and the next destination (next node on path)
+		local distToNextDest
+		if (self.predictionNodes.length == 0) then
+			-- If we are on the final arc of the path, the distance is the final position
+			-- on the arc, minus the current position
+			distToNextDest = targetArcDist - currentArcDist
+		else
+			-- If we are not on the final arc of the path, the distance to the next node is
+			-- the total length of current arc minus the current position on this arc
+			distToNextDest = currentArc.len - currentArcDist
 		end
-		-- TODO: Differentiate between self.pos, the actual pos sent by the server and self.predictedPos, the pos predicted by the client, AND USE PREDICTED POS FOR DISPLAY
-		-- First: grab the Vecto2D of destination and store it in destinationV2d
-		local destinationV2d = nil
-		-- Then, updating the predictedPos to the new one, after adding the speed of the player to the previous predicted pos
-		self.predictedPos:add(Vector2D.Sub(destinationV2d, self.predictedPos))
+		-- The distance to walk fits into the current arc
+		if (distToWalk < distToNextDest) then
+			currentArcDist = currentArcDist + distToWalk
+			distToWalk = 0
+		else
+			-- The distance to walk goes over passing through the next node...
+			-- update it to be the remaining distance to walk after passing the next node
+			distToWalk = distToWalk - distToNextDest
+			if (currentPath.length > 0) then
+				local currNode = currentArc.n2
+				local nextNode = Deque.popleft(self.predictionNodes)
+				local newCurrentArc = currNode.arcs[nextNode]
+				if (newCurrentArc) then
+					currentArc = newCurrentArc
+				else
+					dbg(PREDICTION_DBG, {"[Game Model Error]: couldn't find a path from node", currNode.id, "to node", nextNode.id})
+				end
+				currentArcDist = 0
+			else
+				targetArcDist = nil
+				break
+			end
+		end
+		local newArcP = ArcPos:new(currentArc, currentArcDist)
+		self:setAr(newArcP)
+		-- local proximity = Vector2D:Sub(self.pos, currentDestination)
+		-- dbg(PREDICTION_DBG, {"Proximity is:", proximity})
+		-- dbg(PREDICTION_DBG, {"accepted_error:", accepted_error})
+		-- if (proximity <= accepted_error) then
+		-- 	Deque.popleft(self.predictionNodes) -- we reached this node, pop it
+		-- 	currentDestination = Deque.first(self.predictionNodes) -- and change the destination
+		-- end
+		-- -- TODO: Differentiate between self.pos, the actual pos sent by the server and self.predictedPos, the pos predicted by the client, AND USE PREDICTED POS FOR DISPLAY
+		-- -- First: grab the Vecto2D of destination and store it in destinationV2d
+		-- local destinationV2d = nil
+		-- -- Then, updating the predictedPos to the new one, after adding the speed of the player to the previous predicted pos
+		-- self.predictedPos:add(Vector2D.Sub(destinationV2d, self.predictedPos))
+		-- update_player_position()
 	end
 end
 
 function Player:setPredictionNodes( nodes )
+	dbg(PREDICTION_DBG, {"Setting prediction nodes"})
 	self.predictionNodes = Deque.new()
 	for i,v in ipairs(nodes) do
 		dbg(PREDICTION_DBG, {"Adding node", i, v, "to predictionNodes"})
 		self.predictionNodes:pushright()
 	end
+end
+
+function Player:setPredictionDestination(arcP)
+	dbg(PREDICTION_DBG, {"Setting prediction destination to", arcP})
+	self.predictionDestination = arcP
 end
 
 
