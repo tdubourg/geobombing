@@ -367,8 +367,7 @@ Player.prototype.update = function (period)
 	{
 		//console.log(">>",this.nextMoveTimer)
 		
-		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD)
-		{
+		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD) {
 			this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
 			//this.move()
 			
@@ -384,38 +383,34 @@ Player.prototype.update = function (period)
 			
 			this.move([curNode.id, nextArc.n2.id], Math.random()*nextArc.length)
 			
+		} else {
+			this.nextMoveTimer++
 		}
-		else this.nextMoveTimer++
 	}
 	
 	
 	if (this.targetArcDist != null) 
 	{
 		var distToWalk = this.speed*period
-		//var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
-		//console.log(period)	
-		//console.log("Going to", this.currentArc+"", this.targetArcDist+"/"+this.currentArc.length)
-		while (distToWalk > delta) 
-		{
-			//var distToNode = this.currentArc.length-this.currentArcDist
-			//var distToNode = this.targetArcDist-this.currentArcDist
-			var distToNode = this.currentPath.length == 0?
+		while (distToWalk > delta) {
+			// Iterate until we have walked the entire distance we can walk in a single round
+			// This has to be done in multiple iterations when we need to change arc 
+			// (the distance to walk is > to the distance until the end of the current arc)
+
+			// Distance between current pos and the next destination (next node on path)
+			var distToNextDest = this.currentPath.length == 0?
 				this.targetArcDist-this.currentArcDist
 			:	this.currentArc.length-this.currentArcDist
 			
-			if (distToWalk < distToNode) 
-			{
+			// The distance to walk fits into the current arc
+			if (distToWalk < distToNextDest) {
 				this.currentArcDist += distToWalk
 				distToWalk = 0
-				//this.targetArcDist = null
-			} 
-			else 
-			{
-				distToWalk -= distToNode
-				//var currNode = this.currentPath.shift()
-				if (this.currentPath.length > 0) 
-				{
-					
+			} else {
+				// The distance to walk goes over passing through the next node...
+				// update it to be the remaining distance to walk after passing the next node
+				distToWalk -= distToNextDest
+				if (this.currentPath.length > 0) {
 					var currNode = this.currentArc.n2
 					var nextNode = this.currentPath.shift()	
 					var newCurrentArc = currNode.arcToId(nextNode.id)
@@ -426,18 +421,13 @@ Player.prototype.update = function (period)
 							currNode.id, "to node", nextNode.id)
 					this.currentArcDist = 0
 					
-				} 
-				else 
-				{
+				} else {
 					this.targetArcDist = null
 					break
 				}
-				
 			}
 			
-			if (!this.isMonster)
-			{
-				
+			if (!this.isMonster) {
 				// FIXME: stop walkign when hit a monster
 				
 				// touch monster kills
@@ -464,9 +454,6 @@ Player.prototype.update = function (period)
 				})
 				
 			}
-			
-			
-
 		} // end while
 	}
 	
