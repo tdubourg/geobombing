@@ -121,7 +121,9 @@ function GameServer(game, tiles)
 				fa.sendPlayersUpdate(con.stream, game.players)
 				fa.sendMonstersUpdate(con.stream, game.monsters)
 			}
-			game.players.forEach(function (player) {player.haskilled = false })// to stop sending number kills		
+
+			// to stop sending number kills	
+			game.players.forEach(function (player) {player.haskilled = false })	
 		}		
 	}, GAME_REFRESH_PERIOD)
 
