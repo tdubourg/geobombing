@@ -53,7 +53,7 @@ return {
 				},
 				upwalk = {
 					frameCount = 2,
-					period = 0.4
+					period = 0.3
 					-- loopCount = 1
 				},
 				upstand = {
@@ -63,7 +63,7 @@ return {
 				},
 				downwalk = {
 					frameCount = 2,
-					period = 0.4
+					period = 0.3
 					-- loopCount = 1
 				},
 				downstand = {
@@ -102,7 +102,7 @@ return {
 				},
 				upwalk = {
 					frameCount = 2,
-					period = 0.4
+					period = 0.3
 					-- loopCount = 1
 				},
 				upstand = {
@@ -112,7 +112,7 @@ return {
 				},
 				downwalk = {
 					frameCount = 2,
-					period = 0.4
+					period = 0.3
 					-- loopCount = 1
 				},
 				downstand = {

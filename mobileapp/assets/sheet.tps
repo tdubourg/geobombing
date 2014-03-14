@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.3.1</string>
         <key>fileName</key>
-        <string>C:/Users/yann/workspace/geobombing/corona/assets/sheet.tps</string>
+        <string>C:/Users/yann/workspace/geobombing/mobileapp/assets/sheet.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -72,7 +72,7 @@
         <key>dataFormat</key>
         <string>corona-imagesheet</string>
         <key>textureFileName</key>
-        <filename>../runtimedata/sprites/sprites{v}.png</filename>
+        <filename>../corona/runtimedata/sprites/sprites{v}.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -170,7 +170,7 @@
             <key>lua</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../runtimedata/sprites/sprites{v}.lua</filename>
+                <filename>../corona/runtimedata/sprites/sprites{v}.lua</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -209,7 +209,7 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../sprites</filename>
+            <filename>sprites</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

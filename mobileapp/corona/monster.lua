@@ -49,26 +49,6 @@ function Monster.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 		group = monsterLayer,
 	}
 
-	r = math.random()
-	g = math.random()
-	b = math.random()
-
-	total = r+g+b
-
-	r = r*255/total
-	g = g*255/total
-	b = b*255/total
-
-	self.colorSprite = CameraAwareSprite.create {
-		spriteSet = "manc",
-		animation = "leftwalk",
-		anchor = "bc",
-		worldPosition = self.pos,
-		scale = 1,
-		color = {r,g,b},
-		position = camera:worldToScreen(self.pos),
-		group = monsterLayer,
-	}
 
 	self.nodeFrom=self.arcPCurrent.arc.end1
 	self.nodeTo=self.arcPCurrent.arc.end2
@@ -107,14 +87,12 @@ end
 
 function Monster:die()
 	self.sprite:play("death")
-	self.colorSprite:play("death")
 	self.isDead = true
 	return self
 end
 
 function Monster:revive()
 	self.sprite:play("downstand")
-	self.colorSprite:play("downstand")
 	self.isDead = false
 	return self
 end
@@ -128,7 +106,6 @@ function Monster:setAR(arcP)
 	self.toY=destination.y
 	self.pos=destination
 	self.sprite:setWorldPosition(self.pos)
-	self.colorSprite:setWorldPosition(self.pos)
 	self.arcPCurrent = arcP
 
 	-- update sprites
@@ -152,11 +129,12 @@ function Monster:setAR(arcP)
 		end
 	end
 
-	local newAnimString = self.dirString..self.animString
-	if self.currentAnimString ~= newAnimString then
-		self.sprite:play(newAnimString)
-		self.colorSprite:play(newAnimString)
-		self.currentAnimString = newAnimString
+	if not self.isDead then
+		local newAnimString = self.dirString..self.animString
+		if self.currentAnimString ~= newAnimString then
+			self.sprite:play(newAnimString)
+			self.currentAnimString = newAnimString
+		end
 	end
 
 end
