@@ -221,7 +221,8 @@ function newPlayerDestination(e)
 				end
 				net.sendPathToServer(nodes,arcP)
 				if (nodes ~= nil) then
-					arcs[player.arcPCurrent] = 1
+					local pos = player.arcPCurrent:getPosXY()
+					arcs[player.arcPCurrent] ={pos,nodes[1].pos}
 					for i= 1, #nodes-1 do
 						local path = nodes[i].arcs[nodes[i+1]]
 						arcs[path] = {path.end1.pos,path.end2.pos}
