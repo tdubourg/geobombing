@@ -15,6 +15,7 @@ var MONSTER_SPEED = PLAYER_SPEED*.4
 
 var MONSTER_MOVE_PERIOD = 1
 var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*2//*.8
+var MONSTERS_PER_GAME = 10
 
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
@@ -183,6 +184,13 @@ function Game(map)
 	
 	this.bombs = []
 	//this.dyingPlayers = []
+	
+	for (var i = 0; i < MONSTERS_PER_GAME; i++)
+	{
+		var m = new Player(this, true)
+		m.setSpawnPosition(this.getRandomPosition())
+	}
+	
 }
 
 var bombNb = 0
@@ -505,6 +513,11 @@ Player.prototype.respawn = function ()
 {
 	this.setPosition(this.spwanPosition)
 	this.dead = false
+	
+	if (this.isMonster)
+	{
+		this.spwanPosition = this.game.getRandomPosition();
+	}
 }
 
 Player.prototype.setPosition = function (position) {
@@ -597,8 +610,8 @@ Game.prototype.getRandomPosition = function()
 	var node = null
 	
 	var nb_considered_nodes =
-		// this.map.nodes.length
-		12
+		this.map.nodes.length
+		// 12
 	
 	while (!node || node.arcsTo.length < 1)
 	{

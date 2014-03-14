@@ -49,8 +49,7 @@ var sendInit_action = function (frame_data, stream)
 		
 		////////
 		// FIXME: debug add monsters
-		// single_game_server.addMonster(db.getInitialPosition())
-		single_game_server.addMonster(single_game_server.game.getRandomPosition())
+		// single_game_server.addMonster(single_game_server.game.getRandomPosition())
 		////////
 	}
 	
