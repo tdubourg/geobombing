@@ -8,6 +8,7 @@ require "print_r"
 
 tileLayer = display.newGroup( )
 roadLayer = display.newGroup( )
+maskLayer = display.newGroup( )
 playerLayer = display.newGroup( )
 explosionLayer = display.newGroup( )
 guiLayer = display.newGroup( )
@@ -15,6 +16,7 @@ guiLayer = display.newGroup( )
 -- Z order
 tileLayer:toFront( )
 roadLayer:toFront( )
+maskLayer:toFront( )
 playerLayer:toFront( )
 explosionLayer:toFront( )
 guiLayer:toFront( )
