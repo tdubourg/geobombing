@@ -127,19 +127,22 @@ Map.prototype.getNode = function (nid)
 
 /// PLAYERS /////////////////////////
 
-
-// var pids = 0
 function Player(game, isMonster) 
 {
 	this.game = game
 	if (isMonster)
+	{
 		game.monsters.push(this)
+		this.id = ++game.nextMonsterId
+		this.name = "Monster_" + this.id
+	}
 	else
+	{
 		game.players.push(this)
-
-	//this.id = ++pids
-	this.id = ++game.nextPlayerId
-	this.name = "Player_" + this.id
+		this.id = ++game.nextPlayerId
+		this.name = "Player_" + this.id
+	}
+	
 	this.currentPath = []  // contains nextNode? -> NOT
 	this.speed = PLAYER_SPEED //.3 //1E-3
 	this.connexion = null
@@ -159,14 +162,6 @@ function Player(game, isMonster)
 	//this.nextNode = null
 }
 
-// var nbMonsters = 0
-// function Monster(game) {
-// 	this.game = game
-// 	game.monsters.push(this)
-// 	this.id = ++nextMonsterId
-	
-// }
-
 function Game(map) 
 {
 	this.map = map
@@ -175,14 +170,15 @@ function Game(map)
 	// this.playersId = 0
 	
 	this.monsters = []
-	// this.nextMonsterId = 0
+	this.nextMonsterId = 0
 	
 	this.bombs = []
 	//this.dyingPlayers = []
 }
 
 var bombNb = 0
-function Bomb(player) { //, arc, coeff) {
+function Bomb(player) 
+{ 
 	this.player = player
 	this.id = ++bombNb
 	this.time = -BOMB_TIMER
@@ -241,14 +237,16 @@ function DEBUG_fillWithBombs(game, player, arc, from, to) {
 	}
 }
 
-Bomb.prototype.explode_propagate = function (coeff, frstTime) {
+Bomb.prototype.explode_propagate = function (coeff, frstTime) 
+{
 	var game = this.player.game
 	var player = this.player
 	var playersOnArc = {}
 	var visitedArc = {}
 	var that = this
 	
-	function addPlayerOn(player, arc, dist) {
+	function addPlayerOn(player, arc, dist) 
+	{
 		if (!playersOnArc[arc.id])
 			playersOnArc[arc.id] = []
 
@@ -260,17 +258,19 @@ Bomb.prototype.explode_propagate = function (coeff, frstTime) {
 		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
 	})
 
-	function rec (startDist, distToCover, prevNode, arc, firstTime) {
-		
+	// to let players kill monsters
+	game.monsters.forEach(function(p) {
+		addPlayerOn(p, p.currentArc, p.currentArcDist)
+		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
+	})
+
+	function rec (startDist, distToCover, prevNode, arc, firstTime) 
+	{
 		if (visitedArc[arc.id]) return
 		visitedArc[arc.id] = true
 		visitedArc[arc.getOpposite().id] = true
 		
-		if (DEBUG_BOMBES
-		)
-			DEBUG_fillWithBombs(game, player, arc, startDist, distToCover)
-		
-		// Test kills:
+		if (DEBUG_BOMBES ) DEBUG_fillWithBombs(game, player, arc, startDist, distToCover)
 		
 		if (playersOnArc[arc.id])
 		playersOnArc[arc.id].forEach(function(pd) 
@@ -335,12 +335,14 @@ Bomb.prototype.explode_propagate = function (coeff, frstTime) {
 	
 }
 
-Bomb.prototype.remove = function () {
+Bomb.prototype.remove = function () 
+{
 	var bs = this.player.game.bombs
 	bs.splice(bs.indexOf(this),1)
 }
 
-Bomb.prototype.getPosition = function () {
+Bomb.prototype.getPosition = function () 
+{
 	return com.CreatePosition(
 		this.arc.n1.id,
 		this.arc.n2.id,
@@ -348,35 +350,38 @@ Bomb.prototype.getPosition = function () {
 }
 
 var delta = 0.0001
-Player.prototype.update = function (period) {
+Player.prototype.update = function (period) 
+{
 	
-	if (this.targetArcDist != null) {
+	if (this.targetArcDist != null) 
+	{
 		var distToWalk = this.speed*period
 		//var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
-		//console.log(period)
-		
+		//console.log(period)	
 		//console.log("Going to", this.currentArc+"", this.targetArcDist+"/"+this.currentArc.length)
-		
-		while (distToWalk > delta) {
+		while (distToWalk > delta) 
+		{
 			//var distToNode = this.currentArc.length-this.currentArcDist
 			//var distToNode = this.targetArcDist-this.currentArcDist
 			var distToNode = this.currentPath.length == 0?
 				this.targetArcDist-this.currentArcDist
 			:	this.currentArc.length-this.currentArcDist
 			
-			if (distToWalk < distToNode) {
+			if (distToWalk < distToNode) 
+			{
 				this.currentArcDist += distToWalk
 				distToWalk = 0
 				//this.targetArcDist = null
-			} else {
+			} 
+			else 
+			{
 				distToWalk -= distToNode
 				//var currNode = this.currentPath.shift()
-				
-				if (this.currentPath.length > 0) {
+				if (this.currentPath.length > 0) 
+				{
 					
 					var currNode = this.currentArc.n2
-					var nextNode = this.currentPath.shift()
-					
+					var nextNode = this.currentPath.shift()	
 					var newCurrentArc = currNode.arcToId(nextNode.id)
 					if (newCurrentArc)
 						this.currentArc = newCurrentArc
@@ -385,18 +390,28 @@ Player.prototype.update = function (period) {
 							currNode.id, "to node", nextNode.id)
 					this.currentArcDist = 0
 					
-				} else {
+				} 
+				else 
+				{
 					this.targetArcDist = null
 					break
 				}
 				
 			}
-		}
+
+			// touch monster kills
+			//if ()
+			{
+
+			}
+
+		} // end while
 	}
 	
 }
 
-Player.prototype.die = function () {
+Player.prototype.die = function () 
+{
 	if (!this.dead) 
 	{
 		console.log("Player",this.name,"died in horrible pain!!")
