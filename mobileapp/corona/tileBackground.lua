@@ -7,6 +7,7 @@ function TileBackground:new(luaTiles)
   local self = {}
   self.tiles = {}
 
+
   for i,list in ipairs(luaTiles[TYPEGRID]) do
   	self.tiles[i] = {}
   	for j,url in ipairs(list) do
@@ -14,6 +15,30 @@ function TileBackground:new(luaTiles)
   	end
   end
 
+  -- caches
+  local fillR = 78/255
+  local fillG = 85/255
+  local fillB = 128/255
+
+  self.maskLeft = display.newRect( maskLayer, 100000, 100000, 100000, 100000 )
+  self.maskLeft:setFillColor(fillR, fillG, fillB)
+  self.maskLeft.anchorX = 1
+  self.maskLeft.anchorY = 0.5
+
+  self.rightMask = display.newRect( maskLayer, 100000, 100000, 100000, 100000 )
+  self.rightMask:setFillColor(fillR, fillG, fillB)
+  self.rightMask.anchorX = 0
+  self.rightMask.anchorY = 0.5
+
+  self.upMask = display.newRect( maskLayer, 100000, 100000, 100000, 100000 )
+  self.upMask:setFillColor(fillR, fillG, fillB)
+  self.upMask.anchorX = 0.5
+  self.upMask.anchorY = 1
+
+  self.downMask = display.newRect( maskLayer, 100000, 100000, 100000, 100000 )
+  self.downMask:setFillColor(fillR, fillG, fillB)
+  self.downMask.anchorX = 0.5
+  self.downMask.anchorY = 0
 
   -- scale and placing handling
   local mapTL = v2FromJSON(luaTiles[NETW_INIT_GRID_BOUNDS_SMTLP])
@@ -52,6 +77,12 @@ function TileBackground:redraw(zoomChange)
   		end
   	end
   end
+
+  -- masks redraw
+  self.maskLeft.x, self.maskLeft.y = camera:worldToScreenXY(0, 0.5)
+  self.rightMask.x, self.rightMask.y = camera:worldToScreenXY(1, 0.5)
+  self.upMask.x, self.upMask.y = camera:worldToScreenXY(0.5, 0)
+  self.downMask.x, self.downMask.y = camera:worldToScreenXY(0.5, 1)
 end
 
 function TileBackground:destroy()
