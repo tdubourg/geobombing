@@ -131,8 +131,10 @@ var sendPlayersUpdate = function (stream, players) // player and other players
 	data[net.TYPETIMEREMAINING] = gs.session_time_remaining // time before end of game 
 
 	var all_players = []
+	var haskilled = 0
 	players.forEach(function (player) 
 	{
+		if (player.haskilled) haskilled = player.kills
 		var current_player = {}
 		current_player[net.TYPEPOS] = player.getPosition() 
 		current_player[net.TYPEID] = player.id
@@ -151,7 +153,7 @@ var sendPlayersUpdate = function (stream, players) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR, function() {
-		//console.log("sendPlayersUpdate: ", data)
+		if (haskilled != 0) console.log("sendPlayersUpdate killed: ", haskilled)
 	})
 }
 
