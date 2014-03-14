@@ -40,7 +40,7 @@ var MapTiles =
 	},
 
 	setGPSWindow: function (gps_top_left, gps_bottom_right, zoom) {
-		this.zoom = zoom + 6 // TODO CHANGE THAT AS SOON AS THE ZOOM VALUE IS FIXED
+		this.zoom = zoom + 7 // TODO CHANGE THAT AS SOON AS THE ZOOM VALUE IS FIXED
 		gps_top_left = L.latLng(gps_top_left.lat, gps_top_left.lng)
 		gps_bottom_right = L.latLng(gps_bottom_right.lat, gps_bottom_right.lng)
 		this.topLeftPoint = this.project(gps_top_left, this.zoom)
