@@ -403,14 +403,18 @@ Player.prototype.update = function (period)
 			:	this.currentArc.length-this.currentArcDist
 			
 			// The distance to walk fits into the current arc
-			if (distToWalk < distToNextDest) {
+			if (distToWalk < distToNextDest)
+			{
 				this.currentArcDist += distToWalk
 				distToWalk = 0
-			} else {
+			}
+			else
+			{
 				// The distance to walk goes over passing through the next node...
 				// update it to be the remaining distance to walk after passing the next node
 				distToWalk -= distToNextDest
-				if (this.currentPath.length > 0) {
+				if (this.currentPath.length > 0)
+				{
 					var currNode = this.currentArc.n2
 					var nextNode = this.currentPath.shift()	
 					var newCurrentArc = currNode.arcToId(nextNode.id)
@@ -420,8 +424,9 @@ Player.prototype.update = function (period)
 						console.log("[Game Model Error]: couldn't find a path from node",
 							currNode.id, "to node", nextNode.id)
 					this.currentArcDist = 0
-					
-				} else {
+				}
+				else 
+				{
 					this.targetArcDist = null
 					break
 				}
