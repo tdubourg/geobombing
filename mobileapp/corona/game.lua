@@ -36,6 +36,7 @@ local nameText
 local others -- ajout recent à vérifier
 local monsters
 rankOn = false
+arcs = {}
 
 -- activate multitouch
 system.activate( "multitouch" )
@@ -79,7 +80,7 @@ function moveMonsterById(id,arcP)
 		daMonster = Monster.new(strid, 0.02, 0, arcP)
 		monsters[strid] = daMonster
 	end
-	dbg(GAME_DBG, {arcP.arc.end1.uid,arcP.arc.end2.uid,arcP.progress})
+	--dbg(GAME_DBG, {arcP.arc.end1.uid,arcP.arc.end2.uid,arcP.progress})
 	daMonster:setAR(arcP)
 	
 end
@@ -193,8 +194,16 @@ function newPlayerDestination(e)
 			if (arcP.progress<0) then
 				dbg (ERRORS, {arcP.progress.." ERROR"})
 			end
+			arcs={}
+			--currentMap.mapGroup:removeSelf()
 			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
 				net.sendPathToServer(nil,arcP)
+				-- draw line
+				local pos = player.arcPCurrent:getPosXY()
+				local arcPEnd = arcP:getPosXY()
+				arcs[arcP.arc] = {pos,arcPEnd}
+				
+				
 			else
 				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
 				if (nodes == nil) then -- FIXME!
@@ -211,6 +220,20 @@ function newPlayerDestination(e)
 					end
 				end
 				net.sendPathToServer(nodes,arcP)
+				if (nodes ~= nil) then
+					arcs[player.arcPCurrent] = 1
+					for i= 1, #nodes-1 do
+						local path = nodes[i].arcs[nodes[i+1]]
+						arcs[path] = {path.end1.pos,path.end2.pos}
+					end
+					if(nodes[#nodes] == arcP.arc.end1) then
+						local arcPEnd = arcP:getPosXY()
+						arcs[arcP.arc] =  {arcP.arc.end1.pos,arcPEnd}
+					else
+						local arcPEnd = arcP:getPosXY()
+						arcs[arcP.arc] =  {arcP.arc.end2.pos,arcPEnd}
+					end
+				end
 			end
 		else
 			dbg(ERRORS, {"arcP == nil"})
@@ -468,7 +491,7 @@ function scene:enterScene( event )
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 		dbg(Y,{"HANDLER"})
-		dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
+		--dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
 		if (json_obj.data ~= nil) then
 			if (json_obj.data[NETWORK_TIME] ~= nil) then
 				gameTime =10
@@ -487,7 +510,7 @@ function scene:enterScene( event )
 
 			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
 			if (json_obj.data[NETWORK_NAME] ~= nil) then
-				dbg (GAME_DBG, {"name = ",json_obj.data[NETWORK_NAME] })
+				--dbg (GAME_DBG, {"name = ",json_obj.data[NETWORK_NAME] })
 				player.name = json_obj.data[NETWORK_NAME]
 				nameText.text = "Nom = "..player.name
 			end
