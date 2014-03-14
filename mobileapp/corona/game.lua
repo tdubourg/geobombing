@@ -181,7 +181,7 @@ function newPlayerDestination(e)
 			-- Do not do anything, to avoid spamming player move requests on each pixel 
 			return
 		end
-
+		dbg(PREDICTION_DBG, {"Setting new player destination"})
 		last_newPlayerDestination = now()
 		local screenPos = Vector2D:new(e.x,e.y)
 		local worldPos = camera:screenToWorld(screenPos)

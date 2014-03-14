@@ -159,41 +159,30 @@ end
 
 
 function Player:refresh()
-	-- if(self.pos.x<= (self.toX+accepted_error) and self.pos.x>=(self.toX-accepted_error) and self.pos.y <=(self.toY+accepted_error) and  self.pos.y>=(self.toY-accepted_error)) then
-	-- 	self.currentState = PLAYER_FROZEN_STATE 
-	-- 	self.nodesI=self.nodesI+1
+	if(self.pos.x<= (self.toX+accepted_error) and self.pos.x>=(self.toX-accepted_error) and self.pos.y <=(self.toY+accepted_error) and  self.pos.y>=(self.toY-accepted_error)) then
+		-- Player is still
+		dbg(PREDICTION_DBG, {"HERE"})
+		self.currentState = PLAYER_FROZEN_STATE 
+		self.nodesI=self.nodesI+1
 
-	-- 	if (self.nodesI>self.nodesMax ) then
-	-- 		self.nodesI=0
-	-- 		self.nodesMax=0
-	-- 		if (self.arcPDest ~= nil) then
-	-- 			self:goToAR(self.arcPDest)
-	-- 		end
-	-- 	else
-	-- 		self.toX=self.nodes[self.nodesI].pos.x
-	-- 		self.toY=self.nodes[self.nodesI].pos.y
-	-- 		self.nodeFrom=self.nodes[self.nodesI-1]
-	-- 		self.nodeTo=self.nodes[self.nodesI]
-	-- 		--self.upCurrentArc(self.nodeFrom,self.nodeTo)
-	-- 		self:refresh()
-	-- 	end
-	-- else 
-		-- self.currentState = PLAYER_WALKING_STATE 
-		-- local to = Vector2D:new(self.toX, self.toY)
-		-- local vectDir = Vector2D:new(0,0)
-		-- local vectDir = Vector2D:Sub(to,self.pos)
-		-- vectDir:normalize()
-		-- -- vecteur normalisé de la direction * la vitesse * delta temps
-		-- local tempVectDir = Vector2D:Mult(vectDir, self.speed)
-		-- local temp = Vector2D:Add(self.pos,tempVectDir)
-		-- vectDir:mult(self.speed)
-		-- self.pos:add(vectDir)
-		-- self:upCurrentArc(self.nodeFrom,self.nodeTo)
-
-
-	-- 	-- self.sprite:redraw()    
-	-- 	-- self.colorSprite:redraw()    
-	-- end
+		if (self.nodesI>self.nodesMax ) then
+			self.nodesI=0
+			self.nodesMax=0
+			if (self.arcPDest ~= nil) then
+				self:goToAR(self.arcPDest)
+			end
+		else
+			self.toX=self.nodes[self.nodesI].pos.x
+			self.toY=self.nodes[self.nodesI].pos.y
+			self.nodeFrom=self.nodes[self.nodesI-1]
+			self.nodeTo=self.nodes[self.nodesI]
+			--self.upCurrentArc(self.nodeFrom,self.nodeTo)
+			self:refresh()
+		end
+	else 
+		dbg(PREDICTION_DBG, {"AND THERE"})
+		self.currentState = PLAYER_WALKING_STATE 
+	end
 	local delta = 0.0001 -- TODO: Move this constant and document it, cf server for now
 	local distToWalk = 0.1 -- TODO: Move this constant and document it, cf server for now
 
@@ -230,75 +219,79 @@ function Player:refresh()
 			-- The distance to walk goes over passing through the next node...
 			-- update it to be the remaining distance to walk after passing the next node
 			distToWalk = distToWalk - distToNextDest
-			if (currentPath.length > 0) then
-				local currNode = currentArc.n2
+			if (self.predictionNodes.length > 0) then
+				local currNode = currentArc.end2
 				local nextNode = Deque.popleft(self.predictionNodes)
 				local newCurrentArc = currNode.arcs[nextNode]
+				currentArcDist = 0
 				if (newCurrentArc) then
 					currentArc = newCurrentArc
 				else
 					dbg(PREDICTION_DBG, {"[Game Model Error]: couldn't find a path from node", currNode.id, "to node", nextNode.id})
 				end
-				currentArcDist = 0
 			else
 				targetArcDist = nil
 				break
 			end
 		end
-		local newArcP = ArcPos:new(currentArc, currentArcDist)
-		self:setAr(newArcP)
-		-- local proximity = Vector2D:Sub(self.pos, currentDestination)
-		-- dbg(PREDICTION_DBG, {"Proximity is:", proximity})
-		-- dbg(PREDICTION_DBG, {"accepted_error:", accepted_error})
-		-- if (proximity <= accepted_error) then
-		-- 	Deque.popleft(self.predictionNodes) -- we reached this node, pop it
-		-- 	currentDestination = Deque.first(self.predictionNodes) -- and change the destination
-		-- end
-		-- -- TODO: Differentiate between self.pos, the actual pos sent by the server and self.predictedPos, the pos predicted by the client, AND USE PREDICTED POS FOR DISPLAY
-		-- -- First: grab the Vecto2D of destination and store it in destinationV2d
-		-- local destinationV2d = nil
-		-- -- Then, updating the predictedPos to the new one, after adding the speed of the player to the previous predicted pos
-		-- self.predictedPos:add(Vector2D.Sub(destinationV2d, self.predictedPos))
-		-- update_player_position()
 	end
+	local newArcP = ArcPos:new(currentArc, currentArcDist)
+	dbg(PREDICTION_DBG, {"Prediction is setting AR to", newArcP.arc.end1.uid, ",", newArcP.arc.end2.uid, ",", newArcP.progress})
+	self:setAR(newArcP)
+	-- local proximity = Vector2D:Sub(self.pos, currentDestination)
+	-- dbg(PREDICTION_DBG, {"Proximity is:", proximity})
+	-- dbg(PREDICTION_DBG, {"accepted_error:", accepted_error})
+	-- if (proximity <= accepted_error) then
+	-- 	Deque.popleft(self.predictionNodes) -- we reached this node, pop it
+	-- 	currentDestination = Deque.first(self.predictionNodes) -- and change the destination
+	-- end
+	-- -- TODO: Differentiate between self.pos, the actual pos sent by the server and self.predictedPos, the pos predicted by the client, AND USE PREDICTED POS FOR DISPLAY
+	-- -- First: grab the Vecto2D of destination and store it in destinationV2d
+	-- local destinationV2d = nil
+	-- -- Then, updating the predictedPos to the new one, after adding the speed of the player to the previous predicted pos
+	-- self.predictedPos:add(Vector2D.Sub(destinationV2d, self.predictedPos))
+	-- update_player_position()
 end
 
 function Player:setPredictionNodes( nodes )
 	dbg(PREDICTION_DBG, {"Setting prediction nodes"})
 	self.predictionNodes = Deque.new()
+	if (nodes == nil) then
+		return
+	end
 	for i,v in ipairs(nodes) do
-		dbg(PREDICTION_DBG, {"Adding node", i, v, "to predictionNodes"})
-		self.predictionNodes:pushright()
+		dbg(PREDICTION_DBG, {"Adding node", tostring(i), tostring(v), "to predictionNodes"})
+		Deque.pushright(self.predictionNodes, v)
 	end
 end
 
 function Player:setPredictionDestination(arcP)
-	dbg(PREDICTION_DBG, {"Setting prediction destination to", arcP})
+	dbg(PREDICTION_DBG, {"Setting prediction destination to", arcP.arc.end1.uid, arcP.arc.end2.uid, arcP.progress})
 	self.predictionDestination = arcP
 end
 
 
 function Player:upCurrentArc(from, to)
-	if (from == nil) then
-		dbg (INFO, {"from == nil"})
-	elseif (to == nil) then
-		dbg (INFO, {"to == nil"})
-	elseif (from == to) then
-		dbg (INFO, {"from == to"})
-		dbg (INFO, {from.uid .."  à " .. to.uid})
-	elseif (from.arcs[to] == nil) then
-		dbg (INFO, {"from.arc[to] == nil"})
-		dbg (INFO, {from.uid .."  à " .. to.uid})
-	else 
-		local dist = Vector2D:Dist(from.pos,self.pos)
-		self.arcPCurrent.arc=from.arcs[to]
-		if(self.arcPCurrent.arc.end1==from) then
-			self.arcPCurrent.progress=(dist/self.arcPCurrent.arc.len)
-		else
-			self.arcPCurrent.progress=1-(dist/self.arcPCurrent.arc.len)
-		end
-		--print(from.uid.. " to " ..to.uid .." ratio " ..  self.currentArcRatio)
-	end
+	-- if (from == nil) then
+	-- 	dbg (INFO, {"from == nil"})
+	-- elseif (to == nil) then
+	-- 	dbg (INFO, {"to == nil"})
+	-- elseif (from == to) then
+	-- 	dbg (INFO, {"from == to"})
+	-- 	dbg (INFO, {from.uid .."  à " .. to.uid})
+	-- elseif (from.arcs[to] == nil) then
+	-- 	dbg (INFO, {"from.arc[to] == nil"})
+	-- 	dbg (INFO, {from.uid .."  à " .. to.uid})
+	-- else 
+	-- 	local dist = Vector2D:Dist(from.pos,self.pos)
+	-- 	self.arcPCurrent.arc=from.arcs[to]
+	-- 	if(self.arcPCurrent.arc.end1==from) then
+	-- 		self.arcPCurrent.progress=(dist/self.arcPCurrent.arc.len)
+	-- 	else
+	-- 		self.arcPCurrent.progress=1-(dist/self.arcPCurrent.arc.len)
+	-- 	end
+	-- 	--print(from.uid.. " to " ..to.uid .." ratio " ..  self.currentArcRatio)
+	-- end
 end
 
 function Player:goToAR(arcP)
@@ -317,8 +310,8 @@ function Player:setAR(arcP)
 	self.toX=destination.x
 	self.toY=destination.y
 	self.pos=destination
-	self.sprite:setWorldPosition(self.predictedPos)
-	self.colorSprite:setWorldPosition(self.predictedPos)
+	self.sprite:setWorldPosition(self.pos)
+	self.colorSprite:setWorldPosition(self.pos)
 	self.arcPCurrent = arcP
 
 	-- update sprites
