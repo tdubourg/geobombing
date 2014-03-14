@@ -198,6 +198,7 @@ Player.prototype.onKillPlayer = function (player_killed) // can be called on him
 		this.points += 10
 		this.kills++
 		this.haskilled = true // true until it is send
+		console.log(this.name, "haskilled", this.kills, "time(s)")
 	}
 }
 
@@ -259,9 +260,9 @@ Bomb.prototype.explode_propagate = function (coeff, frstTime)
 	})
 
 	// to let players kill monsters
-	game.monsters.forEach(function(p) {
-		addPlayerOn(p, p.currentArc, p.currentArcDist)
-		addPlayerOn(p, p.currentArc.getOpposite(), p.currentArc.length - p.currentArcDist)
+	game.monsters.forEach(function(m) {
+		addPlayerOn(m, m.currentArc, m.currentArcDist)
+		addPlayerOn(m, m.currentArc.getOpposite(), m.currentArc.length - m.currentArcDist)
 	})
 
 	function rec (startDist, distToCover, prevNode, arc, firstTime) 
@@ -411,7 +412,7 @@ Player.prototype.update = function (period)
 						pos = Math.abs(m.currentArcDist - self.currentArcDist)
 					else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
 
-					if (pos < self.currentArc.length / 10)
+					if (!(m.dead) && pos < self.currentArc.length / 10)
 					{
 						console.log("MONSTER:", m.name)
 						console.log("\nBODY FLESH of:", self.name)				
@@ -439,18 +440,21 @@ Player.prototype.die = function ()
 	}
 }
 
-Player.prototype.remove = function () {
+Player.prototype.remove = function () 
+{
 	this.game.players.splice(this.game.players.indexOf(this),1)
 }
 
-Player.prototype.getPosition = function () {
+Player.prototype.getPosition = function () 
+{
 	return com.CreatePosition(
 		this.currentArc.n1.id,
 		this.currentArc.n2.id,
 		this.currentArcDist/this.currentArc.length);
 }
 
-Player.prototype.setSpawnPosition = function (position) {
+Player.prototype.setSpawnPosition = function (position) 
+{
 	console.log("setpos",position)
 	this.spwanPosition = position
 	this.respawn()
@@ -461,7 +465,8 @@ Player.prototype.setSpawnPosition = function (position) {
 	// this.targetArcDist = null
 }
 
-Player.prototype.respawn = function () {
+Player.prototype.respawn = function () 
+{
 	this.setPosition(this.spwanPosition)
 	this.dead = false
 }
