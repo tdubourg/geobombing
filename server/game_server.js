@@ -97,7 +97,7 @@ function GameServer(game, tiles)
 		var explodingBombs = []
 		var dyingPlayers = []
 		
-		// Dying players
+		// Dying players (Is it used for monsters as well?)
 		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)		
 		explodingBombs.forEach(function (bomb) { that.notifyBomb(bomb) })		
 		dyingPlayers.forEach(function (p) 
@@ -121,7 +121,9 @@ function GameServer(game, tiles)
 				fa.sendPlayersUpdate(con.stream, game.players)
 				fa.sendMonstersUpdate(con.stream, game.monsters)
 			}
-			game.players.forEach(function (player) {player.haskilled = false })// to stop sending number kills		
+
+			// to stop sending number kills	
+			game.players.forEach(function (player) {player.haskilled = false })	
 		}		
 	}, GAME_REFRESH_PERIOD)
 
