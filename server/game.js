@@ -363,7 +363,7 @@ var delta = 0.0001
 Player.prototype.update = function (period) 
 {
 	
-	if (this.isMonster)
+	if (this.isMonster && !this.dead)
 	{
 		//console.log(">>",this.nextMoveTimer)
 		
