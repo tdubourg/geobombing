@@ -201,6 +201,7 @@ function Player:refresh()
 		dbg(PREDICTION_DBG, {"Not enough information to run prediction"})
 		return
 	end
+	dbg(PREDICTION_DBG, {"Running prediction!"})
 
 	local currentArc = self.arcPCurrent.arc
 	local currentArcDist = self.arcPCurrent.progress
