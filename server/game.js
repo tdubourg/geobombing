@@ -436,6 +436,7 @@ Player.prototype.update = function (period)
 				}
 				else 
 				{
+					this.currentArcDist = this.targetArcDist
 					this.targetArcDist = null
 					break
 				}

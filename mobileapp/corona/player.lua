@@ -183,18 +183,31 @@ function Player:refresh()
 		dbg(PREDICTION_DBG, {"AND THERE"})
 		self.currentState = PLAYER_WALKING_STATE 
 	end
-	local delta = 0.0001 -- TODO: Move this constant and document it, cf server for now
-	local distToWalk = 0.1 -- TODO: Move this constant and document it, cf server for now
+
+	local delta = 0.00001 -- TODO: Move this constant and document it, cf server for now
+	local distToWalk = 0.0009 -- TODO: Move this constant and document it, cf server for now
 
 	if (self.arcPCurrent == nil or self.predictionDestination == nil) then
 		dbg(PREDICTION_DBG, {"Not enough information to run prediction"})
 		return
 	end
+	if (self.arcPCurrent:equals(self.predictionDestination, delta)) then
+		dbg(PREDICTION_DBG, {"STANDING STILL (up to precision), NOT RUNNING PREDICTION"})
+		return
+	end
+	dbg(PREDICTION_DBG, {"self.arcPCurrent=", self.arcPCurrent.arc.end1.uid, self.arcPCurrent.arc.end2.uid, self.arcPCurrent.progress})
+	dbg(PREDICTION_DBG, {"self.predictionDestination=", self.predictionDestination.arc.end1.uid, self.predictionDestination.arc.end2.uid, self.predictionDestination.progress})
 	dbg(PREDICTION_DBG, {"Running prediction!"})
 
 	local currentArc = self.arcPCurrent.arc
 	local currentArcDist = self.arcPCurrent.progress
 	local targetArcDist = self.predictionDestination.progress
+	if (self.currPredictionNode == nil) then
+		self.currPredictionNode = Deque.popleft(self.predictionNodes)
+		if (self.predictionNodes.length > 0) then
+			self.nextPredictionNode = Deque.popleft(self.predictionNodes)
+		end
+	end		
 	while (distToWalk > delta) do
 		-- Iterate until we have walked the entire distance we can walk in a single round
 		-- This has to be done in multiple iterations when we need to change arc 
@@ -220,17 +233,25 @@ function Player:refresh()
 			-- update it to be the remaining distance to walk after passing the next node
 			distToWalk = distToWalk - distToNextDest
 			if (self.predictionNodes.length > 0) then
-				local currNode = currentArc.end2
-				local nextNode = Deque.popleft(self.predictionNodes)
-				local newCurrentArc = currNode.arcs[nextNode]
+				self.currPredictionNode = self.nextPredictionNode
+				dbg(PREDICTION_DBG, {"self.currPredictionNode=", self.currPredictionNode.uid})
+				self.nextPredictionNode = Deque.popleft(self.predictionNodes)
+				dbg(PREDICTION_DBG, {"self.nextPredictionNode=", self.nextPredictionNode.uid})
+				local newCurrentArc = self.currPredictionNode.arcs[self.nextPredictionNode]
 				currentArcDist = 0
 				if (newCurrentArc) then
+					dbg(PREDICTION_DBG, {"Switching to arc (", currentArc.end1.uid, currentArc.end2.uid, ")"})
 					currentArc = newCurrentArc
 				else
-					dbg(PREDICTION_DBG, {"[Game Model Error]: couldn't find a path from node", currNode.id, "to node", nextNode.id})
+					dbg(PREDICTION_DBG, {"#########################################################################################"})
+					dbg(PREDICTION_DBG, {"#########################################################################################"})
+					dbg(PREDICTION_DBG, {"[Game Model Error]: couldn't find a path from node", self.currPredictionNode.uid, "to node", nextNode.uid})
+					dbg(PREDICTION_DBG, {"#########################################################################################"})
+					dbg(PREDICTION_DBG, {"#########################################################################################"})
 				end
 			else
-				targetArcDist = nil
+				currentArcDist = targetArcDist
+				self.predictionDestination = nil
 				break
 			end
 		end
@@ -238,6 +259,7 @@ function Player:refresh()
 	local newArcP = ArcPos:new(currentArc, currentArcDist)
 	dbg(PREDICTION_DBG, {"Prediction is setting AR to", newArcP.arc.end1.uid, ",", newArcP.arc.end2.uid, ",", newArcP.progress})
 	self:setAR(newArcP)
+	
 	-- local proximity = Vector2D:Sub(self.pos, currentDestination)
 	-- dbg(PREDICTION_DBG, {"Proximity is:", proximity})
 	-- dbg(PREDICTION_DBG, {"accepted_error:", accepted_error})
@@ -256,11 +278,13 @@ end
 function Player:setPredictionNodes( nodes )
 	dbg(PREDICTION_DBG, {"Setting prediction nodes"})
 	self.predictionNodes = Deque.new()
+	self.currPredictionNode = nil
+	self.nextPredictionNode = nil
 	if (nodes == nil) then
 		return
 	end
 	for i,v in ipairs(nodes) do
-		dbg(PREDICTION_DBG, {"Adding node", tostring(i), tostring(v), "to predictionNodes"})
+		dbg(PREDICTION_DBG, {"Adding node", tostring(i), v.uid, "to predictionNodes"})
 		Deque.pushright(self.predictionNodes, v)
 	end
 end

@@ -19,7 +19,8 @@ var MapTiles =
 	crs: L.CRS.EPSG3857,
 	clientWidth: 512,
 	clientHeight: 512,
-	_url: "http://tdvps.fr.nf:8080/osm_tiles/{z}/{x}/{y}.png",
+	_url: "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+	// _url: "http://tdvps.fr.nf:8080/osm_tiles/{z}/{x}/{y}.png",
 
 	project: function (latlng, zoom) { // (LatLng[, Number]) -> Point
 		zoom = zoom === undefined ? this.zoom : zoom;

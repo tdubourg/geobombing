@@ -21,6 +21,10 @@ function ArcPos.createFromNetworkPosObj( map, network_pos_obj )
 	return arcpos
 end
 
+function ArcPos:equals( arcP, precision )
+	return arcP.arc == self.arc and (arcP.progress - self.progress) <= precision
+end
+
 function ArcPos:initExplosion(power)
 	drawPosList = {}
 	local end1dist = self.progress*self.arc.len

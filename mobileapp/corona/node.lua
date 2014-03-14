@@ -30,6 +30,8 @@ function Node:redraw(zoomChange)
 end
 
 -- creates an Arc if necessary and link everything
+-- @param node1{Node}: The node to link to
+-- @return {Arc} the created arc, if necessary, or nil, if no arc was created
 function Node:linkTo(node1, wayName)
 	if self.arcs[node1] == nil then
 		local newArc = Arc:new(self, node1, wayName, self.map)
