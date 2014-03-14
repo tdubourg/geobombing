@@ -13,30 +13,9 @@ function getMapFromPGSQL(latitude, longitude, hauteur, largeur, callback) {
 	// from now on "hauteur" refers to hauteur/2 :-P
 	hauteur /= 2
 	largeur /= 2
-	
-	//////////////////////////////////
-	// FIXME !! (méthode agile)
-	//latitude = 4.8730; longitude = 45.7816
-	latitude = 45.7816; longitude = 4.8730
-	//latitude = 41.9205551; longitude = 8.7361006
-	//latitude = 45.7836925; longitude = 4.8714986
-	//////////////////////////////////
-	
-	// if (conDB!) 
-	// {	
-	// 	var m = [[[0, 0],[0, 10],[5, 5],[0, 0],[10, 0],[10, 5],[10, 10],[5, 10],[0, 10]],
-	// 		[[10, 5],[5, 10],[5, 5],[10, 5],[0, 0]]]
-		
-	// 	m.roadNames = ["Microsoft road", "Apple road"]
-		
-	// 	// Useless, ceinture-bretelle
-	// 	m.shiftX = m.shiftY = 0
-	// 	m.scale = 1
-		
-	// 	callback(null, autoScaleMap(m));
-	// 	return;
-	// }
-	
+
+	latitude = 45.7816; 
+	longitude = 4.8730
 	console.log("Loading map from: " + latitude + ", " + longitude)
 
 	var topLeft = {'lat': latitude-hauteur, 'lng': longitude-largeur}
@@ -181,20 +160,23 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 	// })
 	
 	for (var i = 0; i < leMap.length; i++)
-	for (var j = 0; j < leMap[i].length; j++) {
+	for (var j = 0; j < leMap[i].length; j++) 
+	{
 		total++
 		var p = leMap[i][j]
 		if (p[0] < t.MapTiles.sessionMapBounds.min.x
 		 || p[0] > t.MapTiles.sessionMapBounds.max.x
 		 || p[1] < t.MapTiles.sessionMapBounds.min.y
-		 || p[1] > t.MapTiles.sessionMapBounds.max.y
-		) {
+		 || p[1] > t.MapTiles.sessionMapBounds.max.y) 
+		{
 			trimmed++
 			leMap[i].splice(j, 1)
 			j--
 			// p[0] = 10
 			// p[1] = 0
-		} else {
+		} 
+		else 
+		{
 			p[0] = (p[0]-shiftX)*coeffX
 			p[1] = (p[1]-shiftY)*coeffY
 		}
@@ -294,7 +276,10 @@ function mapDataToJSon(mapData)
 
 function getInitialPosition() 
 {	
-	return common.CreatePosition(1, 2, Math.random());
+	var x = Math.floor((Math.random()*3)+1)
+ 	var y = x + 1
+ 	var z = Math.random() 
+    return common.CreatePosition(x, y, z);
 }
 
 
@@ -306,8 +291,10 @@ function fullMapAccordingToLocation(latitude, longitude, callback)
 		longitude,
 		consts.HEIGHT_OF_GPS_MAP_SESSION,
 		consts.WIDTH_OF_GPS_MAP_SESSION,
-		function(err, mapData, roadNames) {
-			callback(mapData, getInitialPosition(), getMapTiles(latitude, longitude, consts.ZOOM_OF_GPS_MAP_SESSION))
+		function(err, mapData, roadNames) 
+		{
+			callback(mapData, getInitialPosition(), 
+				getMapTiles(latitude, longitude, consts.ZOOM_OF_GPS_MAP_SESSION))
 		}
 	);
 }
