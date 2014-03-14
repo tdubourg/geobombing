@@ -22,18 +22,37 @@ end
 
 -- part of the contract with Camera
 function Arc:redraw(zoomChange)
-	local newPos1 = camera:worldToScreen(self.end1.pos)
-	local newPos2 = camera:worldToScreen(self.end2.pos)
+	--local newPos1 = camera:worldToScreen(self.end1.pos)
+	--local newPos2 = camera:worldToScreen(self.end2.pos)
 
 	if zoomChange or not self.drawable then
 		if self.drawable then self.drawable:removeSelf() end
-		self.drawable = display.newLine(newPos1.x, newPos1.y, newPos2.x, newPos2.y )
-		self.drawable.strokeWidth = 4
-		self.drawable:setStrokeColor(0, 0, 200)
-		self.map.mapGroup:insert(self.drawable)
+		if (arcs[self] ~=nil) then
+			if (arcs[self][1] ~= nil and arcs[self][2] ~=nil) then
+				local newPos1 = camera:worldToScreen(arcs[self][1])
+				local newPos2 = camera:worldToScreen(arcs[self][2])
+				self.drawable = display.newLine(newPos1.x, newPos1.y, newPos2.x, newPos2.y )
+				self.drawable.strokeWidth = 4
+				self.drawable.alpha= 0.5
+				self.drawable:setStrokeColor(0, 0, 200)
+				self.map.mapGroup:insert(self.drawable)
+			else
+				dbg(GAME_DBG,{"arcs1",arcs[self][1] })
+				dbg(GAME_DBG,{"arcs2",arcs[self][2] })
+			end
+		end
 	else
-		self.drawable.x = newPos1.x --(newPos1.x + newPos2.x)/2
-		self.drawable.y = newPos1.y--(newPos1.y + newPos2.y)/2
+		if (arcs[self] ~=nil and arcs[self][1] ~= nil and arcs[self][2] ~=nil) then
+			local newPos1 = camera:worldToScreen(arcs[self][1])
+			local newPos2 = camera:worldToScreen(arcs[self][2])
+			self.drawable.x = newPos1.x --(newPos1.x + newPos2.x)/2
+			self.drawable.y = newPos1.y--(newPos1.y + newPos2.y)/2
+		else
+			if self.drawable then
+				self.drawable:removeSelf()
+				self.drawable= nil
+			end
+		end
 	end
 end
 
