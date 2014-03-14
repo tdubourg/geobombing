@@ -274,13 +274,13 @@ function mapDataToJSon(mapData)
 
 
 
-function getInitialPosition() 
-{	
-	var x = Math.floor((Math.random()*3)+1)
- 	var y = x + 1
- 	var z = Math.random() 
-    return common.CreatePosition(x, y, z);
-}
+// function getInitialPosition() 
+// {	
+// 	var x = Math.floor((Math.random()*3)+1)
+//  	var y = x + 1
+//  	var z = Math.random() 
+//     return common.CreatePosition(x, y, z);
+// }
 
 
 
@@ -293,7 +293,7 @@ function fullMapAccordingToLocation(latitude, longitude, callback)
 		consts.WIDTH_OF_GPS_MAP_SESSION,
 		function(err, mapData, roadNames) 
 		{
-			callback(mapData, getInitialPosition(), 
+			callback(mapData, //getInitialPosition(), 
 				getMapTiles(latitude, longitude, consts.ZOOM_OF_GPS_MAP_SESSION))
 		}
 	);
@@ -305,5 +305,5 @@ function getMapTiles(latitude, longitude, zoom)
 }
 
 exports.mapDataToJSon = mapDataToJSon
-exports.getInitialPosition = getInitialPosition
+// exports.getInitialPosition = getInitialPosition
 exports.fullMapAccordingToLocation = fullMapAccordingToLocation

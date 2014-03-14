@@ -11,11 +11,17 @@ var com = require("./common")
 var fa = require("./frame_action")
 
 var PLAYER_SPEED = .1 //.5
+var MONSTER_SPEED = PLAYER_SPEED*.4
+
+var MONSTER_MOVE_PERIOD = 8
+var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*.8
+
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
 var BOMB_POWER = .17
 var BOMB_RADIUS = .01
 var BOMB_COS_TOLERANCE = .2
+
 var REDUCE_BOMB_POWER_AT_ANGLE = false
 var DEBUG_BOMBES = false
 
@@ -130,21 +136,24 @@ Map.prototype.getNode = function (nid)
 function Player(game, isMonster) 
 {
 	this.game = game
+	this.isMonster = isMonster
 	if (isMonster)
 	{
 		game.monsters.push(this)
 		this.id = --game.nextMonsterId
 		this.name = "Monster_" + this.id
+		this.nextMoveTimer = 0
+		this.speed = MONSTER_SPEED
 	}
 	else
 	{
 		game.players.push(this)
 		this.id = ++game.nextPlayerId
 		this.name = "Player_" + this.id
+		this.speed = PLAYER_SPEED //.3 //1E-3
 	}
 	
 	this.currentPath = []  // contains nextNode? -> NOT
-	this.speed = PLAYER_SPEED //.3 //1E-3
 	this.connexion = null
 	this.dead = false
 	this.spwanPosition = null
@@ -354,6 +363,32 @@ var delta = 0.0001
 Player.prototype.update = function (period) 
 {
 	
+	if (this.isMonster)
+	{
+		//console.log(">>",this.nextMoveTimer)
+		
+		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD)
+		{
+			this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
+			//this.move()
+			
+			var curNode = Math.random()>.5? this.currentArc.n1: this.currentArc.n2
+			
+			var keys = Object.keys(curNode.arcsTo)
+			
+			var nextArc = curNode.arcsTo[
+				keys[Math.floor(Math.random()*keys.length)]
+			]
+			
+			// console.log(">> Moving", curNode.id, nextArc.n2.id)
+			
+			this.move([curNode.id, nextArc.n2.id], Math.random()*nextArc.length)
+			
+		}
+		else this.nextMoveTimer++
+	}
+	
+	
 	if (this.targetArcDist != null) 
 	{
 		var distToWalk = this.speed*period
@@ -399,30 +434,38 @@ Player.prototype.update = function (period)
 				}
 				
 			}
-
-			// touch monster kills
-			var self = this
-			this.game.monsters.forEach(function(m) 
+			
+			if (!this.isMonster)
 			{
-				if (m.currentArc.id == self.currentArc.id 
-					|| m.currentArc.id == self.currentArc.getOpposite().id)
+				
+				// FIXME: stop walkign when hit a monster
+				
+				// touch monster kills
+				var self = this
+				this.game.monsters.forEach(function(m) 
 				{
-					var pos
-					if (m.currentArc.id == self.currentArc.id) 
-						pos = Math.abs(m.currentArcDist - self.currentArcDist)
-					else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
-
-					if (!(m.dead) && pos < self.currentArc.length / 10)
+					if (m.currentArc.id == self.currentArc.id 
+						|| m.currentArc.id == self.currentArc.getOpposite().id)
 					{
-						console.log("MONSTER:", m.name)
-						console.log("\nBODY FLESH of:", self.name)				
-						self.die()
-						m.onKillPlayer(self)
-						console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
-					}
-				}
-			})
+						var pos
+						if (m.currentArc.id == self.currentArc.id) 
+							pos = Math.abs(m.currentArcDist - self.currentArcDist)
+						else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
 
+						if (!(m.dead) && pos < self.currentArc.length / 10)
+						{
+							console.log("MONSTER:", m.name)
+							console.log("\nBODY FLESH of:", self.name)				
+							self.die()
+							m.onKillPlayer(self)
+							console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+						}
+					}
+				})
+				
+			}
+			
+			
 
 		} // end while
 	}
@@ -537,7 +580,8 @@ Player.prototype.bomb = function ()
 Game.prototype.update = function (period, explodingBombs, dyingPlayers) 
 {
 	this.dyingPlayers = dyingPlayers
-	this.players.thismap(Player.prototype.update, period)	
+	this.players.thismap(Player.prototype.update, period)
+	this.monsters.thismap(Player.prototype.update, period)
 	this.bombs.thismap(Bomb.prototype.update, period, explodingBombs)
 }
 
@@ -555,6 +599,32 @@ Game.prototype.newGame = function ()
 	
 }
 
+Game.prototype.getRandomPosition = function()
+{
+	var node = null
+	
+	var nb_considered_nodes =
+		// this.map.nodes.length
+		5
+	
+	while (!node || node.arcsTo.length < 1)
+	{
+		node = this.map.nodes[Math.floor(Math.random()*nb_considered_nodes)]
+	}
+	
+	//console.log(node.arcsTo.keys())
+	
+	var keys = Object.keys(node.arcsTo)
+	
+	var arc = node.arcsTo[
+		keys[Math.floor(Math.random()*keys.length)]
+	]
+	
+	//console.log(arc)
+	
+	return com.CreatePosition(arc.n1.id, arc.n2.id, Math.random()*arc.length);
+	
+}
 
 
 
