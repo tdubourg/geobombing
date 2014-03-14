@@ -97,7 +97,7 @@ function GameServer(game, tiles)
 		var explodingBombs = []
 		var dyingPlayers = []
 		
-		// Dying players
+		// Dying players (Is it used for monsters as well?)
 		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)		
 		explodingBombs.forEach(function (bomb) { that.notifyBomb(bomb) })		
 		dyingPlayers.forEach(function (p) 

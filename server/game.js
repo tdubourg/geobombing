@@ -21,11 +21,10 @@ var DEBUG_BOMBES = false
 
 /// MAP //////////////////////
 
-function panic(str) {
-	console.log("[Game Model Error]: "+(str? str: "unspecified"))
-}
+function panic(str) { console.log("[Game Model Error]: "+(str? str: "unspecified")) }
 
-function Node(id, x, y) {
+function Node(id, x, y) 
+{
 	this.id = id // node Id
 	this.x = x   // latitude
 	this.y = y   // longitude
@@ -34,20 +33,23 @@ function Node(id, x, y) {
 	this.arcsTo = {}
 }
 
-Node.prototype.toString = function () {
+Node.prototype.toString = function () 
+{
 	//return "("+this.x+","+this.y+")"
 	return "(Node "+this.id+")"
 }
 
 // Returns null if there is no arc to the node from this node
-Node.prototype.arcToId = function (nodeId) {
+Node.prototype.arcToId = function (nodeId) 
+{
 	if (this.arcsTo[nodeId]) return this.arcsTo[nodeId]
 	else return null
 }
 
 var idNb = 0
 
-function Arc(/*id, name,*/ n1, n2) {
+function Arc(/*id, name,*/ n1, n2) 
+{
 	//this.id = id
 	//this.name = name
 	//console.log(">>>>>",n1,n1.x)
@@ -62,14 +64,16 @@ function Arc(/*id, name,*/ n1, n2) {
 	//this.arcs[id] = this
 }
 
-Arc.prototype.distFromTo = function (coeff, node) {
+Arc.prototype.distFromTo = function (coeff, node) 
+{
 	if (node === this.n1) return this.length*coeff
 	if (node === this.n2) return this.length*(1-coeff)
 	throw "Not a node of this arc"
 }
 
 // angle formed by n1, n2, node
-Arc.prototype.angleWith = function (node) {
+Arc.prototype.angleWith = function (node) 
+{
 	//return Math.atan2(this.n2.y - this.n1.y,)
 	//return (this.angle - this.n2.arcToId(node.id).angle)%(2*Math.PI)
 	var a = (this.angle + 2*Math.PI - this.n2.arcToId(node.id).angle)%(2*Math.PI)
@@ -78,38 +82,35 @@ Arc.prototype.angleWith = function (node) {
 	return a
 }
 
-Arc.prototype.getOpposite = function () {
+Arc.prototype.getOpposite = function () 
+{
 	return this.n2.arcToId(this.n1.id)
 }
 
-Arc.prototype.toString = function () {
+Arc.prototype.toString = function () 
+{
 	return "<"+this.n1+","+this.n2+">"
 }
 
 // Takes the same map object that will be converted
 // into JSon to be sent and stores it as jsonObj
-function Map(jsonObj) {
+function Map(jsonObj) 
+{
 	var that = this
 	this.nodes = []
-	//this.arcs = []
 	this.nb_arcs = 0
 	this.jsonObj = jsonObj
-	// TODO
-	
-	//console.log(jsonObj)
-	
 	this.name = jsonObj.mapName
 	this.id = jsonObj.mapId
-	jsonObj.mapListNode.forEach(function(n) {
-		//console.log("adding node",n.id)
-		//nodes.push(new Node(n.id, n.x, n.y))
+	jsonObj.mapListNode.forEach(function(n) 
+	{
 		that.nodes[n.id] = new Node(n.id, n.x, n.y)
 	})
-	jsonObj.mapListWay.forEach(function(w) {
+	jsonObj.mapListWay.forEach(function(w) 
+	{
 		//console.log(w)
-		for (var i = 0; i < w.wLstNdId.length-1; i++) {
-			
-			//n1 = this.getNode(w.wLstNdId[i]), n2 = this.getNode(w.wLstNdId[i+1])
+		for (var i = 0; i < w.wLstNdId.length-1; i++) 
+		{
 			var n1 = that.nodes[w.wLstNdId[i]], n2 = that.nodes[w.wLstNdId[i+1]]
 			that.nodes[n1.id].arcsTo[n2.id] = new Arc(n1, n2)
 			that.nodes[n2.id].arcsTo[n1.id] = new Arc(n2, n1)
@@ -118,7 +119,8 @@ function Map(jsonObj) {
 	
 }
 
-Map.prototype.getNode = function (nid) {
+Map.prototype.getNode = function (nid) 
+{
 	return this.nodes[nid]
 }
 
@@ -127,18 +129,14 @@ Map.prototype.getNode = function (nid) {
 
 
 // var pids = 0
-function Player(game, isMonster) {
-	//console.log("CRE PLAY",game)
-	/*this.id = id
-	this.name = name*/
+function Player(game, isMonster) 
+{
 	this.game = game
 	if (isMonster)
 		game.monsters.push(this)
 	else
 		game.players.push(this)
-	
-	// this.stream = stream
-	
+
 	//this.id = ++pids
 	this.id = ++game.nextPlayerId
 	this.name = "Player_" + this.id
@@ -169,7 +167,8 @@ function Player(game, isMonster) {
 	
 // }
 
-function Game(map) {
+function Game(map) 
+{
 	this.map = map
 	this.players = []
 	this.nextPlayerId = 0
