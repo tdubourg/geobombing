@@ -400,10 +400,28 @@ Player.prototype.update = function (period)
 			}
 
 			// touch monster kills
-			//if ()
+			var self = this
+			this.game.monsters.forEach(function(m) 
 			{
+				if (m.currentArc.id == self.currentArc.id 
+					|| m.currentArc.id == self.currentArc.getOpposite().id)
+				{
+					var pos
+					if (m.currentArc.id == self.currentArc.id) 
+						pos = Math.abs(m.currentArcDist - self.currentArcDist)
+					else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
 
-			}
+					if (pos < self.currentArc.length / 10)
+					{
+						console.log("MONSTER:", m.name)
+						console.log("\nBODY FLESH of:", self.name)				
+						self.die()
+						m.onKillPlayer(self)
+						console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+					}
+				}
+			})
+
 
 		} // end while
 	}
@@ -414,7 +432,7 @@ Player.prototype.die = function ()
 {
 	if (!this.dead) 
 	{
-		console.log("Player",this.name,"died in horrible pain!!")
+		console.log(this.name,"died in horrible pain!!")
 		this.dead = true
 		this.resetMove()		
 		this.game.dyingPlayers.push(this)	
