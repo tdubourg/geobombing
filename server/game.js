@@ -11,11 +11,15 @@ var com = require("./common")
 var fa = require("./frame_action")
 
 var PLAYER_SPEED = .1 //.5
+
+var MONSTER_CHANGE_MOVE_PERIOD = 20
+
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
 var BOMB_POWER = .17
 var BOMB_RADIUS = .01
 var BOMB_COS_TOLERANCE = .2
+
 var REDUCE_BOMB_POWER_AT_ANGLE = false
 var DEBUG_BOMBES = false
 
@@ -130,11 +134,13 @@ Map.prototype.getNode = function (nid)
 function Player(game, isMonster) 
 {
 	this.game = game
+	this.isMonster = isMonster
 	if (isMonster)
 	{
 		game.monsters.push(this)
 		this.id = ++game.nextMonsterId
 		this.name = "Monster_" + this.id
+		this.nextMoveTimer = 0
 	}
 	else
 	{
@@ -353,6 +359,20 @@ var delta = 0.0001
 Player.prototype.update = function (period) 
 {
 	
+	if (this.isMonster)
+	{
+		if (this.nextMoveTimer > MONSTER_CHANGE_MOVE_PERIOD)
+		{
+			this.nextMoveTimer = 0
+			//this.move()
+			
+			
+			
+		}
+		else this.nextMoveTimer++
+	}
+	
+	
 	if (this.targetArcDist != null) 
 	{
 		var distToWalk = this.speed*period
@@ -550,6 +570,32 @@ Game.prototype.newGame = function ()
 	
 }
 
+Game.prototype.getRandomPosition = function()
+{
+	var node = null
+	
+	var nb_considered_nodes =
+		// this.map.nodes.length
+		12
+	
+	while (!node || node.arcsTo.length < 1)
+	{
+		node = this.map.nodes[Math.floor(Math.random()*nb_considered_nodes)]
+	}
+	
+	//console.log(node.arcsTo.keys())
+	
+	var keys = Object.keys(node.arcsTo)
+	
+	var arc = node.arcsTo[
+		keys[Math.floor(Math.random()*keys.length)]
+	]
+	
+	//console.log(arc)
+	
+	return com.CreatePosition(arc.n1.id, arc.n2.id, Math.random()*arc.length);
+	
+}
 
 
 

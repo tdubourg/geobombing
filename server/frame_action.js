@@ -43,17 +43,19 @@ var sendInit_action = function (frame_data, stream)
 	
 	function setInitialPosition()
 	{
-		var position = db.getInitialPosition(); // FIXME calcul de position initiale par la base de données
+		// var position = db.getInitialPosition(); // FIXME calcul de position initiale par la base de données
+		var position = single_game_server.game.getRandomPosition()
 		single_game_server.setInitialPosition(stream, position)
 		
 		////////
 		// FIXME: debug add monsters
-		single_game_server.addMonster(db.getInitialPosition())
+		// single_game_server.addMonster(db.getInitialPosition())
+		single_game_server.addMonster(single_game_server.game.getRandomPosition())
 		////////
 	}
 	
 	if (single_game_server == null)
-		db.fullMapAccordingToLocation(lat, lon, function (mapData, position, tiles)
+		db.fullMapAccordingToLocation(lat, lon, function (mapData, tiles)
 		{
 			single_game_server = new gs.GameServer(
 				new g.Game(new g.Map(db.mapDataToJSon(mapData))), tiles)
