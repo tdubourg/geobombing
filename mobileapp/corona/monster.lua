@@ -121,7 +121,7 @@ end
 
 
 function Monster:setAR(arcP)
-	dbg(GAME_DBG, {"LA",arcP.arc.end1.uid,arcP.arc.end2.uid,arcP.progress})
+	--dbg(GAME_DBG, {"LA",arcP.arc.end1.uid,arcP.arc.end2.uid,arcP.progress})
 	self.oldpos = self.pos
 	local destination = arcP:getPosXY()
 	self.toX=destination.x
