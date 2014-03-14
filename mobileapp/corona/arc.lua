@@ -22,8 +22,19 @@ end
 
 -- part of the contract with Camera
 function Arc:redraw(zoomChange)
-	--local newPos1 = camera:worldToScreen(self.end1.pos)
-	--local newPos2 = camera:worldToScreen(self.end2.pos)
+
+	if DISPLAY_MAP_ARCS then
+		if self.dbgArc then self.dbgArc:removeSelf() end
+		local newPos1 = camera:worldToScreen(self.end1.pos)
+		local newPos2 = camera:worldToScreen(self.end2.pos)
+		self.dbgArc = display.newLine(newPos1.x, newPos1.y, newPos2.x, newPos2.y )
+		self.dbgArc.strokeWidth = 4
+		self.dbgArc.alpha= 1
+		self.dbgArc:setStrokeColor(0, 255, 0)
+		self.map.mapGroup:insert(self.dbgArc)
+		self.dbgArc.x = newPos1.x --(newPos1.x + newPos2.x)/2
+		self.dbgArc.y = newPos1.y--(newPos1.y + newPos2.y)/2
+	end
 
 	if zoomChange or not self.drawable then
 		if self.drawable then self.drawable:removeSelf() end
