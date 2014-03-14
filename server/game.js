@@ -13,8 +13,8 @@ var fa = require("./frame_action")
 var PLAYER_SPEED = .1 //.5
 var MONSTER_SPEED = PLAYER_SPEED*.4
 
-var MONSTER_MOVE_PERIOD = 8
-var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*.8
+var MONSTER_MOVE_PERIOD = 1
+var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*2//*.8
 
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
@@ -369,7 +369,8 @@ Player.prototype.update = function (period)
 		
 		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD)
 		{
-			this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
+			//this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
+			this.nextMoveTimer = Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS
 			//this.move()
 			
 			var curNode = Math.random()>.5? this.currentArc.n1: this.currentArc.n2
@@ -385,11 +386,11 @@ Player.prototype.update = function (period)
 			this.move([curNode.id, nextArc.n2.id], Math.random()*nextArc.length)
 			
 		}
-		else this.nextMoveTimer++
+		else this.nextMoveTimer += period
 	}
 	
 	
-	if (this.targetArcDist != null) 
+	if (this.targetArcDist != null)
 	{
 		var distToWalk = this.speed*period
 		//var distToNode = this.currentArc.distFromTo(this.currentArcPos, this.nextNode)
@@ -605,7 +606,7 @@ Game.prototype.getRandomPosition = function()
 	
 	var nb_considered_nodes =
 		// this.map.nodes.length
-		5
+		12
 	
 	while (!node || node.arcsTo.length < 1)
 	{
