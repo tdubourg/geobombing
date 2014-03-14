@@ -129,10 +129,12 @@ function Monster:setAR(arcP)
 		end
 	end
 
-	local newAnimString = self.dirString..self.animString
-	if self.currentAnimString ~= newAnimString then
-		self.sprite:play(newAnimString)
-		self.currentAnimString = newAnimString
+	if not self.isDead then
+		local newAnimString = self.dirString..self.animString
+		if self.currentAnimString ~= newAnimString then
+			self.sprite:play(newAnimString)
+			self.currentAnimString = newAnimString
+		end
 	end
 
 end
