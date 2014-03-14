@@ -11,8 +11,10 @@ var com = require("./common")
 var fa = require("./frame_action")
 
 var PLAYER_SPEED = .1 //.5
+var MONSTER_SPEED = PLAYER_SPEED*.4
 
-var MONSTER_CHANGE_MOVE_PERIOD = 20
+var MONSTER_MOVE_PERIOD = 8
+var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*.8
 
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
@@ -141,16 +143,17 @@ function Player(game, isMonster)
 		this.id = --game.nextMonsterId
 		this.name = "Monster_" + this.id
 		this.nextMoveTimer = 0
+		this.speed = MONSTER_SPEED
 	}
 	else
 	{
 		game.players.push(this)
 		this.id = ++game.nextPlayerId
 		this.name = "Player_" + this.id
+		this.speed = PLAYER_SPEED //.3 //1E-3
 	}
 	
 	this.currentPath = []  // contains nextNode? -> NOT
-	this.speed = PLAYER_SPEED //.3 //1E-3
 	this.connexion = null
 	this.dead = false
 	this.spwanPosition = null
@@ -362,12 +365,24 @@ Player.prototype.update = function (period)
 	
 	if (this.isMonster)
 	{
-		if (this.nextMoveTimer > MONSTER_CHANGE_MOVE_PERIOD)
+		//console.log(">>",this.nextMoveTimer)
+		
+		if (this.nextMoveTimer > MONSTER_MOVE_PERIOD)
 		{
-			this.nextMoveTimer = 0
+			this.nextMoveTimer = Math.floor(Math.random()*MONSTER_MOVE_PERIOD_RANDOMNESS)
 			//this.move()
 			
+			var curNode = Math.random()>.5? this.currentArc.n1: this.currentArc.n2
 			
+			var keys = Object.keys(curNode.arcsTo)
+			
+			var nextArc = curNode.arcsTo[
+				keys[Math.floor(Math.random()*keys.length)]
+			]
+			
+			// console.log(">> Moving", curNode.id, nextArc.n2.id)
+			
+			this.move([curNode.id, nextArc.n2.id], Math.random()*nextArc.length)
 			
 		}
 		else this.nextMoveTimer++
@@ -419,30 +434,38 @@ Player.prototype.update = function (period)
 				}
 				
 			}
-
-			// touch monster kills
-			var self = this
-			this.game.monsters.forEach(function(m) 
+			
+			if (!this.isMonster)
 			{
-				if (m.currentArc.id == self.currentArc.id 
-					|| m.currentArc.id == self.currentArc.getOpposite().id)
+				
+				// FIXME: stop walkign when hit a monster
+				
+				// touch monster kills
+				var self = this
+				this.game.monsters.forEach(function(m) 
 				{
-					var pos
-					if (m.currentArc.id == self.currentArc.id) 
-						pos = Math.abs(m.currentArcDist - self.currentArcDist)
-					else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
-
-					if (!(m.dead) && pos < self.currentArc.length / 10)
+					if (m.currentArc.id == self.currentArc.id 
+						|| m.currentArc.id == self.currentArc.getOpposite().id)
 					{
-						console.log("MONSTER:", m.name)
-						console.log("\nBODY FLESH of:", self.name)				
-						self.die()
-						m.onKillPlayer(self)
-						console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
-					}
-				}
-			})
+						var pos
+						if (m.currentArc.id == self.currentArc.id) 
+							pos = Math.abs(m.currentArcDist - self.currentArcDist)
+						else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
 
+						if (!(m.dead) && pos < self.currentArc.length / 10)
+						{
+							console.log("MONSTER:", m.name)
+							console.log("\nBODY FLESH of:", self.name)				
+							self.die()
+							m.onKillPlayer(self)
+							console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+						}
+					}
+				})
+				
+			}
+			
+			
 
 		} // end while
 	}
@@ -557,7 +580,8 @@ Player.prototype.bomb = function ()
 Game.prototype.update = function (period, explodingBombs, dyingPlayers) 
 {
 	this.dyingPlayers = dyingPlayers
-	this.players.thismap(Player.prototype.update, period)	
+	this.players.thismap(Player.prototype.update, period)
+	this.monsters.thismap(Player.prototype.update, period)
 	this.bombs.thismap(Bomb.prototype.update, period, explodingBombs)
 }
 
@@ -581,7 +605,7 @@ Game.prototype.getRandomPosition = function()
 	
 	var nb_considered_nodes =
 		// this.map.nodes.length
-		12
+		5
 	
 	while (!node || node.arcsTo.length < 1)
 	{
