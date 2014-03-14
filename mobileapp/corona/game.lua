@@ -338,9 +338,8 @@ function initGame(player_id)
 				local t = json_obj.data[NETWORK_MONSTER_UPDATE_TIMESTAMP_KEY]
 				local discard_timestamp_limit = now() - PLAYER_UPDATE_DISCARD_DELAY_IN_MS -- same delay for monsters
 				local dt = t - discard_timestamp_limit
-				dbg(NETW_DBG_MODE, {"timestamp frame=", t})
-				dbg(NETW_DBG_MODE, {"discard timestamp limit=", discard_timestamp_limit})
-				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", dt})
+				dbg(MONSTER_UPDATES_DBG, {"monster update:", json_obj.data})
+
 
 				for k,v in pairs(updates) do
 					dbg(T, {"k=",k, "v=", v})
