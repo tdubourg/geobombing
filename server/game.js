@@ -133,7 +133,7 @@ function Player(game, isMonster)
 	if (isMonster)
 	{
 		game.monsters.push(this)
-		this.id = ++game.nextMonsterId
+		this.id = --game.nextMonsterId
 		this.name = "Monster_" + this.id
 	}
 	else
