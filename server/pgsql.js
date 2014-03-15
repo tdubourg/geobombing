@@ -190,6 +190,7 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 			var r = (max[coord]-prevP[coord])/(p[coord]-prevP[coord])
 			p[1-coord] = prevP[1-coord] + (p[1-coord]-prevP[1-coord])*r
 			p[coord] = max[coord]
+			// p[1-coord] = p[coord] = 0
 		}
 	}
 	
@@ -235,17 +236,31 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 				}
 				else
 				{
+					//if (prevP)
+					//console.log(j,leMap[i].length,j+1 < leMap[i].length && inBnds(leMap[i][j+1]),prevP==null)
+					
+					// if (p[1] > bnds.max.y) {
+					// 	p[1] = bnds.max.y
+					// 	console.log(j,leMap[i].length,prevP==null)
+					// 	console.log(inBnds(prevP))
+					// 	//leMap[i][j-1][0]=0
+					// 	console.log(prevP,leMap[i][j-1])
+					// 	console.log(bnds)
+					// }
+					// else {
 					p = null
 					trimmed++
 					leMap[i].splice(j, 1)
 					j--
+					// }
 				}
 			} 
-			if (p) 
+			if (p)
 			{
+				prevP = [p[0],p[1]] // copy p to avoid viewing its scaling
 				p[0] = (p[0]-shiftX)*coeffX
 				p[1] = (p[1]-shiftY)*coeffY
-				prevP = p
+				//prevP = p
 			}
 		}
 	}
@@ -254,7 +269,7 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 	// 	console.log("Warning: outlying points:", out)
 	
 	console.log("Removed "+trimmed+" outlying points out of "+total)
-	console.log("Moved "+moved+" outlying points")
+	console.log("Moved "+moved+" outlying points to the map's boundaries")
 	
 	// FIXME: in practice this could produce empty roads if all
 	// points of the road lie out of the bounds
