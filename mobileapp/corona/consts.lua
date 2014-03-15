@@ -3,7 +3,8 @@ require("utils")
 SERVER_IP_ADDR = "127.0.0.1"
 SERVER_PORT = "3000"
 
-DISPLAY_MAP_ARCS = true
+DISPLAY_PATH = true
+DISPLAY_MAP_ARCS = false
 DISPLAY_MAP_NODES = false
 
 ZOOM = 500

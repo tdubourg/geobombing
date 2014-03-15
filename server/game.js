@@ -402,7 +402,7 @@ Player.prototype.update = function (period)
 		var distToWalk = this.speed*period
 		while (distToWalk > delta)
 		{
-			// Iterate until we have walked the entire distance we can walk in a single round
+			// Iterate until we have walked the entire distance we can walk in a single frame
 			// This has to be done in multiple iterations when we need to change arc 
 			// (the distance to walk is > to the distance until the end of the current arc)
 
@@ -434,7 +434,7 @@ Player.prototype.update = function (period)
 							currNode.id, "to node", nextNode.id)
 					this.currentArcDist = 0
 				}
-				else 
+				else
 				{
 					this.currentArcDist = this.targetArcDist
 					this.targetArcDist = null

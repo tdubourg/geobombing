@@ -145,7 +145,7 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 	
 	// console.log(shiftX,shiftY)
 	// console.log(coeffX,coeffY)
-	var trimmed = 0, total = 0
+	var trimmed = 0, moved = 0, total = 0
 	// leMap.forEach(function(road) {
 	// 	road.forEach(function(p) {
 			
@@ -159,26 +159,109 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 	// 	})
 	// })
 	
-	for (var i = 0; i < leMap.length; i++)
-	for (var j = 0; j < leMap[i].length; j++) 
+	var bnds = t.MapTiles.sessionMapBounds
+	var min = [bnds.min.x, bnds.min.y], max = [bnds.max.x, bnds.max.y]
+	
+	function inBnds (p) //(x1,y1,x2,y2) {
 	{
-		total++
-		var p = leMap[i][j]
-		if (p[0] < t.MapTiles.sessionMapBounds.min.x
-		 || p[0] > t.MapTiles.sessionMapBounds.max.x
-		 || p[1] < t.MapTiles.sessionMapBounds.min.y
-		 || p[1] > t.MapTiles.sessionMapBounds.max.y) 
+		return (
+			p[0] >= bnds.min.x
+		 && p[0] <= bnds.max.x
+		 && p[1] >= bnds.min.y
+		 && p[1] <= bnds.max.y
+		)
+	}
+	
+	function shortenArcMin (p, prevP, coord)
+	{
+		if (p[coord] < min[coord])
 		{
-			trimmed++
-			leMap[i].splice(j, 1)
-			j--
-			// p[0] = 10
-			// p[1] = 0
-		} 
-		else 
+			var r = (min[coord]-prevP[coord])/(p[coord]-prevP[coord])
+			// var r = (p[0]-prevP[0])/(bnds.min.x-prevP[0])
+			p[1-coord] = prevP[1-coord] + (p[1-coord]-prevP[1-coord])*r
+			//p[1-coord] = 0
+			p[coord] = min[coord]
+		}
+	}
+	function shortenArcMax (p, prevP, coord)
+	{
+		if (p[coord] > max[coord])
 		{
-			p[0] = (p[0]-shiftX)*coeffX
-			p[1] = (p[1]-shiftY)*coeffY
+			var r = (max[coord]-prevP[coord])/(p[coord]-prevP[coord])
+			p[1-coord] = prevP[1-coord] + (p[1-coord]-prevP[1-coord])*r
+			p[coord] = max[coord]
+			// p[1-coord] = p[coord] = 0
+		}
+	}
+	
+	for (var i = 0; i < leMap.length; i++)
+	{
+		var prevP = null
+		for (var j = 0; j < leMap[i].length; j++) 
+		{
+			total++
+			var p = leMap[i][j]
+			// if (p[0] < bnds.min.x
+			//  || p[0] > bnds.max.x
+			//  || p[1] < bnds.min.y
+			//  || p[1] > bnds.max.y
+			// ) {
+			if (!inBnds(p))
+			{
+				if (prevP && inBnds(prevP))
+				{
+					// if (p[0] < bnds.min.x)
+					// {
+					// 	var r = (bnds.min.x-prevP[0])/(p[0]-prevP[0])
+					// 	// var r = (p[0]-prevP[0])/(bnds.min.x-prevP[0])
+					// 	p[1] = prevP[1] + (p[1]-prevP[1])*r
+					// }
+					
+					shortenArcMin (p, prevP, 0)
+					shortenArcMin (p, prevP, 1)
+					shortenArcMax (p, prevP, 0)
+					shortenArcMax (p, prevP, 1)
+					
+					moved++
+				}
+				else if (j+1 < leMap[i].length && inBnds(leMap[i][j+1]))
+				{
+					var pp = leMap[i][j+1]
+					shortenArcMin (p, pp, 0)
+					shortenArcMin (p, pp, 1)
+					shortenArcMax (p, pp, 0)
+					shortenArcMax (p, pp, 1)
+					
+					moved++
+				}
+				else
+				{
+					//if (prevP)
+					//console.log(j,leMap[i].length,j+1 < leMap[i].length && inBnds(leMap[i][j+1]),prevP==null)
+					
+					// if (p[1] > bnds.max.y) {
+					// 	p[1] = bnds.max.y
+					// 	console.log(j,leMap[i].length,prevP==null)
+					// 	console.log(inBnds(prevP))
+					// 	//leMap[i][j-1][0]=0
+					// 	console.log(prevP,leMap[i][j-1])
+					// 	console.log(bnds)
+					// }
+					// else {
+					p = null
+					trimmed++
+					leMap[i].splice(j, 1)
+					j--
+					// }
+				}
+			} 
+			if (p)
+			{
+				prevP = [p[0],p[1]] // copy p to avoid viewing its scaling
+				p[0] = (p[0]-shiftX)*coeffX
+				p[1] = (p[1]-shiftY)*coeffY
+				//prevP = p
+			}
 		}
 	}
 	
@@ -186,6 +269,7 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 	// 	console.log("Warning: outlying points:", out)
 	
 	console.log("Removed "+trimmed+" outlying points out of "+total)
+	console.log("Moved "+moved+" outlying points to the map's boundaries")
 	
 	// FIXME: in practice this could produce empty roads if all
 	// points of the road lie out of the bounds
