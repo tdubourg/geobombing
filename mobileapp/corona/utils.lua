@@ -69,9 +69,25 @@ function dbg( mode, things )
 			else
 				v = tostring(v)
 			end
-			io.write(v, "\t")
+			dbg_write(v, "\t")
 		end
-		io.write("\n")
+		dbg_write("\n")
+	end
+end
+
+local dbg_file = nil
+
+function dbg_write( ... )
+	if(LOG_TO_FILE) then
+		if (dbg_file == nil) then
+			local path = system.pathForFile(LOG_TO_FILE, system.DocumentsDirectory )
+			io.write( "path\t", tostring(path), "\n")
+			dbg_file = io.open( path, "w" )
+			io.write( "dbg_file==nil\t", tostring(dbg_file==nil), "\n")
+		end
+		dbg_file:write( ... )
+	else
+		io.write( ... )
 	end
 end
 

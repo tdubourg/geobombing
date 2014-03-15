@@ -6,7 +6,7 @@ SERVER_PORT = "3000"
 DISPLAY_MAP_ARCS = true
 DISPLAY_MAP_NODES = false
 
-ZOOM = 2500
+ZOOM = 500
 PERSPECTIVE_PROJ = 1 -- 1 for top-down, 0.4-0.6 for iso perspective
 SPREAD_ANGLE_TOLLERANCE = 0.2
 FORCETRANSMIT_RADIUS = 0.01
@@ -121,9 +121,7 @@ NETW_DBG_MODE = false
 NETW_DUMP_MODE = false
 DISCARDED_PLAYER_UPDATES_MSG = false
 GAME_DBG = false
-
-PLAYER_SPEED = .1
-
+LOG_TO_FILE = nil
 
 -- require("consts-local")
 silent_fail_require("consts-local")

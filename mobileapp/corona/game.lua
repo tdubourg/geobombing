@@ -288,8 +288,8 @@ function initGame(player_id)
 						dbg(DISCARDED_PLAYER_UPDATES_MSG, {"DISCARDED player update"})
 					else
 						-- The position has to be updated
-						dbg(PREDICTION_DBG, {'Received player update with pos=', pos})
 						local pos = v[NETWORK_PLAYER_UPDATE_POS_KEY]
+						dbg(PREDICTION_DBG, {'Received player update with pos=', pos})
 						local player_id = tostring(v[NETWORK_PLAYER_UPDATE_ID_KEY])
 						if (pos ~= nil) then
 							-- Then take it into account!

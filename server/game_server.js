@@ -8,7 +8,7 @@ var fa = require('./frame_action')
 var net = require('./network')
 
 // in milliseconds:
-var GAME_REFRESH_PERIOD = 10000
+var GAME_REFRESH_PERIOD = 5000
 var TIME_BEFORE_RESPAWN = 5000
 
 // in seconds
