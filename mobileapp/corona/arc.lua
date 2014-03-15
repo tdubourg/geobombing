@@ -8,7 +8,7 @@ function Arc:new(end1, end2, streetName, map)
 	-- self.pos = Vector2D:new((end1.pos.x + end2.pos.x)/2,(end1.pos.y + end2.pos.y)/2)
 
 
-	if DISPLAY_MAP_ARCS then
+	if DISPLAY_MAP_ARCS or DISPLAY_PATH then
 		-- self.drawable = display.newLine(end1.pos.x, end1.pos.y, end2.pos.x, end2.pos.y )
 		-- self.drawable.strokeWidth = 7
 		-- self.drawable:setStrokeColor(200, 200, 200)
