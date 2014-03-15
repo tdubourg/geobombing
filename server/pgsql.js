@@ -179,6 +179,8 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 			var r = (min[coord]-prevP[coord])/(p[coord]-prevP[coord])
 			// var r = (p[0]-prevP[0])/(bnds.min.x-prevP[0])
 			p[1-coord] = prevP[1-coord] + (p[1-coord]-prevP[1-coord])*r
+			//p[1-coord] = 0
+			p[coord] = min[coord]
 		}
 	}
 	function shortenArcMax (p, prevP, coord)
@@ -187,6 +189,7 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 		{
 			var r = (max[coord]-prevP[coord])/(p[coord]-prevP[coord])
 			p[1-coord] = prevP[1-coord] + (p[1-coord]-prevP[1-coord])*r
+			p[coord] = max[coord]
 		}
 	}
 	

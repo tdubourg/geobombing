@@ -2,8 +2,9 @@
 
 var pg = require('pg');
 var fs = require('fs')
+var cst = require("./constants");
 
-var local_serv = false
+var local_serv = cst.USE_LOCAL_SERVER
 
 var conString = local_serv?
 	"postgres://postgres:quepasa@localhost/rhonealpes"

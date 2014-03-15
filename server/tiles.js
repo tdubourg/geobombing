@@ -1,6 +1,7 @@
 "use strict"
 // From algo_extracted.js (openstreetmap)
 var L = require("./leaflet_node");
+var cst = require("./constants");
 
 var template = function (str, data) {
 	return str.replace(/\{ *([\w_]+) *\}/g, function (str, key) {
@@ -19,7 +20,8 @@ var MapTiles =
 	crs: L.CRS.EPSG3857,
 	clientWidth: 512,
 	clientHeight: 512,
-	_url: "http://tdvps.fr.nf:8080/osm_tiles/{z}/{x}/{y}.png",
+	_url: cst.USE_LOCAL_SERVER? "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+	      :                     "http://tdvps.fr.nf:8080/osm_tiles/{z}/{x}/{y}.png",
 
 	project: function (latlng, zoom) { // (LatLng[, Number]) -> Point
 		zoom = zoom === undefined ? this.zoom : zoom;
