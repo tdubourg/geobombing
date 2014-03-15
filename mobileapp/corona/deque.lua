@@ -41,7 +41,7 @@ function Deque.last(deque)
 	if (deque.length == 0) then
 		return nil
 	end
-	return deque[deque.first]
+	return deque[deque.last]
 end
 
 function Deque.popright (deque)

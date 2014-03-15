@@ -155,13 +155,24 @@ function scene:createScene( event )
 
 end
 
+local updateLoopInProgress = false
 local updateLoop = function( event )
-	if (btnBombClicked) then
-		btnBombClicked = false
-	else
-		if (player ~=nil) then 
-			player:refresh()
+	-- Using a lock in case updateLoop would be interrupted by the "tick" of the next updateloop (updateLoop() taking more time than between to ticks)
+	if (not updateLoopInProgress) then
+		updateLoopInProgress = true
+		dbg(T, {"updateloop()"})
+		net.stop_background_networking()
+		net.update()
+		dbg(T, {"net.update() done"})
+		if (btnBombClicked) then
+			btnBombClicked = false
+		else
+			if (player ~=nil) then 
+				player:refresh()
+				camera:lookAt(player:getPos())
+			end
 		end
+		updateLoopInProgress = false -- Releasing lock
 	end
 
 end
@@ -493,6 +504,7 @@ function scene:enterScene( event )
 	
 	-- connect to server
 	local result = net.connect_to_server(SERVER_IP_ADDR, SERVER_PORT)
+	net.start_background_networking()
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
 		dbg(Y,{"HANDLER"})
@@ -552,6 +564,7 @@ function scene:exitScene( event )
 	net.disconnect()
 
 	Runtime:removeEventListener( "enterFrame", updateLoop )
+	net.start_background_networking()
 	Runtime:removeEventListener( "enterFrame", gui.update )
 	Runtime:removeEventListener("touch",newPlayerDestination)	
 

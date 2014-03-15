@@ -182,6 +182,10 @@ function Player:refresh()
 	-- local currentArcDist = self.arcPCurrent.dist
 	-- local targetArcDist = self.predictionDestination.progress
 	local copyOfArcPCurrent = self.arcPCurrent:clone()
+	if (copyOfArcPCurrent == nil) then
+		dbg(ERRORS, {"Something went wrong cloning self.arcPCurrent"})
+		return
+	end
 	if (self.currPredictionNode == nil) then
 		-- self.currPredictionNode = Deque.popleft(self.predictionNodes)
 		if (self.predictionNodes.length > 0) then
@@ -212,7 +216,7 @@ function Player:refresh()
 			-- If we are not on the final arc of the path, the distance to the next node is
 			-- the total length of current arc minus the current position on this arc
 			local remainder_dist = copyOfArcPCurrent:addDistTowards(distToWalk, self.nextPredictionNode)
-			dbg(PREDICTION_DBG, {"Not final arc"})
+			dbg(PREDICTION_DBG, {"Not final arc, distToWalk=", distToWalk, "copyOfArcPCurrent=", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
 			if (remainder_dist ~= nil) then
 				-- There is still some distance to walk, and it was returned by the addDistTowards
 				distToWalk = remainder_dist
@@ -233,22 +237,14 @@ function Player:refresh()
 			end
 		end
 	end
+	if (copyOfArcPCurrent == nil) then
+		-- Somehow, something went wrong, maybe network preemptively took some CPU time and changed data
+		-- We cannot move the currently computed prediction anymore, forget about it
+		dbg(ERRORS, {"copyOfArcPCurrent is nil at the end of prediction computation"})
+		return
+	end
 	dbg(PREDICTION_DBG, {"Prediction is setting AR to", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
 	self:setAR(copyOfArcPCurrent)
-	
-	-- local proximity = Vector2D:Sub(self.pos, currentDestination)
-	-- dbg(PREDICTION_DBG, {"Proximity is:", proximity})
-	-- dbg(PREDICTION_DBG, {"accepted_error:", accepted_error})
-	-- if (proximity <= accepted_error) then
-	-- 	Deque.popleft(self.predictionNodes) -- we reached this node, pop it
-	-- 	currentDestination = Deque.first(self.predictionNodes) -- and change the destination
-	-- end
-	-- -- TODO: Differentiate between self.pos, the actual pos sent by the server and self.predictedPos, the pos predicted by the client, AND USE PREDICTED POS FOR DISPLAY
-	-- -- First: grab the Vecto2D of destination and store it in destinationV2d
-	-- local destinationV2d = nil
-	-- -- Then, updating the predictedPos to the new one, after adding the speed of the player to the previous predicted pos
-	-- self.predictedPos:add(Vector2D.Sub(destinationV2d, self.predictedPos))
-	-- update_player_position()
 end
 
 function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
@@ -284,7 +280,6 @@ function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 		else
 			node_to_add = destinationArcP.arc.end1
 		end
-		
 	end
 	Deque.pushright(self.predictionNodes, node_to_add)
 	dbg(PREDICTION_DBG, {"Adding node", self.predictionNodes.length, node_to_add.uid, "to predictionNodes"})

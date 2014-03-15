@@ -84,8 +84,8 @@ function receive_until(end_separator)
 	return curr_frame
 end
 
-function _mrcv(connection)
-	connection:settimeout(0)
+function _mrcv()
+	client:settimeout(0)
 	local frameString, status = receive_line()-- receive_until(FRAME_SEPARATOR)
 
 	if frameString ~= nil then
@@ -111,10 +111,21 @@ function connect_to_server( ip, port )
 		return false
 	else
 		--setup timers to handle update and receive
-		mrcvTimer = timer.performWithDelay(1, function() _mrcv(client) end, 0)
+		-- mrcvTimer = timer.performWithDelay(1, function() _mrcv(client) end, 0)
 		-- timer.performWithDelay(1,function() _msend(conn) end,0)
 		return client
 	end
+end
+
+function start_background_networking()
+	mrcvTimer = timer.performWithDelay(1, function() _mrcv(client) end, 0)
+end
+
+function stop_background_networking()
+	if mrcvTimer then
+		timer.cancel(mrcvTimer)
+		mrcvTimer = nil
+	end	
 end
 
 function disconnect()
@@ -189,12 +200,12 @@ function sendString(data)
 	end
 end
 
--- function _msend(connection)
+-- function _msend(client)
 --     local cnt = #_msgsendtable
 --     if cnt > 0 then
 --       for key,msg in pairs(_msgsendtable) do 
 --         if msg ~= nil then
---             connection:send(msg .. "\r\n")
+--             client:send(msg .. "\r\n")
 --         end    
 --         _msgsendtable[key] = nil
 --       end    
@@ -293,4 +304,7 @@ return
 	, net_handlers = net_handlers
 	, sendBombRequestToServer = sendBombRequestToServer
 	, disconnect = disconnect
+	, update = _mrcv
+	, start_background_networking = start_background_networking
+	, stop_background_networking = stop_background_networking
 }

@@ -13,7 +13,7 @@ function Tile:new(url, tileBackground)
   local loadCompleteListener = 
     function(event)
       if ( event.isError ) then
-            dbg (ERRORS, "Failed loading tile "..self.url)
+            dbg (ERRORS, {"Failed loading tile " .. self.url})
       else
         self.image = event.target
         event.target.anchorX = 0
