@@ -159,7 +159,7 @@ end
 
 
 function Player:refresh()
-	local delta = 0.00001 -- TODO: Move this constant and document it, cf server for now
+	local delta = 0.001 -- TODO: Move this constant and document it, cf server for now
 	local distToWalk = 0.1/30.0 -- TODO: Move this constant and document it, cf server for now
 
 	if (self.arcPCurrent == nil) then
@@ -171,6 +171,7 @@ function Player:refresh()
 	end
 	if (self.arcPCurrent:equals(self.predictionDestination, delta)) then
 		dbg(PREDICTION_DBG, {"STANDING STILL (up to precision), NOT RUNNING PREDICTION"})
+		dbg(PREDICTION_DBG, {self.arcPCurrent.progress, self.predictionDestination.progress})
 		return
 	end
 	dbg(PREDICTION_DBG, {"self.arcPCurrent=", self.arcPCurrent.arc.end1.uid, self.arcPCurrent.arc.end2.uid, self.arcPCurrent.progress})
@@ -197,14 +198,21 @@ function Player:refresh()
 		if (self.predictionNodes.length == 0) then
 			-- If we are on the final arc of the path, the distance is the final position
 			-- on the arc, minus the current position
-			copyOfArcPCurrent:addDistTowards(distToWalk, self.nextPredictionNode)
-			distToWalk = 0 -- Either we walked all in the current arc, or we could have walked more, but we stoppped, in all cases, we do not want to walk more than once on final arc!
-			-- distToNextDest = targetArcDist - currentArcDist
 			dbg(PREDICTION_DBG, {"We are moving on the final arc."})
+			local distToDest = copyOfArcPCurrent:distToReachDistPositionTowards(self.predictionDestination.dist, self.nextPredictionNode)
+			if (distToDest < distToWalk) then
+				copyOfArcPCurrent = self.predictionDestination
+				dbg(PREDICTION_DBG, {"Setting next predicted destination to self.predictionDestination"})
+			else
+				copyOfArcPCurrent:addDistTowards(distToWalk, self.nextPredictionNode)
+				dbg(PREDICTION_DBG, {"Just walking on final arc of distToWalk=", distToWalk, "towards node", self.nextPredictionNode.uid})
+			end
+			distToWalk = 0 -- Either we walked all in the current arc, or we could have walked more, but we stoppped, in all cases, we do not want to walk more than once on final arc!
 		else
 			-- If we are not on the final arc of the path, the distance to the next node is
 			-- the total length of current arc minus the current position on this arc
 			local remainder_dist = copyOfArcPCurrent:addDistTowards(distToWalk, self.nextPredictionNode)
+			dbg(PREDICTION_DBG, {"Not final arc"})
 			if (remainder_dist ~= nil) then
 				-- There is still some distance to walk, and it was returned by the addDistTowards
 				distToWalk = remainder_dist
@@ -218,12 +226,11 @@ function Player:refresh()
 				else
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
-					dbg(PREDICTION_DBG, {"[Game Model Error]: couldn't find a path from node", self.currPredictionNode.uid, "to node", nextNode.uid})
+					dbg(PREDICTION_DBG, {"[Game Model Error]: couldn't find a path from node", self.currPredictionNode.uid, "to node", self.nextPredictionNode.uid})
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
 				end
 			end
-			dbg(PREDICTION_DBG, {"Not final arc, distToNextDest=", distToNextDest})
 		end
 	end
 	dbg(PREDICTION_DBG, {"Prediction is setting AR to", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
@@ -244,7 +251,7 @@ function Player:refresh()
 	-- update_player_position()
 end
 
-function Player:setPredictionNodes( nodes )
+function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 	dbg(PREDICTION_DBG, {"Setting prediction nodes"})
 	self.predictionNodes = Deque.new()
 	self.currPredictionNode = nil
@@ -256,11 +263,31 @@ function Player:setPredictionNodes( nodes )
 		dbg(PREDICTION_DBG, {"Adding node", tostring(i), v.uid, "to predictionNodes"})
 		Deque.pushright(self.predictionNodes, v)
 	end
-end
-
-function Player:setPredictionDestination(arcP)
-	dbg(PREDICTION_DBG, {"Setting prediction destination to", arcP.arc.end1.uid, arcP.arc.end2.uid, arcP.progress})
-	self.predictionDestination = arcP
+	dbg(PREDICTION_DBG, {"Setting prediction destination to", destinationArcP.arc.end1.uid, destinationArcP.arc.end2.uid, destinationArcP.progress})
+	self.predictionDestination = destinationArcP
+	local node_to_add = nil
+	if (self.predictionNodes.length ~= 0) then
+		-- If this is a "path", with different nodes to go through, add the "other" end of the final arc as a node
+		-- as this will be used to give the "direction" towards which we should go, on this final arc
+		if (destinationArcP.arc.end2 == Deque.last(self.predictionNodes)) then
+			node_to_add = destinationArcP.arc.end1
+		else
+			node_to_add = destinationArcP.arc.end2
+		end
+	else
+		-- If this is a same-arc move, then just we have to actually figure out towards which end we're going
+		-- we do this by comparing destination to current position
+		local current_progress_on_arc = self.arcPCurrent.progress
+		local destination_progress_on_arc = destinationArcP.progress
+		if (destination_progress_on_arc > current_progress_on_arc) then
+			node_to_add = destinationArcP.arc.end2
+		else
+			node_to_add = destinationArcP.arc.end1
+		end
+		
+	end
+	Deque.pushright(self.predictionNodes, node_to_add)
+	dbg(PREDICTION_DBG, {"Adding node", self.predictionNodes.length, node_to_add.uid, "to predictionNodes"})
 end
 
 function Player:goToAR(arcP)

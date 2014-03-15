@@ -181,7 +181,7 @@ function newPlayerDestination(e)
 			-- Do not do anything, to avoid spamming player move requests on each pixel 
 			return
 		end
-		dbg(PREDICTION_DBG, {"Setting new player destination"})
+		dbg(PREDICTION_DBG_LITE, {"Setting new player destination"})
 		last_newPlayerDestination = now()
 		local screenPos = Vector2D:new(e.x,e.y)
 		local worldPos = camera:screenToWorld(screenPos)
@@ -197,14 +197,16 @@ function newPlayerDestination(e)
 			arcs={}
 			--currentMap.mapGroup:removeSelf()
 			if (player.arcPCurrent.arc.end1.uid == arcP.arc.end1.uid and player.arcPCurrent.arc.end2.uid == arcP.arc.end2.uid) then
-				net.sendPathToServer(nil,arcP)
+				-- If the destination is on the same arc as where we currently are
+				player:setPredictionNodesAndDestination({}, arcP)
+				net.sendPathToServer(nil, arcP)
+				-- Following code is about displaying the path we are currently taking, it seems
 				-- draw line
 				local pos = player.arcPCurrent:getPosXY()
 				local arcPEnd = arcP:getPosXY()
 				arcs[arcP.arc] = {pos,arcPEnd}
-				
-				
 			else
+				-- Destination is on a different arc, run pathfinding
 				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
 				if (nodes == nil) then -- FIXME!
 					dbg(ERRORS, {"WHAT?! WTF?"})
@@ -219,9 +221,9 @@ function newPlayerDestination(e)
 						player.nodeFrom=from
 					end
 				end
-				player:setPredictionNodes(nodes)
-				player:setPredictionDestination(arcP)
+				player:setPredictionNodesAndDestination(nodes, arcP)
 				net.sendPathToServer(nodes,arcP)
+				-- Following code is about displaying the path we are currently taking, it seems
 				if (nodes ~= nil) then
 					local pos = player.arcPCurrent:getPosXY()
 					arcs[player.arcPCurrent] ={pos,nodes[1].pos}
@@ -289,7 +291,7 @@ function initGame(player_id)
 					else
 						-- The position has to be updated
 						local pos = v[NETWORK_PLAYER_UPDATE_POS_KEY]
-						dbg(PREDICTION_DBG, {'Received player update with pos=', pos})
+						dbg(PREDICTION_DBG_LITE, {'Received player update with pos=', pos})
 						local player_id = tostring(v[NETWORK_PLAYER_UPDATE_ID_KEY])
 						if (pos ~= nil) then
 							-- Then take it into account!

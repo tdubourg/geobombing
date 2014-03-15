@@ -22,7 +22,7 @@ function ArcPos.createFromNetworkPosObj( map, network_pos_obj )
 end
 
 function ArcPos:equals( arcP, precision )
-	return arcP.arc == self.arc and (arcP.progress - self.progress) <= precision
+	return arcP.arc == self.arc and math.abs(arcP.progress - self.progress) <= precision
 end
 
 function ArcPos:setProgress(progress)
@@ -49,6 +49,25 @@ function ArcPos:addDistTowards(dist, node_towards)
 	return remainder
 end
 
+-- Returns the distance to reach a give distance position towards a given node on current {ArcPos} object
+-- @param {float} distance position to reach on the current {ArcPos} object
+-- @param {Node} the node towards which we want to go
+-- @return {float} the distance you need to reach this position
+function ArcPos:distToReachDistPositionTowards(dist_pos, node_towards)
+	return self:distToReachProgressPositionTowards(dist_pos / self.arc.len, node_towards) * self.arc.len
+end
+
+-- Returns the progress to reach a give progress position towards a given node on current {ArcPos} object
+-- @param {float} progress position to reach on the current {ArcPos} object
+-- @param {Node} the node towards which we want to go
+-- @return {float} the progress you need to reach this position
+function ArcPos:distToReachProgressPositionTowards(progress_pos, node_towards)
+	if (node_towards == self.arc.end1) then
+		progress_pos = 1 - progress_pos
+	end
+	return math.abs(self.progress - progress_pos)
+end
+
 -- Adds some progress to the current ArcPos object
 -- @param {float} progress
 -- @param {Node} the node towards which we want to go
@@ -63,7 +82,7 @@ function ArcPos:addProgressTowards(progress, node_towards)
 			remainder = self.progress - 1
 			self.progress = 1
 		end
-	else
+	elseif (node_towards == self.arc.end1) then
 		self.progress = self.progress - progress
 		if (self.progress < 0) then
 			remainder = math.abs(self.progress)
