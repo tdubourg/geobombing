@@ -505,7 +505,7 @@ function scene:enterScene( event )
 	gui.initGUI()
 	
 	-- connect to server
-	local result = net.connect_to_server(SERVER_IP_ADDR, SERVER_PORT)
+	local connected = net.connect_to_server(SERVER_IP_ADDR, SERVER_PORT)
 	net.start_background_networking()
 
 	net.net_handlers[FRAMETYPE_INIT] = function ( json_obj )
@@ -538,7 +538,7 @@ function scene:enterScene( event )
 		end
 	end
 
-	if result then
+	if connected then
 		dbg (INFO, {"!!CONNECTED!!"} )
 		net.net_handlers[FRAMETYPE_PLAYER_DISCONNECT] = function ( json_obj )
 			local strid = tostring(json_obj.data.id)
