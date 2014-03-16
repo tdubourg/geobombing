@@ -157,10 +157,16 @@ end
 
 -- end
 
-
+local lastPredictionRunTime = 0
 function Player:refresh()
+	if (not ENABLE_MOVE_PREDICTION) then
+		return
+	end
 	local delta = 0.001 -- TODO: Move this constant and document it, cf server for now
-	local distToWalk = 0.1/30.0 -- TODO: Move this constant and document it, cf server for now
+	local newPredictionRunTime = now()
+	local delta_time = newPredictionRunTime - lastPredictionRunTime
+	lastPredictionRunTime = newPredictionRunTime
+	local distToWalk = PLAYER_SPEED * delta_time/1000.0
 
 	if (self.arcPCurrent == nil) then
 		dbg(PREDICTION_DBG, {"Not enough information to run prediction: arcPCurrent is nil"})
