@@ -66,8 +66,10 @@ function movePlayerById(id,arcP)
 
 	daPlayer:setAR(arcP)
 	
-	if daPlayer == player then
-		camera:lookAt(player:getPos())
+	if (not ENABLE_MOVE_PREDICTION) then
+		if daPlayer == player then
+			camera:lookAt(player:getPos())
+		end
 	end
 end
 
