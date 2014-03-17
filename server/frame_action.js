@@ -174,7 +174,11 @@ var sendPlayerRemove = function (stream, player) // player and other players
 
 var sendBombUpdate = function (stream, bomb) // player and other players
 {
-	if (bomb == null) console.log("Error: Unknown Bomb")
+	if (bomb == null)
+	{
+		console.log("Error: Unknown Bomb")
+		return
+	}
 	var data = {}
 	data[net.TYPEID] = bomb.player.id // player id
 	data[net.TYPEPOS] = bomb.getPosition()
