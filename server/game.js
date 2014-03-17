@@ -302,11 +302,11 @@ Bomb.prototype.explode_propagate = function (coeff, frstTime)
 		{
 			if (startDist <= pd.d && pd.d <= distToCover) 
 			{
-				console.log("\nKILLER:", that.player.name)
-				console.log("DYER:", pd.p.name)
+				// console.log("\nKILLER:", that.player.name)
+				// console.log("DYER:", pd.p.name)
 				pd.p.die()
 				that.player.onKillPlayer(pd.p)
-				console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+				//console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 			}
 		})
 		
@@ -382,10 +382,18 @@ Player.prototype.detectCollisions = function (arc,distA,distB)
 	var ennemies = this.isMonster? this.game.players: this.game.monsters
 	var self = this
 	function collision(e) {
-		// if (this.isMonster)
-		// 	e.dead = true
-		// else this.
-		(self.isMonster? e: self).die() // = true
+		if (self.isMonster)
+		{
+			//e.dead = true
+			e.die()
+			self.onKillPlayer(e)
+		}
+		else
+		{
+			self.die()
+			e.onKillPlayer(self)
+		}
+		// (self.isMonster? e: self).die() // = true
 	}
 	ennemies.forEach(function(m) 
 	{
@@ -401,13 +409,15 @@ Player.prototype.detectCollisions = function (arc,distA,distB)
 			return false
 		}
 		
-		if (!testArc(self.currentArc, distA, distB))
+		if (!m.dead)
 		{
-			//var opp = self.currentArc.getOpposite()
-			testArc(self.currentArc.getOpposite(), self.currentArc.length-distB, self.currentArc.length-distA)
-			//testArc(self.currentArc.getOpposite(), distA, distB)
+			if (!testArc(self.currentArc, distA, distB))
+			{
+				//var opp = self.currentArc.getOpposite()
+				testArc(self.currentArc.getOpposite(), self.currentArc.length-distB, self.currentArc.length-distA)
+				//testArc(self.currentArc.getOpposite(), distA, distB)
+			}
 		}
-		
 		
 		
 		// if (m.currentArc.id == self.currentArc.id)
@@ -434,6 +444,7 @@ Player.prototype.detectCollisions = function (arc,distA,distB)
 		// 	if ()
 			
 		// }
+		
 	})
 }
 
