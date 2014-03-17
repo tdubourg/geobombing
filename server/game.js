@@ -370,7 +370,11 @@ Bomb.prototype.getPosition = function ()
 {
 	var c = this.arcDist/this.arc.length
 	console.log("getPosition:", c)
-	return com.CreatePosition(this.arc.n1.id, this.arc.n2.id, (!c && c !== 0 || isNan(c))? 0:c);
+	
+	// Cedi est la très laide contribution d'Aymeric au monde :
+	// return com.CreatePosition(this.arc.n1.id, this.arc.n2.id, (!c && c !== 0 || isNan(c))? 0:c);
+	
+	return com.CreatePosition(this.arc.n1.id, this.arc.n2.id, c);
 }
 
 Player.prototype.detectCollisions = function (arc,distA,distB) 
@@ -381,7 +385,7 @@ Player.prototype.detectCollisions = function (arc,distA,distB)
 		// if (this.isMonster)
 		// 	e.dead = true
 		// else this.
-		(self.isMonster? e: self).dead = true
+		(self.isMonster? e: self).die() // = true
 	}
 	ennemies.forEach(function(m) 
 	{
@@ -391,8 +395,8 @@ Player.prototype.detectCollisions = function (arc,distA,distB)
 				if (dA <= m.currentArcDist && m.currentArcDist <= dB)
 				{
 					collision(m)
-					return true
 				}
+				return true
 			}
 			return false
 		}
@@ -400,7 +404,8 @@ Player.prototype.detectCollisions = function (arc,distA,distB)
 		if (!testArc(self.currentArc, distA, distB))
 		{
 			//var opp = self.currentArc.getOpposite()
-			//testArc(self.currentArc.getOpposite(), self.currentArc.length-distB, self.currentArc.length-distA)
+			testArc(self.currentArc.getOpposite(), self.currentArc.length-distB, self.currentArc.length-distA)
+			//testArc(self.currentArc.getOpposite(), distA, distB)
 		}
 		
 		
@@ -476,15 +481,30 @@ Player.prototype.update = function (period)
 				this.targetArcDist-this.currentArcDist
 			:	this.currentArc.length-this.currentArcDist
 			
+			// this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArcDist+distToNextDest)
+			// if (this.dead)
+			// 	break
+			
 			// The distance to walk fits into the current arc
 			if (distToWalk < distToNextDest)
 			{
+				// this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArcDist+distToWalk)
+				
 				this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArcDist+distToWalk)
+				if (this.dead)
+					break
+				
 				this.currentArcDist += distToWalk
 				distToWalk = 0
 			}
 			else
 			{
+				
+				this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArcDist+distToNextDest)
+				if (this.dead)
+					break
+				
+				
 				// The distance to walk goes over passing through the next node...
 				// update it to be the remaining distance to walk after passing the next node
 				distToWalk -= distToNextDest
@@ -499,9 +519,9 @@ Player.prototype.update = function (period)
 						// console.log("[Game Model Error]: couldn't find a path from node",
 						// 	currNode.id, "to node", nextNode.id)
 						panic("Couldn't find a path from node", currNode.id, "to node", nextNode.id)
-					this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArc.length)
-					if (this.dead)
-						break
+					// this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArc.length)
+					// if (this.dead)
+					// 	break
 					this.currentArcDist = 0
 				}
 				else
