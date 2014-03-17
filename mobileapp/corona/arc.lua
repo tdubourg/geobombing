@@ -36,8 +36,11 @@ function Arc:redraw(zoomChange)
 		self.dbgArc.y = newPos1.y--(newPos1.y + newPos2.y)/2
 	end
 
-	if zoomChange or not self.drawable then
-		if self.drawable then self.drawable:removeSelf() end
+	--if zoomChange then --or not self.drawable then
+		if self.drawable then 
+			self.drawable:removeSelf()
+			self.drawable = nil
+		end
 		if (arcs[self] ~=nil) then
 			if (arcs[self][1] ~= nil and arcs[self][2] ~=nil) then
 				local newPos1 = camera:worldToScreen(arcs[self][1])
@@ -52,19 +55,19 @@ function Arc:redraw(zoomChange)
 				dbg(GAME_DBG,{"arcs2",arcs[self][2] })
 			end
 		end
-	else
-		if (arcs[self] ~=nil and arcs[self][1] ~= nil and arcs[self][2] ~=nil) then
-			local newPos1 = camera:worldToScreen(arcs[self][1])
-			local newPos2 = camera:worldToScreen(arcs[self][2])
-			self.drawable.x = newPos1.x --(newPos1.x + newPos2.x)/2
-			self.drawable.y = newPos1.y--(newPos1.y + newPos2.y)/2
-		else
-			if self.drawable then
-				self.drawable:removeSelf()
-				self.drawable= nil
-			end
-		end
-	end
+	-- else
+	-- 	if (arcs[self] ~=nil and arcs[self][1] ~= nil and arcs[self][2] ~=nil) then
+	-- 		local newPos1 = camera:worldToScreen(arcs[self][1])
+	-- 		local newPos2 = camera:worldToScreen(arcs[self][2])
+	-- 		self.drawable.x = newPos1.x --(newPos1.x + newPos2.x)/2
+	-- 		self.drawable.y = newPos1.y--(newPos1.y + newPos2.y)/2
+	-- 	else
+	-- 		if self.drawable then
+	-- 			self.drawable:removeSelf()
+	-- 			self.drawable= nil
+	-- 		end
+	-- 	end
+	-- end
 end
 
 

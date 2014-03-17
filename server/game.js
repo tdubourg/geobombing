@@ -361,10 +361,9 @@ Bomb.prototype.remove = function ()
 
 Bomb.prototype.getPosition = function () 
 {
-	return com.CreatePosition(
-		this.arc.n1.id,
-		this.arc.n2.id,
-		this.arcDist/this.arc.length);
+	var c = this.arcDist/this.arc.length
+	console.log("getPosition:", c)
+	return com.CreatePosition(this.arc.n1.id, this.arc.n2.id, (!c && c !== 0 || isNan(c))? 0:c);
 }
 
 var delta = 0.0001
@@ -627,9 +626,10 @@ Game.prototype.getRandomPosition = function()
 		keys[Math.floor(Math.random()*keys.length)]
 	]
 	
-	//console.log(arc)
+	console.log("getRandomPosition:", arc.length)
 	
-	return com.CreatePosition(arc.n1.id, arc.n2.id, Math.random()*arc.length);
+	return com.CreatePosition(arc.n1.id, arc.n2.id, 
+		(!arc.length && arc.length !== 0)? 0:arc.length*Math.random());
 	
 }
 

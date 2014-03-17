@@ -22,6 +22,7 @@ function CreatePosition(idNode1, idNode2, coef)
 	pos.n1 = idNode1;
 	pos.n2 = idNode2;
     pos.c = coef;
+    if (!coef && coef !== 0) console.log("CreatePosition:", coef, "undefined").lox
 	return pos;
 }
 
