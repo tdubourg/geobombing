@@ -250,7 +250,9 @@ function scaleMap (leMap) //, topLeft, bottomRight)
 					// else {
 					p = null
 					trimmed++
+					// console.log(leMap[i])
 					leMap[i].splice(j, 1)
+					// console.log(leMap[i]); crash
 					j--
 					// }
 				}

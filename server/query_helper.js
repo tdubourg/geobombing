@@ -10,6 +10,8 @@ var conString = local_serv?
 	"postgres://postgres:quepasa@localhost/rhonealpes"
 :	fs.readFileSync("db_constring.local").toString()
 
+// console.log(">>>>>>>",conString)
+
 var client = new pg.Client(conString)
 
 client.connect()

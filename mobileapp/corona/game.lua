@@ -35,6 +35,7 @@ local scoreGroup
 local nameText
 local others -- ajout recent à vérifier
 local monsters
+local tileBackground
 rankOn = false
 arcs = {}
 
@@ -239,7 +240,7 @@ function newPlayerDestination(e)
 				-- Following code is about displaying the path we are currently taking, it seems
 				if (nodes ~= nil) then
 					local pos = player.arcPCurrent:getPosXY()
-					arcs[player.arcPCurrent] ={pos,nodes[1].pos}
+					arcs[player.arcPCurrent.arc] ={pos,nodes[1].pos}
 					for i= 1, #nodes-1 do
 						local path = nodes[i].arcs[nodes[i+1]]
 						arcs[path] = {path.end1.pos,path.end2.pos}
@@ -263,7 +264,7 @@ function initGame(player_id)
 	
 	player_id = "" .. player_id
 	local arcP =currentMap.arcs[1]
-	 arcP= currentMap:createArcPosByUID(arcP.end1.uid, arcP.end2.uid,0.5)
+	arcP= currentMap:createArcPosByUID(arcP.end1.uid, arcP.end2.uid,0.5)
 	
 	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
@@ -290,7 +291,7 @@ function initGame(player_id)
 				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", dt})
 
 				for k,v in pairs(updates) do
-					dbg(T, {"k=",k, "v=", v})
+					-- dbg(T, {"k=",k, "v=", v})
 					local dead = v[NETWORK_PLAYER_UPDATE_DEAD_KEY]
 					local kills = v[NETWORK_KILLS]
 
@@ -306,7 +307,7 @@ function initGame(player_id)
 						local pos = v[NETWORK_PLAYER_UPDATE_POS_KEY]
 						dbg(PREDICTION_DBG_LITE, {'Received player update with pos=', pos})
 						local player_id = tostring(v[NETWORK_PLAYER_UPDATE_ID_KEY])
-						if (pos ~= nil) then
+						if (pos ~= nil and pos[NETWORK_RATIO]~=nil) then
 							-- Then take it into account!
 							update_player_position(
 								player_id,
@@ -384,7 +385,7 @@ function initGame(player_id)
 
 
 				for k,v in pairs(updates) do
-					dbg(T, {"k=",k, "v=", v})
+					-- dbg(T, {"k=",k, "v=", v})
 					local dead = v[NETWORK_MONSTER_UPDATE_DEAD_KEY]
 
 					-- Frame too old and does not contain information we want to read even if old ? Discard it!
@@ -398,7 +399,7 @@ function initGame(player_id)
 						-- The position has to be updated
 						local pos = v[NETWORK_MONSTER_UPDATE_POS_KEY]
 						local monster_id = tostring(v[NETWORK_MONSTER_UPDATE_ID_KEY])
-						if (pos ~= nil) then
+						if (pos ~= nil and pos[NETWORK_RATIO]~=nil) then
 							-- Then take it into account!
 							 update_monster_position(
 								monster_id,
@@ -408,7 +409,7 @@ function initGame(player_id)
 
 						--handling monster death
 						if dead then
-							dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
+							--dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
 							local daMonster = monsters[monster_id]
 							if (daMonster.isDead == false) then
 								--daPlayer.nbDeath = daPlayer.nbDeath + 1
@@ -524,9 +525,15 @@ function scene:enterScene( event )
 			currentMap = Map:new(luaMap)
 
 			local luaTiles = json_obj[JSON_FRAME_DATA][TYPETILES]
-	    if tileBackground then tileBackground:destroy() end
-	    tileBackground = TileBackground:new(luaTiles)
+		    if tileBackground then
+		    	tileBackground:destroy()
+		    end
 
+	    	dbg(T, {"!!!!!!!!!! new TBG"})
+		    tileBackground = TileBackground:new(luaTiles)
+		    if (tileBackground == nil) then
+		    	dbg(T, {"!!!!!!!!!! TBG IS NULL"})
+		    end
 			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
 			if (json_obj.data[NETWORK_NAME] ~= nil) then
 				--dbg (GAME_DBG, {"name = ",json_obj.data[NETWORK_NAME] })
@@ -551,10 +558,10 @@ function scene:enterScene( event )
 		net.sendGPSPosition()
 	else
 		dbg (ERRORS, {"Could no connect to server"} )
-		currentMap = Map:new(nil)
-		initGame("1")
-		player:refresh()
-		camera:lookAt(player:getPos())
+		-- currentMap = Map:new(nil)
+		-- initGame("1")
+		-- player:refresh()
+		-- camera:lookAt(player:getPos())
 	end
 
 	itemsManager = ItemsManager.new()
