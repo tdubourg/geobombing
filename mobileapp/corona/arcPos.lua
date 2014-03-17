@@ -61,16 +61,16 @@ end
 function ArcPos:addProgressTowards(progress, node_towards)
 	local remainder = nil
 	if (node_towards == self.arc.end2) then
-		self.progress = self.progress + progress
+		self:setProgress(self.progress + progress)
 		if (self.progress > 1) then
 			remainder = self.progress - 1
-			self.progress = 1
+			self:setProgress( 1 )
 		end
 	elseif (node_towards == self.arc.end1) then
-		self.progress = self.progress - progress
+		self:setProgress(self.progress - progress)
 		if (self.progress < 0) then
 			remainder = math.abs(self.progress)
-			self.progress = 0
+			self:setProgress(0)
 		end
 	end
 	return remainder

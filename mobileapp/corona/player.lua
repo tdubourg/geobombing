@@ -162,7 +162,7 @@ function Player:refresh()
 	if (not ENABLE_MOVE_PREDICTION) then
 		return
 	end
-	local delta = 0.001 -- TODO: Move this constant and document it, cf server for now
+	local delta = 0.01 -- TODO: Move this constant and document it, cf server for now
 	local newPredictionRunTime = now()
 	local delta_time = newPredictionRunTime - lastPredictionRunTime
 	lastPredictionRunTime = newPredictionRunTime
@@ -223,6 +223,7 @@ function Player:refresh()
 			-- the total length of current arc minus the current position on this arc
 			local remainder_dist = copyOfArcPCurrent:addDistTowards(distToWalk, self.nextPredictionNode)
 			dbg(PREDICTION_DBG, {"Not final arc, distToWalk=", distToWalk, "copyOfArcPCurrent=", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
+			dbg(PREDICTION_DBG, {"Not final arc, current next node is=", self.nextPredictionNode.uid})
 			if (remainder_dist ~= nil) then
 				-- There is still some distance to walk, and it was returned by the addDistTowards
 				distToWalk = remainder_dist
@@ -240,6 +241,8 @@ function Player:refresh()
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
 				end
+			else
+				dbg(PREDICTION_DBG, {"We did not do enough distance to switch arc"})
 			end
 		end
 	end
