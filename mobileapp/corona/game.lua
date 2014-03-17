@@ -35,6 +35,7 @@ local scoreGroup
 local nameText
 local others -- ajout recent à vérifier
 local monsters
+local tileBackground
 rankOn = false
 arcs = {}
 
@@ -246,7 +247,7 @@ function initGame(player_id)
 	
 	player_id = "" .. player_id
 	local arcP =currentMap.arcs[1]
-	 arcP= currentMap:createArcPosByUID(arcP.end1.uid, arcP.end2.uid,0.5)
+	arcP= currentMap:createArcPosByUID(arcP.end1.uid, arcP.end2.uid,0.5)
 	
 	player = Player.new(player_id,  0.02, 0,arcP) -- TODO replace 0 by the id sent by the server
 
@@ -273,7 +274,7 @@ function initGame(player_id)
 				dbg(NETW_DBG_MODE, {"ts_frame - ts_limit=", dt})
 
 				for k,v in pairs(updates) do
-					dbg(T, {"k=",k, "v=", v})
+					-- dbg(T, {"k=",k, "v=", v})
 					local dead = v[NETWORK_PLAYER_UPDATE_DEAD_KEY]
 					local kills = v[NETWORK_KILLS]
 
@@ -366,7 +367,7 @@ function initGame(player_id)
 
 
 				for k,v in pairs(updates) do
-					dbg(T, {"k=",k, "v=", v})
+					-- dbg(T, {"k=",k, "v=", v})
 					local dead = v[NETWORK_MONSTER_UPDATE_DEAD_KEY]
 
 					-- Frame too old and does not contain information we want to read even if old ? Discard it!
@@ -505,9 +506,15 @@ function scene:enterScene( event )
 			currentMap = Map:new(luaMap)
 
 			local luaTiles = json_obj[JSON_FRAME_DATA][TYPETILES]
-	    if tileBackground then tileBackground:destroy() end
-	    tileBackground = TileBackground:new(luaTiles)
+		    if tileBackground then
+		    	tileBackground:destroy()
+		    end
 
+	    	dbg(T, {"!!!!!!!!!! new TBG"})
+		    tileBackground = TileBackground:new(luaTiles)
+		    if (tileBackground == nil) then
+		    	dbg(T, {"!!!!!!!!!! TBG IS NULL"})
+		    end
 			initGame(json_obj[JSON_FRAME_DATA][NETWORK_INIT_PLAYER_ID_KEY])
 			if (json_obj.data[NETWORK_NAME] ~= nil) then
 				--dbg (GAME_DBG, {"name = ",json_obj.data[NETWORK_NAME] })
@@ -532,10 +539,10 @@ function scene:enterScene( event )
 		net.sendGPSPosition()
 	else
 		dbg (ERRORS, {"Could no connect to server"} )
-		currentMap = Map:new(nil)
-		initGame("1")
-		player:refresh()
-		camera:lookAt(player:getPos())
+		-- currentMap = Map:new(nil)
+		-- initGame("1")
+		-- player:refresh()
+		-- camera:lookAt(player:getPos())
 	end
 
 	itemsManager = ItemsManager.new()

@@ -5,15 +5,9 @@ TileBackground = {}
 
 function TileBackground:new(luaTiles)
   local self = {}
+  setmetatable(self, { __index = TileBackground })  -- Inheritance
   self.tiles = {}
-
-
-  for i,list in ipairs(luaTiles[TYPEGRID]) do
-  	self.tiles[i] = {}
-  	for j,url in ipairs(list) do
-  		self.tiles[i][j] = Tile:new(url, self)
-  	end
-  end
+  local grid = luaTiles[TYPEGRID]
 
   -- caches
   local fillR = 78/255
@@ -53,12 +47,18 @@ function TileBackground:new(luaTiles)
   self.offset.y = self.offset.y / self.scale.y
 
   self.tileSize = Vector2D:Sub(tilesBR,tilesTL)
-  self.tileSize.x = self.tileSize.x  / (#(self.tiles[1]) * self.scale.x)
-  self.tileSize.y = self.tileSize.y  / (#(self.tiles) * self.scale.y)
+  self.tileSize.x = self.tileSize.x  / (#(grid[1]) * self.scale.x)
+  self.tileSize.y = self.tileSize.y  / (#(grid) * self.scale.y)
+
+  for i,list in ipairs(grid) do
+  	self.tiles[i] = {}
+  	for j,url in ipairs(list) do
+  		self.tiles[i][j] = Tile:new(url, self)
+  	end
+  end
 
   camera:addListener(self)
-  setmetatable(self, { __index = TileBackground })  -- Inheritance
-
+  return self
 end
 
 
