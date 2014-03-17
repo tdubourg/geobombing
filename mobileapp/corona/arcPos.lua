@@ -2,6 +2,9 @@ ArcPos = {}                   -- Create a table to hold the class methods
 
 -- do not call this method, use Map:createArcPos() or Map:createArcPosByUID()
 function ArcPos:new(arc, progress)  -- The constructor
+	if (progress == nil) then
+		progress = 0
+	end
 	local self = {arc=arc, progress=progress}
 	self.posXY = nil
 	

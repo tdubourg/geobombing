@@ -99,9 +99,11 @@ function GameServer(game, tiles)
 		
 		// Dying players (Is it used for monsters as well?)
 		game.update((time-lastTime)/1000, explodingBombs, dyingPlayers)		
-		explodingBombs.forEach(function (bomb) { that.notifyBomb(bomb) })		
+		explodingBombs.forEach(function (bomb) { that.notifyBomb(bomb) })
+		if (dyingPlayers.length !=0) console.log("There are players dead")
 		dyingPlayers.forEach(function (p) 
 		{
+			console.log("dying player to respawn")	
 			var to_id = setTimeout(function() 
 			{
 				console.log("Player",p.name,"automatically respawned")
