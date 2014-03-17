@@ -15,7 +15,7 @@ var MONSTER_SPEED = PLAYER_SPEED*.4
 
 var MONSTER_MOVE_PERIOD = 1
 var MONSTER_MOVE_PERIOD_RANDOMNESS = MONSTER_MOVE_PERIOD*2//*.8
-var MONSTERS_PER_GAME = 10
+var MONSTERS_PER_GAME = 20
 
 var BOMB_TIMER = 3 // seconds
 var BOMB_PROPAG_TIME = 1
@@ -60,6 +60,10 @@ function Arc(/*id, name,*/ n1, n2)
 	//this.id = id
 	//this.name = name
 	//console.log(">>>>>",n1,n1.x)
+	
+	// if (n1.id == n2.id)
+	// 	console.log(">>>",n1,n2)
+	
 	this.id = idNb++
 	this.nodes = [this.n1 = n1, this.n2 = n2]
 	this.length = com.dist(n1,n2)
@@ -105,7 +109,7 @@ function Map(jsonObj)
 {
 	var that = this
 	this.nodes = []
-	this.nb_arcs = 0
+	// this.nb_arcs = 0
 	this.jsonObj = jsonObj
 	this.name = jsonObj.mapName
 	this.id = jsonObj.mapId
@@ -115,12 +119,15 @@ function Map(jsonObj)
 	})
 	jsonObj.mapListWay.forEach(function(w) 
 	{
-		//console.log(w)
+		// console.log(w)
 		for (var i = 0; i < w.wLstNdId.length-1; i++) 
 		{
 			var n1 = that.nodes[w.wLstNdId[i]], n2 = that.nodes[w.wLstNdId[i+1]]
-			that.nodes[n1.id].arcsTo[n2.id] = new Arc(n1, n2)
-			that.nodes[n2.id].arcsTo[n1.id] = new Arc(n2, n1)
+			if (n1.id != n2.id)
+			{
+				that.nodes[n1.id].arcsTo[n2.id] = new Arc(n1, n2)
+				that.nodes[n2.id].arcsTo[n1.id] = new Arc(n2, n1)
+			}
 		}
 	})
 	
@@ -366,6 +373,65 @@ Bomb.prototype.getPosition = function ()
 	return com.CreatePosition(this.arc.n1.id, this.arc.n2.id, (!c && c !== 0 || isNan(c))? 0:c);
 }
 
+Player.prototype.detectCollisions = function (arc,distA,distB) 
+{
+	var ennemies = this.isMonster? this.game.players: this.game.monsters
+	var self = this
+	function collision(e) {
+		// if (this.isMonster)
+		// 	e.dead = true
+		// else this.
+		(self.isMonster? e: self).dead = true
+	}
+	ennemies.forEach(function(m) 
+	{
+		function testArc(arc,dA,dB) {
+			if (m.currentArc.id == arc.id)
+			{
+				if (dA <= m.currentArcDist && m.currentArcDist <= dB)
+				{
+					collision(m)
+					return true
+				}
+			}
+			return false
+		}
+		
+		if (!testArc(self.currentArc, distA, distB))
+		{
+			//var opp = self.currentArc.getOpposite()
+			//testArc(self.currentArc.getOpposite(), self.currentArc.length-distB, self.currentArc.length-distA)
+		}
+		
+		
+		
+		// if (m.currentArc.id == self.currentArc.id)
+		// {
+		// 	if (distA <= m.currentArcDist && m.currentArcDist <= distB)
+		// 		collision(m)
+		// }
+		// else if (m.currentArc.id == self.currentArc.getOpposite().id)
+		// {
+		// 	var pos
+		// 	if (m.currentArc.id == self.currentArc.id) 
+		// 		pos = Math.abs(m.currentArcDist - self.currentArcDist)
+		// 	else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
+		// 	if (!(m.dead) && pos < self.currentArc.length / 10)
+		// 	{
+		// 		console.log("MONSTER:", m.name)
+		// 		console.log("\nBODY FLESH of:", self.name)				
+		// 		self.die()
+		// 		m.onKillPlayer(self)
+		// 	}
+			
+		// 	var opp = self.currentArc.getOpposite()
+			
+		// 	if ()
+			
+		// }
+	})
+}
+
 var delta = 0.0001
 Player.prototype.update = function (period) 
 {
@@ -413,6 +479,7 @@ Player.prototype.update = function (period)
 			// The distance to walk fits into the current arc
 			if (distToWalk < distToNextDest)
 			{
+				this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArcDist+distToWalk)
 				this.currentArcDist += distToWalk
 				distToWalk = 0
 			}
@@ -429,45 +496,50 @@ Player.prototype.update = function (period)
 					if (newCurrentArc)
 						this.currentArc = newCurrentArc
 					else
-						console.log("[Game Model Error]: couldn't find a path from node",
-							currNode.id, "to node", nextNode.id)
+						// console.log("[Game Model Error]: couldn't find a path from node",
+						// 	currNode.id, "to node", nextNode.id)
+						panic("Couldn't find a path from node", currNode.id, "to node", nextNode.id)
+					this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArc.length)
+					if (this.dead)
+						break
 					this.currentArcDist = 0
 				}
 				else
 				{
+					this.detectCollisions(this.currentArc, this.currentArcDist, this.targetArcDist)
 					this.currentArcDist = this.targetArcDist
 					this.targetArcDist = null
 					break
 				}
 			}
 			
-			if (!this.isMonster) {
-				// FIXME: stop walkign when hit a monster
+			// if (!this.isMonster) {
+			// 	// FIXME: stop walkign when hit a monster
 				
-				// touch monster kills
-				var self = this
-				this.game.monsters.forEach(function(m) 
-				{
-					if (m.currentArc.id == self.currentArc.id 
-						|| m.currentArc.id == self.currentArc.getOpposite().id)
-					{
-						var pos
-						if (m.currentArc.id == self.currentArc.id) 
-							pos = Math.abs(m.currentArcDist - self.currentArcDist)
-						else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
+			// 	// touch monster kills
+			// 	var self = this
+			// 	this.game.monsters.forEach(function(m) 
+			// 	{
+			// 		if (m.currentArc.id == self.currentArc.id 
+			// 		 || m.currentArc.id == self.currentArc.getOpposite().id)
+			// 		{
+			// 			var pos
+			// 			if (m.currentArc.id == self.currentArc.id) 
+			// 				pos = Math.abs(m.currentArcDist - self.currentArcDist)
+			// 			else pos = Math.abs(m.currentArcDist - (self.currentArc.length - self.currentArcDist))
 
-						if (!(m.dead) && pos < self.currentArc.length / 10)
-						{
-							console.log("MONSTER:", m.name)
-							console.log("\nBODY FLESH of:", self.name)				
-							self.die()
-							m.onKillPlayer(self)
-							console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
-						}
-					}
-				})
+			// 			if (!(m.dead) && pos < self.currentArc.length / 10)
+			// 			{
+			// 				console.log("MONSTER:", m.name)
+			// 				console.log("\nBODY FLESH of:", self.name)				
+			// 				self.die()
+			// 				m.onKillPlayer(self)
+			// 				console.log("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+			// 			}
+			// 		}
+			// 	})
 				
-			}
+			// }
 		} // end while
 	}
 	
@@ -626,10 +698,11 @@ Game.prototype.getRandomPosition = function()
 		keys[Math.floor(Math.random()*keys.length)]
 	]
 	
-	console.log("getRandomPosition:", arc.length)
+	//console.log("getRandomPosition:", arc.length)
 	
-	return com.CreatePosition(arc.n1.id, arc.n2.id, 
-		(!arc.length && arc.length !== 0)? 0:arc.length*Math.random());
+	// return com.CreatePosition(arc.n1.id, arc.n2.id, 
+	// 	(!arc.length && arc.length !== 0)? 0:arc.length*Math.random());
+	return com.CreatePosition(arc.n1.id, arc.n2.id, arc.length*Math.random());
 	
 }
 
