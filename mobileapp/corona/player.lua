@@ -284,6 +284,7 @@ end
 function Player:destroy()
 	dbg (ERRORS, {"player:destroy()"})
 	self.sprite:destroy()
+	self.colorSprite:destroy()
 end
 
 return Player
