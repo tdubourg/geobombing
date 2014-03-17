@@ -22,6 +22,9 @@ function CreatePosition(idNode1, idNode2, coef)
 	pos.n1 = idNode1;
 	pos.n2 = idNode2;
     pos.c = coef;
+    if (!idNode1) console.log("CreatePosition:", idNode1, "undefined")
+    if (!idNode2) console.log("CreatePosition:", idNode2, "undefined")
+    if (!coef) console.log("CreatePosition:", coef, "undefined")
 	return pos;
 }
 
