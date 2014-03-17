@@ -70,7 +70,7 @@ var MapTiles =
 			for (i = tileBounds.min.x; i < tileBounds.max.x + 1; i++) {
 				point = new L.Point(i, j);
 				point.z = this.zoom
-				grid_line.push(this.getTileUrl(point))
+				grid_line.push([i, j, this.zoom, this.getTileUrl(point)])
 			}
 			grid.push(grid_line)
 		}
