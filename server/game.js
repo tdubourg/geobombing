@@ -362,7 +362,8 @@ Bomb.prototype.remove = function ()
 Bomb.prototype.getPosition = function () 
 {
 	var c = this.arcDist/this.arc.length
-	return com.CreatePosition(this.arc.n1.id, this.arc.n2.id, (!c && c !== 0)? 0:c);
+	console.log("getPosition:", c)
+	return com.CreatePosition(this.arc.n1.id, this.arc.n2.id, (!c && c !== 0 || isNan(c))? 0:c);
 }
 
 var delta = 0.0001
