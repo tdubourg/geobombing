@@ -10,7 +10,7 @@ var u = require("./util")
 var com = require("./common")
 var fa = require("./frame_action")
 
-var PLAYER_SPEED = .1 //.5
+var PLAYER_SPEED = .08 // .1 //.5
 var MONSTER_SPEED = PLAYER_SPEED*.4
 
 var MONSTER_MOVE_PERIOD = 1
