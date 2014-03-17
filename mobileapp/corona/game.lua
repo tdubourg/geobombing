@@ -223,7 +223,9 @@ function newPlayerDestination(e)
 				-- Destination is on a different arc, run pathfinding
 				local nodes = currentMap:findPathArcs(player.arcPCurrent,arcP)
 				if (nodes == nil) then -- FIXME!
-					dbg(ERRORS, {"WHAT?! WTF?"})
+					dbg(ERRORS, {"No path found to this node. Doing nothing"})
+					player:stopPrediction()
+					return
 				else
 					if (nodes[1] == from) then
 						if (player.arcPCurrent.arc.end1 == from) then

@@ -36,15 +36,15 @@ function array_concat(...)
 		return t
 end
 
-local last_print = 0
-_G.print = function ( ... )
-	if (now() - last_print < 3000) then
-		return
-	end
-	last_print = now()
-	io.write( "Utiliser la fonction print tue des chatons, je vais utiliser dbg(const, {arg1, arg2, arg3} a la place.\n")
-	io.write( "Ce message ne s'affiche qu'une fois par 3 secondes.\n")
-end
+-- local last_print = 0
+-- _G.print = function ( ... )
+-- 	if (now() - last_print < 3000) then
+-- 		return
+-- 	end
+-- 	last_print = now()
+-- 	io.write( "Utiliser la fonction print tue des chatons, je vais utiliser dbg(const, {arg1, arg2, arg3} a la place.\n")
+-- 	io.write( "Ce message ne s'affiche qu'une fois par 3 secondes.\n")
+-- end
 
 function array_insert(receivingArray, insertedArray)
 	for _,v in ipairs(insertedArray) do

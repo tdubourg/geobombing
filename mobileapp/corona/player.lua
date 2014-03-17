@@ -159,19 +159,20 @@ end
 
 local lastPredictionRunTime = 0
 function Player:refresh()
-	if (not ENABLE_MOVE_PREDICTION) then
+	if (not ENABLE_MOVE_PREDICTION or self.isDead) then
 		return
 	end
-	local delta = 0.01 -- TODO: Move this constant and document it, cf server for now
+	local delta = 0.00001 -- TODO: Move this constant and document it, cf server for now
 	local newPredictionRunTime = now()
 	local delta_time = newPredictionRunTime - lastPredictionRunTime
 	lastPredictionRunTime = newPredictionRunTime
 	local distToWalk = PLAYER_SPEED * delta_time/1000.0
+	dbg(PREDICTION_DBG, {"distToWalk=", distToWalk})
 
 	if (self.arcPCurrent == nil) then
 		dbg(PREDICTION_DBG, {"Not enough information to run prediction: arcPCurrent is nil"})
 		return
-	elseif (self.predictionDestination == nil) then
+	elseif (self.predictionDestination == nil or self.predictionNodes == nil) then
 		dbg(PREDICTION_DBG, {"Not enough information to run prediction: self.predictionDestination is nil"})
 		return
 	end
@@ -192,7 +193,7 @@ function Player:refresh()
 		dbg(ERRORS, {"Something went wrong cloning self.arcPCurrent"})
 		return
 	end
-	if (self.currPredictionNode == nil) then
+	if (self.nextPredictionNode == nil) then
 		-- self.currPredictionNode = Deque.popleft(self.predictionNodes)
 		if (self.predictionNodes.length > 0) then
 			self.nextPredictionNode = Deque.popleft(self.predictionNodes)
@@ -242,6 +243,7 @@ function Player:refresh()
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
 				end
 			else
+				distToWalk = 0 -- There is no distance to walk anymore
 				dbg(PREDICTION_DBG, {"We did not do enough distance to switch arc"})
 			end
 		end
@@ -253,17 +255,32 @@ function Player:refresh()
 		return
 	end
 	dbg(PREDICTION_DBG, {"Prediction is setting AR to", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
-	self:setAR(copyOfArcPCurrent)
+	self:setAR(copyOfArcPCurrent, true)
+	if (copyOfArcPCurrent == self.predictionDestination) then
+		local xy = copyOfArcPCurrent:getPosXY()
+		 -- So that we stand still when the destination has been reached:
+		self:refreshAnimation(xy, xy, true)
+		self:stopPrediction()
+	end
+end
+
+function Player:stopPrediction()
+	self.predictionNodes = nil
+	self.currPredictionNode = nil
+	self.nextPredictionNode = nil
+	self.predictionDestination = nil
+	return self -- allows chaining
 end
 
 function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 	dbg(PREDICTION_DBG, {"Setting prediction nodes"})
+	self:stopPrediction() -- Clear previously running prediction data\
+	-- And initialize new prediction data: 
 	self.predictionNodes = Deque.new()
-	self.currPredictionNode = nil
-	self.nextPredictionNode = nil
 	if (nodes == nil) then
 		return
 	end
+	-- Nodes to go through:
 	for i,v in ipairs(nodes) do
 		dbg(PREDICTION_DBG, {"Adding node", tostring(i), v.uid, "to predictionNodes"})
 		Deque.pushright(self.predictionNodes, v)
@@ -292,6 +309,7 @@ function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 	end
 	Deque.pushright(self.predictionNodes, node_to_add)
 	dbg(PREDICTION_DBG, {"Adding node", self.predictionNodes.length, node_to_add.uid, "to predictionNodes"})
+	return self -- allows chaining
 end
 
 function Player:goToAR(arcP)
@@ -302,9 +320,11 @@ function Player:goToAR(arcP)
 	self.toX=destination.x
 	self.toY=destination.y
 	self.arcPDest = nil
+
+	return self -- allows chaining
 end
 
-function Player:setAR(arcP)
+function Player:setAR(arcP, isPrediction)
 	self.oldpos = self.pos
 	local destination = arcP:getPosXY()
 	self.toX=destination.x
@@ -314,14 +334,34 @@ function Player:setAR(arcP)
 	self.colorSprite:setWorldPosition(self.pos)
 	self.arcPCurrent = arcP
 
-	-- update sprites
+	if ((not isPrediction) 
+		and self.predictionDestination ~= nil 
+		and self.arcPCurrent:equals(self.predictionDestination, ACCEPTABLE_POS_DELTA_FOR_STANDING_STILL_OUTSIDE_PREDICTION)
+	) then
+		self:stopPrediction()
+	end
 
-	local myCuteDir = Vector2D:Sub(self.pos, self.oldpos)
-	if myCuteDir.x==0 and myCuteDir.y==0 then
+	-- update sprites
+	self:refreshAnimation(self.oldpos, self.pos, isPrediction)
+end
+
+function Player:refreshAnimation(oldpos, newpos, isPrediction)
+	local myCuteDir = Vector2D:Sub(newpos, oldpos)
+	local myCuteDirAbs = Vector2D:Abs(myCuteDir)
+
+	local delta_for_standing_still
+	if (isPrediction) then
+		delta_for_standing_still = ACCEPTABLE_POS_DELTA_FOR_STANDING_STILL_DURING_PREDICTION
+	else
+		delta_for_standing_still = ACCEPTABLE_POS_DELTA_FOR_STANDING_STILL_OUTSIDE_PREDICTION
+	end
+
+	if myCuteDirAbs.x <= delta_for_standing_still and myCuteDirAbs.y <= delta_for_standing_still then
+		dbg(PREDICTION_DBG_LITE, {"Animation of standing still. vect=", myCuteDirAbs.x, myCuteDir.y, "delta=", delta_for_standing_still})
 		self.animString = "stand"
 	else
 		self.animString = "walk"
-		if math.abs(myCuteDir.x) > math.abs(myCuteDir.y) then
+		if myCuteDirAbs.x > myCuteDirAbs.y then
 			if myCuteDir.x > 0 then -- right
 				self.dirString = "right"
 			else                    -- left
@@ -335,16 +375,14 @@ function Player:setAR(arcP)
 			end
 		end
 	end
-
 	if not self.isDead then
-		local newAnimString = self.dirString..self.animString
+		local newAnimString = self.dirString .. self.animString
 		if self.currentAnimString ~= newAnimString then
 			self.sprite:play(newAnimString)
 			self.colorSprite:play(newAnimString)
 			self.currentAnimString = newAnimString
 		end
 	end
-
 end
 
 function Player:getCurrentStreetName()

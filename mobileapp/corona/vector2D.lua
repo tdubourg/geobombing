@@ -25,8 +25,15 @@ function Vector2D:normalize()
 		self.x = self.x / temp
 		self.y = self.y / temp
 	end
+	return self -- alows chaining
 end
  
+function Vector2D:abs()
+	self.x = math.abs(self.x)
+	self.y = math.abs(self.y)
+	return self -- alows chaining
+end
+
 function Vector2D:limit(l)
 	if self.x > l then
 		self.x = l		
@@ -35,6 +42,7 @@ function Vector2D:limit(l)
 	if self.y > l then
 		self.y = l		
 	end
+	return self -- alows chaining
 end
  
 function Vector2D:equals(vec)
@@ -48,21 +56,25 @@ end
 function Vector2D:add(vec)
 	self.x = self.x + vec.x
 	self.y = self.y + vec.y
+	return self -- alows chaining
 end
  
 function Vector2D:sub(vec)
 	self.x = self.x - vec.x
 	self.y = self.y - vec.y
+	return self -- alows chaining
 end
  
 function Vector2D:mult(s)
 	self.x = self.x * s
 	self.y = self.y * s
+	return self -- alows chaining
 end
  
 function Vector2D:div(s)
 	self.x = self.x / s
 	self.y = self.y / s
+	return self -- alows chaining
 end
  
 function Vector2D:dot(vec)
@@ -83,6 +95,10 @@ end
  
 -- Class Methods
  
+function Vector2D:Abs(vect)
+	return vect:copy():abs()
+end
+
 function Vector2D:Normalize(vec)	
 	local tempVec = Vector2D:new(vec.x,vec.y)
 	local temp
