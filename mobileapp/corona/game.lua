@@ -222,7 +222,7 @@ function newPlayerDestination(e)
 				net.sendPathToServer(nodes,arcP)
 				if (nodes ~= nil) then
 					local pos = player.arcPCurrent:getPosXY()
-					arcs[player.arcPCurrent] ={pos,nodes[1].pos}
+					arcs[player.arcPCurrent.arc] ={pos,nodes[1].pos}
 					for i= 1, #nodes-1 do
 						local path = nodes[i].arcs[nodes[i+1]]
 						arcs[path] = {path.end1.pos,path.end2.pos}
@@ -288,7 +288,7 @@ function initGame(player_id)
 						-- The position has to be updated
 						local pos = v[NETWORK_PLAYER_UPDATE_POS_KEY]
 						local player_id = tostring(v[NETWORK_PLAYER_UPDATE_ID_KEY])
-						if (pos ~= nil) then
+						if (pos ~= nil and pos[NETWORK_RATIO]~=nil) then
 							-- Then take it into account!
 							update_player_position(
 								player_id,
@@ -380,7 +380,7 @@ function initGame(player_id)
 						-- The position has to be updated
 						local pos = v[NETWORK_MONSTER_UPDATE_POS_KEY]
 						local monster_id = tostring(v[NETWORK_MONSTER_UPDATE_ID_KEY])
-						if (pos ~= nil) then
+						if (pos ~= nil and pos[NETWORK_RATIO]~=nil) then
 							-- Then take it into account!
 							 update_monster_position(
 								monster_id,
@@ -390,7 +390,7 @@ function initGame(player_id)
 
 						--handling monster death
 						if dead then
-							dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
+							--dbg (GAME_DBG, {"init = ",json.encode(json_obj) })
 							local daMonster = monsters[monster_id]
 							if (daMonster.isDead == false) then
 								--daPlayer.nbDeath = daPlayer.nbDeath + 1
