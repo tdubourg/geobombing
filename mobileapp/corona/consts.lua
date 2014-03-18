@@ -130,5 +130,7 @@ DISCARDED_PLAYER_UPDATES_MSG = false
 GAME_DBG = false
 LOG_TO_FILE = nil
 
+OPTIMIZE_NETWORK_RECEIVE_ALL_FRAMES = true
+
 -- require("consts-local")
 silent_fail_require("consts-local")

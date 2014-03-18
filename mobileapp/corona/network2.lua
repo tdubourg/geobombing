@@ -5,6 +5,7 @@ require ("consts")
 require "print_r"
 require "utils"
 require "arcPos"
+local Deque = require "Deque"
 
 local client = nil
 local FRAME_SEPARATOR = "\n"
@@ -15,6 +16,7 @@ local mrcvTimer = nil
 NETWORK_KEY = ""
 local net_buffer = ""
 local net_line_buffer = "" 
+local frames_buffer = Deque.new()
 
 function test_network()
 	local ip = "127.0.0.1"
@@ -32,7 +34,7 @@ function test_network()
 end
 
 function receive_line()
-	local result
+	local result, status, partial
 	result, status, partial = client:receive() -- with no parameter = receive a line
 	if (result == nil and partial ~= nil) then 
 		-- We did not manage to read a full line 
@@ -52,6 +54,16 @@ function receive_line()
 	dbg(NETW_DBG_MODE, {"status=", status})
 	dbg(NETW_DBG_MODE, {"partial=", partial})
 	return result
+end
+
+function receive_lines()
+	local frame = nil
+	repeat
+		frame = receive_line()
+		if (frame) then
+			Deque.pushright(frames_buffer, frame)
+		end
+	until frame == nil
 end
 
 function receive_until(end_separator)
@@ -86,23 +98,38 @@ end
 
 function _mrcv()
 	client:settimeout(0)
-	local frameString, status = receive_line()-- receive_until(FRAME_SEPARATOR)
 
-	if frameString ~= nil then
-		local json_obj = json.decode(frameString)
-		if (json_obj ~= nil) then
-			if(not (type(json_obj) == "table")) then -- not valid json, probably
-				dbg(ERRORS, {"Received an invalid frame: ", json_obj})
-				return nil
-			end
-			dbg(NETW_DBG_MODE, {"json_obj.type=", json_obj.type})
-			local handler = net_handlers[json_obj.type]
-			dbg(NETW_DBG_MODE, {"Found handler", handler, "for this data"})
-			if (handler ~= nil) then
-				handler(json_obj)
-			end
+	if (OPTIMIZE_NETWORK_RECEIVE_ALL_FRAMES) then
+		-- Reading all the frames at once
+		receive_lines()
+		-- Processing all the read frames at once
+		while frames_buffer.length > 0 do
+			local frame = Deque.popleft(frames_buffer)
+			process_framestring(frame)
 		end
-	end        
+	else
+		-- Reading one frame and processing it (if any)
+		local frameString, status = receive_line()-- receive_until(FRAME_SEPARATOR)
+		if frameString ~= nil then
+			process_framestring(frameString)
+		end
+	end
+end
+
+function process_framestring( frameString )
+	local json_obj = json.decode(frameString)
+	if (json_obj ~= nil) then
+		if(not (type(json_obj) == "table")) then -- not valid json, probably
+			dbg(ERRORS, {"Received an invalid frame: ", json_obj})
+			return nil
+		end
+		dbg(NETW_DBG_MODE, {"json_obj.type=", json_obj.type})
+		local handler = net_handlers[json_obj.type]
+		dbg(NETW_DBG_MODE, {"Found handler", handler, "for this data"})
+		if (handler ~= nil) then
+			handler(json_obj)
+		end
+	end
 end
 
 function connect_to_server( ip, port )
