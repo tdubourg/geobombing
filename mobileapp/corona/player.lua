@@ -66,7 +66,7 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 
 	self.nodeFrom=self.arcPCurrent.arc.end1
 	self.nodeTo=self.arcPCurrent.arc.end2
-	self.currentArcRatio=self.arcPCurrent.progress
+	self.currentArcRatio=self.arcPCurrent.dist
 	-- self.currentArc=nodeF.arcs[nodeT]
 	-- if(self.currentArc.end1==nodeF) then
 	--     self.currentArcRatio=0
@@ -76,14 +76,14 @@ function Player.new( pId, pSpeed, pNbDeath,arcP)   -- constructor
 
   
 	--Player current destination
-	self.arcPDest = nil
-	self.toX= self.pos.x
-	self.toY= self.pos.y
+	-- self.arcPDest = nil
+	-- self.toX= self.pos.x
+	-- self.toY= self.pos.y
 
-	--nodes to go to the final destination
-	self.nodes= nil
-	self.nodesI=0
-	self.nodesMax=0
+	-- --nodes to go to the final destination
+	-- self.nodes= nil
+	-- self.nodesI=0
+	-- self.nodesMax=0
 
 	--???
 	self.objectType = objectType
@@ -114,24 +114,25 @@ function Player:revive()
 end
 
 function Player:saveNewNodes(nodes, arcP)
-	self.nodes=nodes
-	self.arcPDest=arcP
-   -- self.saveNewDestination(self.nodes[1])
-   if (nodes~=nil) then
-		self.nodesI=1
-		self.nodesMax=#nodes
-		-- print (self.nodesMax .." BOUH")
-		self.toX=self.nodes[1].pos.x
-		self.toY=self.nodes[1].pos.y
-		self.nodeTo=nodes[1]
-   else
-		self.nodesI=0
-		self.nodesMax=0
-		if (arcP ~=nil) then
-			 self:goToAR(arcP)
-		end
-		--self.nodeTo=nil
-	end
+	return
+	-- self.nodes=nodes
+	-- self.arcPDest=arcP
+ --   -- self.saveNewDestination(self.nodes[1])
+ --   if (nodes~=nil) then
+	-- 	self.nodesI=1
+	-- 	self.nodesMax=#nodes
+	-- 	-- print (self.nodesMax .." BOUH")
+	-- 	self.toX=self.nodes[1].pos.x
+	-- 	self.toY=self.nodes[1].pos.y
+	-- 	self.nodeTo=nodes[1]
+ --   else
+	-- 	self.nodesI=0
+	-- 	self.nodesMax=0
+	-- 	if (arcP ~=nil) then
+	-- 		 self:goToAR(arcP)
+	-- 	end
+	-- 	--self.nodeTo=nil
+	-- end
 end
 
 -- function Player:saveNewDestination(e)
@@ -164,7 +165,7 @@ function Player:refresh()
 	end
 	dbg(PREDICTION_DBG, {"----------------------------"})
 	dbg(PREDICTION_DBG, {"Player:refresh()"})
-	local delta = 0.00001 -- TODO: Move this constant and document it, cf server for now
+	local delta = 0.0001 -- TODO: Move this constant and document it, cf server for now
 	local newPredictionRunTime = now()
 	local delta_time = newPredictionRunTime - lastPredictionRunTime
 	lastPredictionRunTime = newPredictionRunTime
@@ -180,22 +181,22 @@ function Player:refresh()
 	end
 	if (self.arcPCurrent:equals(self.predictionDestination, delta)) then
 		dbg(PREDICTION_DBG, {"STANDING STILL (up to precision), NOT RUNNING PREDICTION"})
-		dbg(PREDICTION_DBG, {self.arcPCurrent.progress, self.predictionDestination.progress})
+		dbg(PREDICTION_DBG, {self.arcPCurrent.dist, self.predictionDestination.dist})
 		return
 	end
-	dbg(PREDICTION_DBG, {"self.arcPCurrent=", self.arcPCurrent.arc.end1.uid, self.arcPCurrent.arc.end2.uid, self.arcPCurrent.progress})
-	dbg(PREDICTION_DBG, {"self.predictionDestination=", self.predictionDestination.arc.end1.uid, self.predictionDestination.arc.end2.uid, self.predictionDestination.progress})
+	dbg(PREDICTION_DBG, {"self.arcPCurrent=", self.arcPCurrent.arc.end1.uid, self.arcPCurrent.arc.end2.uid, self.arcPCurrent.dist})
+	dbg(PREDICTION_DBG, {"self.predictionDestination=", self.predictionDestination.arc.end1.uid, self.predictionDestination.arc.end2.uid, self.predictionDestination.dist})
 	dbg(PREDICTION_DBG, {"Running prediction!"})
 
 	-- local currentArc = self.arcPCurrent.arc
 	-- local currentArcDist = self.arcPCurrent.dist
-	-- local targetArcDist = self.predictionDestination.progress
+	-- local targetArcDist = self.predictionDestination.dist
 	local copyOfArcPCurrent = self.arcPCurrent:clone()
 	if (copyOfArcPCurrent == nil) then
 		dbg(ERRORS, {"Something went wrong cloning self.arcPCurrent"})
 		return
 	end
-	dbg(PREDICTION_DBG, {"copyOfArcPCurrent=", copyOfArcPCurrent.arc.end1.uid, copyOfArcPCurrent.arc.end2.uid, copyOfArcPCurrent.progress})
+	dbg(PREDICTION_DBG, {"copyOfArcPCurrent=", copyOfArcPCurrent.arc.end1.uid, copyOfArcPCurrent.arc.end2.uid, copyOfArcPCurrent.dist})
 	if (self.nextPredictionNode == nil) then
 		dbg(PREDICTION_DBG, {"self.nextPredictionNode==nil, assigning it"})
 		-- self.currPredictionNode = Deque.popleft(self.predictionNodes)
@@ -215,8 +216,9 @@ function Player:refresh()
 			-- If we are on the final arc of the path, the distance is the final position
 			-- on the arc, minus the current position
 			dbg(PREDICTION_DBG, {"We are moving on the final arc."})
-			local distToDest = copyOfArcPCurrent:distToReachDistPositionTowards(self.predictionDestination.dist, self.nextPredictionNode)
-			if (distToDest < distToWalk) then
+			local distToDest = copyOfArcPCurrent:distToReachDistPositionTowards(self.predictionDestination.dist, self.predictionDestination.arc.end2)
+			dbg(PREDICTION_DBG, {"distToDest=", distToDest})
+			if (distToDest <= distToWalk) then
 				copyOfArcPCurrent = self.predictionDestination
 				dbg(PREDICTION_DBG, {"Setting next predicted destination to self.predictionDestination"})
 			else
@@ -228,7 +230,7 @@ function Player:refresh()
 			-- If we are not on the final arc of the path, the distance to the next node is
 			-- the total length of current arc minus the current position on this arc
 			local remainder_dist = copyOfArcPCurrent:addDistTowards(distToWalk, self.nextPredictionNode)
-			dbg(PREDICTION_DBG, {"Not final arc, distToWalk=", distToWalk, "copyOfArcPCurrent (updated)=", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
+			dbg(PREDICTION_DBG, {"Not final arc, distToWalk=", distToWalk, "copyOfArcPCurrent (updated)=", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.dist})
 			dbg(PREDICTION_DBG, {"Not final arc, current next node is=", self.nextPredictionNode.uid})
 			if (remainder_dist ~= nil) then
 				-- There is still some distance to walk, and it was returned by the addDistTowards
@@ -247,6 +249,7 @@ function Player:refresh()
 					dbg(PREDICTION_DBG, {"[Game Model Error]: couldn't find a path from node", self.currPredictionNode.uid, "to node", self.nextPredictionNode.uid})
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
 					dbg(PREDICTION_DBG, {"#########################################################################################"})
+					return
 				end
 			else
 				distToWalk = 0 -- There is no distance to walk anymore
@@ -260,7 +263,7 @@ function Player:refresh()
 		dbg(ERRORS, {"copyOfArcPCurrent is nil at the end of prediction computation"})
 		return
 	end
-	dbg(PREDICTION_DBG, {"Prediction is setting AR to", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
+	dbg(PREDICTION_DBG, {"Prediction is setting AR to", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.dist})
 	self:setAR(copyOfArcPCurrent, true)
 	if (copyOfArcPCurrent == self.predictionDestination) then
 		local xy = copyOfArcPCurrent:getPosXY()
@@ -279,6 +282,37 @@ function Player:stopPrediction()
 	return self -- allows chaining
 end
 
+function Player:updatePredictionTo( arcP )
+	dbg(PREDICTION_DBG, {"Updating prediction to current pos=", arcP.arc.end1.uid, arcP.arc.end2.uid, arcP.dist})
+	-- Let us find where exactly we are in the path, according to arcP... 
+	if (self.arcPCurrent.arc == arcP.arc) then
+		dbg(PREDICTION_DBG, {"Nothing to do, we did not change arc."})
+		return -- nothing to do, same arc
+	else
+		-- First, copy everything from backup
+		self.predictionNodes = Deque.copy(self.predictionNodesBackup)
+		local v_prev
+		-- Then skip everything until you find the position that is currently being assigned
+		local i
+		for i=self.predictionNodesBackup.first,self.predictionNodesBackup.last do
+			local v = self.predictionNodes[i]
+			dbg(PREDICTION_DBG, {"Going over predictionNodesBackup...", i, v.uid})
+			if (v_prev ~= nil) then
+				local arc = currentMap:getArc(v_prev.uid, v.uid)
+				if (arc ~= arcP.arc) then
+					Deque.popleft(self.predictionNodes) -- Note: It's OK to popleft inside the loop, popping right would not be OK (would change .last value)
+				else
+					dbg("Found arc where we are, arc is:", {arc.end1.uid, arc.end2.uid})
+					self.currPredictionNode = v_prev
+					self.nextPredictionNode = v
+					break	
+				end
+			end
+			v_prev = v
+		end
+	end
+end
+
 function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 	dbg(PREDICTION_DBG, {"----------------------------"})
 	dbg(PREDICTION_DBG, {"Setting prediction nodes"})
@@ -293,7 +327,7 @@ function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 		dbg(PREDICTION_DBG, {"Adding node", tostring(i), v.uid, "to predictionNodes"})
 		Deque.pushright(self.predictionNodes, v)
 	end
-	dbg(PREDICTION_DBG, {"Setting prediction destination to", destinationArcP.arc.end1.uid, destinationArcP.arc.end2.uid, destinationArcP.progress})
+	dbg(PREDICTION_DBG, {"Setting prediction destination to", destinationArcP.arc.end1.uid, destinationArcP.arc.end2.uid, destinationArcP.dist})
 	self.predictionDestination = destinationArcP
 	local node_to_add = nil
 	if (self.predictionNodes.length ~= 0) then
@@ -318,31 +352,41 @@ function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 	Deque.pushright(self.predictionNodes, node_to_add)
 	dbg(PREDICTION_DBG, {"Adding node", self.predictionNodes.length, node_to_add.uid, "to predictionNodes"})
 	dbg(PREDICTION_DBG, {"----------------------------"})
+	self.predictionNodesBackup = Deque.copy(self.predictionNodes)
+	local i
+	for i=self.predictionNodesBackup.first,self.predictionNodesBackup.last do
+		dbg(PREDICTION_DBG, {"i,v=",self.predictionNodesBackup[i].uid})
+	end
 	return self -- allows chaining
 end
 
 function Player:goToAR(arcP)
 
 	local destination = arcP:getPosXY()
-	self.nodeFrom=arcP.arc.end1
-	self.nodeTo=arcP.arc.end2
-	self.toX=destination.x
-	self.toY=destination.y
+	-- self.nodeFrom=arcP.arc.end1
+	-- self.nodeTo=arcP.arc.end2
+	-- self.toX=destination.x
+	-- self.toY=destination.y
 	self.arcPDest = nil
 
 	return self -- allows chaining
 end
 
 function Player:setAR(arcP, isPrediction)
+	-- Update the prediction (if any running) to reflect external changes to player position
+	if (not isPrediction and self.predictionDestination ~= nil) then
+		self:updatePredictionTo(arcP)
+	end
 	self.oldpos = self.pos
 	local destination = arcP:getPosXY()
-	self.toX=destination.x
-	self.toY=destination.y
+	-- self.toX=destination.x
+	-- self.toY=destination.y
 	self.pos=destination
 	self.sprite:setWorldPosition(self.pos)
 	self.colorSprite:setWorldPosition(self.pos)
 	self.arcPCurrent = arcP
 
+	-- If we have arrived at destination by server updates (not by prediction), stop prediction
 	if ((not isPrediction) 
 		and self.predictionDestination ~= nil 
 		and self.arcPCurrent:equals(self.predictionDestination, ACCEPTABLE_POS_DELTA_FOR_STANDING_STILL_OUTSIDE_PREDICTION)
@@ -387,6 +431,7 @@ function Player:refreshAnimation(oldpos, newpos, isPrediction)
 	if not self.isDead then
 		local newAnimString = self.dirString .. self.animString
 		if self.currentAnimString ~= newAnimString then
+			dbg(PREDICTION_DBG, {"Changing animation from", self.currentAnimString, "to", newAnimString})
 			self.sprite:play(newAnimString)
 			self.colorSprite:play(newAnimString)
 			self.currentAnimString = newAnimString

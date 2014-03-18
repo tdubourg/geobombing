@@ -54,4 +54,16 @@ function Deque.popright (deque)
 	return value
 end
 
+function Deque.copy( deque )
+	local new = Deque.new()
+	if (deque.length == 0) then
+		return new
+	end
+	local i
+	for i=deque.first,deque.last do
+		Deque.pushright(new, deque[i])
+	end
+	return new
+end
+
 return Deque

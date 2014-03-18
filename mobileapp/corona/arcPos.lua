@@ -59,6 +59,8 @@ end
 -- was higher than the maximum progress we could make towards this node
 -- @return nil if the progress was not higher and there is still some progress to make
 function ArcPos:addProgressTowards(progress, node_towards)
+	dbg(PREDICTION_DBG, {"Current progress=", self.progress})
+	dbg(PREDICTION_DBG, {"Adding progress", progress, "towards", node_towards.uid})
 	local remainder = nil
 	if (node_towards == self.arc.end2) then
 		self:setProgress(self.progress + progress)
@@ -73,6 +75,7 @@ function ArcPos:addProgressTowards(progress, node_towards)
 			self:setProgress(0)
 		end
 	end
+	dbg(PREDICTION_DBG, {"self.progress is now", self.progress})
 	return remainder
 end
 
@@ -81,7 +84,13 @@ end
 -- @param {Node} the node towards which we want to go
 -- @return {float} the distance you need to reach this position
 function ArcPos:distToReachDistPositionTowards(dist_pos, node_towards)
-	return self:distToReachProgressPositionTowards(dist_pos / self.arc.len, node_towards) * self.arc.len
+	dbg(PREDICTION_DBG, {"Asking for dist between ", dist_pos, "and self.dist=", self.dist
+		, "towards", node_towards.uid})
+	if (node_towards == self.arc.end1) then
+	dbg(PREDICTION_DBG, "Inverting dist, as node_towards == self.arc.end1")
+		dist_pos = self.arc.len - dist_pos
+	end
+	return math.abs(self.dist - dist_pos)
 end
 
 -- Returns the progress to reach a give progress position towards a given node on current {ArcPos} object
@@ -89,6 +98,8 @@ end
 -- @param {Node} the node towards which we want to go
 -- @return {float} the progress you need to reach this position
 function ArcPos:distToReachProgressPositionTowards(progress_pos, node_towards)
+	dbg(PREDICTION_DBG, {"Asking for progress delta between progress=", progress_pos, "and self.progress=", self.progress
+		, "towards", node_towards.uid})
 	if (node_towards == self.arc.end1) then
 		progress_pos = 1 - progress_pos
 	end
@@ -96,7 +107,7 @@ function ArcPos:distToReachProgressPositionTowards(progress_pos, node_towards)
 end
 
 function ArcPos:initExplosion(power)
-	drawPosList = {}
+	local drawPosList = {}
 	local end1dist = self.progress*self.arc.len
 	local end2dist = (1-self.progress)*self.arc.len
 	local end1Power = power - end1dist
