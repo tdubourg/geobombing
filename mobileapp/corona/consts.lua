@@ -116,7 +116,7 @@ PLAYER_SPEED = 0.1
 ENABLE_MOVE_PREDICTION = true
 
 -- Other
-NETW_RECV_OPTIMIZATION = true
+OPTIMIZE_NETWORK_RECEIVE_ALL_FRAMES = true
 NETW_DISCARD_PU_OPTIMIZATION = true
 
 -- GAMEPLAY
@@ -129,6 +129,7 @@ NETW_DUMP_MODE = false
 DISCARDED_PLAYER_UPDATES_MSG = false
 GAME_DBG = false
 LOG_TO_FILE = nil
+
 
 -- require("consts-local")
 silent_fail_require("consts-local")
