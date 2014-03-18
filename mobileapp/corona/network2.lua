@@ -252,7 +252,6 @@ function sendPathToServer( nodes, arcP )
 		--get the ratio of the final destination
 		local ratioEnd =0
 
-		local to_send = {}
 		local net_nodes ={}
 		
 		 if (arc.end1.uid == nodes[1].uid) then

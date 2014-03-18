@@ -164,7 +164,6 @@ function Player:refresh()
 	end
 	dbg(PREDICTION_DBG, {"----------------------------"})
 	dbg(PREDICTION_DBG, {"Player:refresh()"})
-	dbg(PREDICTION_DBG, {"----------------------------"})
 	local delta = 0.00001 -- TODO: Move this constant and document it, cf server for now
 	local newPredictionRunTime = now()
 	local delta_time = newPredictionRunTime - lastPredictionRunTime
@@ -196,10 +195,13 @@ function Player:refresh()
 		dbg(ERRORS, {"Something went wrong cloning self.arcPCurrent"})
 		return
 	end
+	dbg(PREDICTION_DBG, {"copyOfArcPCurrent=", copyOfArcPCurrent.arc.end1.uid, copyOfArcPCurrent.arc.end2.uid, copyOfArcPCurrent.progress})
 	if (self.nextPredictionNode == nil) then
+		dbg(PREDICTION_DBG, {"self.nextPredictionNode==nil, assigning it"})
 		-- self.currPredictionNode = Deque.popleft(self.predictionNodes)
 		if (self.predictionNodes.length > 0) then
 			self.nextPredictionNode = Deque.popleft(self.predictionNodes)
+			dbg(PREDICTION_DBG, {"self.nextPredictionNode=", self.nextPredictionNode.uid})
 		end
 	end		
 	while (distToWalk > delta) do

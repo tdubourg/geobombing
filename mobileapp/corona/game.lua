@@ -296,7 +296,7 @@ function initGame(player_id)
 					else
 						-- The position has to be updated
 						local pos = v[NETWORK_PLAYER_UPDATE_POS_KEY]
-						dbg(PREDICTION_DBG_LITE, {'Received player update with pos=', pos})
+						dbg(PREDICTION_DBG_LITE, {'Received player update', json_obj})
 						local player_id = tostring(v[NETWORK_PLAYER_UPDATE_ID_KEY])
 						if (pos ~= nil and pos[NETWORK_RATIO]~=nil) then
 							-- Then take it into account!

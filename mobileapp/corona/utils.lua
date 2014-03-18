@@ -63,6 +63,7 @@ end
 
 function dbg( mode, things )
 	if (mode) then
+		dbg_write(now(), "\t")
 		for _,v in pairs(things) do
 			if (type(v) == "table") then
 				v = json.encode(v)

@@ -448,7 +448,7 @@ Player.prototype.detectCollisions = function (arc,distA,distB)
 	})
 }
 
-var delta = 0.0001
+var delta = 0.00001
 Player.prototype.update = function (period) 
 {
 	
@@ -491,6 +491,10 @@ Player.prototype.update = function (period)
 			var distToNextDest = this.currentPath.length == 0?
 				this.targetArcDist-this.currentArcDist
 			:	this.currentArc.length-this.currentArcDist
+
+			if (distToNextDest < 0) {
+				console.error("ERROR: distToNextDest < 0", distToNextDest)
+			};
 			
 			// this.detectCollisions(this.currentArc, this.currentArcDist, this.currentArcDist+distToNextDest)
 			// if (this.dead)

@@ -154,6 +154,7 @@ var sendPlayersUpdate = function (stream, players) // player and other players
 	
 	var data = JSON.stringify(content);
 	stream.write(data + net.FRAME_SEPARATOR, function() {
+		console.log("sent update: ", data)
 		if (haskilled != 0) console.log("sendPlayersUpdate killed: ", haskilled)
 	})
 }
