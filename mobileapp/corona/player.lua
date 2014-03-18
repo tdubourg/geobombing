@@ -162,6 +162,9 @@ function Player:refresh()
 	if (not ENABLE_MOVE_PREDICTION or self.isDead) then
 		return
 	end
+	dbg(PREDICTION_DBG, {"----------------------------"})
+	dbg(PREDICTION_DBG, {"Player:refresh()"})
+	dbg(PREDICTION_DBG, {"----------------------------"})
 	local delta = 0.00001 -- TODO: Move this constant and document it, cf server for now
 	local newPredictionRunTime = now()
 	local delta_time = newPredictionRunTime - lastPredictionRunTime
@@ -223,10 +226,11 @@ function Player:refresh()
 			-- If we are not on the final arc of the path, the distance to the next node is
 			-- the total length of current arc minus the current position on this arc
 			local remainder_dist = copyOfArcPCurrent:addDistTowards(distToWalk, self.nextPredictionNode)
-			dbg(PREDICTION_DBG, {"Not final arc, distToWalk=", distToWalk, "copyOfArcPCurrent=", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
+			dbg(PREDICTION_DBG, {"Not final arc, distToWalk=", distToWalk, "copyOfArcPCurrent (updated)=", copyOfArcPCurrent.arc.end1.uid, ",", copyOfArcPCurrent.arc.end2.uid, ",", copyOfArcPCurrent.progress})
 			dbg(PREDICTION_DBG, {"Not final arc, current next node is=", self.nextPredictionNode.uid})
 			if (remainder_dist ~= nil) then
 				-- There is still some distance to walk, and it was returned by the addDistTowards
+				dbg(PREDICTION_DBG, {"remainder_dist=", remainder_dist})
 				distToWalk = remainder_dist
 				dbg(PREDICTION_DBG, {"Time to switch arc"})
 				self.currPredictionNode = self.nextPredictionNode
@@ -262,6 +266,7 @@ function Player:refresh()
 		self:refreshAnimation(xy, xy, true)
 		self:stopPrediction()
 	end
+	dbg(PREDICTION_DBG, {"----------------------------"})
 end
 
 function Player:stopPrediction()
@@ -273,6 +278,7 @@ function Player:stopPrediction()
 end
 
 function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
+	dbg(PREDICTION_DBG, {"----------------------------"})
 	dbg(PREDICTION_DBG, {"Setting prediction nodes"})
 	self:stopPrediction() -- Clear previously running prediction data\
 	-- And initialize new prediction data: 
@@ -309,6 +315,7 @@ function Player:setPredictionNodesAndDestination(nodes, destinationArcP)
 	end
 	Deque.pushright(self.predictionNodes, node_to_add)
 	dbg(PREDICTION_DBG, {"Adding node", self.predictionNodes.length, node_to_add.uid, "to predictionNodes"})
+	dbg(PREDICTION_DBG, {"----------------------------"})
 	return self -- allows chaining
 end
 
@@ -357,7 +364,7 @@ function Player:refreshAnimation(oldpos, newpos, isPrediction)
 	end
 
 	if myCuteDirAbs.x <= delta_for_standing_still and myCuteDirAbs.y <= delta_for_standing_still then
-		dbg(PREDICTION_DBG_LITE, {"Animation of standing still. vect=", myCuteDirAbs.x, myCuteDir.y, "delta=", delta_for_standing_still})
+		dbg(PREDICTION_DBG_LITE, {"Animation of standing still. vect=", myCuteDirAbs.x, myCuteDirAbs.y, "delta=", delta_for_standing_still})
 		self.animString = "stand"
 	else
 		self.animString = "walk"

@@ -97,17 +97,6 @@ function removeScoreDisplay()
 	Runtime:addEventListener("touch", newPlayerDestination)	
 end
 
--- function updateTime()
--- 	if (time <= 0) then
--- 		time = gameTime
--- 		timer.cancel( timerId )
-
--- 	else
--- 		time = time - 1
--- 	end
--- 	timeText.text = "Temps restant: ".. time
--- end
-
 function showScore()
 	-- Create a new text field to display the timer
 	timeText = display.newText("Temps restant: ".. time, 0, 0,  native.systemFont, 40)
@@ -195,7 +184,6 @@ function newPlayerDestination(e)
 			-- Do not do anything, to avoid spamming player move requests on each pixel 
 			return
 		end
-		dbg(PREDICTION_DBG_LITE, {"Setting new player destination"})
 		last_newPlayerDestination = now()
 		local screenPos = Vector2D:new(e.x,e.y)
 		local worldPos = camera:screenToWorld(screenPos)
@@ -205,6 +193,7 @@ function newPlayerDestination(e)
 		local arcP = currentMap:getClosestPos(worldPos)
 
 		if (arcP ~= nil) then 
+			dbg(PREDICTION_DBG_LITE, {"-------------\nSetting new player destination, arcP=", arcP.arc.end1.uid, arcP.arc.end2.uid, arcP.progress, "\n---------------------"})
 			if (arcP.progress<0) then
 				dbg (ERRORS, {arcP.progress.." ERROR"})
 			end

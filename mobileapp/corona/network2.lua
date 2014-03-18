@@ -218,6 +218,7 @@ end
 -- end
  
 function sendPathToServer( nodes, arcP )
+	local to_send = {}
 	if (nodes == nil) then
 		--if there a movement on the same arc
 		--get the current arc (player.arcPCurrent.arc == arcP)
@@ -227,7 +228,6 @@ function sendPathToServer( nodes, arcP )
 		--get the ratio of the final destination
 		local ratioEnd =arcP.progress
 
-		local to_send = {}
 		local net_nodes ={}
 		
 		-- we need the node that is the nearest to the final destination
@@ -243,8 +243,6 @@ function sendPathToServer( nodes, arcP )
 		to_send[JSON_MOVE_NODES] = net_nodes
 		to_send[JSON_MOVE_START_EDGE_POS] = ratio
 		to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
-		sendSerialized(to_send, FRAMETYPE_MOVE)
-		
 	else
 		--if there is at least a node on which we need to go
 		--get the current arc 
@@ -267,19 +265,12 @@ function sendPathToServer( nodes, arcP )
 
 		-- Add the second node of the final destination's arc
 	 	if (net_nodes[#net_nodes] == arcP.arc.end1.uid) then
-		--if (#net_nodes>1) then
 			net_nodes[#net_nodes+1] = arcP.arc.end2.uid
-		--end
 			ratioEnd =arcP.progress
-			-- print ("ratioooooo" .. ratioEnd)
 		elseif (net_nodes[#net_nodes] == arcP.arc.end2.uid)  then
-		--if (#net_nodes>1) then
 			net_nodes[#net_nodes+1] = arcP.arc.end1.uid
-		--end
-		-- invert the ratio 
+			-- invert the ratio 
 			ratioEnd = 1- arcP.progress
-			-- print ("ratioooooo 1-" .. ratioEnd)
-
 		else
 			print("error in sendPathToServer")
 		end
@@ -288,8 +279,11 @@ function sendPathToServer( nodes, arcP )
 		to_send[JSON_MOVE_NODES] = net_nodes
 		to_send[JSON_MOVE_START_EDGE_POS] = ratio
 		to_send[JSON_MOVE_END_EDGE_POS] = ratioEnd
-		sendSerialized(to_send, FRAMETYPE_MOVE)
 	end
+	dbg(PREDICTION_DBG, {"----------------------------"})
+	dbg(PREDICTION_DBG, {"Sending move request to server:", to_send})
+	dbg(PREDICTION_DBG, {"----------------------------"})
+	sendSerialized(to_send, FRAMETYPE_MOVE)
 end
 
 net_handlers[FRAMETYPE_BOMB_UPDATE] = receivedBombUpdate
