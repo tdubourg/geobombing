@@ -374,14 +374,19 @@ end
 
 function Player:setAR(arcP, isPrediction)
 	-- Update the prediction (if any running) to reflect external changes to player position
+	local destination = arcP:getPosXY()
 	if (not isPrediction and self.predictionDestination ~= nil) then
-		self:updatePredictionTo(arcP)
+		local dist = self.pos:dist(destination)
+		if (dist >= DELTA_FOR_SERVER_POSITION_OVERRIDE) then
+			self:updatePredictionTo(arcP)
+		else
+			return -- Do not consider this position update, it is not done by prediction and it is close enough
+		end
 	end
 	self.oldpos = self.pos
-	local destination = arcP:getPosXY()
+	self.pos=destination
 	-- self.toX=destination.x
 	-- self.toY=destination.y
-	self.pos=destination
 	self.sprite:setWorldPosition(self.pos)
 	self.colorSprite:setWorldPosition(self.pos)
 	self.arcPCurrent = arcP

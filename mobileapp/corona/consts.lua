@@ -112,7 +112,7 @@ BOMB_PULSE_PERIOD = 0.5
 EXPLOSION_INTERVAL = 0.011
 
 PLAYER_UPDATE_DISCARD_DELAY_IN_MS = 100
-PLAYER_SPEED = 0.1
+PLAYER_SPEED = 0.080765 -- Hey hey, why this value and not 0.1 as on server? Because serveur somehow has a little bit of overhead, it seems, and thus we are iterating faster that it
 ENABLE_MOVE_PREDICTION = true
 
 -- Other
@@ -130,6 +130,7 @@ DISCARDED_PLAYER_UPDATES_MSG = false
 GAME_DBG = false
 LOG_TO_FILE = nil
 
+DELTA_FOR_SERVER_POSITION_OVERRIDE = 0.1
 
 -- require("consts-local")
 silent_fail_require("consts-local")
